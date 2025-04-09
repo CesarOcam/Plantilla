@@ -1,0 +1,118 @@
+.bg-body-secondary{
+    background-color:rgb(100, 45, 189) !important;
+}
+
+.navbar-brand{
+    color: #efefef;
+}
+
+.shadow-bottom {
+    box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  }
+
+  a.nav-link.dropdown-toggle::after {
+    display: none !important;
+  }
+
+  .dropdown-menu {
+    border-radius: 0 !important;
+  }
+
+  .form-control {
+    border-bottom: 2px solid #efefef !important; /* Color de borde inferior por defecto */
+  }
+
+  .form-control:focus {
+    border-color: transparent;        /* Elimina el borde superior, izquierdo y derecho */
+    border-bottom-color: rgb(100, 45, 189)!important;     /* Resalta solo el borde inferior */
+    box-shadow: none;                  /* Elimina la sombra por defecto */
+  }
+
+  table, th, td {
+    background-color: transparent !important;
+  }
+
+  .table th, .table td {
+    color: rgba(0, 0, 0, 0.6); /* Negro con 60% de opacidad */
+  }
+
+  .table thead th {
+    color: rgba(0, 0, 0, 0.6); /* Negro con 60% de opacidad */
+  }
+
+  .form-check-input {
+    transform: scale(1.4); /* Cambia este valor para ajustar el tamaño */
+    margin-left: 10px; /* Ajusta si es necesario para alinearlo correctamente */
+  }
+
+  /* Ajusta el ancho de las dos primeras columnas */
+  .table th:nth-child(1), .table td:nth-child(1),
+  .table th:nth-child(2), .table td:nth-child(2) {
+    width: 3%; /* Ajusta el porcentaje según lo que desees */
+  }
+
+  .table th:nth-child(2), .table td:nth-child(2) {
+    width: 4%; /* Ajusta el porcentaje según lo que desees */
+  }
+
+  .table th:nth-child(3), .table td:nth-child(3) {
+    width: 60%; /* Ajusta el porcentaje según lo que desees */
+  }
+
+
+  /* Estilos del interruptor */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px; /* Tamaño reducido */
+    height: 28px; /* Tamaño reducido */
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px; /* Tamaño reducido */
+    width: 20px; /* Tamaño reducido */
+    border-radius: 50%;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+  }
+
+  input:checked + .slider {
+    background-color: rgb(245, 99, 31);
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(22px); /* Ajustado para el tamaño reducido */
+  }
+
+  .formulario_clientes input::placeholder {
+    opacity: 0.7 !important;  /* Forzar la opacidad */
+}
+
+
+
+
+  
+  
+  
