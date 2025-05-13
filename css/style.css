@@ -2,6 +2,8 @@
     background-color:rgb(100, 45, 189) !important;
 }
 
+
+
 .navbar-brand{
     color: #efefef;
 }
@@ -59,6 +61,43 @@
     width: 60%; /* Ajusta el porcentaje según lo que desees */
   }
 
+    /* Solo aplicar en cat_Cuentas.php */
+  body.cat-cuentas .table th:nth-child(3),
+  body.cat-cuentas .table td:nth-child(3) {
+      width: 5% !important; /* Solo en esa página */
+  }
+
+  body.cat-clientes .table th:nth-child(3),
+  body.cat-clientes .table td:nth-child(3) {
+      width: 5% !important; /* Solo en esa página */
+  }
+
+  body.cat-aduanas .table th:nth-child(3),
+  body.cat-aduanas .table td:nth-child(3) {
+      width: 10% !important; /* Solo en esa página */
+  }
+
+  body.cat-aduanas .table th:nth-child(4),
+  body.cat-aduanas .table td:nth-child(4) {
+      width: 10% !important; /* Solo en esa página */
+  }
+
+
+  body.cat-aduanas .table th:nth-child(5),
+  body.cat-aduanas .table td:nth-child(5) {
+      width: 50% !important; /* Solo en esa página */
+  }
+
+  body.cat-aduanas .table th:nth-child(6),
+  body.cat-aduanas .table td:nth-child(6) {
+      width: 10% !important; /* Solo en esa página */
+  }
+  body.cat-aduanas .table th:nth-child(7),
+  body.cat-aduanas .table td:nth-child(7) {
+      width: 10% !important; /* Solo en esa página */
+  }
+
+
 
   /* Estilos del interruptor */
   .switch {
@@ -110,9 +149,5 @@
     opacity: 0.7 !important;  /* Forzar la opacidad */
 }
 
-
-
-
-  
-  
+/* BOTONES.............................................................*/
   
