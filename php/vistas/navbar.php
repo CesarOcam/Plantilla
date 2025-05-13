@@ -44,15 +44,9 @@
                   <li class="nav-item position-relative">
                     <a class="nav-link dropdown-toggle" href="cons" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
                     <ul class="dropdown-menu border shadow">
-                      <li><a class="dropdown-item small" href="cons">Referencias</a></li>
-                      <li><a class="dropdown-item small" href="cons">Solicitud de Pago</a></li>
-                      <li><a class="dropdown-item small" href="cons">Realizar Pago</a></li>
-                      <li><a class="dropdown-item small" href="cons">Solicitud de Anticipo</a></li>
-                      <hr>
-                      <li><a class="dropdown-item small" href="cons">Registro Cuota</a></li>
-                      <li><a class="dropdown-item small" href="cons">Registro Facturas</a></li>
-                      <hr>
-                      <li><a class="dropdown-item small" href="cons">Generar Poliza</a></li>
+                      <li><a class="dropdown-item small" href="seg">Pólizas</a></li>
+                      <li><a class="dropdown-item small" href="seg">Referencias</a></li>
+                      <li><a class="dropdown-item small" href="seg">Kardex</a></li>
                     </ul>
                   </li>
                   <li class="nav-item position-relative">
@@ -72,15 +66,9 @@
                   <li class="nav-item position-relative">
                     <a class="nav-link dropdown-toggle" href="seg" role="button" data-bs-toggle="dropdown" aria-expanded="false">Seguridad</a>
                     <ul class="dropdown-menu border shadow">
+                      <li><a class="dropdown-item small" href="seg">Pólizas</a></li>
                       <li><a class="dropdown-item small" href="seg">Referencias</a></li>
-                      <li><a class="dropdown-item small" href="seg">Solicitud de Pago</a></li>
-                      <li><a class="dropdown-item small" href="seg">Realizar Pago</a></li>
-                      <li><a class="dropdown-item small" href="seg">Solicitud de Anticipo</a></li>
-                      <hr>
-                      <li><a class="dropdown-item small" href="seg">Registro Cuota</a></li>
-                      <li><a class="dropdown-item small" href="seg">Registro Facturas</a></li>
-                      <hr>
-                      <li><a class="dropdown-item small" href="seg">Generar Poliza</a></li>
+                      <li><a class="dropdown-item small" href="seg">Kardex</a></li>
                     </ul>
                   </li>
               </ul>

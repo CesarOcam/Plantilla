@@ -30,6 +30,27 @@
     box-shadow: none;                  /* Elimina la sombra por defecto */
   }
 
+  .select2-container--default .select2-selection--multiple {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #efefef !important;
+    border-radius: 0;
+    padding: 4px;
+  }
+
+  .select2-container--default .select2-selection--multiple:focus {
+      border-bottom-color: rgb(100, 45, 189) !important;
+      box-shadow: none;
+  }
+
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: rgba(100, 45, 189, 0.1);
+    border: 1px solid #642dbd;
+    color: #642dbd;
+    font-size: 0.85rem;
+  }
+
+
   table, th, td {
     background-color: transparent !important;
   }
