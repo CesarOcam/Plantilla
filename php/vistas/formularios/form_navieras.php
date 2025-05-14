@@ -42,40 +42,39 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
     <div class="card mt-3 border shadow rounded-0">
         <form id="form_Clientes" method="POST">
             <div class="card-header formulario_clientes">
+                <h5>+ Agregar Naviera</h5>
                 <div class="row">
-                    <div class="col-10 col-sm-7 d-flex align-items-center mt-4">
-                        <input name="nombre" type="text" class="form-control rounded-0 border-0 border-bottom"
+                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
+                        <input name="nombre_transportista" type="text" class="form-control rounded-0 border-0 border-bottom"
                             style="background-color: transparent;" placeholder="Nombre*" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
                     </div>
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="tipo-select" name="tipo" class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" selected disabled hidden>Tipo*</option>
-                            <option value="1">PHCA</option>
-                            <option value="2">Gastos Generales</option>
-                        </select>
+                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
+                        <input name="rfc_transportista" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="RFC*" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1" required>
                     </div>
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="rfc" type="text" class="form-control rounded-0 border-0 border-bottom"
-                            style="background-color: transparent;" placeholder="RFC" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
+                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
+                        <input name="curp_transportista" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="CURP*" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1" required>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-2 col-sm-6 d-flex align-items-center mt-4">
-                    <select id="subcuenta-select" name="subcuentas[]" multiple class="form-control rounded-0 border-0 border-bottom text-muted"
-                        style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                        aria-describedby="basic-addon1">
-                        <option value="" disabled hidden>Subcuenta (Amexport Logística)*</option>
-                        <?php foreach ($subcuenta as $cuenta): ?>
-                            <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
-                                <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
+                        <input name="nomicilio_fiscal_transportista" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="Domicilio Fiscal*" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1" required>
                     </div>
+                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
+                        <input id="fechaAcceso_transportista" name="fechaAcceso_transportista" type="datetime-local"
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
+                            style="background-color: transparent;" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1" required>
+                    </div>
+
+                </div>
+                <div class="row">
                     <div class="row justify-content-end mt-5">
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <button type="button" class="btn btn-outline-danger rounded-0">Salir</button>
@@ -90,38 +89,12 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
     </div>
 </div>
 
+
 <script>
-    $(document).ready(function() {
-        // Inicializar Select2
-        $('#subcuenta-select').select2({
-            placeholder: 'Subcuenta (Amexport Logística)*',
-            allowClear: true,
-            width: '100%'
-        });
-
-        $('#tipo-select').on('change', function () {
-            const tipo = $(this).val();
-            let filtro = '';
-
-            if (tipo === '1') {
-                filtro = '123-';
-            } else if (tipo === '2') {
-                filtro = '601-';
-            }
-
-            // Mostrar u ocultar opciones según filtro
-            $('#subcuenta-select option').each(function () {
-                const numero = $(this).data('numero');
-                if (numero && numero.startsWith(filtro)) {
-                    $(this).show();
-                } else {
-                    $(this).hide().prop('selected', false); // También deselecciona si estaba elegido
-                }
-            });
-
-            // Refrescar Select2 para que oculte/actualice el dropdown
-            $('#subcuenta-select').val(null).trigger('change');
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const localDatetime = now.toISOString().slice(0,16); // formato para datetime-local
+        document.getElementById('fechaAcceso_transportista').value = localDatetime;
     });
 </script>
 

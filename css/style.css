@@ -1,5 +1,6 @@
 .bg-body-secondary{
-    background-color:rgb(100, 45, 189) !important;
+    /*background-color:rgb(100, 45, 189) !important;*/
+    background-color:rgb(52, 62, 83) !important;
 }
 
 
@@ -26,7 +27,8 @@
 
   .form-control:focus {
     border-color: transparent;        /* Elimina el borde superior, izquierdo y derecho */
-    border-bottom-color: rgb(100, 45, 189)!important;     /* Resalta solo el borde inferior */
+    /*border-bottom-color: rgb(100, 45, 189)!important;*/  /* Resalta solo el borde inferior */
+    border-bottom-color:rgb(52, 62, 83) !important;
     box-shadow: none;                  /* Elimina la sombra por defecto */
   }
 
@@ -39,16 +41,34 @@
   }
 
   .select2-container--default .select2-selection--multiple:focus {
-      border-bottom-color: rgb(100, 45, 189) !important;
+      /*border-bottom-color: rgb(100, 45, 189) !important;*/
+      border-bottom-color: rgb(52, 62, 83) !important;
       box-shadow: none;
   }
 
   .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: rgba(100, 45, 189, 0.1);
-    border: 1px solid #642dbd;
-    color: #642dbd;
+    /*background-color: rgba(100, 45, 189, 0.1);*/
+    background-color: rgba(25, 48, 196, 0.205);
+    /*border: 1px solid #642dbd;*/
+    border: 1px solid rgb(52, 62, 83);
+    /*color: #642dbd;*/
+    color: rgb(52, 62, 83);
     font-size: 0.85rem;
   }
+
+  .select2-container--default .select2-selection--single {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #efefef !important;
+  border-radius: 0;
+  padding: 4px;
+  height: 38px;
+}
+
+.select2-container--default .select2-selection--single:focus {
+  border-bottom-color: rgb(52, 62, 83) !important;
+  box-shadow: none;
+}
 
 
   table, th, td {

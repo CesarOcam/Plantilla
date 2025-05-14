@@ -1,6 +1,6 @@
 
 <nav class="navbar bg-body-secondary">
-        <div class="container-fluid">
+        <div class="container-fluid text-center">
           <a class="navbar-brand m-1" href="/portal_web/proyecto_2/php/vistas/inicio.php">AMEXPORT</a>
         </div>
       </nav>

@@ -1,10 +1,12 @@
 .btn-secondary {
-    background-color: rgb(100, 45, 189) !important;
+    /*background-color: rgb(100, 45, 189) !important;*/
+    background-color:rgb(48, 65, 122) !important;
     color: #fff;
     border: 1;
     font-weight: bold;
   }
   .btn-secondary:hover {
-    background-color: rgb(121, 85, 179) !important;
+    /*background-color: rgb(121, 85, 179) !important;*/
+    background-color:rgb(48, 65, 122) !important;
   }
 

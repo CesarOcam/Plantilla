@@ -23,10 +23,10 @@
                 <div class="d-flex flex-column mb-3">
                     <div class="row w-100">
                         <div class="col-12 col-sm-10 d-flex align-items-center">
-                            <input type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar lista por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                            <input type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar buque por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                         </div>
                         <div class="col-12 col-sm-2 d-flex align-items-center justify-content-start justify-content-sm-end mt-2 mt-sm-0">
-                            <a href="/portal_web/proyecto_2/php/vistas/formularios/buques_form.php" style="text-decoration: none; color: black;"><h6><i class="fas fa-plus mt-2"></i></h6></a>
+                            <a href="/portal_web/proyecto_2/php/vistas/formularios/form_buques.php" style="text-decoration: none; color: black;"><h6><i class="fas fa-plus mt-2"></i></h6></a>
                             <span class="mx-2"><h5>|</h5></span>
 
                             <!-- Interruptor de modo oscuro / claro -->
