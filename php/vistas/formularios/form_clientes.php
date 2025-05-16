@@ -100,10 +100,10 @@ $logisticos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <input name="nombre_corto" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Nombre Conocido" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                             </div>
                             <div class="col-2 col-sm-3 d-flex align-items-center mt-4">
-                                <input name="contacto" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Contacto" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                                <input name="contacto_cliente" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Contacto" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                             </div>
                             <div class="col-2 col-sm-3 d-flex align-items-center mt-4">
-                                <input name="tel" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Teléfono" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                                <input name="telefono_cliente" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Teléfono" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="row">
@@ -126,10 +126,7 @@ $logisticos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <input name="localidad" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Localidad" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                             </div>
                         </div>
-                        <div class="row">
-
-                        </div>
-
+ 
                         <div class="row">
                             <div class="col-2 col-sm-4 d-flex align-items-center mt-4">
                                 <input name="municipio" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Municipio" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
@@ -167,13 +164,13 @@ $logisticos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </label>
                                     <div class="col-sm-12 d-flex align-items-center mt-2" style="background-color: transparent;">
                                         <div class="form-check me-4" style="background-color: transparent;">
-                                            <input class="form-check-input" type="radio" name="quien_paga" id="cuenta_cliente" value="1" required>
+                                            <input class="form-check-input" type="radio" name="pagaCon_cliente" id="cuenta_cliente" value="1" required>
                                             <label class="form-check-label" for="cuenta_cliente" style="background-color: transparent;">
                                                 Cuenta Cliente
                                             </label>
                                         </div>
                                         <div class="form-check" style="background-color: transparent;">
-                                            <input class="form-check-input" type="radio" name="quien_paga" id="cuenta_amexport" value="2">
+                                            <input class="form-check-input" type="radio" name="pagaCon_cliente" id="cuenta_amexport" value="2">
                                             <label class="form-check-label" for="cuenta_amexport" style="background-color: transparent;">
                                                 Cuenta Amexport
                                             </label>
@@ -196,16 +193,16 @@ $logisticos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </select>
                             </div>              
                             <div class="col-2 col-sm-4 d-flex align-items-center mt-4 mb-3">
-                                <input name="email_trafico" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="E-Mails de Logístico" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                                <input name="emails_trafico" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="E-Mails de Logístico" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                             </div>
                             <div class="col-2 col-sm-4 d-flex align-items-center mt-4 mb-3">
                                 <label class="form-label me-3 text-muted mb-0" style="background-color: transparent;">Estado:</label>
                                 <div class="form-check form-check-inline" style="background-color: transparent;">
-                                    <input class="form-check-input" type="radio" name="status_exportador" id="status_exportador" value="1" required>
+                                    <input class="form-check-input" type="radio" name="status_exportador" id="estado_activo" value="1" required>
                                     <label class="form-check-label" for="estado_activo" style="background-color: transparent;">Activo</label>
                                 </div>
                                 <div class="form-check form-check-inline" style="background-color: transparent;">
-                                    <input class="form-check-input" type="radio" name="status_exportador" id="status_exportador" value="0">
+                                    <input class="form-check-input" type="radio" name="status_exportador" id="estado_inactivo" value="0">
                                     <label class="form-check-label" for="estado_inactivo" style="background-color: transparent;">Inactivo</label>
                                 </div>
                             </div>

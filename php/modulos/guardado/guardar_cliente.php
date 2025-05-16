@@ -5,21 +5,29 @@ include('../conexion.php');
 if (isset($_POST['nombre'], $_POST['rfc'], $_POST['tipo'])) {
     // Recoger todos los valores
     $nombre = trim($_POST['nombre']);
+    $curp = trim($_POST['curp']);
     $rfc = trim($_POST['rfc']);
-    $tipo = trim($_POST['tipo']);
-    $calle = $_POST['calle'] ?? '';
+    $tipo_persona = $_POST['persona']; //tipoClienteExportador
+    $tipo_cliente = $_POST['tipo']; //tipo_cliente
+    $nombre_conocido = trim($_POST['nombre_corto'] ?? '');
+    $contacto = trim($_POST['contacto_cliente'] ?? '');
+    $tel = trim($_POST['telefono_cliente'] ?? '');
+
+    $calle = trim($_POST['calle'] ?? '');
     $num_exterior = $_POST['num_exterior'] ?? '';
     $num_interior = $_POST['num_interior'] ?? '';
     $cp = $_POST['cp'] ?? '';
     $colonia = $_POST['colonia'] ?? '';
     $localidad = $_POST['localidad'] ?? '';
-    $referencia = $_POST['referencia'] ?? '';
-    $municipio = $_POST['municipio'] ?? '';
-    $estado = $_POST['estado'] ?? '';
+
+    $municipio = trim($_POST['municipio'] ?? '');
     $pais = $_POST['pais'] ?? '';
-    $telefono = $_POST['tel'] ?? '';
-    $email_trafico = $_POST['email_trafico'] ?? '';
-    $email_conta = $_POST['email_conta'] ?? '';
+    $estado = $_POST['estado'] ?? '';
+    $quien_paga = isset($_POST['pagaCon_cliente']) ? (int) $_POST['pagaCon_cliente'] : null;
+    $logistico = $_POST['logistico_asociado'];
+    $email_trafico = trim($_POST['emails_trafico'] ?? '');
+    $status = isset($_POST['status_exportador']) ? (int) $_POST['status_exportador'] : null;
+  
 
     // Función para obtener la fecha y hora actual
     function obtenerFechaHoraActual() {
@@ -32,16 +40,36 @@ if (isset($_POST['nombre'], $_POST['rfc'], $_POST['tipo'])) {
     $usuarioAlta = 1;
 
     // Asegurarse de que todos los campos coincidan con los de la base de datos
-    $sql = "INSERT INTO clientes 
-        (Nombre, Rfc, Tipo, Calle, NumeroExterior, NumeroInterior, CodigoPostal,
-         Colonia, Localidad, ReferenciaDomicilio, Municipio, Estado, Pais, Telefono, Emailtrafico, EmailContabilidad, Activo, FechaAlta, UsuarioAlta)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO 01clientes_exportadores 
+    (
+        razonSocial_exportador, rfc_exportador, tipoClienteExportador, tipo_cliente,
+        calle_exportador, noExt_exportador, noInt_exportador, codigoPostal_exportador,
+        colonia_exportador, localidad_exportador, municipio_exportador,
+        idcat11_estado, id2204clave_pais, telefono_cliente, emails_trafico,
+        status_exportador, fechaAlta_exportador,usuarioAlta_exportador
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     // Crear el array de parámetros, sin incluir el valor de 'Activo' ya que ya está seteo como 1
     $params = [
-        $nombre, $rfc, $tipo, $calle, $num_exterior, $num_interior, $cp,
-        $colonia, $localidad, $referencia, $municipio, $estado, $pais,
-        $telefono, $email_trafico, $email_conta, $activo, $fecha_alta, $usuarioAlta
+        $nombre,         // razonSocial_exportador
+        $rfc,            // rfc_exportador
+        $tipo_persona,   // tipoClienteExportador
+        $tipo_cliente,   // tipo_cliente
+        $calle,          // calle_exportador
+        $num_exterior,   // noExt_exportador
+        $num_interior,   // noInt_exportador
+        $cp,             // codigoPostal_exportador
+        $colonia,        // colonia_exportador
+        $localidad,      // localidad_exportador
+        $municipio,      // municipio_exportador
+        $estado,         // idcat11_estado
+        $pais,           // id2204clave_pais
+        $tel,            // telefono_cliente
+        $email_trafico,  // emails_trafico
+        $status,         // status_exportador
+        $fecha_alta,     // FechaAlta
+        $usuarioAlta     // UsuarioAlta
     ];
 
     // Verificar que el número de parámetros coincida con el número de `?` en la consulta

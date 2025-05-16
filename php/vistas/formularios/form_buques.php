@@ -43,7 +43,7 @@ $paises = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="container-fluid">
         <div class="card mt-3 border shadow rounded-0">
-            <form id="form_Clientes" method="POST">
+            <form id="form_Buques" method="POST">
                 <div class="card-header formulario_clientes">
                     <h5>+ Agregar Buque</h5>
                     <div class="row">
@@ -82,16 +82,16 @@ $paises = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
 
-<script>
-    $(document).ready(function() {
-        // Inicializar Select2
-        $('#pais-select').select2({
-            placeholder: 'País',
-            allowClear: true,
-            width: '100%'
+    <script>
+        $(document).ready(function() {
+            // Inicializar Select2
+            $('#pais-select').select2({
+                placeholder: 'País',
+                allowClear: true,
+                width: '100%'
+            });
         });
-    });
-</script>
+    </script>
 <script src="../../../js/guardar_Buque.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
