@@ -139,6 +139,15 @@
   }
 
 
+  .input-transparent {
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      border-radius: 0;
+      color: rgba(0, 0, 0, 0.6); /* Texto con opacidad */
+      font-weight: 500;
+    }
+
 
   /* Estilos del interruptor */
   .switch {
@@ -189,6 +198,135 @@
   .formulario_clientes input::placeholder {
     opacity: 0.7 !important;  /* Forzar la opacidad */
 }
+
+/*-------------------------DISEÑOS DE LA TABLA DINAMICA ---------------------------------------*/
+
+
+#tabla-partidas thead {
+    text-align: center;
+    background-color: rgb(52, 62, 83) !important;
+    color: white;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#tabla-partidas thead th {
+    color: white !important;
+}
+
+
+#tabla-partidas th,
+#tabla-partidas td {
+    vertical-align: middle;
+    padding: 0.5rem;
+}
+
+#tabla-partidas input,
+#tabla-partidas select {
+    border: none;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+#tabla-partidas input:focus,
+#tabla-partidas select:focus {
+    box-shadow: none;
+    outline: none;
+    border-color: #6c757d;
+}
+
+#tabla-partidas tfoot input {
+    font-weight: bold;
+    text-align: right;
+    background-color: #f1f3f5;
+}
+
+/* Botón agregar: sobrio, empresarial */
+.btn-outline-primary {
+    border-color: #444;
+    color: #444;
+    background-color: transparent;
+    transition: 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #444;
+    color: white;
+}
+
+/* Botón eliminar: más discreto */
+.btn-eliminar {
+    background-color: transparent;
+    border: none;
+    color: #aa1e1e;
+    padding: 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-eliminar:hover {
+    color: #d9534f; /* rojo más claro al pasar el mouse */
+}
+
+/* Botones base */
+.btn-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.d-none {
+    display: none;
+}
+
+/* Anchuras personalizadas */
+.col-subcuenta {
+    width: 30%;     /* Más espacio para nombres largos */
+    min-width: 400px;
+}
+
+.col-referencia {
+    width: 15%;     /* Menos espacio que subcuenta */
+    min-width: 200px;
+}
+
+.col-cargo{
+    width: 7%;      /* Poco espacio para números */
+    min-width: 70px;
+    max-width: 80px;
+}
+.col-abono {
+    width: 7%;      /* Poco espacio para números */
+    min-width: 70px;
+    max-width: 80px;
+}
+
+.col-observaciones {
+    width: 30%;     /* Igual que subcuenta, bastante espacio para texto */
+    min-width: 400px;
+}
+
+.col-factura {
+    width: 15%;     /* Igual que referencia */
+    min-width: 200px;
+}
+
+.col-accion {
+    width: 3%;      /* Botón eliminar pequeño */
+    min-width: 40px;
+}
+
+
+.select2-container .select2-selection--single {
+    height: 31px !important;       /* altura del campo */
+    line-height: 50px !important;  /* para centrar texto verticalmente */
+    padding: 0 10px !important;    /* espaciado horizontal */
+    border-radius: 0;              /* opcional, para que combine con tu estilo */
+}
+
+
 
 /* BOTONES.............................................................*/
   

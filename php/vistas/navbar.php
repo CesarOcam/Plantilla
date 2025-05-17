@@ -44,7 +44,7 @@
                   <li class="nav-item position-relative">
                     <a class="nav-link dropdown-toggle" href="cons" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
                     <ul class="dropdown-menu border shadow">
-                      <li><a class="dropdown-item small" href="seg">Pólizas</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/consultas/consulta_poliza.php">Polizas</a></li>
                       <li><a class="dropdown-item small" href="seg">Referencias</a></li>
                       <li><a class="dropdown-item small" href="seg">Kardex</a></li>
                     </ul>
