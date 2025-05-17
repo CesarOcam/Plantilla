@@ -4,7 +4,7 @@
     // Consulta
     $stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos, aduana_recintos FROM 2221_recintos"); // Cambia a tu tabla/campos reales
     $stmt->execute();
-    $navieras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     ?>
 
     <table  class="table table-hover">
@@ -17,15 +17,15 @@
                         </tr>
                     </thead>
                     <tbody class="small">
-                    <?php if ($navieras): ?>
-                        <?php foreach ($navieras as $navieras): ?>
-                        <tr>
+                    <?php if ($recintos): ?>
+                        <?php foreach ($recintos as $recintos): ?>
+                    <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_recintos.php?id=<?php echo $recintos['id2221_recintos']; ?>';}" style="cursor: pointer;">
                         <th scope="row"> 
                             <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
                         </th>
-                        <td><?php echo $navieras['id2221_recintos']; ?></td>
-                        <td><?php echo $navieras['inmueble_recintos']; ?></td>
-                        <td><?php echo $navieras['aduana_recintos']; ?></td>
+                        <td><?php echo $recintos['id2221_recintos']; ?></td>
+                        <td><?php echo $recintos['inmueble_recintos']; ?></td>
+                        <td><?php echo $recintos['aduana_recintos']; ?></td>
                         </tr>
                         <?php endforeach; ?>
                         <?php else: ?>

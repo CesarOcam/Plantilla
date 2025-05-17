@@ -44,7 +44,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
     <tbody class="small">
         <?php if ($clientes): ?>
             <?php foreach ($clientes as $cliente): ?>
-                <tr>
+                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_clientes.php?id=<?php echo $cliente['id01clientes_exportadores']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
                         <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
                     </th>
