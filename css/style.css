@@ -1,0 +1,332 @@
+.bg-body-secondary{
+    /*background-color:rgb(100, 45, 189) !important;*/
+    background-color:rgb(52, 62, 83) !important;
+}
+
+
+
+.navbar-brand{
+    color: #efefef;
+}
+
+.shadow-bottom {
+    box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  }
+
+  a.nav-link.dropdown-toggle::after {
+    display: none !important;
+  }
+
+  .dropdown-menu {
+    border-radius: 0 !important;
+  }
+
+  .form-control {
+    border-bottom: 2px solid #efefef !important; /* Color de borde inferior por defecto */
+  }
+
+  .form-control:focus {
+    border-color: transparent;        /* Elimina el borde superior, izquierdo y derecho */
+    /*border-bottom-color: rgb(100, 45, 189)!important;*/  /* Resalta solo el borde inferior */
+    border-bottom-color:rgb(52, 62, 83) !important;
+    box-shadow: none;                  /* Elimina la sombra por defecto */
+  }
+
+  .select2-container--default .select2-selection--multiple {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #efefef !important;
+    border-radius: 0;
+    padding: 4px;
+  }
+
+  .select2-container--default .select2-selection--multiple:focus {
+      /*border-bottom-color: rgb(100, 45, 189) !important;*/
+      border-bottom-color: rgb(52, 62, 83) !important;
+      box-shadow: none;
+  }
+
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    /*background-color: rgba(100, 45, 189, 0.1);*/
+    background-color: rgba(25, 48, 196, 0.205);
+    /*border: 1px solid #642dbd;*/
+    border: 1px solid rgb(52, 62, 83);
+    /*color: #642dbd;*/
+    color: rgb(52, 62, 83);
+    font-size: 0.85rem;
+  }
+
+  .select2-container--default .select2-selection--single {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #efefef !important;
+  border-radius: 0;
+  padding: 4px;
+  height: 38px;
+}
+
+.select2-container--default .select2-selection--single:focus {
+  border-bottom-color: rgb(52, 62, 83) !important;
+  box-shadow: none;
+}
+
+
+  table, th, td {
+    background-color: transparent !important;
+  }
+
+  .table th, .table td {
+    color: rgba(0, 0, 0, 0.6); /* Negro con 60% de opacidad */
+  }
+
+  .table thead th {
+    color: rgba(0, 0, 0, 0.6); /* Negro con 60% de opacidad */
+  }
+
+  .form-check-input {
+    transform: scale(1.4); /* Cambia este valor para ajustar el tamaño */
+    margin-left: 10px; /* Ajusta si es necesario para alinearlo correctamente */
+  }
+
+  /* Ajusta el ancho de las dos primeras columnas */
+  .table th:nth-child(1), .table td:nth-child(1),
+  .table th:nth-child(2), .table td:nth-child(2) {
+    width: 3%; /* Ajusta el porcentaje según lo que desees */
+  }
+
+  .table th:nth-child(2), .table td:nth-child(2) {
+    width: 4%; /* Ajusta el porcentaje según lo que desees */
+  }
+
+  .table th:nth-child(3), .table td:nth-child(3) {
+    width: 60%; /* Ajusta el porcentaje según lo que desees */
+  }
+
+    /* Solo aplicar en cat_Cuentas.php */
+  body.cat-cuentas .table th:nth-child(3),
+  body.cat-cuentas .table td:nth-child(3) {
+      width: 5% !important; /* Solo en esa página */
+  }
+
+  body.cat-clientes .table th:nth-child(3),
+  body.cat-clientes .table td:nth-child(3) {
+      width: 5% !important; /* Solo en esa página */
+  }
+
+  body.cat-aduanas .table th:nth-child(3),
+  body.cat-aduanas .table td:nth-child(3) {
+      width: 10% !important; /* Solo en esa página */
+  }
+
+  body.cat-aduanas .table th:nth-child(4),
+  body.cat-aduanas .table td:nth-child(4) {
+      width: 10% !important; /* Solo en esa página */
+  }
+
+
+  body.cat-aduanas .table th:nth-child(5),
+  body.cat-aduanas .table td:nth-child(5) {
+      width: 50% !important; /* Solo en esa página */
+  }
+
+  body.cat-aduanas .table th:nth-child(6),
+  body.cat-aduanas .table td:nth-child(6) {
+      width: 10% !important; /* Solo en esa página */
+  }
+  body.cat-aduanas .table th:nth-child(7),
+  body.cat-aduanas .table td:nth-child(7) {
+      width: 10% !important; /* Solo en esa página */
+  }
+
+
+  .input-transparent {
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      border-radius: 0;
+      color: rgba(0, 0, 0, 0.6); /* Texto con opacidad */
+      font-weight: 500;
+    }
+
+
+  /* Estilos del interruptor */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px; /* Tamaño reducido */
+    height: 28px; /* Tamaño reducido */
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px; /* Tamaño reducido */
+    width: 20px; /* Tamaño reducido */
+    border-radius: 50%;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+  }
+
+  input:checked + .slider {
+    background-color: rgb(245, 99, 31);
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(22px); /* Ajustado para el tamaño reducido */
+  }
+
+  .formulario_clientes input::placeholder {
+    opacity: 0.7 !important;  /* Forzar la opacidad */
+}
+
+/*-------------------------DISEÑOS DE LA TABLA DINAMICA ---------------------------------------*/
+
+
+#tabla-partidas thead {
+    text-align: center;
+    background-color: rgb(52, 62, 83) !important;
+    color: white;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#tabla-partidas thead th {
+    color: white !important;
+}
+
+
+#tabla-partidas th,
+#tabla-partidas td {
+    vertical-align: middle;
+    padding: 0.5rem;
+}
+
+#tabla-partidas input,
+#tabla-partidas select {
+    border: none;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+#tabla-partidas input:focus,
+#tabla-partidas select:focus {
+    box-shadow: none;
+    outline: none;
+    border-color: #6c757d;
+}
+
+#tabla-partidas tfoot input {
+    font-weight: bold;
+    text-align: right;
+    background-color: #f1f3f5;
+}
+
+/* Botón agregar: sobrio, empresarial */
+.btn-outline-primary {
+    border-color: #444;
+    color: #444;
+    background-color: transparent;
+    transition: 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #444;
+    color: white;
+}
+
+/* Botón eliminar: más discreto */
+.btn-eliminar {
+    background-color: transparent;
+    border: none;
+    color: #aa1e1e;
+    padding: 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-eliminar:hover {
+    color: #d9534f; /* rojo más claro al pasar el mouse */
+}
+
+/* Botones base */
+.btn-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.d-none {
+    display: none;
+}
+
+/* Anchuras personalizadas */
+.col-subcuenta {
+    width: 30%;     /* Más espacio para nombres largos */
+    min-width: 400px;
+}
+
+.col-referencia {
+    width: 15%;     /* Menos espacio que subcuenta */
+    min-width: 200px;
+}
+
+.col-cargo{
+    width: 7%;      /* Poco espacio para números */
+    min-width: 70px;
+    max-width: 80px;
+}
+.col-abono {
+    width: 7%;      /* Poco espacio para números */
+    min-width: 70px;
+    max-width: 80px;
+}
+
+.col-observaciones {
+    width: 30%;     /* Igual que subcuenta, bastante espacio para texto */
+    min-width: 400px;
+}
+
+.col-factura {
+    width: 15%;     /* Igual que referencia */
+    min-width: 200px;
+}
+
+.col-accion {
+    width: 3%;      /* Botón eliminar pequeño */
+    min-width: 40px;
+}
+
+
+.select2-container .select2-selection--single {
+    height: 31px !important;       /* altura del campo */
+    line-height: 50px !important;  /* para centrar texto verticalmente */
+    padding: 0 10px !important;    /* espaciado horizontal */
+    border-radius: 0;              /* opcional, para que combine con tu estilo */
+}
+
+
+
+/* BOTONES.............................................................*/
+  
