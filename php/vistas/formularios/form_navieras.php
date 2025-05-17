@@ -40,7 +40,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Clientes" method="POST">
+        <form id="form_Navieras" method="POST">
             <div class="card-header formulario_clientes">
                 <h5>+ Agregar Naviera</h5>
                 <div class="row">
@@ -62,7 +62,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <input name="nomicilio_fiscal_transportista" type="text" class="form-control rounded-0 border-0 border-bottom"
+                        <input name="domicilio_fiscal_transportista" type="text" class="form-control rounded-0 border-0 border-bottom"
                             style="background-color: transparent;" placeholder="Domicilio Fiscal*" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
                     </div>
@@ -91,6 +91,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 
 <script>
+    e.preventDefault();
     document.addEventListener('DOMContentLoaded', function() {
         const now = new Date();
         const localDatetime = now.toISOString().slice(0,16); // formato para datetime-local
@@ -98,7 +99,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
     });
 </script>
 
-<script src="../../../js/guardar_Cliente.js"></script>
+<script src="../../../js/guardar_Naviera.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

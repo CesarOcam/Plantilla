@@ -40,20 +40,21 @@ if (isset($_POST['nombre'], $_POST['rfc'], $_POST['tipo'])) {
     $usuarioAlta = 1;
 
     // Asegurarse de que todos los campos coincidan con los de la base de datos
-    $sql = "INSERT INTO 01clientes_exportadores 
+    $sql = "INSERT IGNORE INTO 01clientes_exportadores 
     (
         razonSocial_exportador, curp_exportador, rfc_exportador, tipoClienteExportador, tipo_cliente,
-        nombreCorto_exportador,calle_exportador, noExt_exportador, noInt_exportador, codigoPostal_exportador,
+        nombreCorto_exportador, calle_exportador, noExt_exportador, noInt_exportador, codigoPostal_exportador,
         pagaCon_cliente, colonia_exportador, localidad_exportador, municipio_exportador,
-        idcat11_estado, id2204clave_pais, contacto_cliente, telefono_cliente, emails_trafico,logistico_asociado,
-        status_exportador, fechaAlta_exportador,usuarioAlta_exportador
+        idcat11_estado, id2204clave_pais, contacto_cliente, telefono_cliente, emails_trafico, logistico_asociado,
+        status_exportador, fechaAlta_exportador, usuarioAlta_exportador
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
 
     // Crear el array de parámetros, sin incluir el valor de 'Activo' ya que ya está seteo como 1
     $params = [
         $nombre,         // razonSocial_exportador
-        $curp        
+        $curp,        
         $rfc,            // rfc_exportador
         $tipo_persona,   // tipoClienteExportador
         $tipo_cliente,
@@ -62,7 +63,7 @@ if (isset($_POST['nombre'], $_POST['rfc'], $_POST['tipo'])) {
         $num_exterior,   // noExt_exportador
         $num_interior,   // noInt_exportador
         $cp,             // codigoPostal_exportador
-        $quien_paga
+        $quien_paga,
         $colonia,        // colonia_exportador
         $localidad,      // localidad_exportador
         $municipio,      // municipio_exportador
@@ -71,7 +72,7 @@ if (isset($_POST['nombre'], $_POST['rfc'], $_POST['tipo'])) {
         $contacto,
         $tel,            // telefono_cliente
         $email_trafico,  // emails_trafico
-        $logistico;
+        $logistico,
         $status,         // status_exportador
         $fecha_alta,     // FechaAlta
         $usuarioAlta     // UsuarioAlta
