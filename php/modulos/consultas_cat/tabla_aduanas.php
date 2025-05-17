@@ -23,28 +23,28 @@
                     <tbody class="small">
                     <?php if ($aduanas): ?>
                         <?php foreach ($aduanas as $aduanas): ?>
-                        <tr>
-                        <th scope="row"> 
-                            <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
-                        </th>
-                        <td><?php echo $aduanas['id2201aduanas']; ?></td>
-                        <td><?php echo $aduanas['aduana_aduana'] . '-' . $aduanas['seccion_aduana']; ?></td>
-                        <td><?php echo $aduanas['nombre_corto_aduana']; ?></td>
-                        <td><?php echo $aduanas['denominacion_aduana']; ?></td>
-                        <td><?php echo $aduanas['prefix_aduana']; ?></td>
-                        <td>
-                            <?php 
-                                echo ($aduanas['tipoAduana'] == 'M') ? 'Marítimo' : 
-                                    (($aduanas['tipoAduana'] == 'T') ? 'Terrestre' : 
-                                    (($aduanas['tipoAduana'] == 'A') ? 'Aéreo' : ''));
-                            ?>
-                        </td>
-                        <td>
-                            <?php 
-                                echo ($aduanas['status_aduana'] == 1) ? 'ACTIVO' : 
-                                    (($aduanas['status_aduana'] == 0) ? 'INACTIVO' : 'Otro');
-                            ?>
-                        </td>
+                        <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_aduanas.php?id=<?php echo $aduanas['id2201aduanas']; ?>';}" style="cursor: pointer;">
+                            <th scope="row"> 
+                                <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
+                            </th>
+                            <td><?php echo $aduanas['id2201aduanas']; ?></td>
+                            <td><?php echo $aduanas['aduana_aduana'] . '-' . $aduanas['seccion_aduana']; ?></td>
+                            <td><?php echo $aduanas['nombre_corto_aduana']; ?></td>
+                            <td><?php echo $aduanas['denominacion_aduana']; ?></td>
+                            <td><?php echo $aduanas['prefix_aduana']; ?></td>
+                            <td>
+                                <?php 
+                                    echo ($aduanas['tipoAduana'] == 'M') ? 'Marítimo' : 
+                                        (($aduanas['tipoAduana'] == 'T') ? 'Terrestre' : 
+                                        (($aduanas['tipoAduana'] == 'A') ? 'Aéreo' : ''));
+                                ?>
+                            </td>
+                            <td>
+                                <?php 
+                                    echo ($aduanas['status_aduana'] == 1) ? 'ACTIVO' : 
+                                        (($aduanas['status_aduana'] == 0) ? 'INACTIVO' : 'Otro');
+                                ?>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                         <?php else: ?>

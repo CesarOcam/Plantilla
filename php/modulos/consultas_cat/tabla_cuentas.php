@@ -9,7 +9,7 @@ $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para la consulta
 
 // Consulta para obtener las cuentas (solo 20 registros por página)
-$stmt = $con->prepare("SELECT Numero, Nombre, Saldo FROM cuentas ORDER BY Numero LIMIT :inicio, :registrosPorPagina");
+$stmt = $con->prepare("SELECT Id, Numero, Nombre, Saldo FROM cuentas ORDER BY Numero LIMIT :inicio, :registrosPorPagina");
 $stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
 $stmt->bindParam(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 $stmt->execute();
@@ -80,7 +80,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     $subcuentaNumero = $esSubcuenta ? $cuenta['Numero'] : '';
                     $sangria = $esSubcuenta ? 'ms-3' : ''; // Sangría para subcuentas
                 ?>
-                <tr>
+                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_cuentas.php?id=<?php echo $cuenta['Id']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
                         <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox">
                     </th>

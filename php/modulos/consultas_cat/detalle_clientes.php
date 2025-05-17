@@ -25,27 +25,7 @@ $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Consulta para obtener los países
-$stmt = $con->prepare("SELECT id2204clave_pais, CONCAT(clave_SAAI_M3, ' - ', pais_clave) AS nombre_pais 
-                       FROM 2204claves_paises 
-                       ORDER BY clave_SAAI_M3, pais_clave");
-$stmt->execute();
-$paises = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Consulta para obtener los estados
-$stmt = $con->prepare("SELECT idcat11_estado, CONCAT(cveEdos, ' - ', estado) AS nombre_estado 
-                       FROM cat11_estados 
-                       ORDER BY cveEdos, estado");
-$stmt->execute();
-$estados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Consulta para obtener los logísticos
-$stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador 
-                        FROM `01clientes_exportadores` 
-                        WHERE tipo_cliente = 1
-                        ORDER BY razonSocial_exportador");
-$stmt->execute();
-$logisticos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 
@@ -54,7 +34,7 @@ $logisticos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Detalle Clientes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- jQuery primero -->

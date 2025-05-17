@@ -18,7 +18,7 @@
                     <tbody class="small">
                     <?php if ($consolidadora): ?>
                         <?php foreach ($consolidadora as $consolidadora): ?>
-                        <tr>
+                        <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_consolidadoras.php?id=<?php echo $consolidadora['id_consolidadora']; ?>';}" style="cursor: pointer;">
                         <th scope="row"> 
                             <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
                         </th>
