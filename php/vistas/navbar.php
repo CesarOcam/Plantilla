@@ -1,7 +1,10 @@
 
-<nav class="navbar bg-body-secondary">
-        <div class="container-fluid text-center">
-          <a class="navbar-brand m-1" href="/portal_web/proyecto_2/php/vistas/inicio.php">AMEXPORT</a>
+      <nav class="navbar bg-body-secondary">
+        <div class="container-fluid">
+          <a class="navbar-brand m-1" href="/portal_web/proyecto_2/php/vistas/inicio.php">
+            <img src="/portal_web/proyecto_2/img/logo2.png" alt="Logo" class="img-fluid" style="max-width: 40px;">
+            SISTEMA DE CONTABILIDAD 
+          </a>
         </div>
       </nav>
 

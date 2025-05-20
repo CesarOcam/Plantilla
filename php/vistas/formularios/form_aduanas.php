@@ -41,7 +41,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Clientes" method="POST">
+        <form id="form_Aduanas" method="POST">
             <div class="card-header formulario_clientes">
                 <h5> + Agregar Aduana</h5>
                 <div class="row">
@@ -49,32 +49,30 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                                 <input name="id" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="ID" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                             </div>-->
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <input name="nombre_corto_aduana" type="text"
+                        <input name="nombre_corto_aduana" type="text" maxlength="15"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
                             placeholder="Nombre Corto*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="aduana_aduana" type="text" class="form-control rounded-0 border-0 border-bottom"
+                        <input name="aduana_aduana" type="text" maxlength="3" class="form-control rounded-0 border-0 border-bottom"
                             style="background-color: transparent;" placeholder="Clave Aduana*"
                             aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="seccion_aduana" type="text" class="form-control rounded-0 border-0 border-bottom"
+                        <input name="seccion_aduana" type="text" maxlength="1" class="form-control rounded-0 border-0 border-bottom"
                             style="background-color: transparent;" placeholder="Clave Seccion*"
                             aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="denominacion_aduana" type="text"
+                        <input name="denominacion_aduana" type="text" 
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
                             placeholder="Denominación*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="prefix_aduana" type="text" class="form-control rounded-0 border-0 border-bottom"
+                        <input name="prefix_aduana" type="text" maxlength="10" class="form-control rounded-0 border-0 border-bottom"
                             style="background-color: transparent;" placeholder="Prefijo*" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1">
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <select id="tipoAduana-select" name="tipoAduana"
                             class="form-control rounded-0 border-0 border-bottom text-muted"
@@ -86,19 +84,6 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                             <option value="T">TERRESTRE</option>
                         </select>
                     </div>
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="cuentasConta-select" name="cuentasConta"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" selected disabled>Cuentas*</option>
-                            <option value="1">ACTIVAS</option>
-                            <option value="0">INACTIVAS</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-
                 </div>
 
                 <div class="row">
@@ -234,7 +219,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
         });
     });
 </script>
-<script src="../../../js/guardar_Cliente.js"></script>
+<script src="../../../js/guardar_Aduana.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

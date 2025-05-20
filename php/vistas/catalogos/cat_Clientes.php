@@ -23,17 +23,31 @@
             <div class="card-header">
                 <div class="d-flex flex-column mb-3">
                     <div class="row w-100">
-                        <div class="col-12 col-sm-10 d-flex align-items-center">
-                            <input type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar cliente por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                        <div class="col-12 col-sm-10 d-flex align-items-center gap-2">
+                            <input id="filtroInput" type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar cliente por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                         </div>
+
                         <div class="col-12 col-sm-2 d-flex align-items-center justify-content-start justify-content-sm-end mt-2 mt-sm-0">
-                            <a href="/portal_web/proyecto_2/php/vistas/formularios/form_clientes.php" style="text-decoration: none; color: black;"><h6><i class="fas fa-plus mt-2"></i></h6></a>
+                                                        
+                            <!-- Botón solo icono sin borde ni fondo, más a la izquierda -->
+                            <button id="btnDesactivar" type="button" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Desactivar" 
+                                    style="border: none; background: transparent; padding: 0; font-size: 1.5rem; color:rgba(161, 155, 155, 0.62); cursor: pointer; display: none;" 
+                                    class="me-5 mt-2">
+                                <i class="fas fa-ban"></i>
+                            </button>
+
+                            <a href="/portal_web/proyecto_2/php/vistas/formularios/form_clientes.php" style="text-decoration: none; color: black;">
+                            <h6><i class="fas fa-plus mt-2"></i></h6>
+                            </a>
                             <span class="mx-2"><h5>|</h5></span>
 
                             <!-- Interruptor de modo oscuro / claro -->
                             <label class="switch mt-2">
-                                <input type="checkbox" id="modeToggle">
-                                <span class="slider"></span>
+                            <input type="checkbox" id="modeToggle">
+                            <span class="slider"></span>
                             </label>
 
                             <p class="mb-0 ms-2 mt-2">Mostrar inactivos</p>
@@ -41,9 +55,10 @@
                     </div>
                 </div>
 
-                <?php
-                    include('../../modulos/consultas_cat/tabla_clientes.php');
-                ?>
+                <div id="tabla-clientes-container">
+                    <?php include('../../modulos/consultas_cat/tabla_clientes.php'); ?>
+                </div>
+
             </div>
 
             <div class="card-body">
@@ -64,7 +79,23 @@
       document.body.classList.remove('dark-mode');
     }
   });
+
+  //Filtrado de la tabla-clientes-container
+  document.getElementById("filtroInput").addEventListener("input", function () {
+    const filtro = this.value;
+
+    // Hacer petición AJAX al archivo que genera la tabla
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "../../modulos/consultas_cat/tabla_clientes.php?filtro=" + encodeURIComponent(filtro), true);
+    xhr.onload = function () {
+        if (this.status === 200) {
+            document.getElementById("tabla-clientes-container").innerHTML = this.responseText;
+        }
+    };
+    xhr.send();
+    });
 </script>
+<script src="../../../js/desactivar_Clientes.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 

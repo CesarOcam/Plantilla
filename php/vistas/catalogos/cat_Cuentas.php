@@ -25,7 +25,7 @@
                 <div class="d-flex flex-column mb-3">
                     <div class="row w-100">
                         <div class="col-12 col-sm-10 d-flex align-items-center">
-                            <input type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar cuenta por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                            <input id="filtroInput" type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar cuenta por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                         </div>
                         <div class="col-12 col-sm-2 d-flex align-items-center justify-content-start justify-content-sm-end mt-2 mt-sm-0">
                             <a href="/portal_web/proyecto_2/php/vistas/formularios/form_cuentas.php" style="text-decoration: none; color: black;"><h6><i class="fas fa-plus mt-2"></i></h6></a>
@@ -42,9 +42,10 @@
                     </div>
                 </div>
 
-                <?php
-                    include('../../modulos/consultas_cat/tabla_cuentas.php');
-                ?>
+                <div id="tabla-cuentas-container">
+                    <?php include('../../modulos/consultas_cat/tabla_cuentas.php'); ?>
+                </div>
+
             </div>
 
             <div class="card-body">
@@ -65,6 +66,21 @@
       document.body.classList.remove('dark-mode');
     }
   });
+
+    //Filtrado de la tabla-cuentas-container
+  document.getElementById("filtroInput").addEventListener("input", function () {
+    const filtro = this.value;
+
+    // Hacer petición AJAX al archivo que genera la tabla
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "../../modulos/consultas_cat/tabla_cuentas.php?filtro=" + encodeURIComponent(filtro), true);
+    xhr.onload = function () {
+        if (this.status === 200) {
+            document.getElementById("tabla-cuentas-container").innerHTML = this.responseText;
+        }
+    };
+    xhr.send();
+    });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>

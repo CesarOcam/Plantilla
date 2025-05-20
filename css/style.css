@@ -1,13 +1,27 @@
-.bg-body-secondary{
-    /*background-color:rgb(100, 45, 189) !important;*/
-    background-color:rgb(52, 62, 83) !important;
+/*@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+
+body {
+  /*font-family: 'Poppins', sans-serif;*/
+  font-family: 'Inter', sans-serif;
 }
 
 
+.bg-body-secondary{
+    /*background-color:rgb(100, 45, 189) !important;*/
+    background-color:rgb(107, 122, 156) !important;
+}
 
 .navbar-brand{
     color: #efefef;
 }
+
+  .navbar-brand:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+  }
 
 .shadow-bottom {
     box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);

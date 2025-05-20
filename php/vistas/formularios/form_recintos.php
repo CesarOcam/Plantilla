@@ -3,7 +3,7 @@ include_once('../../modulos/conexion.php');
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
                        WHERE nombre_corto_aduana IS NOT NULL 
-                       AND TRIM(nombre_corto_aduana) != ''");
+                       AND TRIM(nombre_corto_aduana) != '' ORDER BY nombre_corto_aduana");
 $stmt->execute();
 $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -43,7 +43,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Clientes" method="POST">
+        <form id="form_Recintos" method="POST">
             <div class="card-header formulario_clientes">
                 <h5>+ Agregar Recinto</h5>
                 <div class="row">
@@ -53,27 +53,26 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                             aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <select id="pais-select" name="pais"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" selected disabled>Aduanas*</option>
-                            <?php foreach ($aduana as $aduana): ?>
-                                <option value="<?php echo $aduana['id2201aduanas']; ?>">
-                                    <?php echo $aduana['nombre_corto_aduana']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                                <select id="aduana-select" name="aduana" class="form-control rounded-0 border-0 border-bottom text-muted"
+                                    style="background-color: transparent;" aria-label="Filtrar por fecha"
+                                    aria-describedby="basic-addon1">
+                                    <option value="" selected disabled>Aduana</option>
+                                    <?php foreach ($aduana as $aduana): ?>
+                                        <option value="<?php echo $aduana['nombre_corto_aduana']; ?>">
+                                            <?php echo $aduana['nombre_corto_aduana']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                     </div>
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <input name="curp_transportista" type="text"
+                        <input name="curp" type="text"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
                             placeholder="CURP*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <input name="inmueble_recintos" type="text"
+                        <input name="domicilio" type="text"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
                             placeholder="Domicilio Fiscal*" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
@@ -81,10 +80,10 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
                         <input id="fechaAcceso_transportista" name="fechaAcceso_transportista" type="datetime-local"
                             class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent;" aria-label="Filtrar por fecha"
+                            style="background-color: transparent; max-width: 200px;" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
-                    </div>
-
+                        <span class="ms-2" style="font-size: 0.9rem; color: #000; opacity: 0.5;">Fecha Acceso*</span>
+                    </div> 
                 </div>
                 <div class="row">
                     <div class="row justify-content-end mt-5">
@@ -101,16 +100,24 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
     </div>
 </div>
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const now = new Date();
         const localDatetime = now.toISOString().slice(0, 16); // formato para datetime-local
         document.getElementById('fechaAcceso_transportista').value = localDatetime;
     });
+
+        $(document).ready(function() {
+        // Inicializar Select2
+        $('#aduana-select').select2({
+            placeholder: 'Aduana*',
+            allowClear: true,
+            width: '100%'
+        });
+    });
 </script>
 
-<script src="../../../js/guardar_Cliente.js"></script>
+<script src="../../../js/guardar_Recinto.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

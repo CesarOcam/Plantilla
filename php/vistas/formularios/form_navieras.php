@@ -1,10 +1,3 @@
-<?php
-include_once('../../modulos/conexion.php');
-$stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas WHERE CuentaPadreId IS NOT NULL"); // Cambia a tu tabla/campos reales
-$stmt->execute();
-$subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 

@@ -1,47 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+    
 <body class="cat-clientes">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polizas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.min.css">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Polizas</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../../../css/style.css">
-</head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.min.css">
 
-    <?php   
-        include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
+        <link rel="stylesheet" href="../../../css/style.css">
+        <link rel="stylesheet" href="../../../css/style2.css">
+    </head>
+
+    <?php
+    include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
     ?>
 
     <div class="container-fluid">
         <div class="card mt-3 border shadow rounded-0">
             <div class="card-header">
                 <div class="d-flex flex-column mb-3">
-                    <div class="row w-100">
-                        <div class="col-12 col-sm-10 d-flex align-items-center">
-                            <input type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar cliente por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                    <div class="row m-3 mb-0">
+                        <div class="col-1 d-flex flex-column">
+                            <label for="statusInput" class="form-label small mb-0">STATUS:</label>
+                            <select id="statusInput" class="form-select rounded-0 border-0 border-bottom"
+                                style="background-color: transparent;" aria-label="Filtrar por status">
+                                <option value="">TODOS</option>
+                                <option value="1">ACTIVA</option>
+                                <option value="0">INACTIVA</option>
+                            </select>
                         </div>
-                        <div class="col-12 col-sm-2 d-flex align-items-center justify-content-start justify-content-sm-end mt-2 mt-sm-0">
-                            <a href="/portal_web/proyecto_2/php/vistas/formularios/form_polizas.php" style="text-decoration: none; color: black;"><h6><i class="fas fa-plus mt-2"></i></h6></a>
-                            <span class="mx-2"><h5>|</h5></span>
 
-                            <!-- Interruptor de modo oscuro / claro -->
-                            <label class="switch mt-2">
-                                <input type="checkbox" id="modeToggle">
-                                <span class="slider"></span>
-                            </label>
+                        <div class="col-1 d-flex flex-column">
+                            <label for="fechaDesdeInput" class="form-label small mb-0">FECHA DESDE:</label>
+                            <input type="date" id="fechaDesdeInput"
+                                class="form-control rounded-0 border-0 border-bottom"
+                                style="background-color: transparent;" aria-label="Filtrar por fecha desde">
+                        </div>
+
+                        <div class="col-1 d-flex flex-column">
+                            <label for="fechaHastaInput" class="form-label small mb-0">FECHA HASTA:</label>
+                            <input type="date" id="fechaHastaInput"
+                                class="form-control rounded-0 border-0 border-bottom"
+                                style="background-color: transparent;" aria-label="Filtrar por fecha hasta">
+                        </div>
+
+                        <div class="col-1 d-flex flex-column">
+                            <label for="polizaInput" class="form-label small mb-0">PÓLIZA:</label>
+                            <input type="text" id="polizaInput" class="form-control rounded-0 border-0 border-bottom"
+                                style="background-color: transparent;" aria-label="Filtrar por póliza">
+                        </div>
+
+                        <div class="col-4 d-flex flex-column">
+                            <label for="beneficiarioInput" class="form-label small mb-0">BENEFICIARIO:</label>
+                            <input type="text" id="beneficiarioInput"
+                                class="form-control rounded-0 border-0 border-bottom"
+                                style="background-color: transparent;" aria-label="Filtrar por beneficiario">
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="col-3 d-flex align-items-end justify-content-start gap-2">
+                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                <button type="button" class="btn btn-secondary rounded-1" id="btn_buscar">Buscar</button>
+                            </div>
+                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                <button type="button" class="btn btn-outline-secondary rounded-1" id="btn_limpiar">Limpiar</button>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
-                <?php
-                    include('../../modulos/consultas/tabla_polizas.php');
-                ?>
+                <hr class="mb-5" style="border-top: 2px solid #000;">
+
+                <div id="tabla-polizas-container">
+                    <?php include('../../modulos/consultas/tabla_polizas.php'); ?>
+                </div>
+
             </div>
 
             <div class="card-body">
@@ -50,10 +92,49 @@
         </div>
     </div>
 
-<script>
-</script>
+    <script>
+        document.getElementById("btn_buscar").addEventListener("click", function () {
+            const status = document.getElementById("statusInput").value;
+            const fechaDesde = document.getElementById("fechaDesdeInput").value;
+            const fechaHasta = document.getElementById("fechaHastaInput").value;
+            const poliza = document.getElementById("polizaInput").value;
+            const beneficiario = document.getElementById("beneficiarioInput").value;
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+            const params = new URLSearchParams({
+                status,
+                fecha_desde: fechaDesde,
+                fecha_hasta: fechaHasta,
+                poliza,
+                beneficiario
+            });
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "../../modulos/consultas/tabla_polizas.php?" + params.toString(), true);
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    document.getElementById("tabla-polizas-container").innerHTML = this.responseText;
+                }
+            };
+            xhr.send();
+        });
+
+        // Limpiar filtros
+        document.getElementById("btn_limpiar").addEventListener("click", function () {
+            document.getElementById("statusInput").value = "";
+            document.getElementById("fechaDesdeInput").value = "";
+            document.getElementById("fechaHastaInput").value = "";
+            document.getElementById("polizaInput").value = "";
+            document.getElementById("beneficiarioInput").value = "";
+
+            document.getElementById("btn_buscar").click(); // recargar con filtros vacíos
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous">
+    </script>
 
 </body>
+
 </html>

@@ -9,11 +9,71 @@ $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para la consulta
 
 // Consulta para obtener los clientes (solo 20 registros por página)
-$stmt = $con->prepare("SELECT Id, Numero, Concepto, BeneficiarioId, Importe, EmpresaId, Fecha, Activo FROM polizas LIMIT :inicio, :registrosPorPagina");
+/*$stmt = $con->prepare("SELECT Id, Numero, Concepto, BeneficiarioId, Importe, EmpresaId, Fecha, Activo FROM polizas LIMIT :inicio, :registrosPorPagina");
 $stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
 $stmt->bindParam(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 $stmt->execute();
+$poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);*/
+$where = [];
+$params = [];
+
+// STATUS: Solo aplicar si es 1 o 0 (no vacío)
+if (isset($_GET['status']) && $_GET['status'] !== '') {
+    $where[] = "p.Activo = :status";
+    $params[':status'] = $_GET['status'];
+}
+
+// FECHA DESDE
+if (!empty($_GET['fecha_desde'])) {
+    $where[] = "p.Fecha >= :fecha_desde";
+    $params[':fecha_desde'] = $_GET['fecha_desde'];
+}
+
+// FECHA HASTA
+if (!empty($_GET['fecha_hasta'])) {
+    $where[] = "p.Fecha <= :fecha_hasta";
+    $params[':fecha_hasta'] = $_GET['fecha_hasta'];
+}
+
+// PÓLIZA
+if (!empty($_GET['poliza'])) {
+    $where[] = "p.Numero LIKE :poliza";
+    $params[':poliza'] = "%" . $_GET['poliza'] . "%";
+}
+
+// BENEFICIARIO
+if (!empty($_GET['beneficiario'])) {
+    $where[] = "b.Nombre LIKE :beneficiario";
+    $params[':beneficiario'] = "%" . $_GET['beneficiario'] . "%";
+}
+
+// WHERE final
+$whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
+
+// CONSULTA FINAL CON JOIN Y PAGINACIÓN
+$sql = "SELECT 
+            p.Id, p.Numero, p.Concepto, p.Importe, p.EmpresaId, p.Fecha, p.Activo, 
+            b.Nombre AS BeneficiarioNombre 
+        FROM polizas p
+        LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
+        $whereSql
+        ORDER BY p.Fecha DESC
+        LIMIT :inicio, :registrosPorPagina";
+
+$stmt = $con->prepare($sql);
+
+// Parámetros dinámicos
+foreach ($params as $key => $value) {
+    $stmt->bindValue($key, $value);
+}
+
+// Parámetros de paginación
+$stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
+$stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
+
+$stmt->execute();
 $poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Consulta para contar el total de registros
 $stmtTotal = $con->prepare("SELECT COUNT(*) FROM polizas");
@@ -52,7 +112,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     <td><?php echo $poliza['Id']; ?></td>
                     <td><?php echo $poliza['Numero']; ?></td>
                     <td><?php echo $poliza['Concepto']; ?></td>
-                    <td><?php echo $poliza['BeneficiarioId']; ?></td>
+                    <td><?php echo $poliza['BeneficiarioNombre']; ?></td>
                     <td><?php echo $poliza['Importe']; ?></td>
                     <td>
                         <?php

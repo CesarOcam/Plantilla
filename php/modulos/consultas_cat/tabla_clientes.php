@@ -2,16 +2,34 @@
 include_once(__DIR__ . '/../conexion.php');
 
 // Número de registros por página
-$registrosPorPagina = 20;
+$registrosPorPagina = 15;
 
 // Determinar el número de la página actual
 $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para la consulta
 
 // Consulta para obtener los clientes (solo 20 registros por página)
-$stmt = $con->prepare("SELECT id01clientes_exportadores, tipoClienteExportador, nombreCorto_exportador, logistico_asociado, rfc_exportador, tipo_cliente, statusEcomienda_exportador FROM 01clientes_exportadores LIMIT :inicio, :registrosPorPagina");
-$stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindParam(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
+$filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
+$filtroLike = '%' . $filtro . '%';
+
+$sql = "SELECT id01clientes_exportadores, tipoClienteExportador, nombreCorto_exportador, logistico_asociado, rfc_exportador, tipo_cliente, statusEcomienda_exportador, status_exportador 
+        FROM 01clientes_exportadores WHERE status_exportador = 1";
+
+if ($filtro !== '') {
+    $sql .= " WHERE nombreCorto_exportador LIKE :filtro";
+}
+
+$sql .= " LIMIT :inicio, :registrosPorPagina";
+
+$stmt = $con->prepare($sql);
+
+// Bind del filtro si se usa
+if ($filtro !== '') {
+    $stmt->bindValue(':filtro', $filtroLike, PDO::PARAM_STR);
+}
+
+$stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
+$stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 $stmt->execute();
 $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -39,6 +57,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <th scope="col">RFC</th>
             <th scope="col">Tipo</th>
             <th scope="col">Encomienda</th>
+            <th scope="col">Status</th>
         </tr>
     </thead>
     <tbody class="small">
@@ -46,7 +65,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <?php foreach ($clientes as $cliente): ?>
                 <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_clientes.php?id=<?php echo $cliente['id01clientes_exportadores']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 chkCliente" type="checkbox" value="<?php echo $cliente['id01clientes_exportadores']; ?>" aria-label="Checkbox for following text input">
                     </th>
                     <td><?php echo $cliente['id01clientes_exportadores']; ?></td>
                     <td>
@@ -82,6 +101,13 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                             (($cliente['statusEcomienda_exportador'] == 2) ? 'NO' :
                                 (($cliente['statusEcomienda_exportador'] == 3) ? 'SI, CON VIGENCIA' : 'Otro'));
                         ?>
+                    </td>
+                    <td>
+                        <?php if ($cliente['status_exportador'] == 1): ?>
+                            <span style="color: rgba(0, 128, 0, 0.6);">ACTIVO</span>  <!-- verde con opacidad -->
+                        <?php elseif ($cliente['status_exportador'] == 0): ?>
+                            <span style="color: rgba(255, 0, 0, 0.6);">INACTIVO</span> <!-- rojo con opacidad -->
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

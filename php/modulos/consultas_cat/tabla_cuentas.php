@@ -8,12 +8,29 @@ $registrosPorPagina = 20;
 $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para la consulta
 
-// Consulta para obtener las cuentas (solo 20 registros por página)
-$stmt = $con->prepare("SELECT Id, Numero, Nombre, Saldo FROM cuentas ORDER BY Numero LIMIT :inicio, :registrosPorPagina");
-$stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindParam(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
+$filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
+$filtroLike = '%' . $filtro . '%';
+
+$sql = "SELECT Id, Numero, Nombre, Saldo FROM cuentas";
+
+if ($filtro !== '') {
+    $sql .= " WHERE Nombre LIKE :filtro";
+}
+
+$sql .= " ORDER BY Numero LIMIT :inicio, :registrosPorPagina";
+
+$stmt = $con->prepare($sql);
+
+if ($filtro !== '') {
+    $stmt->bindValue(':filtro', $filtroLike, PDO::PARAM_STR);
+}
+
+$stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
+$stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
+
 $stmt->execute();
 $cuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Consulta para contar el total de registros
 $stmtTotal = $con->prepare("SELECT COUNT(*) FROM cuentas");
