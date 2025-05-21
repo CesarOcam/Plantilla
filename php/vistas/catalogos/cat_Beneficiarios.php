@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Catálogo Beneficiarios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
@@ -26,6 +26,16 @@
                             <input id="filtroInput" type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar beneficiario por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                         </div>
                         <div class="col-12 col-sm-2 d-flex align-items-center justify-content-start justify-content-sm-end mt-2 mt-sm-0">
+                            <!-- Botón solo icono sin borde ni fondo, más a la izquierda -->
+                            <button id="btnDesactivar" type="button" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Desactivar" 
+                                    style="border: none; background: transparent; padding: 0; font-size: 1.5rem; color:rgba(161, 155, 155, 0.62); cursor: pointer; display: none;" 
+                                    class="me-5 mt-2">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                            
                             <a href="/portal_web/proyecto_2/php/vistas/formularios/form_beneficiarios.php" style="text-decoration: none; color: black;"><h6><i class="fas fa-plus mt-2"></i></h6></a>
                             <span class="mx-2"><h5>|</h5></span>
 
@@ -51,6 +61,8 @@
         </div>
     </div>
 
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   // Obtener el interruptor
   const modeToggle = document.getElementById('modeToggle');
@@ -79,7 +91,7 @@
     xhr.send();
     });
 </script>
-
+<script src="../../../js/desactivar_Beneficiarios.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
 </body>

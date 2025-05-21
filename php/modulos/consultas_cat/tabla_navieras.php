@@ -11,10 +11,10 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina;
 $filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
 $filtroLike = '%' . $filtro . '%';
 
-$sql = "SELECT Id, Nombre FROM navieras";
+$sql = "SELECT Id, Nombre FROM navieras WHERE Activo = 1";
 
 if ($filtro !== '') {
-    $sql .= " WHERE Nombre LIKE :filtro";
+    $sql .= " AND Nombre LIKE :filtro";
 }
 
 $sql .= " LIMIT :inicio, :registrosPorPagina";
@@ -56,7 +56,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <?php foreach ($navieras as $row): ?>
                 <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_navieras.php?id=<?php echo $row['Id']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 chkNaviera" type="checkbox" value="<?php echo $row['Id']; ?>" aria-label="Checkbox for following text input">
                     </th>
                     <td><?php echo $row['Id']; ?></td>
                     <td><?php echo $row['Nombre']; ?></td>

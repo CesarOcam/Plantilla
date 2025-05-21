@@ -7,7 +7,7 @@ $stmt = $con->prepare("
     SELECT 
         b.Nombre, b.Activo, b.FechaAlta, b.UsuarioAlta, 
         u.Nombre AS nombre_usuario_alta,
-        b.Pais, p.pais_clave
+        b.Pais, p.pais_clave, p.id2204clave_pais
     FROM 
         buques b
     LEFT JOIN 
@@ -17,9 +17,18 @@ $stmt = $con->prepare("
     WHERE 
         b.Id = :id
 ");
+
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $buque = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Consulta para obtener los países
+$stmt = $con->prepare("SELECT id2204clave_pais, CONCAT(clave_SAAI_M3, ' - ', pais_clave) AS nombre_pais 
+                       FROM 2204claves_paises 
+                       ORDER BY clave_SAAI_M3, pais_clave");
+$stmt->execute();
+$paises = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$paisActual = $buque['id2204clave_pais'] ?? '';
 
 ?>
 <!DOCTYPE html>
@@ -61,7 +70,7 @@ $buque = $stmt->fetch(PDO::FETCH_ASSOC);
                     <div class="row">
                             <div class="col-10 col-sm-1 mt-4">
                                 <label for="Id" class="form-label text-muted small">ID:</label>
-                                <input id="Id" name="Id" type="text"
+                                <input id="Id" name="id_buque" type="text"
                                     class="form-control input-transparent border-0 border-bottom rounded-0"
                                     style="background-color: transparent;" value="<?php echo $id; ?>"
                                     readonly>
@@ -71,15 +80,22 @@ $buque = $stmt->fetch(PDO::FETCH_ASSOC);
                                 <input id="nombre" name="nombre" type="text"
                                     class="form-control input-transparent border-0 border-bottom rounded-0"
                                     style="background-color: transparent;" value="<?php echo $buque['Nombre']; ?>"
-                                    readonly>
+                                    >
                             </div>
-                           <div class="col-10 col-sm-4 mt-4">
-                                <label for="pais" class="form-label text-muted small">PAÍS :</label>
-                                <input id="pais" name="pais" type="text"
-                                    class="form-control input-transparent border-0 border-bottom rounded-0"
-                                    style="background-color: transparent;" value="<?php echo $buque['pais_clave']; ?>"
-                                    readonly>
+                            <div class="col-10 col-sm-4 mt-4">
+                                <label for="pais" class="form-label text-muted small">PAÍS:</label>
+                                <select id="pais" name="pais" class="form-control rounded-0 border-0 border-bottom text-muted select2"
+                                    style="background-color: transparent;" aria-label="Filtrar por país" aria-describedby="basic-addon1">
+                                    <option value="" disabled <?php echo empty($buque['id2204clave_pais']) ? 'selected' : ''; ?>>País</option>
+                                    <?php foreach ($paises as $pais): ?>
+                                        <option value="<?php echo $pais['id2204clave_pais']; ?>"
+                                            <?php echo ($buque['id2204clave_pais'] == $pais['id2204clave_pais']) ? 'selected' : ''; ?>>
+                                            <?php echo $pais['nombre_pais']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
+
                            <div class="col-10 col-sm-2 mt-4">
                                 <label for="usuarioAlta" class="form-label text-muted small">USUARIO ALTA :</label>
                                 <input id="usuarioAlta" name="usuarioAlta" type="text"
@@ -94,12 +110,15 @@ $buque = $stmt->fetch(PDO::FETCH_ASSOC);
                                     style="background-color: transparent;" value="<?php echo $buque['FechaAlta']; ?>"
                                     readonly>
                             </div>
-                        <div class="row justify-content-end mt-5">
+                                                <div class="row justify-content-end mt-5">
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
                                 <button type="button" class="btn btn-outline-danger rounded-0" onclick="window.location.href='../../vistas/catalogos/cat_Buques.php'">Salir</button>
                             </div>
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                                <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Modificar</button>
+                                <button type="button" id="btn_editar" class="btn btn-secondary rounded-0">Modificar</button>
+                            </div>
+                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                <button type="submit" class="btn btn-success rounded-0" id="btn_guardar" style="display:none;">Guardar</button>
                             </div>
                         </div>
 
@@ -110,6 +129,13 @@ $buque = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-
+<script src="../../../js/actualizar/actualizar_Buques.js"></script>
+<script>
+    $(document).ready(function() {
+    $('.select2').select2({
+        width: '100%' // Asegura que se vea bien
+    });
+});
+</script>
 </body>
 </html>

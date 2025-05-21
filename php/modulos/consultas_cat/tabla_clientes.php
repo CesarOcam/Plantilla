@@ -16,7 +16,7 @@ $sql = "SELECT id01clientes_exportadores, tipoClienteExportador, nombreCorto_exp
         FROM 01clientes_exportadores WHERE status_exportador = 1";
 
 if ($filtro !== '') {
-    $sql .= " WHERE nombreCorto_exportador LIKE :filtro";
+    $sql .= " AND nombreCorto_exportador LIKE :filtro"; 
 }
 
 $sql .= " LIMIT :inicio, :registrosPorPagina";

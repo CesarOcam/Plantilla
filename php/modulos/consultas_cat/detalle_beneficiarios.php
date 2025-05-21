@@ -51,44 +51,39 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Buques" method="POST">
+        <form id="form_Beneficiarios" method="POST">
             <div class="card-header formulario_buques">
                 <h5>Información de Beneficiario</h5>
                 <div class="row">
                     <div class="col-10 col-sm-1 mt-4">
-                        <label for="Id" class="form-label text-muted small">ID:</label>
-                        <input id="Id" name="Id" type="text"
+                        <label for="id_beneficiario" class="form-label text-muted small">ID:</label>
+                        <input id="id_beneficiario" name="id_beneficiario" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $id; ?>" readonly>
                     </div>
                     <div class="col-10 col-sm-5 mt-4">
-                        <label for="nombre" class="form-label text-muted small">TIPO :</label>
+                        <label for="nombre" class="form-label text-muted small">NOMBRE :</label>
                         <input id="nombre" name="nombre" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $beneficiario['Nombre']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $beneficiario['Nombre']; ?>">
                     </div>
 
                     <div class="col-10 col-sm-4 mt-4">
                         <label for="tipo" class="form-label text-muted small">TIPO :</label>
-                        <input id="tipo" name="tipo" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php
-                            if ($beneficiario['Tipo'] == 1) {
-                                echo 'PHCA';
-                            } elseif ($beneficiario['Tipo'] == 2) {
-                                echo 'GASTOS GENERALES';
-                            } else {
-                                echo ''; // o algún valor por defecto
-                            }
-                            ?>" readonly>
+                        <select id="tipo" name="tipo"
+                            class="form-control input-transparent border-0 border-bottom rounded-0 text-muted"
+                            style="background-color: transparent;" >
+                            <option value="1" <?php echo ($beneficiario['Tipo'] == 1) ? 'selected' : ''; ?>>PHCA</option>
+                            <option value="2" <?php echo ($beneficiario['Tipo'] == 2) ? 'selected' : ''; ?>>GASTOS
+                                GENERALES</option>
+                        </select>
                     </div>
+
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="rfc" class="form-label text-muted small">RFC :</label>
                         <input id="rfc" name="rfc" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $beneficiario['Rfc']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $beneficiario['Rfc']; ?>">
                     </div>
                 </div>
                 <div class="row">
@@ -96,26 +91,27 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                         <label for="usuarioAlta" class="form-label text-muted small">USUARIO ALTA :</label>
                         <input id="usuarioAlta" name="usuarioAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $beneficiario['NombreUsuarioAlta']; ?>"
-                            readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $beneficiario['NombreUsuarioAlta']; ?>" readonly>
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="fechaAlta" class="form-label text-muted small">FECHA ALTA :</label>
                         <input id="fechaAlta" name="fechaAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $beneficiario['FechaAlta']; ?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $beneficiario['FechaAlta']; ?>"
+                            readonly>
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="status" class="form-label text-muted small">STATUS :</label>
                         <input id="status" name="status" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php
-                             if($beneficiario['Activo'] == 1) {
+                            if ($beneficiario['Activo'] == 1) {
                                 echo 'ACTIVO';
-                             }else{
+                            } else {
                                 echo 'INACTIVO';
-                             }
-                             ?>" readonly>
+                            }
+                            ?>" readnly>
                     </div>
                     <div class="row justify-content-end mt-5">
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
@@ -123,8 +119,11 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                                 onclick="window.location.href='../../vistas/catalogos/cat_Beneficiarios.php'">Salir</button>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="submit" class="btn btn-secondary rounded-0"
-                                id="btn_guardar">Modificar</button>
+                            <button type="button" id="btn_editar" class="btn btn-secondary rounded-0">Modificar</button>
+                        </div>
+                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                            <button type="submit" class="btn btn-success rounded-0" id="btn_guardar"
+                                style="display:none;">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -136,6 +135,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>
+
+<script src="../../../js/actualizar/actualizar_Beneficiarios.js"></script>
 
 </body>
 

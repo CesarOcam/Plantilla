@@ -11,10 +11,10 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina;
 $filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
 $filtroLike = '%' . $filtro . '%';
 
-$sql = "SELECT id_consolidadora, denominacion_consolidadora FROM consolidadoras";
+$sql = "SELECT id_consolidadora, denominacion_consolidadora FROM consolidadoras WHERE status_consolidadora = 1";
 
 if ($filtro !== '') {
-    $sql .= " WHERE denominacion_consolidadora LIKE :filtro";
+    $sql .= " AND denominacion_consolidadora LIKE :filtro";
 }
 
 $sql .= " LIMIT :inicio, :registrosPorPagina";
@@ -56,7 +56,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <?php foreach ($consolidadora as $row): ?>
                 <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_consolidadoras.php?id=<?php echo $row['id_consolidadora']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 chkConsolidadora" type="checkbox" value="<?php echo $row['id_consolidadora']; ?>" aria-label="Checkbox for following text input">
                     </th>
                     <td><?php echo $row['id_consolidadora']; ?></td>
                     <td><?php echo $row['denominacion_consolidadora']; ?></td>

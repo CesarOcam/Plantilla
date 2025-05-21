@@ -15,6 +15,13 @@ $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $recinto = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
+                       FROM 2201aduanas 
+                       WHERE nombre_corto_aduana IS NOT NULL 
+                       AND TRIM(nombre_corto_aduana) != '' ORDER BY nombre_corto_aduana");
+$stmt->execute();
+$aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,44 +58,61 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Buques" method="POST">
-            <div class="card-header formulario_buques">
-                <h5>Información de Beneficiario</h5>
+        <form id="form_Recintos" method="POST">
+            <div class="card-header formulario_recintos">
+                <h5>Información de Recinto</h5>
                 <div class="row">
                     <div class="col-10 col-sm-1 mt-4">
-                        <label for="Id" class="form-label text-muted small">ID:</label>
-                        <input id="Id" name="Id" type="text"
+                        <label for="id_recinto" class="form-label text-muted small">ID:</label>
+                        <input id="id_recinto" name="id_recinto" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $id; ?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $id; ?>">
                     </div>
                     <div class="col-10 col-sm-4 mt-4">
                         <label for="nombre" class="form-label text-muted small">NOMBRE :</label>
                         <input id="nombre" name="nombre" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $recinto['nombre_recinto']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $recinto['nombre_recinto']; ?>">
                     </div>
 
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="tipo" class="form-label text-muted small">ADUANA :</label>
-                        <input id="aduana" name="aduana" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $recinto['aduana_recintos']; ?>"
-                            readonly>
+                        <select id="aduana-select" name="aduana"
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
+                            style="background-color: transparent;" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1">
+
+                            <!-- Mostrar como seleccionada la aduana del recinto -->
+                            <?php if (!empty($recinto['aduana_recintos'])): ?>
+                                <option value="<?php echo htmlspecialchars($recinto['aduana_recintos']); ?>" selected>
+                                    <?php echo htmlspecialchars($recinto['aduana_recintos']); ?>
+                                </option>
+                            <?php else: ?>
+                                <option value="" selected disabled>Aduana</option>
+                            <?php endif; ?>
+
+                            <!-- Mostrar el resto de las aduanas, sin duplicar la ya seleccionada -->
+                            <?php foreach ($aduana as $a): ?>
+                                <?php if ($a['nombre_corto_aduana'] !== $recinto['aduana_recintos']): ?>
+                                    <option value="<?php echo htmlspecialchars($a['nombre_corto_aduana']); ?>">
+                                        <?php echo htmlspecialchars($a['nombre_corto_aduana']); ?>
+                                    </option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </select>
+
                     </div>
                     <div class="col-10 col-sm-1 mt-4">
-                        <label for="rfc" class="form-label text-muted small">CURP :</label>
-                        <input id="rfc" name="rfc" type="text"
+                        <label for="curp" class="form-label text-muted small">CURP :</label>
+                        <input id="curp" name="curp" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $recinto['curp_recintos']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $recinto['curp_recintos']; ?>">
                     </div>
                     <div class="col-10 col-sm-4 mt-4">
-                        <label for="rfc" class="form-label text-muted small">RECINTO :</label>
-                        <input id="rfc" name="rfc" type="text"
+                        <label for="recinto" class="form-label text-muted small">RECINTO :</label>
+                        <input id="recinto" name="recinto" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $recinto['inmueble_recintos']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $recinto['inmueble_recintos']; ?>">
                     </div>
                 </div>
                 <div class="row">
@@ -124,8 +148,11 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                                 onclick="window.location.href='../../vistas/catalogos/cat_Recintos.php'">Salir</button>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="submit" class="btn btn-secondary rounded-0"
-                                id="btn_editar">Modificar</button>
+                            <button type="button" id="btn_editar" class="btn btn-secondary rounded-0">Modificar</button>
+                        </div>
+                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                            <button type="submit" class="btn btn-success rounded-0" id="btn_guardar"
+                                style="display:none;">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -134,10 +161,18 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
     </div>
 </div>
 
+<script src="../../../js/actualizar/actualizar_Recintos.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-    crossorigin="anonymous"></script>
-
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
+    </script>
+<script>
+    $(document).ready(function () {
+        $('#aduana-select').select2({
+            width: '100%',
+            placeholder: "Seleccione una aduana"
+        });
+    });
+</script>
 </body>
 
 </html>

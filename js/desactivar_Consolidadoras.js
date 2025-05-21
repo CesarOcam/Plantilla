@@ -6,20 +6,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     const btnDesactivar = document.getElementById('btnDesactivar');
-    const checkboxes = document.querySelectorAll('.chkCliente');
+    const checkboxes = document.querySelectorAll('.chkConsolidadora');
 
-    // Función para actualizar visibilidad del botón
+    // Mostrar/ocultar botón según selección
     function actualizarBoton() {
         const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
         btnDesactivar.style.display = anyChecked ? 'inline-block' : 'none';
     }
 
-    // Agregar listener a cada checkbox
+    // Escuchar cambios
     checkboxes.forEach(cb => {
         cb.addEventListener('change', actualizarBoton);
     });
 
-    // Evento click botón desactivar
+    // Botón de desactivar
     btnDesactivar.addEventListener('click', () => {
         const seleccionados = Array.from(checkboxes)
             .filter(cb => cb.checked)
@@ -29,8 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Confirmar con SweetAlert
         Swal.fire({
-            title: `¿Desactivar ${seleccionados.length} cliente(s)?`,
-            text: 'Esta acción no se puede deshacer.',
+            title: `¿Desactivar ${seleccionados.length} consolidadoras(s)?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -39,36 +38,38 @@ document.addEventListener('DOMContentLoaded', function () {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Enviar ids vía AJAX a PHP para desactivar
-                fetch('/portal_web/proyecto_2/php/modulos/desactivar/desactivar_clientes.php', {
+                // Hacer petición al servidor
+                fetch('/portal_web/proyecto_2/php/modulos/desactivar/desactivar_consolidadoras.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ids: seleccionados })
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                title: 'Desactivado',
-                                text: 'Los clientes fueron desactivados correctamente.',
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            }).then(() => location.reload());
-                        } else {
-                            Swal.fire({
-                                title: 'Error',
-                                text: 'Ocurrió un error al desactivar los clientes.',
-                                icon: 'error'
-                            });
-                        }
-                    })
-                    .catch(() => {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
                         Swal.fire({
-                            title: 'Error de conexión',
-                            text: 'No se pudo comunicar con el servidor.',
+                            title: 'Desactivado',
+                            text: 'Consolidadoras desactivados correctamente.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al desactivar las consolidadoras.',
                             icon: 'error'
                         });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({
+                        title: 'Error de conexión',
+                        text: 'No se pudo comunicar con el servidor.',
+                        icon: 'error'
                     });
+                });
             }
         });
     });

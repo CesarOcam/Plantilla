@@ -77,7 +77,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Buques" method="POST">
+        <form id="form_Aduanas" method="POST">
             <div class="card-header formulario_buques">
                 <h5>Información de Beneficiario</h5>
                 <div class="row">
@@ -91,53 +91,48 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                         <label for="nombre" class="form-label text-muted small">NOMBRE CORTO :</label>
                         <input id="nombre" name="nombre" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['nombre_corto_aduana']; ?>"
-                            readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $aduana['nombre_corto_aduana']; ?>">
                     </div>
 
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="clave" class="form-label text-muted small">CLAVE :</label>
                         <input id="clave" name="clave" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['aduana_aduana']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $aduana['aduana_aduana']; ?>">
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="seccion" class="form-label text-muted small">CLAVE SECCION :</label>
                         <input id="seccion" name="seccion" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['seccion_aduana']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $aduana['seccion_aduana']; ?>">
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="denominacion" class="form-label text-muted small">DENOMINACION :</label>
                         <input id="denominacion" name="denominacion" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['denominacion_aduana']; ?>"
-                            readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $aduana['denominacion_aduana']; ?>">
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="prefijo" class="form-label text-muted small">PREFIJO :</label>
                         <input id="prefijo" name="prefijo" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['prefix_aduana']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $aduana['prefix_aduana']; ?>">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="tipo" class="form-label text-muted small">TIPO ADUANA :</label>
-                        <input id="tipo" name="tipo" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php 
-                            if ($aduana['tipoAduana'] == 'M'){
-                                echo 'MARITIMA';
-                            } elseif ($aduana['tipoAduana'] == 'A'){
-                                echo 'AEREA';
-                            }else{
-                                echo 'TERRESTRE';
-                            }
-                            ?>" readonly>
+                        <select id="tipo" name="tipo"
+                            class="form-control input-transparent border-0 border-bottom rounded-0 text-muted"
+                            style="background-color: transparent;">
+                            <option value="M" <?php echo ($aduana['tipoAduana'] == 'M') ? 'selected' : ''; ?>>MARÍTIMA
+                            </option>
+                            <option value="A" <?php echo ($aduana['tipoAduana'] == 'A') ? 'selected' : ''; ?>>AÉREA
+                            </option>
+                            <option value="T" <?php echo ($aduana['tipoAduana'] != 'M' && $aduana['tipoAduana'] != 'A') ? 'selected' : ''; ?>>TERRESTRE</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
@@ -145,49 +140,60 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                         <label for="subcuenta_log" class="form-label text-muted small">SUBCUENTA LOGÍSTICO :</label>
                         <input id="subcuenta_log" name="subcuenta_log" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['SubcuentaClientesLogId']; ?>" readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $aduana['SubcuentaClientesLogId']; ?>">
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="subcuenta_exp" class="form-label text-muted small">SUBCUENTA LOGÍSTICO :</label>
                         <input id="subcuenta_exp" name="subcuenta_exp" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['SubcuentaClientesExpId']; ?>" readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $aduana['SubcuentaClientesExpId']; ?>">
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
-                        <label for="subcuenta_ab_log" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO LOGÍSTICO :</label>
+                        <label for="subcuenta_ab_log" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO
+                            LOGÍSTICO :</label>
                         <input id="subcuenta_ab_log" name="subcuenta_ab_log" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['SubcuentaClientesExpId']; ?>" readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $aduana['SubcuentaClientesExpId']; ?>">
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
-                        <label for="subcuenta_ab_exp" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO EXPORTADOR :</label>
+                        <label for="subcuenta_ab_exp" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO
+                            EXPORTADOR :</label>
                         <input id="subcuenta_ab_exp" name="subcuenta_ab_exp" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['SubcuentaClientesExpId']; ?>" readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $aduana['SubcuentaClientesExpId']; ?>">
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
-                        <label for="sub_cargo_log" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO EXPORTADOR :</label>
+                        <label for="sub_cargo_log" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO EXPORTADOR
+                            :</label>
                         <input id="sub_cargo_log" name="sub_cargo_log" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['SubcuentaCuotasCargoLogId']; ?>" readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $aduana['SubcuentaCuotasCargoLogId']; ?>">
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
-                        <label for="sub_cargo_exp" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO EXPORTADOR :</label>
+                        <label for="sub_cargo_exp" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO EXPORTADOR
+                            :</label>
                         <input id="sub_cargo_exp" name="sub_cargo_exp" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $aduana['SubcuentaCuotasCargoExpId']; ?>" readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $aduana['SubcuentaCuotasCargoExpId']; ?>">
                     </div>
                 </div>
-                <div class="row">
-                    <div class="row justify-content-end mt-5">
-                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="button" class="btn btn-outline-danger rounded-0"
-                                onclick="window.location.href='../../vistas/catalogos/cat_Aduanas.php'">Salir</button>
-                        </div>
-                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="submit" class="btn btn-secondary rounded-0"
-                                id="btn_guardar">Modificar</button>
-                        </div>
+                <div class="row justify-content-end mt-5">
+                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                        <button type="button" class="btn btn-outline-danger rounded-0"
+                            onclick="window.location.href='../../vistas/catalogos/cat_Aduanas.php'">Salir</button>
+                    </div>
+                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                        <button type="button" id="btn_editar" class="btn btn-secondary rounded-0">Modificar</button>
+                    </div>
+                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                        <button type="submit" class="btn btn-success rounded-0" id="btn_guardar"
+                            style="display:none;">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -195,6 +201,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
     </div>
 </div>
 
+<script src="../../../js/actualizar/actualizar_Aduanas.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

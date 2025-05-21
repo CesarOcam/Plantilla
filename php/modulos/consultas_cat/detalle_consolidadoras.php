@@ -51,13 +51,13 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Buques" method="POST">
+        <form id="form_Consolidadoras" method="POST">
             <div class="card-header formulario_buques">
                 <h5>Información de Consolidadora</h5>
                 <div class="row">
                     <div class="col-10 col-sm-2 mt-4">
-                        <label for="Id" class="form-label text-muted small">ID:</label>
-                        <input id="Id" name="Id" type="text"
+                        <label for="id_consolidadora" class="form-label text-muted small">ID:</label>
+                        <input id="id_consolidadora" name="id_consolidadora" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $id; ?>" readonly>
                     </div>
@@ -66,7 +66,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                         <input id="nombre" name="nombre" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $consolidadora['denominacion_consolidadora']; ?>"
-                            readonly>
+                            >
                     </div>
                 </div>
                 <div class="row">
@@ -96,15 +96,16 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                              ?>" readonly>
                     </div>
                     <div class="row justify-content-end mt-5">
-                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="button" class="btn btn-outline-danger rounded-0"
-                                onclick="window.location.href='../../vistas/catalogos/cat_Consolidadoras.php'">Salir</button>
+                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                <button type="button" class="btn btn-outline-danger rounded-0" onclick="window.location.href='../../vistas/catalogos/cat_Clientes.php'">Salir</button>
+                            </div>
+                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                <button type="button" id="btn_editar" class="btn btn-secondary rounded-0">Modificar</button>
+                            </div>
+                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                <button type="submit" class="btn btn-success rounded-0" id="btn_guardar" style="display:none;">Guardar</button>
+                            </div>
                         </div>
-                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="submit" class="btn btn-secondary rounded-0"
-                                id="btn_guardar">Modificar</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </form>
@@ -113,7 +114,10 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-    crossorigin="anonymous"></script>
+    crossorigin="anonymous">
+</script>
+    
+<script src="../../../js/actualizar/actualizar_Consolidadoras.js"></script>
 
 </body>
 

@@ -11,10 +11,10 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina;
 $filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
 $filtroLike = '%' . $filtro . '%';
 
-$sql = "SELECT Id, Nombre, Tipo, Rfc FROM beneficiarios";
+$sql = "SELECT Id, Nombre, Tipo, Rfc FROM beneficiarios WHERE Activo = 1";
 
 if ($filtro !== '') {
-    $sql .= " WHERE Nombre LIKE :filtro";
+    $sql .= " AND Nombre LIKE :filtro";
 }
 
 $sql .= " ORDER BY Id ASC LIMIT :inicio, :registrosPorPagina";
@@ -60,7 +60,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <?php foreach ($beneficiarios as $beneficiario): ?>
                 <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_beneficiarios.php?id=<?php echo $beneficiario['Id']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 chkBeneficiario" type="checkbox" value="<?php echo $beneficiario['Id']; ?>" aria-label="Checkbox for following text input">
                     </th>
                     <td><?php echo $beneficiario['Id']; ?></td>
                     <td><?php echo $beneficiario['Nombre']; ?></td>

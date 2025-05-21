@@ -11,10 +11,10 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina;
 $filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
 $filtroLike = '%' . $filtro . '%';
 
-$sql = "SELECT id2221_recintos, inmueble_recintos, aduana_recintos FROM 2221_recintos";
+$sql = "SELECT id2221_recintos, inmueble_recintos, aduana_recintos FROM 2221_recintos WHERE status_recintos = 1";
 
 if ($filtro !== '') {
-    $sql .= " WHERE inmueble_recintos LIKE :filtro";
+    $sql .= " AND inmueble_recintos LIKE :filtro";
 }
 
 $sql .= " LIMIT :inicio, :registrosPorPagina";
@@ -50,7 +50,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
         <tr>
             <th scope="col"></th>
             <th scope="col">Id</th>
-            <th scope="col">Nombre</th>
+            <th scope="col">Inmueble</th>
             <th scope="col">Aduana</th>
         </tr>
     </thead>
@@ -59,7 +59,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <?php foreach ($recintos as $recinto): ?>
                 <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_recintos.php?id=<?php echo $recinto['id2221_recintos']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 chkRecinto" type="checkbox" value="<?php echo $recinto['id2221_recintos']; ?>" aria-label="Checkbox for following text input">
                     </th>
                     <td><?php echo $recinto['id2221_recintos']; ?></td>
                     <td><?php echo $recinto['inmueble_recintos']; ?></td>
