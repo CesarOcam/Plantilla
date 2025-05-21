@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 // Enviar ids vía AJAX a PHP para desactivar
-                fetch('/portal_web/proyecto_2/php/modulos/desactivar/desactivar_clientes.php', {
+                fetch('/portal_web/Contabilidad/php/modulos/desactivar/desactivar_clientes.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ids: seleccionados })

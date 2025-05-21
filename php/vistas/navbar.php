@@ -1,8 +1,8 @@
 
       <nav class="navbar bg-body-secondary">
         <div class="container-fluid">
-          <a class="navbar-brand m-1" href="/portal_web/proyecto_2/php/vistas/inicio.php">
-            <img src="/portal_web/proyecto_2/img/logo2.png" alt="Logo" class="img-fluid" style="max-width: 40px;">
+          <a class="navbar-brand m-1" href="/portal_web/Contabilidad/php/vistas/inicio.php">
+            <img src="/portal_web/Contabilidad/img/logo2.png" alt="Logo" class="img-fluid" style="max-width: 40px;">
             SISTEMA DE CONTABILIDAD 
           </a>
         </div>
@@ -33,21 +33,21 @@
                 <li class="nav-item position-relative">
                     <a class="nav-link dropdown-toggle" href="cat" role="button" data-bs-toggle="dropdown" aria-expanded="true">Catálogos</a>
                     <ul class="dropdown-menu border shadow">
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/catalogos/cat_Clientes.php">Clientes</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/catalogos/cat_Buques.php">Buques</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/catalogos/cat_Beneficiarios.php">Beneficiarios</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/catalogos/cat_Consolidadoras.php">Consolidadoras</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/catalogos/cat_Cuentas.php">Cuentas Contables</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/catalogos/cat_Navieras.php">Navieras</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/catalogos/cat_Recintos.php">Recintos</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Clientes.php">Clientes</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Buques.php">Buques</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Beneficiarios.php">Beneficiarios</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Consolidadoras.php">Consolidadoras</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Cuentas.php">Cuentas Contables</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Navieras.php">Navieras</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Recintos.php">Recintos</a></li>
                       <hr>
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/catalogos/cat_Aduanas.php">Aduanas</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Aduanas.php">Aduanas</a></li>
                     </ul>
                   </li>
                   <li class="nav-item position-relative">
                     <a class="nav-link dropdown-toggle" href="cons" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
                     <ul class="dropdown-menu border shadow">
-                      <li><a class="dropdown-item small" href="/portal_web/proyecto_2/php/vistas/consultas/consulta_poliza.php">Polizas</a></li>
+                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/consultas/consulta_poliza.php">Polizas</a></li>
                       <li><a class="dropdown-item small" href="seg">Referencias</a></li>
                       <li><a class="dropdown-item small" href="seg">Kardex</a></li>
                     </ul>

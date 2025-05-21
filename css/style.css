@@ -17,12 +17,6 @@ body {
     color: #efefef;
 }
 
-  .navbar-brand:hover {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    text-decoration: none !important;
-  }
-
 .shadow-bottom {
     box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);
   }
@@ -213,20 +207,29 @@ body {
     opacity: 0.7 !important;  /* Forzar la opacidad */
 }
 
-/*-------------------------DISEÑOS DE LA TABLA DINAMICA ---------------------------------------*/
-
+/*-------------------------DISEÑOS DE LA TABLA DINAMICA POLIZA FORMULARIO ---------------------------------------*/
 
 #tabla-partidas thead {
     text-align: center;
-    background-color: rgb(52, 62, 83) !important;
+    background-color: rgba(52, 62, 83, 0.829) !important;
     color: white;
     border-bottom: 1px solid #dee2e6;
 }
 
 #tabla-partidas thead th {
     color: white !important;
+    vertical-align: middle;
+    padding: 0.5rem;
 }
 
+/* Redondeo de esquinas superiores */
+#tabla-partidas thead th:first-child {
+    border-top-left-radius: 0.5rem;
+}
+
+#tabla-partidas thead th:last-child {
+    border-top-right-radius: 0.5rem;
+}
 
 #tabla-partidas th,
 #tabla-partidas td {
@@ -250,6 +253,7 @@ body {
     outline: none;
     border-color: #6c757d;
 }
+
 
 #tabla-partidas tfoot input {
     font-weight: bold;
@@ -338,6 +342,118 @@ body {
     line-height: 50px !important;  /* para centrar texto verticalmente */
     padding: 0 10px !important;    /* espaciado horizontal */
     border-radius: 0;              /* opcional, para que combine con tu estilo */
+}
+
+
+/*-------------------------DISEÑOS DE LA TABLA DINAMICA POLIZA DETALLE ---------------------------------------*/
+.tabla-partidas-estilo {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.tabla-partidas-estilo thead {
+    text-align: center;
+    background-color: rgb(52, 62, 83);
+    color: white;
+}
+
+.tabla-partidas-estilo thead th {
+    color: white;
+    vertical-align: middle;
+    padding: 0.5rem;
+    border: none; /* Quita bordes solo del head */
+}
+
+/* Redondeo limpio de esquinas superiores */
+.tabla-partidas-estilo thead th:first-child {
+    border-top-left-radius: 0.5rem;
+}
+
+.tabla-partidas-estilo thead th:last-child {
+    border-top-right-radius: 0.5rem;
+}
+
+.tabla-partidas-estilo tbody td {
+    vertical-align: middle;
+    padding: 0.5rem;
+    border-bottom: 1px solid #dee2e6; /* Se conserva la línea en el cuerpo */
+}
+
+.tabla-partidas-estilo input,
+.tabla-partidas-estilo select {
+    border: none;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.tabla-partidas-estilo input:focus,
+.tabla-partidas-estilo select:focus {
+    box-shadow: none;
+    outline: none;
+    border-color: #6c757d;
+}
+
+.tabla-partidas-estilo .btn-outline-primary {
+    border-color: #444;
+    color: #444;
+    background-color: transparent;
+    transition: 0.2s ease;
+}
+
+.tabla-partidas-estilo .btn-outline-primary:hover {
+    background-color: #444;
+    color: white;
+}
+
+.tabla-partidas-estilo .btn-eliminar {
+    background-color: transparent;
+    border: none;
+    color: #aa1e1e;
+    padding: 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.tabla-partidas-estilo .btn-eliminar:hover {
+    color: #d9534f;
+}
+
+.tabla-partidas-estilo .btn-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Anchuras personalizadas */
+.tabla-partidas-estilo thead th:nth-child(1),
+.tabla-partidas-estilo tbody td:nth-child(1) {
+    width: 30%;
+    min-width: 400px;
+}
+
+.tabla-partidas-estilo thead th:nth-child(2),
+.tabla-partidas-estilo tbody td:nth-child(2),
+.tabla-partidas-estilo thead th:nth-child(3),
+.tabla-partidas-estilo tbody td:nth-child(3) {
+    width: 7%;
+    min-width: 70px;
+    max-width: 80px;
+    text-align: right;
+}
+
+.tabla-partidas-estilo thead th:nth-child(4),
+.tabla-partidas-estilo tbody td:nth-child(4) {
+    width: 30%;
+    min-width: 400px;
+}
+
+.tabla-partidas-estilo thead th:nth-child(5),
+.tabla-partidas-estilo tbody td:nth-child(5) {
+    width: 15%;
+    min-width: 200px;
 }
 
 

@@ -29,7 +29,7 @@ $(document).ready(function() {
                 if (response.trim() === "Poliza guardada correctamente.") {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Poliza guardada correctamente',
+                        title: 'Póliza guardada correctamente',
                         //text: 'Cliente guardado correctamente.',
                         confirmButtonText: 'Aceptar'
                     });

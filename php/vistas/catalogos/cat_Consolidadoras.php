@@ -14,7 +14,7 @@
 </head>
 
     <?php   
-        include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
+        include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
     ?>
 
     <div class="container-fluid">
@@ -22,6 +22,9 @@
             <div class="card-header">
                 <div class="d-flex flex-column mb-3">
                     <div class="row w-100">
+                        <h5 class="mt-4 mb-1">
+                            <i class="fas fa-truck-loading me-2 text-secondary"></i> Catálogo Consolidadoras
+                        </h5>
                         <div class="col-12 col-sm-10 d-flex align-items-center">
                             <input id="filtroInput" type="text" class="form-control w-100 rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="Filtrar consolidadora por nombre" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                         </div> 
@@ -35,7 +38,7 @@
                                     class="me-5 mt-2">
                                 <i class="fas fa-ban"></i>
                             </button>
-                            <a href="/portal_web/proyecto_2/php/vistas/formularios/form_consolidadoras.php" style="text-decoration: none; color: black;"><h6><i class="fas fa-plus mt-2"></i></h6></a>
+                            <a href="/portal_web/Contabilidad/php/vistas/formularios/form_consolidadoras.php" style="text-decoration: none; color: black;"><h6><i class="fas fa-plus mt-2"></i></h6></a>
                             <span class="mx-2"><h5>|</h5></span>
 
                             <!-- Interruptor de modo oscuro / claro -->

@@ -3,6 +3,7 @@ include_once(__DIR__ . '/../conexion.php'); // Ajusta el path según sea necesar
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 
+//Consulta para la poliza
 $stmt = $con->prepare("
     SELECT 
         e.Nombre AS EmpresaNombre,
@@ -14,8 +15,8 @@ $stmt = $con->prepare("
         u.Nombre AS UsuarioAlta,
         p.FechaAlta,
         CASE 
-            WHEN p.Activo = 1 THEN 'Activo'
-            ELSE 'Inactivo'
+            WHEN p.Activo = 1 THEN 'ACTIVA'
+            ELSE 'INACTIVA'
         END AS Activo
     FROM polizas p
     LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
@@ -24,10 +25,30 @@ $stmt = $con->prepare("
     WHERE p.Id = :id
 ");
 
-
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $poliza = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+$stmt = $con->prepare("
+    SELECT 
+        p.Partida AS Id,
+        CONCAT(c.Numero, ' - ', c.Nombre) AS SubcuentaNombre,
+        p.Cargo,
+        p.Abono,
+        p.Observaciones,
+        p.FolioArchivo AS Factura
+    FROM partidaspolizas p
+    LEFT JOIN cuentas c ON p.SubcuentaId = c.Id
+    WHERE p.PolizaId = :id
+");
+$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+$stmt->execute();
+$partidas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -42,32 +63,31 @@ $poliza = $stmt->fetch(PDO::FETCH_ASSOC);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- jQuery primero -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- SweetAlert2 después -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.min.css">
-
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Iconos Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
 
     <link rel="stylesheet" href="../../../css/style.css">
     <link rel="stylesheet" href="../../../css/style2.css">
 </head>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
 ?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
         <form id="form_Buques" method="POST">
             <div class="card-header formulario_clientes">
-                <h5>Póliza: <?php echo $poliza['Numero']; ?></h5>
+                    <h5 class="mb-0">Póliza: <?php echo $poliza['Numero']; ?></h5>
                 <div class="row">
                     <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                         <label for="EmpresaId" class="form-label text-muted small">EMPRESA:</label>
@@ -132,10 +152,42 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                             style="background-color: transparent;" value="<?php echo $poliza['Activo']; ?>" readonly>
                     </div>
                 </div>
-
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <table class="table table-bordered table-sm tabla-partidas-estilo" id="tabla-partidas">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Subcuenta</th>
+                                    <th>Cargo</th>
+                                    <th>Abono</th>
+                                    <th>Observaciones</th>
+                                    <th>Factura</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($partidas)): ?>
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Sin subcuentas asociadas</td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($partidas as $fila): ?>
+                                        <tr class="text-center">
+                                            <td><?= htmlspecialchars($fila['SubcuentaNombre']) ?></td>
+                                            <td><?= '$ '.number_format($fila['Cargo'], 2) ?></td>
+                                            <td><?= '$ '.number_format($fila['Abono'], 2) ?></td>
+                                            <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
+                                            <td><?= htmlspecialchars($fila['Factura']) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                        <button type="button" class="btn btn-outline-danger rounded-0">Salir</button>
+                        <button type="button" class="btn btn-outline-danger rounded-0"
+                            onclick="window.location.href='../../vistas/consultas/consulta_poliza.php'">Salir</button>
                     </div>
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>

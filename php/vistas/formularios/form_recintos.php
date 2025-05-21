@@ -38,7 +38,7 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
 ?>
 
 <div class="container-fluid">
@@ -88,7 +88,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                 <div class="row">
                     <div class="row justify-content-end mt-5">
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="button" class="btn btn-outline-danger rounded-0">Salir</button>
+                            <button type="button" class="btn btn-outline-danger rounded-0"
+                                onclick="window.location.href='../../vistas/catalogos/cat_Recintos.php'">Salir</button>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>

@@ -1,0 +1,86 @@
+    body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      /* Fondo degradado metálico/neón */
+      background: linear-gradient(135deg, rgb(107, 122, 156), #2e3a59, #1b1f33);
+      background-size: 400% 400%;
+      animation: animarFondo 15s ease infinite;
+      height: 100vh;
+    }
+
+    @keyframes animarFondo {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .card-login {
+      background-color: rgba(255, 255, 255, 0.95); /* Ligera transparencia */
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(107, 122, 156, 0.5);
+    }
+
+    .login-form {
+      padding: 40px;
+    }
+
+    .login-image {
+      background: url('https://source.unsplash.com/600x600/?technology,business') no-repeat center center;
+      background-size: cover;
+      min-height: 100%;
+    }
+
+
+    .form-control {
+    border: none;
+    border-bottom: 1px solid #a0a0a0;
+    border-radius: 0;
+    padding: 0.4rem 0;
+    font-size: 0.95rem;
+    background: transparent;
+    transition: border-color 0.3s ease;
+    box-shadow: none;
+    color: #333;
+    }
+
+    .form-control::placeholder {
+    color: #999;
+    }
+
+    .form-control:focus {
+    outline: none;
+    border-bottom-color: #394867;
+    box-shadow: none;
+    background-color: transparent;
+    }
+
+    label.form-label {
+    font-weight: 600;
+    color: #394867;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    }
+
+    .btn-primary {
+    background: rgb(107, 122, 156);
+    border: none;
+    font-weight: 600;
+    color: #fff;
+    transition: background 0.3s ease;
+    box-shadow: none;
+    font-size: 1rem;
+    }
+
+    .btn-primary:hover {
+    background: rgb(85, 96, 121);
+    color: #fff;
+    box-shadow: none;
+    }
+
+    p.text-muted {
+    color: #666;
+    font-size: 0.85rem;
+    }
+
+    h3 {
+      font-weight: bold;
+    }

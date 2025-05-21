@@ -5,7 +5,8 @@ include('../conexion.php');
 if (isset($_POST['id_buque'], $_POST['nombre'])) {
     $id_buque = (int) $_POST['id_buque'];
     $nombre = trim($_POST['nombre']);
-    $pais = (int) $_POST['pais'];
+    $pais = isset($_POST['pais']) ? (int) $_POST['pais'] : null;
+
 
     $usuarioModificacion = 1;
     // Fecha de modificación

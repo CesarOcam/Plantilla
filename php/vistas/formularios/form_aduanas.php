@@ -36,7 +36,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
 ?>
 
 <div class="container-fluid">
@@ -54,24 +54,26 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                             placeholder="Nombre Corto*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="aduana_aduana" type="text" maxlength="3" class="form-control rounded-0 border-0 border-bottom"
-                            style="background-color: transparent;" placeholder="Clave Aduana*"
-                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                        <input name="aduana_aduana" type="text" maxlength="3"
+                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
+                            placeholder="Clave Aduana*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="seccion_aduana" type="text" maxlength="1" class="form-control rounded-0 border-0 border-bottom"
-                            style="background-color: transparent;" placeholder="Clave Seccion*"
-                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                        <input name="seccion_aduana" type="text" maxlength="1"
+                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
+                            placeholder="Clave Seccion*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="denominacion_aduana" type="text" 
+                        <input name="denominacion_aduana" type="text"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
                             placeholder="Denominación*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="prefix_aduana" type="text" maxlength="10" class="form-control rounded-0 border-0 border-bottom"
-                            style="background-color: transparent;" placeholder="Prefijo*" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
+                        <input name="prefix_aduana" type="text" maxlength="10"
+                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
+                            placeholder="Prefijo*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <select id="tipoAduana-select" name="tipoAduana"
@@ -86,91 +88,106 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-2 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="SubcuentaClientesLogId-select" name="SubcuentaClientesLogId"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" disabled selected hidden>Subcuenta Logístico</option>
-                            <?php foreach ($subcuenta as $cuenta): ?>
-                                <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
-                                    <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                <hr class="mt-5" style="border-top: 1px solid #000;">
 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-2 col-sm-12 d-flex align-items-center mt-4">
+                            <select id="SubcuentaClientesLogId-select" name="SubcuentaClientesLogId"
+                                class="form-control rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
+                                aria-describedby="basic-addon1">
+                                <option value="" disabled selected hidden>Subcuenta Logístico</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        data-numero="<?php echo $cuenta['Numero']; ?>">
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-2 col-sm-12 d-flex align-items-center mt-4">
+                            <select id="SubcuentaCuotasAbonoLogId-select" name="SubcuentaCuotasAbonoLogId"
+                                class="form-control rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
+                                aria-describedby="basic-addon1">
+                                <option value="" disabled selected hidden>Subcuenta Cuotas Abono Logístico</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        data-numero="<?php echo $cuenta['Numero']; ?>">
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-2 col-sm-12 d-flex align-items-center mt-4">
+                            <select id="SubcuentaCuotasCargoLogId-select" name="SubcuentaCuotasCargoLogId"
+                                class="form-control rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
+                                aria-describedby="basic-addon1">
+                                <option value="" disabled selected hidden>Subcuenta Cuotas Cargo Logístico</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        data-numero="<?php echo $cuenta['Numero']; ?>">
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
-                    <div class="col-2 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="SubcuentaClientesExpId-select" name="SubcuentaClientesExpId"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" disabled selected hidden>Subcuenta Exportador</option>
-                            <?php foreach ($subcuenta as $cuenta): ?>
-                                <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
-                                    <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-2 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="SubcuentaCuotasAbonoLogId-select" name="SubcuentaCuotasAbonoLogId"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" disabled selected hidden>Subcuenta Cuotas Abono Logístico</option>
-                            <?php foreach ($subcuenta as $cuenta): ?>
-                                <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
-                                    <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-2 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="SubcuentaCuotasAbonoExpId-select" name="SubcuentaCuotasAbonoExpId"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" disabled selected hidden>Subcuenta Cuotas Abono Exportador</option>
-                            <?php foreach ($subcuenta as $cuenta): ?>
-                                <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
-                                    <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-2 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="SubcuentaCuotasCargoLogId-select" name="SubcuentaCuotasCargoLogId"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" disabled selected hidden>Subcuenta Cuotas Cargo Logístico</option>
-                            <?php foreach ($subcuenta as $cuenta): ?>
-                                <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
-                                    <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-2 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="SubcuentaCuotasCargoExpId-select" name="SubcuentaCuotasCargoExpId"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-                            <option value="" disabled selected hidden>Subcuenta Cuotas Cargo Logístico</option>
-                            <?php foreach ($subcuenta as $cuenta): ?>
-                                <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
-                                    <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                    <div class="col-md-6">
+                        <div class="col-2 col-sm-12 d-flex align-items-center mt-4">
+                            <select id="SubcuentaClientesExpId-select" name="SubcuentaClientesExpId"
+                                class="form-control rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
+                                aria-describedby="basic-addon1">
+                                <option value="" disabled selected hidden>Subcuenta Exportador</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        data-numero="<?php echo $cuenta['Numero']; ?>">
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-2 col-sm-12 d-flex align-items-center mt-4">
+                            <select id="SubcuentaCuotasAbonoExpId-select" name="SubcuentaCuotasAbonoExpId"
+                                class="form-control rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
+                                aria-describedby="basic-addon1">
+                                <option value="" disabled selected hidden>Subcuenta Cuotas Abono Exportador</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        data-numero="<?php echo $cuenta['Numero']; ?>">
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-2 col-sm-12 d-flex align-items-center mt-4">
+                            <select id="SubcuentaCuotasCargoExpId-select" name="SubcuentaCuotasCargoExpId"
+                                class="form-control rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
+                                aria-describedby="basic-addon1">
+                                <option value="" disabled selected hidden>Subcuenta Cuotas Cargo Logístico</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        data-numero="<?php echo $cuenta['Numero']; ?>">
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
+
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                        <button type="button" class="btn btn-outline-danger rounded-0">Salir</button>
+                        <button type="button" class="btn btn-outline-danger rounded-0"
+                            onclick="window.location.href='../../vistas/catalogos/cat_Aduanas.php'">Salir</button>
                     </div>
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>

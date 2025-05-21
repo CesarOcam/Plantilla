@@ -53,13 +53,13 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
 ?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
         <form id="form_Polizas" method="POST">
-            <div class="card-header formulario_clientes">
+            <div class="card-header formulario_polizas">
                 <h5>+ Agregar Póliza</h5>
                 <div class="row">
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
@@ -173,7 +173,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                        <button type="button" class="btn btn-outline-danger rounded-0">Salir</button>
+                        <button type="button" class="btn btn-outline-danger rounded-0"
+                            onclick="window.location.href='../../vistas/catalogos/cat_Polizas.php'">Salir</button>
                     </div>
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>

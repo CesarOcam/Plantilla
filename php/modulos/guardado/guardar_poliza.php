@@ -7,16 +7,19 @@ if (isset($_POST['beneficiario'])) {
     $empresa = 2;
     $tipo = $_POST['tipo'];
     $beneficiario = trim($_POST['beneficiario']);
-    $fecha = $_POST['fecha'];
-    $numero = '22222';
+    $fecha = $_POST['fecha'];   
     $concepto = $_POST['concepto'];
+
+    //Recibe datos de las subcuentas
+    $subcuentas = $_POST['Subcuenta'] ?? [];
     $cargos = $_POST['Cargo'] ?? [];
     $abonos = $_POST['Abono'] ?? [];
-
+    $observaciones = $_POST['Observaciones'] ?? [];
+    $facturas = $_POST['Factura'] ?? [];
     $total_cargos = 0.0;
     $total_abonos = 0.0;
 
-    // Sumar cargos
+   // Sumar cargos
     foreach ($cargos as $c) {
         $total_cargos += is_numeric($c) ? floatval($c) : 0;
     }
@@ -25,8 +28,7 @@ if (isset($_POST['beneficiario'])) {
     foreach ($abonos as $a) {
         $total_abonos += is_numeric($a) ? floatval($a) : 0;
     }
-
-    $importe = $total_cargos; // o $total_abonos, o la suma de ambos según tu lógica
+    $importe = $total_cargos; 
 
     // Función para obtener la fecha y hora actual
     function obtenerFechaHoraActual() {
@@ -78,44 +80,63 @@ if (!empty($tipo_poliza) && is_numeric($tipo_poliza)) {
 // Luego usa $numero_poliza en tu insert
 
     // Asegurarse de que todos los campos coincidan con los de la base de datos
-    $sql = "INSERT INTO polizas 
+   $sql_insert_poliza = "INSERT INTO polizas 
     (
         BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta
     )
-    VALUES (?, ?, ?, ?, ?, ?, ? , ?, ?, ?)";
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    // Crear el array de parámetros, sin incluir el valor de 'Activo' ya que ya está seteo como 1
     $params = [
-    $beneficiario,   // FechaAlta
-    $empresa,  // UsuarioAlta
-    $numero_poliza, 
-    $importe,  // Activo
-    $concepto,
-    $fecha,
-    $exportadoCoi,
-    $activo,
-    $fecha_alta, 
-    $usuarioAlta       // Nombre
+        $beneficiario,  
+        $empresa, 
+        $numero_poliza, 
+        $importe,  
+        $concepto,
+        $fecha,
+        $exportadoCoi,
+        $activo,
+        $fecha_alta, 
+        $usuarioAlta   
     ];
 
+    $stmt_poliza = $con->prepare($sql_insert_poliza);
+    $resultado = $stmt_poliza->execute($params);
 
-    // Verificar que el número de parámetros coincida con el número de `?` en la consulta
-    if (count($params) !== substr_count($sql, '?')) {
-        echo "Error: El número de parámetros no coincide con el número de tokens `?` en la consulta.";
-    } else {
-        $stmt = $con->prepare($sql);
-        if ($stmt) {
-            $resultado = $stmt->execute($params); // Pasamos el array de parámetros
 
-            if ($resultado) {
-                echo "Poliza guardada correctamente.";
-            } else {
-                echo "Error al guardar: " . implode(", ", $stmt->errorInfo());
-            }
-        } else {
-            echo "Error al preparar la consulta: " . implode(", ", $con->errorInfo());
-        }
+    if (!$resultado) {
+        die("Error al guardar la póliza: " . implode(", ", $stmt_poliza->errorInfo()));
     }
+
+    // Obtener el ID generado de la póliza para vincular partidas
+    $poliza_id = $con->lastInsertId();
+    $activo = 1;
+    // Preparar inserción de partidas
+    $sql_insert_partidas = "INSERT INTO partidaspolizas 
+    (Polizaid, Subcuentaid, Cargo, Abono, Observaciones, FolioArchivo, Activo, NumeroFactura)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt_partidas = $con->prepare($sql_insert_partidas);
+
+    foreach ($subcuentas as $i => $subcuenta_id) {
+    $cargo = isset($cargos[$i]) && is_numeric($cargos[$i]) ? floatval($cargos[$i]) : 0;
+    $abono = isset($abonos[$i]) && is_numeric($abonos[$i]) ? floatval($abonos[$i]) : 0;
+    $observacion = $observaciones[$i] ?? '';
+    $factura = $facturas[$i] ?? '';
+
+    $stmt_partidas->execute([
+        $poliza_id,
+        $subcuenta_id,
+        $cargo,
+        $abono,
+        $observacion,
+        $factura,     // FolioArchivo
+        $activo,
+        $factura      // NumeroFactura
+    ]);
+}
+
+
+    echo "Poliza guardada correctamente.";
+
 } else {
     echo "Faltan datos obligatorios.";
 }

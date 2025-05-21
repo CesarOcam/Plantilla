@@ -12,12 +12,24 @@ $stmt = $con->prepare("
         a.prefix_aduana,
         a.tipoAduana,
 
-        CONCAT(sc1.Numero, ' - ', sc1.Nombre) AS SubcuentaClientesLogId,
-        CONCAT(sc2.Numero, ' - ', sc2.Nombre) AS SubcuentaClientesExpId,
-        CONCAT(sc3.Numero, ' - ', sc3.Nombre) AS SubcuentaCuotasAbonoLogId,
-        CONCAT(sc4.Numero, ' - ', sc4.Nombre) AS SubcuentaCuotasAbonoExpId,
-        CONCAT(sc5.Numero, ' - ', sc5.Nombre) AS SubcuentaCuotasCargoLogId,
-        CONCAT(sc6.Numero, ' - ', sc6.Nombre) AS SubcuentaCuotasCargoExpId,
+        sc1.Id AS SubcuentaClientesLogId,
+        CONCAT(sc1.Numero, ' - ', sc1.Nombre) AS SubcuentaClientesLogNombre,
+
+        sc2.Id AS SubcuentaClientesExpId,
+        CONCAT(sc2.Numero, ' - ', sc2.Nombre) AS SubcuentaClientesExpNombre,
+
+        sc3.Id AS SubcuentaCuotasAbonoLogId,
+        CONCAT(sc3.Numero, ' - ', sc3.Nombre) AS SubcuentaCuotasAbonoLogNombre,
+
+        sc4.Id AS SubcuentaCuotasAbonoExpId,
+        CONCAT(sc4.Numero, ' - ', sc4.Nombre) AS SubcuentaCuotasAbonoExpNombre,
+
+        sc5.Id AS SubcuentaCuotasCargoLogId,
+        CONCAT(sc5.Numero, ' - ', sc5.Nombre) AS SubcuentaCuotasCargoLogNombre,
+
+        sc6.Id AS SubcuentaCuotasCargoExpId,
+        CONCAT(sc6.Numero, ' - ', sc6.Nombre) AS SubcuentaCuotasCargoExpNombre,
+
 
         a.fechaCreate_aduana, 
         a.usuarioAlta_aduana, 
@@ -40,6 +52,10 @@ $stmt = $con->prepare("
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $aduana = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas"); // Cambia a tu tabla/campos reales
+$stmt->execute();
+$subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -72,18 +88,18 @@ $aduana = $stmt->fetch(PDO::FETCH_ASSOC);
 </head>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
 ?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
         <form id="form_Aduanas" method="POST">
-            <div class="card-header formulario_buques">
-                <h5>Información de Beneficiario</h5>
+            <div class="card-header formulario_aduanas">
+                <h5>Información de Aduana</h5>
                 <div class="row">
                     <div class="col-10 col-sm-1 mt-4">
-                        <label for="Id" class="form-label text-muted small">ID:</label>
-                        <input id="Id" name="Id" type="text"
+                        <label for="id_aduana" class="form-label text-muted small">ID:</label>
+                        <input id="id_aduana" name="id_aduana" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $id; ?>" readonly>
                     </div>
@@ -120,8 +136,6 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $aduana['prefix_aduana']; ?>">
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="tipo" class="form-label text-muted small">TIPO ADUANA :</label>
                         <select id="tipo" name="tipo"
@@ -135,54 +149,112 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
                         </select>
                     </div>
                 </div>
+                
+                <hr class="mt-5" style="border-top: 1px solid #000;">
+
                 <div class="row">
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="subcuenta_log" class="form-label text-muted small">SUBCUENTA LOGÍSTICO :</label>
-                        <input id="subcuenta_log" name="subcuenta_log" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;"
-                            value="<?php echo $aduana['SubcuentaClientesLogId']; ?>">
-                    </div>
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="subcuenta_exp" class="form-label text-muted small">SUBCUENTA LOGÍSTICO :</label>
-                        <input id="subcuenta_exp" name="subcuenta_exp" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;"
-                            value="<?php echo $aduana['SubcuentaClientesExpId']; ?>">
-                    </div>
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="subcuenta_ab_log" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO
-                            LOGÍSTICO :</label>
-                        <input id="subcuenta_ab_log" name="subcuenta_ab_log" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;"
-                            value="<?php echo $aduana['SubcuentaClientesExpId']; ?>">
-                    </div>
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="subcuenta_ab_exp" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO
-                            EXPORTADOR :</label>
-                        <input id="subcuenta_ab_exp" name="subcuenta_ab_exp" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;"
-                            value="<?php echo $aduana['SubcuentaClientesExpId']; ?>">
-                    </div>
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="sub_cargo_log" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO EXPORTADOR
-                            :</label>
-                        <input id="sub_cargo_log" name="sub_cargo_log" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;"
-                            value="<?php echo $aduana['SubcuentaCuotasCargoLogId']; ?>">
-                    </div>
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="sub_cargo_exp" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO EXPORTADOR
-                            :</label>
-                        <input id="sub_cargo_exp" name="sub_cargo_exp" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;"
-                            value="<?php echo $aduana['SubcuentaCuotasCargoExpId']; ?>">
+                <!-- Columna 1: Logístico -->
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 mt-4">
+                            <label for="subcuenta_log" class="form-label text-muted small">SUBCUENTA CLIENTE LOGÍSTICO:</label>
+                            <select id="subcuenta_log" name="subcuenta_log"
+                                class="form-control select2 rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;">
+                                <option value="" disabled hidden>Selecciona una subcuenta</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        <?php echo ($cuenta['Id'] == $aduana['SubcuentaClientesLogId']) ? 'selected' : ''; ?>>
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-sm-12 mt-4">
+                            <label for="subcuenta_ab_log" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO LOGÍSTICO:</label>
+                            <select id="subcuenta_ab_log" name="subcuenta_ab_log"
+                                class="form-control select2 rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;">
+                                <option value="" disabled hidden>Selecciona una subcuenta</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        <?php echo ($cuenta['Id'] == $aduana['SubcuentaCuotasAbonoLogId']) ? 'selected' : ''; ?>>
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-sm-12 mt-4">
+                            <label for="sub_cargo_log" class="form-label text-muted small">SUBCUENTA CUOTAS CARGO LOGÍSTICO:</label>
+                            <select id="sub_cargo_log" name="sub_cargo_log"
+                                class="form-control select2 rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;">
+                                <option value="" disabled hidden>Selecciona una subcuenta</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        <?php echo ($cuenta['Id'] == $aduana['SubcuentaCuotasCargoLogId']) ? 'selected' : ''; ?>>
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Columna 2: Exportador -->
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 mt-4">
+                            <label for="subcuenta_exp" class="form-label text-muted small">SUBCUENTA CLIENTE EXPORTADOR:</label>
+                            <select id="subcuenta_exp-select" name="subcuenta_exp"
+                                class="form-control select2 rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;">
+                                <option value="" disabled hidden>Selecciona una subcuenta</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>" 
+                                        data-numero="<?php echo $cuenta['Numero']; ?>"
+                                        <?php echo ($cuenta['Id'] == $aduana['SubcuentaClientesExpId']) ? 'selected' : ''; ?>>
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-sm-12 mt-4">
+                            <label for="subcuenta_ab_exp" class="form-label text-muted small">SUBCUENTA CUOTAS ABONO EXPORTADOR:</label>
+                            <select id="subcuenta_ab_exp" name="subcuenta_ab_exp"
+                                class="form-control select2 rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;">
+                                <option value="" disabled hidden>Selecciona una subcuenta</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        <?php echo ($cuenta['Id'] == $aduana['SubcuentaClientesExpId']) ? 'selected' : ''; ?>>
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-sm-12 mt-4">
+                            <label for="sub_cargo_exp" class="form-label text-muted small">SUBCUENTA CUOTAS CARGO EXPORTADOR:</label>
+                            <select id="sub_cargo_exp" name="sub_cargo_exp"
+                                class="form-control select2 rounded-0 border-0 border-bottom text-muted"
+                                style="background-color: transparent; width: 100%;">
+                                <option value="" disabled hidden>Selecciona una subcuenta</option>
+                                <?php foreach ($subcuenta as $cuenta): ?>
+                                    <option value="<?php echo $cuenta['Id']; ?>"
+                                        <?php echo ($cuenta['Id'] == $aduana['SubcuentaCuotasCargoExpId']) ? 'selected' : ''; ?>>
+                                        <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="button" class="btn btn-outline-danger rounded-0"
@@ -204,7 +276,20 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.ph
 <script src="../../../js/actualizar/actualizar_Aduanas.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-    crossorigin="anonymous"></script>
+    crossorigin="anonymous">
+</script>
+<script>
+  $(document).ready(function() {
+    console.log('Inicializando Select2'); // para verificar que corre
+    $('.select2').select2({
+      width: 'resolve',
+      placeholder: "Selecciona una subcuenta",
+      allowClear: true
+    });
+  });
+</script>
+
+
 
 </body>
 

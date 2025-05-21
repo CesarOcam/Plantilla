@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 // Hacer petición al servidor
-                fetch('/portal_web/proyecto_2/php/modulos/desactivar/desactivar_buques.php', {
+                fetch('/portal_web/Contabilidad/php/modulos/desactivar/desactivar_buques.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ids: seleccionados })

@@ -85,7 +85,7 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
 </head>
 
     <?php
-        include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/proyecto_2/php/vistas/navbar.php');
+        include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
     ?>
 
     <div class="container-fluid">
