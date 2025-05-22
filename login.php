@@ -3,7 +3,7 @@ session_start();
 include('php/modulos/conexion.php');
 
 if (isset($_SESSION['usuario_id'])) {
-    header('Location: dashboard.php');
+    header('Location: php/vistas/inicio.php');
     exit;
 }
 ?>
