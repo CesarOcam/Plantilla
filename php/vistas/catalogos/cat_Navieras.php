@@ -23,9 +23,11 @@ if (!isset($_SESSION['usuario_id'])) {
     <link rel="stylesheet" href="../../../css/style.css">
 </head>
 
-<?php
-include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
-?>
+    <?php
+    include_once __DIR__ . '/../../../config.php';
+
+    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+    ?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -49,7 +51,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
                             class="me-5 mt-2">
                             <i class="fas fa-ban"></i>
                         </button>
-                        <a href="/portal_web/Contabilidad/php/vistas/formularios/form_navieras.php"
+                        <a href="../form_navieras.php"
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar nuevo"
                             style="text-decoration: none; color: black; font-size: 1.3rem;">
                             <i class="fas fa-plus mt-2"></i>

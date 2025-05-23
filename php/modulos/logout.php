@@ -1,6 +1,10 @@
 <?php
 session_start();
+include_once __DIR__ . '/../../config.php';
+
 $_SESSION = [];
 session_destroy();
-header('Location: /portal_web/Contabilidad/login.php'); // o la página de login
+
+// Redirigir usando base_url
+header('Location: ' . $base_url . '/login.php'); // o usa url('/login.php')
 exit;

@@ -1,5 +1,5 @@
 <?php
-include_once(__DIR__ . '/../conexion.php');
+include_once(__DIR__ . '../../conexion.php');
 
 // Leer JSON recibido
 $input = json_decode(file_get_contents('php://input'), true);

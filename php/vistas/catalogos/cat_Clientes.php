@@ -4,6 +4,8 @@ session_start();
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: /portal_web/Contabilidad/login.php');  // Ruta desde la raíz del servidor web
     exit;
+
+    include_once __DIR__ . '/../../../config.php';
 }
 ?>
 <!DOCTYPE html>
@@ -22,8 +24,10 @@ if (!isset($_SESSION['usuario_id'])) {
     <link rel="stylesheet" href="../../../css/style.css">
 </head>
 
-    <?php   
-        include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
+    <?php
+    include_once __DIR__ . '/../../../config.php';
+
+    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     ?>
 
     <div class="container-fluid">
@@ -50,7 +54,7 @@ if (!isset($_SESSION['usuario_id'])) {
                                 <i class="fas fa-ban"></i>
                             </button>
 
-                            <a href="/portal_web/Contabilidad/php/vistas/formularios/form_clientes.php"
+                            <a href="../formularios/form_clientes.php"
                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar nuevo"
                                 style="text-decoration: none; color: black; font-size: 1.3rem;">
                                 <i class="fas fa-plus mt-2"></i>

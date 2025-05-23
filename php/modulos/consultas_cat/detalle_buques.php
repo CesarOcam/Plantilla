@@ -65,7 +65,9 @@ $paisActual = $buque['id2204clave_pais'] ?? '';
 </head>
 
     <?php
-        include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
+    include_once __DIR__ . '/../../../config.php';
+
+    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     ?>
 
     <div class="container-fluid">

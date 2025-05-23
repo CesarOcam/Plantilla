@@ -1,9 +1,13 @@
+<?php
+include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está en otra carpeta
+?>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
+      <?php include_once __DIR__ . '/../../config.php'; ?>
       <nav class="navbar bg-body-secondary">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-          <a class="navbar-brand m-1 d-flex align-items-center" href="/portal_web/Contabilidad/php/vistas/inicio.php">
-            <img src="/portal_web/Contabilidad/img/logo2.png" alt="Logo" class="img-fluid me-2" style="max-width: 40px;">
+          <a class="navbar-brand m-1 d-flex align-items-center" href="<?php echo $base_url; ?>/php/vistas/inicio.php">
+            <img src="<?php echo $base_url; ?>/img/logo2.png" alt="Logo" class="img-fluid me-2" style="max-width: 40px;">
             SISTEMA DE CONTABILIDAD 
           </a>
 
@@ -15,13 +19,13 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
               <li>
-                <a class="dropdown-item" href="/portal_web/Contabilidad/php/modulos/config_usuario.php">
+                <a class="dropdown-item" href="<?php echo $base_url; ?>/php/modulos/config_usuario.php">
                   <i class="bi bi-gear me-2"></i>Configuraciones
                 </a>
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
-                <a class="dropdown-item text-danger" href="/portal_web/Contabilidad/php/modulos/logout.php">
+                <a class="dropdown-item text-danger" href="<?php echo $base_url; ?>/php/modulos/logout.php">
                   <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
                 </a>
               </li>
@@ -29,6 +33,7 @@
           </div>
         </div>
       </nav>
+
 
       <nav class="navbar bg-body-light navbar-expand-lg shadow-bottom">
         <div class="container-fluid">
@@ -55,21 +60,21 @@
                 <li class="nav-item position-relative">
                     <a class="nav-link dropdown-toggle" href="cat" role="button" data-bs-toggle="dropdown" aria-expanded="true">Catálogos</a>
                     <ul class="dropdown-menu border shadow">
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Clientes.php">Clientes</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Buques.php">Buques</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Beneficiarios.php">Beneficiarios</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Consolidadoras.php">Consolidadoras</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Cuentas.php">Cuentas Contables</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Navieras.php">Navieras</a></li>
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Recintos.php">Recintos</a></li>
-                      <hr>
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/catalogos/cat_Aduanas.php">Aduanas</a></li>
+                        <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/catalogos/cat_Clientes.php">Clientes</a></li>
+                        <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/catalogos/cat_Buques.php'); ?>">Buques</a></li>
+                        <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/catalogos/cat_Beneficiarios.php'); ?>">Beneficiarios</a></li>
+                        <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/catalogos/cat_Consolidadoras.php'); ?>">Consolidadoras</a></li>
+                        <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/catalogos/cat_Cuentas.php'); ?>">Cuentas Contables</a></li>
+                        <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/catalogos/cat_Navieras.php'); ?>">Navieras</a></li>
+                        <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/catalogos/cat_Recintos.php'); ?>">Recintos</a></li>
+                        <hr>
+                        <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/catalogos/cat_Aduanas.php'); ?>">Aduanas</a></li>
                     </ul>
-                  </li>
+                </li>
                   <li class="nav-item position-relative">
                     <a class="nav-link dropdown-toggle" href="cons" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
                     <ul class="dropdown-menu border shadow">
-                      <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/consultas/consulta_poliza.php">Polizas</a></li>
+                      <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_poliza.php'); ?>">Pólzias</a></li>
                       <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/consultas/consulta_referencia.php">Referencias</a></li>
                       <li><a class="dropdown-item small" href="seg">Kardex</a></li>
                     </ul>

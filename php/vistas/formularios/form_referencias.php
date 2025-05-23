@@ -72,17 +72,19 @@ $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="../../../css/style.css">
     <link rel="stylesheet" href="../../../css/style2.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
 
 </head>
 
-<?php
-include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.php');
-?>
+    <?php
+    include_once __DIR__ . '/../../../config.php';
+
+    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+    ?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -368,7 +370,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="button" class="btn btn-outline-danger rounded-0"
-                            onclick="window.location.href='../../vistas/catalogos/cat_Clientes.php'">Salir</button>
+                            onclick="window.location.href='../../vistas/consultas/consulta_referencia.php'">Salir</button>
                     </div>
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>
