@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: /portal_web/Contabilidad/login.php');  // Ruta desde la raíz del servidor web
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <body class="cat-clientes">
@@ -42,8 +50,10 @@
                                 <i class="fas fa-ban"></i>
                             </button>
 
-                            <a href="/portal_web/Contabilidad/php/vistas/formularios/form_clientes.php" style="text-decoration: none; color: black;">
-                            <h6><i class="fas fa-plus mt-2"></i></h6>
+                            <a href="/portal_web/Contabilidad/php/vistas/formularios/form_clientes.php"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar nuevo"
+                                style="text-decoration: none; color: black; font-size: 1.3rem;">
+                                <i class="fas fa-plus mt-2"></i>
                             </a>
                             <span class="mx-2"><h5>|</h5></span>
 

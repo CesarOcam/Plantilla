@@ -7,13 +7,27 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 include_once('../../modulos/conexion.php');
 
+//Obtener ADUANAS
+$stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
+                       FROM 2201aduanas 
+                       WHERE nombre_corto_aduana IS NOT NULL 
+                       AND TRIM(nombre_corto_aduana) != '' ORDER BY nombre_corto_aduana");
+$stmt->execute();
+$aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 //Obtener SUBCUENTAS
 $stmt = $con->prepare("
     SELECT Id, Numero, Nombre 
     FROM cuentas
     WHERE Activo = 1
+      AND EmpresaId = 2
+      AND (
+          SUBSTRING_INDEX(Numero, '-', 1) = '120' OR
+          SUBSTRING_INDEX(Numero, '-', 1) = '123'
+      )
     ORDER BY Nombre
 ");
+
 $stmt->execute();
 $subcuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -67,58 +81,37 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
         <form id="form_Polizas" method="POST">
             <div class="card-header formulario_polizas">
                 <h5>+ Agregar Póliza</h5>
-                <div class="row">
+                <div class="row mb-5">
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input id="empresa" name="empresa" type="text"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
                             placeholder="AMEXPORT LOGÍSTICA" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" readonly>
                     </div>
-                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <select id="tipo_poliza-select" name="tipo"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1" required>
-                            <option value="" disabled selected hidden>Tipo*</option>
-                            <option value="1" >CHEQUE</option>
-                            <option value="2" >DIARIO</option>
-                            <option value="3" >INGRESO</option>
-                            <option value="4" >EGRESO</option>
-                        </select>
+                    <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
+                        <select id="aduana-select" name="aduana" class="form-control rounded-0 border-0 border-bottom text-muted"
+                                    style="background-color: transparent;" aria-label="Filtrar por fecha"
+                                    aria-describedby="basic-addon1">
+                                    <option value="" selected disabled>Aduana</option>
+                                    <?php foreach ($aduana as $aduana): ?>
+                                        <option value="<?php echo $aduana['nombre_corto_aduana']; ?>">
+                                            <?php echo $aduana['nombre_corto_aduana']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                     </div>
-                    <div class="col-2 col-sm-4 d-flex align-items-center mt-4">
+                    <div class="col-2 col-sm-3 d-flex align-items-center mt-4">
                         <select id="beneficiario-select" name="beneficiario"
                             class="form-control rounded-0 border-0 border-bottom text-muted"
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
-                            <option value="" selected>Beneficiario</option>
+                            <option value="" selected disabled hidden>Beneficiario</option>
                             <?php foreach ($beneficiario as $beneficiario): ?>
                                 <option value="<?php echo $beneficiario['Id']; ?>">
                                     <?php echo $beneficiario['Nombre']; ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                    </div>
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input id="Fecha" name="fecha" type="date"
-                            class="form-control rounded-0 border-0 border-bottom"
-                            style="background-color: transparent;" placeholder="Fecha y hora"
-                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input id="numero" name="numero" type="text"
-                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Numero de Póliza" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1" readonly>
-                    </div>
-                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <input id="concepto" name="concepto" type="text"
-                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Concepto" aria-label="Filtrar por fecha" aria-describedby="basic-addon1"
-                            >
                     </div>
                 </div>
 
@@ -143,7 +136,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
                 </select>
 
                 <!-- Tabla dinámica -->
-                <div class="row mt-3">
+                <div class="row mt-5">
                     <div class="col-12">
                         <table class="table" id="tabla-partidas">
                             <thead>
@@ -194,6 +187,15 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
 
 <script>
     agregarFila();
+    
+    $(document).ready(function() {
+        // Inicializar Select2
+        $('#aduana-select').select2({
+            placeholder: 'Aduana*',
+            allowClear: true,
+            width: '100%'
+        });
+    });
     
     $(document).ready(function () {
         // Inicializar Select2

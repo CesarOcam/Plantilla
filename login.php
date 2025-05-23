@@ -17,6 +17,8 @@ if (isset($_SESSION['usuario_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <link href="css/login.css" rel="stylesheet" />
 </head>
 
@@ -31,17 +33,22 @@ if (isset($_SESSION['usuario_id'])) {
                 <form id="loginForm" class="w-100" novalidate>
                     <div class="mb-3">
                         <label for="usuario" class="form-label">Usuario</label>
-                        <input type="text" class="form-control" id="usuario" name="usuario" required />
+                        <input type="text" class="form-control p-2" id="usuario" name="usuario" required />
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 position-relative">
                         <label for="clave" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="clave" name="clave" required />
+                        <div class="input-group">
+                            <input type="password" class="form-control p-2" id="clave" name="clave" required />
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1">
+                                <i class="fa-solid fa-eye" id="iconPassword"></i>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Entrar</button>
                     <div id="errorMsg" class="text-danger mt-3 text-center" style="display:none;">
                         Usuario o contraseña incorrectos.
                     </div>
-                    <p class="text-muted mt-3 mb-0 text-center" style="font-size: 0.9rem;">¿Olvidaste tu contraseña?</p>
+                    <!--<p class="text-muted mt-3 mb-0 text-center" style="font-size: 0.9rem;">¿Olvidaste tu contraseña?</p>-->
                 </form>
             </div>
         </div>
@@ -94,6 +101,19 @@ if (isset($_SESSION['usuario_id'])) {
             }
 
         });
+
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('clave');
+            const icon = document.getElementById('iconPassword');
+
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Cambiar el ícono
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+
     </script>
 
 </body>

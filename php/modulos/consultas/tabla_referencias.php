@@ -18,47 +18,54 @@ $where = [];
 $params = [];
 
 // STATUS: Solo aplicar si es 1 o 0 (no vacío)
-if (isset($_GET['status']) && $_GET['status'] !== '') {
-    $where[] = "p.Activo = :status";
+if (isset($_GET['status']) && ($_GET['status'] === '0' || $_GET['status'] === '1')) {
+    $where[] = "r.Status = :status";
     $params[':status'] = $_GET['status'];
 }
 
 // FECHA DESDE
 if (!empty($_GET['fecha_desde'])) {
-    $where[] = "p.Fecha >= :fecha_desde";
+    $where[] = "r.FechaAlta >= :fecha_desde";
     $params[':fecha_desde'] = $_GET['fecha_desde'];
 }
 
-// FECHA HASTA
+// FECHA HASTA (incluir todo el día)
 if (!empty($_GET['fecha_hasta'])) {
-    $where[] = "p.Fecha <= :fecha_hasta";
-    $params[':fecha_hasta'] = $_GET['fecha_hasta'];
+    $fechaHasta = date('Y-m-d', strtotime($_GET['fecha_hasta'] . ' +1 day'));
+    $where[] = "r.FechaAlta < :fecha_hasta";
+    $params[':fecha_hasta'] = $fechaHasta;
 }
+
 
 // PÓLIZA
-if (!empty($_GET['poliza'])) {
-    $where[] = "p.Numero LIKE :poliza";
-    $params[':poliza'] = "%" . $_GET['poliza'] . "%";
+if (!empty($_GET['referencia'])) {
+    $where[] = "r.Numero LIKE :referencia";
+    $params[':referencia'] = "%" . $_GET['referencia'] . "%";
 }
 
-// BENEFICIARIO
-if (!empty($_GET['beneficiario'])) {
-    $where[] = "b.Nombre LIKE :beneficiario";
-    $params[':beneficiario'] = "%" . $_GET['beneficiario'] . "%";
+// LOGISTICO
+if (!empty($_GET['logistico'])) {
+    $where[] = "log.razonSocial_exportador LIKE :logistico";
+    $params[':logistico'] = "%" . $_GET['logistico'] . "%";
 }
+
+
 
 // WHERE final
 $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
 
 // CONSULTA FINAL CON JOIN Y PAGINACIÓN
 $sql = "SELECT 
-            p.Id, p.Numero, p.Concepto, p.Importe, p.EmpresaId, p.FechaAlta, p.Activo, 
-            b.Nombre AS BeneficiarioNombre 
-        FROM polizas p
-        LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
-        $whereSql
-        ORDER BY p.Fecha DESC
-        LIMIT :inicio, :registrosPorPagina";
+    r.Id, r.Numero, r.ClienteLogisticoId, r.ClienteExportadorId, r.Status, r.FechaAlta, r.FechaContabilidad,
+    exp.razonSocial_exportador AS ExportadorNombre,
+    log.razonSocial_exportador AS LogisticoNombre 
+    FROM referencias r
+    LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
+    LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
+    $whereSql
+    ORDER BY r.FechaAlta DESC
+    LIMIT :inicio, :registrosPorPagina";
+
 
 $stmt = $con->prepare($sql);
 
@@ -72,7 +79,7 @@ $stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
 $stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 
 $stmt->execute();
-$poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$referencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Consulta para contar el total de registros
@@ -93,47 +100,41 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
         <tr>
             <th scope="col"></th>
             <th scope="col">Id</th>
-            <th scope="col">Poliza</th>
-            <th scope="col">Concepto</th>
-            <th scope="col">Beneficiario</th>
-            <th scope="col">Importe</th>
-            <th scope="col">Empresa</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Activo</th>
+            <th scope="col">Referencia</th>
+            <th scope="col">Logístico</th>
+            <th scope="col">Exportador</th>
+            <th scope="col">Status</th>
+            <th scope="col">Apertura</th>
+            <th scope="col">Conta</th>
+            <th scope="col">Kardex</th>
         </tr>
     </thead>
     <tbody class="small">
-        <?php if ($poliza): ?>
-            <?php foreach ($poliza as $poliza): ?>
-                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_poliza.php?id=<?php echo $poliza['Id']; ?>';}"
+        <?php if ($referencia): ?>
+            <?php foreach ($referencia as $referencia): ?>
+                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_poliza.php?id=<?php echo $referencia['Id']; ?>';}"
                     style="cursor: pointer;">
                     <th scope="row">
                         <input class="form-check-input mt-1" type="checkbox" value=""
                             aria-label="Checkbox for following text input">
                     </th>
-                    <td><?php echo $poliza['Id']; ?></td>
-                    <td><?php echo $poliza['Numero']; ?></td>
-                    <td><?php echo $poliza['Concepto']; ?></td>
-                    <td><?php echo $poliza['BeneficiarioNombre']; ?></td>
-                    <td><?php echo $poliza['Importe']; ?></td>
+                    <td><?php echo $referencia['Id']; ?></td>
+                    <td><?php echo $referencia['Numero']; ?></td>
+                    <td><?php echo $referencia['LogisticoNombre']; ?></td>
+                    <td><?php echo $referencia['ExportadorNombre']; ?></td>
                     <td>
                         <?php
-                        echo ($poliza['EmpresaId'] == 1) ? 'Amexport' :
-                            (($poliza['EmpresaId'] == 2) ? 'Amexport Logística' : 'Otro');
-                        ?>
-                    </td>
-                    <td><?php echo $poliza['FechaAlta']; ?></td>
-                    <td>
-                        <?php
-                        if ($poliza['Activo'] == 1) {
+                        if ($referencia['Status'] == 1) {
                             echo '<span style="color: rgba(0, 128, 0, 0.6);">ACTIVA</span>';
-                        } elseif ($poliza['Activo'] == 0) {
+                        } elseif ($referencia['Status'] == 0) {
                             echo '<span style="color: rgba(255, 0, 0, 0.6);">INACTIVA</span>';
                         } else {
                             echo '<span>Otro</span>';
                         }
                         ?>
                     </td>
+                    <td><?php echo $referencia['FechaAlta']; ?></td>
+                    <td><?php echo $referencia['FechaContabilidad']; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

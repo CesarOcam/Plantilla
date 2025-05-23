@@ -9,7 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
 <!DOCTYPE html>
 <html lang="en">
     
-<body class="cat-clientes">
+<body class="consulta-referencias">
 
     <head>
         <meta charset="UTF-8">
@@ -61,14 +61,14 @@ if (!isset($_SESSION['usuario_id'])) {
                         </div>
 
                         <div class="col-1 d-flex flex-column">
-                            <label for="polizaInput" class="form-label small mb-0">PÓLIZA:</label>
-                            <input type="text" id="polizaInput" class="form-control rounded-0 border-0 border-bottom"
+                            <label for="referenciaInput" class="form-label small mb-0">REFERENCIA:</label>
+                            <input type="text" id="referenciaInput" class="form-control rounded-0 border-0 border-bottom"
                                 style="background-color: transparent;" aria-label="Filtrar por póliza">
                         </div>
 
                         <div class="col-4 d-flex flex-column">
-                            <label for="beneficiarioInput" class="form-label small mb-0">BENEFICIARIO:</label>
-                            <input type="text" id="beneficiarioInput"
+                            <label for="logisticoInput" class="form-label small mb-0">LOGISTICO:</label>
+                            <input type="text" id="logisticoInput"
                                 class="form-control rounded-0 border-0 border-bottom"
                                 style="background-color: transparent;" aria-label="Filtrar por beneficiario">
                         </div>
@@ -84,7 +84,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
                         <!-- Botón "+" a la derecha -->
                         <div class="col d-flex align-items-start justify-content-end mt-3 mb-5">
-                            <a href="/portal_web/Contabilidad/php/vistas/formularios/form_aduanas.php"
+                            <a href="/portal_web/Contabilidad/php/vistas/formularios/form_referencias.php"
                             class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
                             style="width: 36px; height: 36px;"
                             title="Agregar nuevo">
@@ -96,8 +96,8 @@ if (!isset($_SESSION['usuario_id'])) {
 
                 <hr class="mb-5" style="border-top: 2px solid #000;">
 
-                <div id="tabla-polizas-container">
-                    <?php include('../../modulos/consultas/tabla_polizas.php'); ?>
+                <div id="tabla-referencias-container">
+                    <?php include('../../modulos/consultas/tabla_referencias.php'); ?>
                 </div>
 
             </div>
@@ -113,22 +113,22 @@ if (!isset($_SESSION['usuario_id'])) {
             const status = document.getElementById("statusInput").value;
             const fechaDesde = document.getElementById("fechaDesdeInput").value;
             const fechaHasta = document.getElementById("fechaHastaInput").value;
-            const poliza = document.getElementById("polizaInput").value;
-            const beneficiario = document.getElementById("beneficiarioInput").value;
+            const referencia = document.getElementById("referenciaInput").value;
+            const logistico = document.getElementById("logisticoInput").value;
 
             const params = new URLSearchParams({
                 status,
                 fecha_desde: fechaDesde,
                 fecha_hasta: fechaHasta,
-                poliza,
-                beneficiario
+                referencia,
+                logistico
             });
 
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "../../modulos/consultas/tabla_polizas.php?" + params.toString(), true);
+            xhr.open("GET", "../../modulos/consultas/tabla_referencias.php?" + params.toString(), true);
             xhr.onload = function () {
                 if (this.status === 200) {
-                    document.getElementById("tabla-polizas-container").innerHTML = this.responseText;
+                    document.getElementById("tabla-referencias-container").innerHTML = this.responseText;
                 }
             };
             xhr.send();
@@ -139,8 +139,8 @@ if (!isset($_SESSION['usuario_id'])) {
             document.getElementById("statusInput").value = "";
             document.getElementById("fechaDesdeInput").value = "";
             document.getElementById("fechaHastaInput").value = "";
-            document.getElementById("polizaInput").value = "";
-            document.getElementById("beneficiarioInput").value = "";
+            document.getElementById("referenciaInput").value = "";
+            document.getElementById("logisticoInput").value = "";
 
             document.getElementById("btn_buscar").click(); // recargar con filtros vacíos
         });

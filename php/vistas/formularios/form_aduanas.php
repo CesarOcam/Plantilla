@@ -1,4 +1,10 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: /portal_web/Contabilidad/login.php');  // Ruta desde la raíz del servidor web
+    exit;
+}
 include_once('../../modulos/conexion.php');
 $stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas"); // Cambia a tu tabla/campos reales
 $stmt->execute();

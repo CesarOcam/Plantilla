@@ -1,4 +1,10 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: /portal_web/Contabilidad/login.php');  // Ruta desde la raíz del servidor web
+    exit;
+}
 include_once(__DIR__ . '/../conexion.php'); // Ajusta el path según sea necesario
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;

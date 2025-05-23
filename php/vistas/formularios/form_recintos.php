@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: /portal_web/Contabilidad/login.php');  // Ruta desde la raíz del servidor web
+    exit;
+}
+
 include_once('../../modulos/conexion.php');
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
