@@ -73,6 +73,8 @@ $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons CDN para los íconos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <link rel="stylesheet" href="../../../css/style.css">
     <link rel="stylesheet" href="../../../css/style2.css">
@@ -80,15 +82,15 @@ $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Referencia" method="POST">
+        <form id="form_Referencia" method="POST" enctype="multipart/form-data">
             <div class="card-header formulario_referencia">
                 <h5>+ Agregar Referencia</h5>
 
@@ -377,62 +379,61 @@ $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </div>
+
+            <!-- MODAL DE DOCUMENTOS -->
+            <div class="modal fade" id="modalDocumentos" tabindex="-1" aria-labelledby="modalDocumentosLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalDocumentosLabel">Subir Documentos</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- Área de arrastre con ícono nube y contenedor de previsualización -->
+                            <div id="dropZone"
+                                class="border border-2 border-primary rounded p-5 mb-3 text-center bg-light"
+                                style="cursor: pointer; position: relative; min-height: 250px;">
+                                <!-- Contenido por defecto: ícono y texto -->
+                                <div id="dropZoneDefault"
+                                    class="d-flex flex-column align-items-center justify-content-center h-100">
+                                    <i class="bi bi-cloud-arrow-up-fill" style="font-size: 4rem; color: #0d6efd;"></i>
+                                    <p class="text-muted mb-0 mt-3">Arrastra los documentos aquí</p>
+                                </div>
+                                <!-- Contenedor para previsualización (oculto al principio) -->
+                                <div id="previewContainer" class="row row-cols-1 row-cols-md-3 g-3 d-none"
+                                    style="overflow-y: auto; max-height: 350px; margin-top: 1rem;">
+                                    <!-- Vistas previas dinámicas -->
+                                </div>
+                            </div>
+
+                            <!-- Botón para seleccionar archivos debajo del recuadro con icono carpeta -->
+                            <div class="text-center mb-3">
+                                <button type="button" class="btn btn-outline-primary" id="btnBuscarArchivos">
+                                    <i class="bi bi-folder-fill me-2"></i> Seleccionar desde carpeta
+                                </button>
+                                <input type="file" id="documentosInput" name="documentos[]" multiple hidden>
+                            </div>
+
+                            <!-- Botón final -->
+                            <div class="text-end mt-4">
+                                <button type="button" class="btn btn-primary" id="btnAgregarDocs">Agregar a la
+                                    tabla</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
 
-<!-- MODAL DE DOCUMENTOS -->
-
-<!-- Bootstrap Icons CDN para los íconos -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-<!-- Bootstrap Icons CDN para los íconos -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-<div class="modal fade" id="modalDocumentos" tabindex="-1" aria-labelledby="modalDocumentosLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalDocumentosLabel">Subir Documentos</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-
-                <!-- Área de arrastre con ícono nube y contenedor de previsualización -->
-                <div id="dropZone" class="border border-2 border-primary rounded p-5 mb-3 text-center bg-light"
-                    style="cursor: pointer; position: relative; min-height: 250px;">
-                    <!-- Contenido por defecto: ícono y texto -->
-                    <div id="dropZoneDefault"
-                        class="d-flex flex-column align-items-center justify-content-center h-100">
-                        <i class="bi bi-cloud-arrow-up-fill" style="font-size: 4rem; color: #0d6efd;"></i>
-                        <p class="text-muted mb-0 mt-3">Arrastra los documentos aquí</p>
-                    </div>
-                    <!-- Contenedor para previsualización (oculto al principio) -->
-                    <div id="previewContainer" class="row row-cols-1 row-cols-md-3 g-3 d-none"
-                        style="overflow-y: auto; max-height: 350px; margin-top: 1rem;">
-                        <!-- Vistas previas dinámicas -->
-                    </div>
-                </div>
-
-                <!-- Botón para seleccionar archivos debajo del recuadro con icono carpeta -->
-                <div class="text-center mb-3">
-                    <button type="button" class="btn btn-outline-primary" id="btnBuscarArchivos">
-                        <i class="bi bi-folder-fill me-2"></i> Seleccionar desde carpeta
-                    </button>
-                    <input type="file" id="documentosInput" name="documentos[]" multiple hidden>
-                </div>
-
-                <!-- Botón final -->
-                <div class="text-end mt-4">
-                    <button type="button" class="btn btn-primary" id="btnAgregarDocs">Agregar a la tabla</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
+    
     $(document).ready(function () {
         function initSelect2(id, placeholder) {
             $(id).select2({
@@ -521,8 +522,7 @@ $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
             tableBody.appendChild(row);
         });
 
-        // Limpieza
-        archivosCargados = [];
+
         previewContainer.innerHTML = '';
         previewContainer.classList.add('d-none');
         dropZoneDefault.classList.remove('d-none');
@@ -570,7 +570,9 @@ $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
     input.addEventListener('change', () => handleFiles(input.files));
 
     function handleFiles(files) {
+        console.log('handleFiles recibidos:', files);
         Array.from(files).forEach(file => {
+            console.log('Archivo agregado:', file.name);
             archivosCargados.push(file);
 
             // Mostrar previsualización
@@ -644,7 +646,7 @@ $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 </script>
 
-<script src="../../../js/guardar_Cliente.js"></script>
+<script src="../../../js/guardar_Referencia.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

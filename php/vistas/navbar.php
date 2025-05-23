@@ -75,7 +75,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
                     <a class="nav-link dropdown-toggle" href="cons" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
                     <ul class="dropdown-menu border shadow">
                       <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_poliza.php'); ?>">Pólzias</a></li>
-                      <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_referencia.php'); ?>">Pólzias</a></li>
+                      <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_referencia.php'); ?>">Referencias</a></li>
                       <li><a class="dropdown-item small" href="seg">Kardex</a></li>
                     </ul>
                   </li>

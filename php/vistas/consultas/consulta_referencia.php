@@ -86,7 +86,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
                         <!-- Botón "+" a la derecha -->
                         <div class="col d-flex align-items-start justify-content-end mt-3 mb-5">
-                            <a href="/portal_web/Contabilidad/php/vistas/formularios/form_referencias.php"
+                            <a href="../formularios/form_referencias.php"
                             class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
                             style="width: 36px; height: 36px;"
                             title="Agregar nuevo">
