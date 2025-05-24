@@ -1,3 +1,3 @@
 <?php
-$clave = 'Osc4r01';
+$clave = 'Admin.Amexport*';
 echo password_hash($clave, PASSWORD_DEFAULT);

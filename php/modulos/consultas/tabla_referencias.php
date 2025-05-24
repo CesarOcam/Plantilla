@@ -112,7 +112,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
     <tbody class="small">
         <?php if ($referencia): ?>
             <?php foreach ($referencia as $referencia): ?>
-                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_poliza.php?id=<?php echo $referencia['Id']; ?>';}"
+                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_referencia.php?id=<?php echo $referencia['Id']; ?>';}"
                     style="cursor: pointer;">
                     <th scope="row">
                         <input class="form-check-input mt-1" type="checkbox" value=""

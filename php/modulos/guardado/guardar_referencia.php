@@ -52,8 +52,41 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
     // Obtener la fecha y hora actual
     $fecha_alta = obtenerFechaHoraActual();
     $activo = 1;
-    $numero = 1;
+    $numero = '';
     $usuarioAlta = 1;
+    
+    //Se crea el número de referencia
+    $sqlAduana = "SELECT nombre_corto_aduana FROM 2201aduanas WHERE id2201aduanas = ?";
+    $stmtAduana = $con->prepare($sqlAduana);
+    $stmtAduana->execute([$aduana]);
+    $nombreCorto = $stmtAduana->fetchColumn();
+
+    if ($nombreCorto) {
+        $letra = strtoupper(substr(trim($nombreCorto), 0, 1));
+        $anioDigito = date('Y') % 10;
+        $prefijo = $letra . $anioDigito; // Ej: F5
+
+        // Buscar último número con ese prefijo
+        $sqlUltimoNumero = "
+        SELECT Numero 
+        FROM referencias 
+        WHERE Numero LIKE :prefijo 
+        ORDER BY CAST(SUBSTRING(Numero, 3) AS UNSIGNED) DESC 
+        LIMIT 1
+    ";
+        $stmtUltimo = $con->prepare($sqlUltimoNumero);
+        $stmtUltimo->execute(['prefijo' => "$prefijo%"]);
+        $ultimoNumero = $stmtUltimo->fetchColumn();
+
+        if ($ultimoNumero) {
+            $num = intval(substr($ultimoNumero, 2)) + 1;
+            $numero = $prefijo . str_pad($num % 10000, 4, "0", STR_PAD_LEFT);
+        } else {
+            $numero = $prefijo . "0000";
+        }
+    } else {
+        die("No se encontró nombre corto para la aduana seleccionada.");
+    }
 
     // Asegurarse de que todos los campos coincidan con los de la base de datos
     $sql = "INSERT INTO referencias 
@@ -132,7 +165,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
                         $total = 0;
                     }
 
-                    
+
 
                     for ($i = 0; $i < $total; $i++) {
                         if ($archivos['error'][$i] === UPLOAD_ERR_OK) {

@@ -53,9 +53,6 @@ $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $partidas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
 ?>
 
 <!DOCTYPE html>

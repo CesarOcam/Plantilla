@@ -318,7 +318,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <input name="puerto_dest" type="text"
                                     class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Puerto de Destion">
+                                    style="background-color: transparent;" placeholder="Puerto de Destino">
                             </div>
                             <div class="col-10 col-sm-6 d-flex align-items-center mt-4">
                                 <input name="comentarios" type="text"
