@@ -455,6 +455,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     flatpickr("#cierre_doc", {
         dateFormat: "Y-m-d"
     });
+    flatpickr("#cierre_desp", {
+        dateFormat: "Y-m-d"
+    });
     flatpickr("#fecha_pago", {
         dateFormat: "Y-m-d"
     });

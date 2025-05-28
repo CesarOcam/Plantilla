@@ -9,19 +9,16 @@ $paginaActual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para la consulta
 
 // Consulta para obtener los clientes (solo 20 registros por página)
-/*$stmt = $con->prepare("SELECT Id, Numero, Concepto, BeneficiarioId, Importe, EmpresaId, Fecha, Activo FROM polizas LIMIT :inicio, :registrosPorPagina");
-$stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindParam(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
-$stmt->execute();
-$poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);*/
+
 $where = [];
 $params = [];
 
-// STATUS: Solo aplicar si es 1 o 0 (no vacío)
-if (isset($_GET['status']) && ($_GET['status'] === '0' || $_GET['status'] === '1')) {
+// STATUS: Solo aplicar si está entre 1 y 4
+if (isset($_GET['status']) && in_array($_GET['status'], ['1', '2', '3', '4'])) {
     $where[] = "r.Status = :status";
     $params[':status'] = $_GET['status'];
 }
+
 
 // FECHA DESDE
 if (!empty($_GET['fecha_desde'])) {
@@ -124,17 +121,28 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     <td><?php echo $referencia['ExportadorNombre']; ?></td>
                     <td>
                         <?php
-                        if ($referencia['Status'] == 1) {
-                            echo '<span style="color: rgba(0, 128, 0, 0.6);">ACTIVA</span>';
-                        } elseif ($referencia['Status'] == 0) {
-                            echo '<span style="color: rgba(255, 0, 0, 0.6);">INACTIVA</span>';
-                        } else {
-                            echo '<span>Otro</span>';
-                        }
-                        ?>
+                            switch ($referencia['Status']) {
+                                case 1:
+                                    echo '<span>EN TRÁFICO</span>';
+                                    break;
+                                case 2:
+                                    echo '<span>EN CONTABILIDAD</span>';
+                                    break;
+                                case 3:
+                                    echo '<span>FACTURADA</span>';
+                                    break;
+                                case 4:
+                                    echo '<span>CANCELADA</span>';
+                                    break;
+                                default:
+                                    echo '<span>DESCONOCIDO</span>';
+                                    break;
+                            }
+                            ?>
                     </td>
                     <td><?php echo $referencia['FechaAlta']; ?></td>
                     <td><?php echo $referencia['FechaContabilidad']; ?></td>
+                    <td></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

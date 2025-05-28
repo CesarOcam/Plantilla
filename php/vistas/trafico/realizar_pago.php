@@ -6,52 +6,9 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-include_once(__DIR__ . '/../conexion.php'); // Ajusta el path según sea necesario
+include_once('../../modulos/conexion.php'); // Ajusta el path según sea necesario
 
-$id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
-
-//Consulta para la poliza
-$stmt = $con->prepare("
-    SELECT 
-        e.Nombre AS EmpresaNombre,
-        '' AS tipo,
-        b.Nombre AS BeneficiarioId,
-        p.Fecha,
-        p.Numero,
-        p.Concepto,
-        u.Nombre AS UsuarioAlta,
-        p.FechaAlta,
-        CASE 
-            WHEN p.Activo = 1 THEN 'ACTIVA'
-            ELSE 'INACTIVA'
-        END AS Activo
-    FROM polizas p
-    LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
-    LEFT JOIN usuarios u ON p.UsuarioAlta = u.Id
-    LEFT JOIN empresas e ON p.EmpresaId = e.Id
-    WHERE p.Id = :id
-");
-
-$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-$stmt->execute();
-$poliza = $stmt->fetch(PDO::FETCH_ASSOC);
-
-
-$stmt = $con->prepare("
-    SELECT 
-        p.Partida AS Id,
-        CONCAT(c.Numero, ' - ', c.Nombre) AS SubcuentaNombre,
-        p.Cargo,
-        p.Abono,
-        p.Observaciones,
-        p.FolioArchivo AS Factura
-    FROM partidaspolizas p
-    LEFT JOIN cuentas c ON p.SubcuentaId = c.Id
-    WHERE p.PolizaId = :id
-");
-$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-$stmt->execute();
-$partidas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+/*$id = isset($_GET['id']) ? (int) $_GET['id'] : 1;*/
 
 ?>
 
@@ -93,80 +50,70 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     <div class="card mt-3 border shadow rounded-0">
         <form id="form_Buques" method="POST">
             <div class="card-header formulario_clientes">
-                <h5 class="mb-0">Póliza: <?php echo $poliza['Numero']; ?></h5>
-                <div class="row">
-                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
-                        <label for="EmpresaId" class="form-label text-muted small">EMPRESA:</label>
-                        <input id="EmpresaId" name="EmpresaId" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['EmpresaNombre']; ?>"
-                            readonly>
+                <div class="row align-items-center justify-content-between mb-3">
+                    <!-- Título -->
+                    <div class="col-auto">
+                        <h5 class="mb-0">Realizar Pago</h5>
                     </div>
-                    <div class="col-4 col-sm-4 d-flex flex-column mt-4">
-                        <label for="tipo" class="form-label text-muted small">TIPO:</label>
-                        <input id="tipo" name="tipo" type="text"
+
+                    <!-- Botón con estilo moderno y tooltip -->
+                    <div class="col-auto">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modalSolicitudes"
+                            class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-0 shadow-sm"
+                            style="font-size: 0.9rem;" title="Ver Solicitudes">
+                            <i class="fas fa-file-alt me-2"></i> Ver Solicitudes
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-3 col-sm-5 d-flex flex-column mt-4">
+                        <label for="BeneficiarioId" class="form-label text-muted small">BENEFICIARIO:</label>
+                        <input id="BeneficiarioId" name="BeneficiarioId" type="text"
+                            class="form-control input-transparent border-0 border-bottom rounded-0"
+                            style="background-color: transparent;" value="" readonly>
+                    </div>
+                    <div class="col-2 col-sm-1 d-flex flex-column mt-4">
+                        <label for="NoSolicitud" class="form-label text-muted small">NO. SOLICITUD:</label>
+                        <input id="NoSolicitud" name="NoSolicitud" type="text"
+                            class="form-control input-transparent border-0 border-bottom rounded-0"
+                            style="background-color: transparent;" value="" readonly>
+                    </div>
+                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
+                        <label for="FechaAlta" class="form-label text-muted small">FECHA:</label>
+                        <input id="FechaAlta" name="FechaAlta" type="text"
+                            class="form-control input-transparent border-0 border-bottom rounded-0"
+                            style="background-color: transparent;" value="" readonly>
+                    </div>
+                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
+                        <label for="Fecha" class="form-label text-muted small">FECHA PÓLIZA:</label>
+                        <input id="Fecha" name="Fecha" type="text"
+                            class="form-control input-transparent border-0 border-bottom rounded-0"
+                            style="background-color: transparent;" value="" readonly>
+                    </div>
+                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
+                        <label for="AduanaId" class="form-label text-muted small">ADUANA:</label>
+                        <input id="AduanaId" name="AduanaUd" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="" readonly>
                     </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
-                        <label for="BeneficiarioId" class="form-label text-muted small">BENEFICIARIO:</label>
-                        <input id="BeneficiarioId" name="BeneficiarioId" type="text"
+                        <label for="EmpresaId" class="form-label text-muted small">EMPRESA:</label>
+                        <input id="EmpresaId" name="EmpresaId" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['BeneficiarioId']; ?>"
-                            readonly>
-                    </div>
-                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
-                        <label for="Fecha" class="form-label text-muted small">FECHA:</label>
-                        <input id="Fecha" name="Fecha" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Fecha']; ?>" readonly>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
-                        <label for="Numero" class="form-label text-muted small">NO. PÓLIZA:</label>
-                        <input id="Numero" name="Numero" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Numero']; ?>" readonly>
-                    </div>
-                    <div class="col-4 col-sm-4 d-flex flex-column mt-4">
-                        <label for="Concepto" class="form-label text-muted small">CONCEPTO:</label>
-                        <input id="Concepto" name="Concepto" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Concepto']; ?>" readonly>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
-                        <label for="UsuarioAlta" class="form-label text-muted small">USUARIO ALTA:</label>
-                        <input id="UsuarioAlta" name="UsuarioAlta" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['UsuarioAlta']; ?>"
-                            readonly>
-                    </div>
-                    <div class="col-4 col-sm-4 d-flex flex-column mt-4">
-                        <label for="FechaAlta" class="form-label text-muted small">FECHA ALTA:</label>
-                        <input id="FechaAlta" name="FechaAlta" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['FechaAlta']; ?>" readonly>
-                    </div>
-                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
-                        <label for="Activo" class="form-label text-muted small">STATUS:</label>
-                        <input id="Activo" name="Activo" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Activo']; ?>" readonly>
+                            style="background-color: transparent;" value="" readonly>
                     </div>
                 </div>
                 <div class="row mt-5">
                     <div class="col-12">
-                        <table class="table table-bordered table-sm tabla-partidas-estilo" id="tabla-partidas">
+                        <table class="table table-bordered table-sm tabla-partidas-pagar" id="tabla-partidas">
                             <thead class="table-light">
                                 <tr>
                                     <th>Subcuenta</th>
+                                    <th>Referencia</th>
                                     <th>Cargo</th>
                                     <th>Abono</th>
+                                    <th>Exportador</th>
                                     <th>Observaciones</th>
                                     <th>Factura</th>
                                 </tr>
@@ -178,7 +125,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 ?>
                                 <?php if (empty($partidas)): ?>
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted">Sin subcuentas asociadas</td>
+                                        <td colspan="7" class="text-center text-muted">Seleccione una solicitud</td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($partidas as $fila): ?>
@@ -188,24 +135,16 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         ?>
                                         <tr class="text-center">
                                             <td><?= htmlspecialchars($fila['SubcuentaNombre']) ?></td>
+                                            <td><?= htmlspecialchars($fila['Referencia']) ?></td>
                                             <td><?= '$ ' . number_format($fila['Cargo'], 2) ?></td>
                                             <td><?= '$ ' . number_format($fila['Abono'], 2) ?></td>
+                                            <td><?= htmlspecialchars($fila['Exportador']) ?></td>
                                             <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
                                             <td><?= htmlspecialchars($fila['Factura']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
-                            <?php if (!empty($partidas)): ?>
-                                <tfoot style="background-color: #f1f1f1;" class="tfoot-total">
-                                    <tr class="fw-bold text-center align-middle" style="height: 45px;">
-                                        <td>Total</td>
-                                        <td><?= '$ ' . number_format($total_cargo, 2) ?></td>
-                                        <td><?= '$ ' . number_format($total_abono, 2) ?></td>
-                                        <td colspan="2"></td>
-                                    </tr>
-                                </tfoot>
-                            <?php endif; ?>
                         </table>
 
                     </div>
@@ -224,10 +163,40 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     </div>
 </div>
 
-<script src="../../../js/actualizar_poliza.js"></script>
+<!-- Modal -->
+<div class="modal fade" id="modalSolicitudes" tabindex="-1" aria-labelledby="modalSolicitudesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content" style="border-radius: 0.3rem;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSolicitudesLabel">Solicitudes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="tabla-aduanas-container">
+                    <?php include('../../modulos/consultas_traf/tabla_pago.php'); ?>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--<script src="../../../js/actualizar_poliza.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
 
 </body>
 

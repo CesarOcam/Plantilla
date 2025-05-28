@@ -8,6 +8,13 @@ if (!isset($_SESSION['usuario_id'])) {
 include_once('../../modulos/conexion.php');
 
 //Obtener ADUANAS
+$stmt = $con->prepare("SELECT Id, Numero 
+                       FROM referencias 
+                       WHERE Status = 1");
+$stmt->execute();
+$referencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//Obtener REFERENCIAS
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
                        WHERE nombre_corto_aduana IS NOT NULL 
@@ -80,7 +87,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
     <div class="card mt-3 border shadow rounded-0">
         <form id="form_Polizas" method="POST">
             <div class="card-header formulario_polizas">
-                <h5>+ Agregar Póliza</h5>
+                <h5>Registrar Solicitud</h5>
                 <div class="row mb-5">
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input id="empresa" name="empresa" type="text"
@@ -94,7 +101,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
                                     aria-describedby="basic-addon1">
                                     <option value="" selected disabled>Aduana</option>
                                     <?php foreach ($aduana as $aduana): ?>
-                                        <option value="<?php echo $aduana['nombre_corto_aduana']; ?>">
+                                        <option value="<?php echo $aduana['id2201aduanas']; ?>">
                                             <?php echo $aduana['nombre_corto_aduana']; ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -225,7 +232,14 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
             </td>
 
             <td>
-                <input type="text" name="Referencia[]" class="form-control" readonly placeholder="Referencia automática" />
+                <select name="Referencia[]" class="form-control select2" style="width:180px;" required>
+                    <option value="">Seleccione</option>
+                    <?php foreach ($referencia as $referencia): ?>
+                        <option value="<?php echo $referencia['Id']; ?>">
+                            <?php echo htmlspecialchars($referencia['Numero']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </td>
             <td>
                 <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo" 
@@ -304,7 +318,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
     });*/
 
 </script>
-<script src="../../../js/guardar_Poliza.js"></script>
+<script src="../../../js/guardar_Solicitudes.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

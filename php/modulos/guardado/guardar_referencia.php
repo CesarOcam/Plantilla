@@ -1,5 +1,6 @@
 <?php
 include('../conexion.php');
+header('Content-Type: application/json');
 
 // Verificar que los campos obligatorios estén presentes
 if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
@@ -54,7 +55,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
     $activo = 1;
     $numero = '';
     $usuarioAlta = 1;
-    
+
     //Se crea el número de referencia
     $sqlAduana = "SELECT nombre_corto_aduana FROM 2201aduanas WHERE id2201aduanas = ?";
     $stmtAduana = $con->prepare($sqlAduana);
@@ -184,10 +185,19 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
 
 
                     $con->commit(); // Confirma la transacción
-                    echo "Referencia guardada correctamente.";
+                    echo json_encode([
+                        'success' => true,
+                        'numero' => $numero,
+                        'mensaje' => 'Referencia guardada correctamente.'
+                    ]);
+
                 }
             } else {
-                echo "Error al preparar la consulta: " . implode(", ", $con->errorInfo());
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'Error al preparar la consulta.'
+                ]);
+
             }
         } catch (PDOException $e) {
             $con->rollBack(); // Revertir cambios si algo falla

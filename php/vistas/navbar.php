@@ -46,9 +46,9 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
                 <li class="nav-item position-relative">
                   <a class="nav-link dropdown-toggle" href="trafico" role="button" data-bs-toggle="dropdown" aria-expanded="true">Tráfico</a>
                   <ul class="dropdown-menu border shadow">
-                    <li><a class="dropdown-item small" href="trafico">Referencias</a></li>
+                    <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/formularios/form_referencias.php">Referencias</a></li>
                     <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/trafico/solicitud_pago.php">Solicitud de Pago</a></li>
-                    <li><a class="dropdown-item small" href="trafico">Realizar Pago</a></li>
+                    <li><a class="dropdown-item small" href="/portal_web/Contabilidad/php/vistas/trafico/realizar_pago.php">Realizar Pago</a></li>
                     <li><a class="dropdown-item small" href="trafico">Solicitud de Anticipo</a></li>
                     <hr>
                     <li><a class="dropdown-item small" href="trafico">Registro Cuota</a></li>
@@ -74,7 +74,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
                   <li class="nav-item position-relative">
                     <a class="nav-link dropdown-toggle" href="cons" role="button" data-bs-toggle="dropdown" aria-expanded="false">Consultas</a>
                     <ul class="dropdown-menu border shadow">
-                      <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_poliza.php'); ?>">Pólzias</a></li>
+                      <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_poliza.php'); ?>">Pólizas</a></li>
                       <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_referencia.php'); ?>">Referencias</a></li>
                       <li><a class="dropdown-item small" href="seg">Kardex</a></li>
                     </ul>

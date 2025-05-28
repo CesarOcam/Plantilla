@@ -13,7 +13,7 @@ $("#form_Referencia").on("submit", function (e) {
 
     // Agregar todos los campos del formulario excepto archivos (los agregamos luego)
     for (var pair of formData.entries()) {
-        if(pair[0] !== 'documentos[]') {
+        if (pair[0] !== 'documentos[]') {
             formData2.append(pair[0], pair[1]);
         }
     }
@@ -37,23 +37,24 @@ $("#form_Referencia").on("submit", function (e) {
         success: function (response) {
             console.log('Respuesta del servidor:', response);
 
-            if (response.trim() === "Referencia guardada correctamente.") {
+            if (response.success) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Referencia guardada correctamente',
+                    html: `<strong>Número generado:</strong> ${response.numero}`,
                     confirmButtonText: 'Aceptar'
                 });
+
                 form.reset();
                 archivosCargados = [];
                 previewContainer.innerHTML = '';
                 previewContainer.classList.add('d-none');
                 dropZoneDefault.classList.remove('d-none');
-            }
-            else {
+            } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    html: response,
+                    html: response.mensaje || 'Ocurrió un error al guardar la referencia.',
                     confirmButtonText: 'Aceptar'
                 });
             }

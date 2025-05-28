@@ -538,6 +538,224 @@ body {
     vertical-align: middle;
 }
 
+.tfoot-total {
+    background-color: #f1f1f1;
+    border-top: 2px solid #333;
+    height: 45px;
+    vertical-align: middle;
+}
+.tabla-partidas-estilo tfoot td:nth-child(2),
+.tabla-partidas-estilo tfoot td:nth-child(3) {
+    width: 7%;
+    min-width: 70px;
+    max-width: 80px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+/*---------------------TABLA DEL REALIZAR PAGO----------------------------*/
+.tabla-partidas-pagar {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.tabla-partidas-pagar thead {
+    text-align: center;
+    background-color: rgb(52, 62, 83);
+    color: white;
+}
+
+.tabla-partidas-pagar thead th {
+    color: white;
+    vertical-align: middle;
+    padding: 0.5rem;
+    border: none; /* Quita bordes solo del head */
+}
+
+/* Redondeo limpio de esquinas superiores */
+.tabla-partidas-pagar thead th:first-child {
+    border-top-left-radius: 0.5rem;
+}
+
+.tabla-partidas-pagar thead th:last-child {
+    border-top-right-radius: 0.5rem;
+}
+
+.tabla-partidas-pagar tbody td {
+    vertical-align: middle;
+    padding: 0.5rem;
+    border-bottom: 1px solid #dee2e6; /* Se conserva la línea en el cuerpo */
+}
+
+.tabla-partidas-pagar input,
+.tabla-partidas-pagar select {
+    border: none;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.tabla-partidas-pagar input:focus,
+.tabla-partidas-pagar select:focus {
+    box-shadow: none;
+    outline: none;
+    border-color: #6c757d;
+}
+
+.tabla-partidas-pagar .btn-outline-primary {
+    border-color: #444;
+    color: #444;
+    background-color: transparent;
+    transition: 0.2s ease;
+}
+
+.tabla-partidas-pagar .btn-outline-primary:hover {
+    background-color: #444;
+    color: white;
+}
+
+.tabla-partidas-pagar .btn-eliminar {
+    background-color: transparent;
+    border: none;
+    color: #aa1e1e;
+    padding: 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.tabla-partidas-pagar .btn-eliminar:hover {
+    color: #d9534f;
+}
+
+.tabla-partidas-pagar .btn-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Anchuras personalizadas */
+.tabla-partidas-pagar thead th:nth-child(1),
+.tabla-partidas-pagar tbody td:nth-child(1) {
+    width: 30%;
+    min-width: 400px;
+}
+
+.tabla-partidas-pagar thead th:nth-child(2),
+.tabla-partidas-pagar tbody td:nth-child(2),
+.tabla-partidas-pagar thead th:nth-child(3),
+.tabla-partidas-pagar tbody td:nth-child(3),
+.tabla-partidas-pagar thead th:nth-child(4),
+.tabla-partidas-pagar tbody td:nth-child(4),
+.tabla-partidas-pagar thead th:nth-child(5),
+.tabla-partidas-pagar tbody td:nth-child(5) {
+    width: 7%;
+    min-width: 70px;
+    max-width: 80px;
+    text-align: center;
+}
+
+
+.tabla-partidas-pagar thead th:nth-child(5),
+.tabla-partidas-pagar tbody td:nth-child(5) {
+    width: 15%;
+    min-width: 200px;
+}
+
+.tfoot-total-pagar {
+    background-color: #f1f1f1;
+    border-top: 2px solid #333;
+    height: 45px;
+    vertical-align: middle;
+}
+.tabla-partidas-pagar tfoot td:nth-child(2),
+.tabla-partidas-pagar tfoot td:nth-child(3) {
+    width: 7%;
+    min-width: 70px;
+    max-width: 100px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+/*---------------------TABLA DEL MODAL SOLICITUDES----------------------------*/
+.tabla-solicitudes thead th:nth-child(1),
+.tabla-solicitudes tbody td:nth-child(1) {
+    width: 7%;   /* Id */
+    min-width: 70px;
+    max-width: 80px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tabla-solicitudes thead th:nth-child(2),
+.tabla-solicitudes tbody td:nth-child(2) 
+.tabla-solicitudes thead th:nth-child(3),
+.tabla-solicitudes tbody td:nth-child(3) {
+    width: 14%;  /* Empresa */
+    min-width: 120px;
+    max-width: 150px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.tabla-solicitudes thead th:nth-child(3),
+.tabla-solicitudes tbody td:nth-child(3) {
+    width: 16%;  /* Beneficiario */
+    min-width: 90px;
+    max-width: 110px;
+    padding-left: 1px;
+    padding-right: 1px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.tabla-solicitudes thead th:nth-child(4),
+.tabla-solicitudes tbody td:nth-child(4) {
+    width: 7%;  /* Importe */
+    min-width: 60px;
+    max-width: 75px;
+    padding-left: 1px;
+    padding-right: 1px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+/* Para eliminar espacio entre bordes */
+.tabla-solicitudes {
+    border-collapse: collapse;
+}
+
+/* Opcional: reduce padding en todas las celdas para maximizar espacio */
+.tabla-solicitudes th,
+.tabla-solicitudes td {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+
+
+.tabla-solicitudes thead th:nth-child(5),
+.tabla-solicitudes tbody td:nth-child(5) {
+    width: 15%;  /* Fecha */
+    min-width: 130px;
+    max-width: 160px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tabla-solicitudes thead th:nth-child(6),
+.tabla-solicitudes tbody td:nth-child(6),
+.tabla-solicitudes thead th:nth-child(7),
+.tabla-solicitudes tbody td:nth-child(7) {
+    width: 5%;  /* Iconos */
+    min-width: 40px;
+    max-width: 40px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
 
 
 

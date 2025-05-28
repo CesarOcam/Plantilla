@@ -43,8 +43,10 @@ if (!isset($_SESSION['usuario_id'])) {
                             <select id="statusInput" class="form-select rounded-0 border-0 border-bottom"
                                 style="background-color: transparent;" aria-label="Filtrar por status">
                                 <option value="">TODOS</option>
-                                <option value="1">ACTIVA</option>
-                                <option value="0">INACTIVA</option>
+                                <option value="1">EN TRÁFICO</option>
+                                <option value="2">EN CONTABILIDAD</option>
+                                <option value="3">FACTURADA</option>
+                                <option value="4">CANCELADA</option>
                             </select>
                         </div>
 

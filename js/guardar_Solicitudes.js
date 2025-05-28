@@ -19,7 +19,7 @@ $(document).ready(function () {
         console.log(formData);
 
         $.ajax({
-            url: '../../modulos/guardado/guardar_poliza.php',
+            url: '../../modulos/guardado/guardar_solicitud.php',
             type: 'POST',
             data: formData,
             success: function (response) {
@@ -42,14 +42,15 @@ $(document).ready(function () {
                 if (json.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Póliza guardada correctamente',
-                        html: `<strong>Número de póliza:</strong> ${json.numero}`,
+                        title: 'Solicitud registrada correctamente',
                         confirmButtonText: 'Aceptar'
                     });
 
                     // Limpiar el formulario
                     $("#form_Polizas")[0].reset();
                     $('#beneficiario-select').val(null).trigger('change');
+                    $('#aduana-select').val(null).trigger('change');
+                    $('#form_Polizas').find('select.select2').val(null).trigger('change');
                 } else {
                     Swal.fire({
                         icon: 'error',
