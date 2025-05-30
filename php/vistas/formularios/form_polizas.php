@@ -52,17 +52,17 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+
 
     <link rel="stylesheet" href="../../../css/style.css">
     <link rel="stylesheet" href="../../../css/style2.css">
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -82,10 +82,10 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
                             <option value="" disabled selected hidden>Tipo*</option>
-                            <option value="1" >CHEQUE</option>
-                            <option value="2" >DIARIO</option>
-                            <option value="3" >INGRESO</option>
-                            <option value="4" >EGRESO</option>
+                            <option value="1">CHEQUE</option>
+                            <option value="2">DIARIO</option>
+                            <option value="3">INGRESO</option>
+                            <option value="4">EGRESO</option>
                         </select>
                     </div>
                     <div class="col-2 col-sm-4 d-flex align-items-center mt-4">
@@ -102,8 +102,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </select>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input id="Fecha" name="fecha" type="date"
-                            class="form-control rounded-0 border-0 border-bottom"
+                        <input id="Fecha" name="fecha" type="date" class="form-control rounded-0 border-0 border-bottom"
                             style="background-color: transparent;" placeholder="Fecha y hora"
                             aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
@@ -119,8 +118,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
                         <input id="concepto" name="concepto" type="text"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Concepto" aria-label="Filtrar por fecha" aria-describedby="basic-addon1"
-                            >
+                            placeholder="Concepto" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                     </div>
                 </div>
 
@@ -175,7 +173,8 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     <!-- Botón para agregar partida -->
                     <div class="col-12 text-end mt-2">
-                        <button type="button" class="btn btn-outline-primary" onclick="agregarFila()">+ Agregar Partida</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="agregarFila()">+ Agregar
+                            Partida</button>
                     </div>
                 </div>
 
@@ -196,7 +195,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <script>
     agregarFila();
-    
+
     $(document).ready(function () {
         // Inicializar Select2
         $('#beneficiario-select').select2({
@@ -210,51 +209,70 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
         const tbody = document.querySelector('#tabla-partidas tbody');
         const fila = document.createElement('tr');
 
-        const subcuentaOptions = document.getElementById('subcuenta_template').innerHTML;
-
         fila.innerHTML = `
-            <td>
-                <select name="Subcuenta[]" class="form-control select2" style="width:180px;" required>
-                    <option value="">Seleccione</option>
-                    <?php foreach ($subcuentas as $subcuenta): ?>
-                        <option value="<?php echo $subcuenta['Id']; ?>">
-                            <?php echo htmlspecialchars($subcuenta['Numero'] . ' - ' . $subcuenta['Nombre']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </td>
-
-            <td>
-                <input type="text" name="Referencia[]" class="form-control" readonly placeholder="Referencia automática" />
-            </td>
-            <td>
-                <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo" 
-                    oninput="calcularTotales()" placeholder="0.00" />
-            </td>
-            <td>
-                <input type="number" name="Abono[]" step="0.01" class="form-control input-abono" 
-                    oninput="calcularTotales()" placeholder="0.00" />
-            </td>
-            <td>
-                <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
-            </td>
-            <td>
-                <input type="text" name="Factura[]" class="form-control" placeholder="Número de factura" />
-            </td>
-            <td class="text-center">
-                <button type="button" class="btn-eliminar" onclick="eliminarFila(this)" title="Eliminar fila">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </td>
-        `;
+        <td>
+            <select name="Subcuenta[]" class="form-control select2" style="width:180px;" required>
+                <option value="">Seleccione</option>
+                <?php foreach ($subcuentas as $subcuenta): ?>
+                    <option value="<?php echo $subcuenta['Id']; ?>">
+                        <?php echo htmlspecialchars($subcuenta['Numero'] . ' - ' . $subcuenta['Nombre']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </td>
+        <td>
+            <input type="text" name="Referencia[]" class="form-control" readonly placeholder="Referencia automática" />
+        </td>
+        <td>
+            <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo" placeholder="0.00" />
+        </td>
+        <td>
+            <input type="number" name="Abono[]" step="0.01" class="form-control input-abono" placeholder="0.00" />
+        </td>
+        <td>
+            <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
+        </td>
+        <td>
+            <input type="text" name="Factura[]" class="form-control" placeholder="Número de factura" />
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn-eliminar" onclick="eliminarFila(this)" title="Eliminar fila">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </td>
+    `;
 
         tbody.appendChild(fila);
 
-        //Inicializar Select2
+        // Inicializar Select2 para la nueva fila
         $(fila).find('select.select2').select2({
             width: '100%',
             placeholder: "Seleccione una subcuenta",
             allowClear: true
+        });
+
+        // Añadir listeners para bloqueo mutuo de inputs Cargo y Abono
+        const inputCargo = fila.querySelector('.input-cargo');
+        const inputAbono = fila.querySelector('.input-abono');
+
+        inputCargo.addEventListener('input', () => {
+            if (inputCargo.value.trim() !== '' && parseFloat(inputCargo.value) > 0) {
+                inputAbono.value = '';
+                inputAbono.disabled = true;
+            } else {
+                inputAbono.disabled = false;
+            }
+            calcularTotales();
+        });
+
+        inputAbono.addEventListener('input', () => {
+            if (inputAbono.value.trim() !== '' && parseFloat(inputAbono.value) > 0) {
+                inputCargo.value = '';
+                inputCargo.disabled = true;
+            } else {
+                inputCargo.disabled = false;
+            }
+            calcularTotales();
         });
 
         calcularTotales();
@@ -280,28 +298,10 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
             totalAbono += valor;
         });
 
-        document.getElementById('total-cargo').value = totalCargo.toFixed(2);
-        document.getElementById('total-abono').value = totalAbono.toFixed(2);
+        document.getElementById('total-cargo').value = '$ ' + totalCargo.toFixed(2);
+        document.getElementById('total-abono').value = '$ ' + totalAbono.toFixed(2);
+
     }
-
-    /*document.getElementById('form_Polizas').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const totalCargo = parseFloat(document.getElementById('total-cargo').value) || 0;
-        const totalAbono = parseFloat(document.getElementById('total-abono').value) || 0;
-
-        if (totalCargo !== totalAbono) {
-            event.preventDefault(); // Detiene el envío
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Totales incorrectos',
-                text: 'El total de cargos y abonos debe ser igual para guardar la póliza.',
-                confirmButtonColor: '#343E53'
-            });
-
-            return false;
-        }
-    });*/
 
 </script>
 <script src="../../../js/guardar_Poliza.js"></script>

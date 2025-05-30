@@ -385,6 +385,21 @@ body {
 }
 
 
+/*-------------------------DISEÑOS DE LA TABLA DINAMICA SOLICITUDES ---------------------------------------*/
+.tabla-partidas-estilo thead th:nth-child(2),
+.tabla-partidas-estilo tbody td:nth-child(2),
+.tabla-partidas-estilo thead th:nth-child(3),
+.tabla-partidas-estilo tbody td:nth-child(3) {
+    width: 7%;
+    min-width: 70px;
+    max-width: 80px;
+    text-align: right;
+}
+
+#tabla-partidas tbody td {
+  font-size: 0.9rem; /* tamaño pequeño, puedes ajustar */
+}
+
 
 /*-------------------------DISEÑOS DE LA TABLA DINAMICA POLIZA DETALLE ---------------------------------------*/
 .tabla-partidas-estilo {
@@ -580,6 +595,12 @@ body {
 .tabla-partidas-pagar thead th:last-child {
     border-top-right-radius: 0.5rem;
 }
+.tabla-partidas-pagar td,
+.tabla-partidas-pagar th {
+  border-left: none !important;
+  border-right: none !important;
+}
+
 
 .tabla-partidas-pagar tbody td {
     vertical-align: middle;
@@ -662,22 +683,28 @@ body {
     width: 15%;
     min-width: 200px;
 }
+.tabla-partidas-pagar thead td:nth-child(6),
+.tabla-partidas-pagar tbody td:nth-child(6) {
+    width: 30%;
+    min-width: 200px;
+}
 
 .tfoot-total-pagar {
+    font-size: 0.9rem;
     background-color: #f1f1f1;
     border-top: 2px solid #333;
     height: 45px;
     vertical-align: middle;
 }
+
 .tabla-partidas-pagar tfoot td:nth-child(2),
 .tabla-partidas-pagar tfoot td:nth-child(3) {
     width: 7%;
     min-width: 70px;
     max-width: 100px;
-    text-align: right;
+    text-align: center;
     vertical-align: middle;
 }
-
 /*---------------------TABLA DEL MODAL SOLICITUDES----------------------------*/
 .tabla-solicitudes thead th:nth-child(1),
 .tabla-solicitudes tbody td:nth-child(1) {

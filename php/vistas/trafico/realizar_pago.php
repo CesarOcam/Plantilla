@@ -8,8 +8,6 @@ if (!isset($_SESSION['usuario_id'])) {
 
 include_once('../../modulos/conexion.php'); // Ajusta el path según sea necesario
 
-/*$id = isset($_GET['id']) ? (int) $_GET['id'] : 1;*/
-
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +46,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Buques" method="POST">
+        <form id="form_Pago" method="POST">
             <div class="card-header formulario_clientes">
                 <div class="row align-items-center justify-content-between mb-3">
                     <!-- Título -->
@@ -93,7 +91,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     </div>
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="AduanaId" class="form-label text-muted small">ADUANA:</label>
-                        <input id="AduanaId" name="AduanaUd" type="text"
+                        <input id="AduanaId" name="AduanaId" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="" readonly>
                     </div>
@@ -106,7 +104,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 </div>
                 <div class="row mt-5">
                     <div class="col-12">
-                        <table class="table table-bordered table-sm tabla-partidas-pagar" id="tabla-partidas">
+                        <table class="table table-bordered table-sm tabla-partidas-pagar"
+                            id="tabla-partidas">
                             <thead class="table-light">
                                 <tr>
                                     <th>Subcuenta</th>
@@ -146,14 +145,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <?php endif; ?>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
                 <div class="row justify-content-end mt-5">
-                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                        <button type="button" class="btn btn-outline-danger rounded-0"
-                            onclick="window.location.href='../../vistas/consultas/consulta_poliza.php'">Salir</button>
-                    </div>
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>
                     </div>
@@ -185,7 +179,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
 
-<!--<script src="../../../js/actualizar_poliza.js"></script>-->
+<script src="../../../js/guardar_Pago.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

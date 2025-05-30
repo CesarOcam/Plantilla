@@ -54,7 +54,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
                     <li><a class="dropdown-item small" href="trafico">Registro Cuota</a></li>
                     <li><a class="dropdown-item small" href="trafico">Registro Facturas</a></li>
                     <hr>
-                    <li><a class="dropdown-item small" href="trafico">Generar Poliza</a></li>
+                    <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/formularios/form_polizas.php">Generar Póliza</a></li>
                   </ul>
                 </li>
                 <li class="nav-item position-relative">

@@ -41,6 +41,32 @@ if (isset($_POST['beneficiario'])) {
     $usuarioAlta = 1;
     $exportadoCoi = 1;
 
+
+    // GENERAR NÚMERO DE PÓLIZA AUTOMÁTICO SEGÚN EL TIPO
+    $numero_poliza = '';
+    if (!empty($tipo)) {
+        $tipo_int = (int) $tipo;
+        $prefijo = match ($tipo_int) {
+            1 => 'C',
+            2 => 'D',
+            3 => 'I',
+            4 => 'E',
+            default => 'X',
+        };
+
+        $sql_ultimo = "SELECT Numero FROM polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
+        $stmt_ultimo = $con->prepare($sql_ultimo);
+        $stmt_ultimo->execute([$prefijo]);
+
+        $ultimo_numero = 0;
+        if ($fila = $stmt_ultimo->fetch(PDO::FETCH_ASSOC)) {
+            $ultimo_numero = (int) substr($fila['Numero'], 1); // Extraer número sin prefijo
+        }
+
+        $nuevo_numero = $ultimo_numero + 1;
+        $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
+    }
+
     // Asegurarse de que todos los campos coincidan con los de la base de datos
     $sql_insert_poliza = "INSERT INTO polizas 
     (
@@ -105,10 +131,10 @@ if (isset($_POST['beneficiario'])) {
 
 
 } else {
-   echo json_encode([
-    'success' => false,
-    'mensaje' => 'Error al guardar la póliza: ' . implode(", ", $stmt_poliza->errorInfo())
-]);
-exit;
+    echo json_encode([
+        'success' => false,
+        'mensaje' => 'Error al guardar la póliza: ' . implode(", ", $stmt_poliza->errorInfo())
+    ]);
+    exit;
 }
 ?>

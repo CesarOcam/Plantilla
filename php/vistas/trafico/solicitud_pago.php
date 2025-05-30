@@ -145,13 +145,12 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
                 <!-- Tabla dinámica -->
                 <div class="row mt-5">
                     <div class="col-12">
-                        <table class="table" id="tabla-partidas">
+                        <table class="table-partidas" id="tabla-partidas">
                             <thead>
                                 <tr class="text-muted">
                                     <th class="col-subcuenta">Subcuenta</th>
                                     <th class="col-referencia">Referencia</th>
-                                    <th class="col-cargo">Cargo</th>
-                                    <th class="col-abono">Abono</th>
+                                    <th class="col-cargo">Importe</th>
                                     <th class="col-observaciones">Observaciones</th>
                                     <th class="col-factura">Factura</th>
                                     <th class="col-accion">Acción</th>
@@ -246,10 +245,6 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
                     oninput="calcularTotales()" placeholder="0.00" />
             </td>
             <td>
-                <input type="number" name="Abono[]" step="0.01" class="form-control input-abono" 
-                    oninput="calcularTotales()" placeholder="0.00" />
-            </td>
-            <td>
                 <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
             </td>
             <td>
@@ -282,41 +277,16 @@ include($_SERVER['DOCUMENT_ROOT'] . '/portal_web/Contabilidad/php/vistas/navbar.
 
     function calcularTotales() {
         let totalCargo = 0;
-        let totalAbono = 0;
 
         document.querySelectorAll('.input-cargo').forEach(input => {
             const valor = parseFloat(input.value) || 0;
             totalCargo += valor;
         });
 
-        document.querySelectorAll('.input-abono').forEach(input => {
-            const valor = parseFloat(input.value) || 0;
-            totalAbono += valor;
-        });
 
-        document.getElementById('total-cargo').value = totalCargo.toFixed(2);
-        document.getElementById('total-abono').value = totalAbono.toFixed(2);
+        document.getElementById('total-cargo').value = '$' + totalCargo.toFixed(2);
+
     }
-
-    /*document.getElementById('form_Polizas').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const totalCargo = parseFloat(document.getElementById('total-cargo').value) || 0;
-        const totalAbono = parseFloat(document.getElementById('total-abono').value) || 0;
-
-        if (totalCargo !== totalAbono) {
-            event.preventDefault(); // Detiene el envío
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Totales incorrectos',
-                text: 'El total de cargos y abonos debe ser igual para guardar la póliza.',
-                confirmButtonColor: '#343E53'
-            });
-
-            return false;
-        }
-    });*/
-
 </script>
 <script src="../../../js/guardar_Solicitudes.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"

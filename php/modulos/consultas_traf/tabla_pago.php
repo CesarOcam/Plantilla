@@ -5,6 +5,24 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
+//Obtener SUBCUENTAS
+$stmt = $con->prepare("
+    SELECT Id, Numero, Nombre 
+    FROM cuentas
+    WHERE Activo = 1
+      AND EmpresaId = 2
+      AND (
+          SUBSTRING_INDEX(Numero, '-', 1) = '120' OR
+          SUBSTRING_INDEX(Numero, '-', 1) = '123'
+      )
+    ORDER BY Nombre
+");
+
+$stmt->execute();
+$subcuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
 // Número de registros por página (4 en este caso)
 $registrosPorPagina = 4;
 
@@ -77,7 +95,8 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
 
                     </td>
                     <td>
-                        <button type="button" class="btn btn-link p-0" data-bs-toggle="tooltip" data-bs-placement="top"
+                        <button type="button" class="btn btn-link p-0 btn-trash" data-id="<?php echo $solicitud['Id']; ?>"
+                            data-bs-toggle="tooltip" data-bs-placement="top"
                             title="Eliminar" style="color: #a19b9b; font-size: 1.5rem; cursor: pointer;">
                             <i class="fas fa-trash-alt"></i>
                         </button>
@@ -114,5 +133,9 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
         </li>
     </ul>
 </nav>
+<script>
+    const subcuentas = <?php echo json_encode($subcuentas); ?>;
+</script>
 <!--Script para obtener los datos relacionados a la solicitud-->
 <script src="../../../js/consultar_solicitudes_tabla.js"></script>
+<script src="../../../js/eliminar/eliminar_solicitudes_tabla.js"></script>

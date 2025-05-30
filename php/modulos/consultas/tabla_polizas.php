@@ -166,3 +166,4 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
         </li>
     </ul>
 </nav>
+

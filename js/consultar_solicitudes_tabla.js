@@ -46,11 +46,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                     totalCargo += parseFloat(p.Cargo || 0);
                                     totalAbono += parseFloat(p.Abono || 0);
                                     const fila = `
-                                    <tr class="text-center">
+                                    <tr class="text-center" style="background-color: rgba(0, 0, 0, 0.05);">
                                         <td>${p.SubcuentaNombre || ''}</td>
                                         <td>${p.ReferenciaNumero || ''}</td>
                                         <td>$ ${parseFloat(p.Cargo).toFixed(2)}</td>
-                                        <td>$ ${parseFloat(p.Abono).toFixed(2)}</td>
+                                        <td></td>
                                         <td>${p.RazonSocialExportador || ''}</td>
                                         <td>${p.Observaciones || ''}</td>
                                         <td>${p.NumeroFactura || ''}</td>
@@ -58,6 +58,52 @@ document.addEventListener('DOMContentLoaded', function () {
                                     cuerpoTabla.insertAdjacentHTML('beforeend', fila);
                                 });
 
+                                // Crear opciones dinámicamente
+                                let opcionesSubcuenta = '<option value="">Seleccionar subcuenta</option>';
+                                subcuentas.forEach(s => {
+                                    opcionesSubcuenta += `<option value="${s.Id}">${s.Numero} - ${s.Nombre}</option>`;
+                                });
+
+                                const filaEditable = `
+                                <tr class="text-center align-middle">
+                                    <!-- Subcuenta -->
+                                    <td>
+                                        <select name="SubcuentaId_pago" class="form-control form-control-sm select-subcuenta text-center" style="width: 100%;">
+                                            ${opcionesSubcuenta}
+                                        </select>
+                                    </td>
+                                <!-- Referencia vacía -->
+                                <td colspan="2"></td>
+
+                                <!-- Abono centrado -->
+                                <td>
+                                    $ ${totalCargo.toFixed(2)}
+                                </td>
+
+                                <!-- Exportador vacío -->
+                                <td></td>
+
+                                <!-- Observaciones centradas -->
+                                <td>
+                                    <input type="text" name="Observaciones_pago"
+                                        class="form-control form-control-sm text-center" 
+                                        placeholder="Observaciones" />
+                                </td>
+
+                                <!-- Factura vacía -->
+                                <td></td>
+                            </tr>
+                                `;
+                                cuerpoTabla.insertAdjacentHTML('beforeend', filaEditable);
+
+                                // Inicializar Select2 en la nueva fila
+                                setTimeout(() => {
+                                    $('.select-subcuenta').select2({
+                                        placeholder: 'Seleccionar subcuenta',
+                                        width: '100%',
+                                        allowClear: false
+                                    });
+                                }, 0);
                                 // Crear tfoot
                                 let pieTabla = document.querySelector('#tabla-partidas tfoot');
                                 if (!pieTabla) {
@@ -68,10 +114,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
 
                                 const totalRow = `
-                                <tr class="fw-bold text-center align-middle" style="height: 45px;">
+                                <tr class="fw-bold text-center align-middle" style="height: 45px; text-align: center;">
                                     <td colspan="2">Total: </td>
                                     <td>$ ${totalCargo.toFixed(2)}</td>
-                                    <td>$ ${totalAbono.toFixed(2)}</td>
+                                    <td>$ ${totalCargo.toFixed(2)}</td>
                                     <td colspan="3"></td>
                                 </tr>`;
                                 pieTabla.innerHTML = totalRow;
@@ -95,7 +141,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     console.error('Error al obtener solicitud:', error);
-                    alert('Error al obtener los datos');
+                    if (error.response) {
+                        // Si usas axios o similar
+                        console.error('Response error:', error.response);
+                    }
                 });
         });
     });
