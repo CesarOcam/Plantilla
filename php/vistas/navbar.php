@@ -49,7 +49,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
                     <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/formularios/form_referencias.php">Referencias</a></li>
                     <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/trafico/solicitud_pago.php">Solicitud de Pago</a></li>
                     <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/trafico/realizar_pago.php">Realizar Pago</a></li>
-                    <li><a class="dropdown-item small" href="trafico">Solicitud de Anticipo</a></li>
+                    <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/trafico/solicitud_anticipo.php">Solicitud de Anticipo</a></li>
                     <hr>
                     <li><a class="dropdown-item small" href="trafico">Registro Cuota</a></li>
                     <li><a class="dropdown-item small" href="trafico">Registro Facturas</a></li>

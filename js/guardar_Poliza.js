@@ -2,8 +2,9 @@ $(document).ready(function () {
     $("#form_Polizas").on("submit", function (e) {
         e.preventDefault();
 
-        const totalCargo = parseFloat(document.getElementById('total-cargo').value) || 0;
-        const totalAbono = parseFloat(document.getElementById('total-abono').value) || 0;
+        // ✅ Limpiar formato
+        const totalCargo = parseFloat(document.getElementById('total-cargo').value.replace('$', '').trim()) || 0;
+        const totalAbono = parseFloat(document.getElementById('total-abono').value.replace('$', '').trim()) || 0;
 
         if (totalCargo !== totalAbono) {
             Swal.fire({
@@ -12,7 +13,7 @@ $(document).ready(function () {
                 text: 'El total de cargos y abonos debe ser igual para guardar la póliza.',
                 confirmButtonColor: '#343E53'
             });
-            return false;  // Salir y no hacer nada más
+            return false;
         }
 
         var formData = $(this).serialize();

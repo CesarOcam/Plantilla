@@ -200,7 +200,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         // Inicializar Select2
         $('#beneficiario-select').select2({
             placeholder: 'Beneficiario',
-            allowClear: true,
+            allowClear: false,
             width: '100%'
         });
     });
@@ -248,7 +248,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         $(fila).find('select.select2').select2({
             width: '100%',
             placeholder: "Seleccione una subcuenta",
-            allowClear: true
+            allowClear: false,
         });
 
         // Añadir listeners para bloqueo mutuo de inputs Cargo y Abono

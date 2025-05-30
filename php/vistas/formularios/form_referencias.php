@@ -438,7 +438,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         function initSelect2(id, placeholder) {
             $(id).select2({
                 placeholder: placeholder,
-                allowClear: true,
+                allowClear: false,
                 width: '100%'
             });
         }

@@ -73,7 +73,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+
 
     <link rel="stylesheet" href="../../../css/style.css">
     <link rel="stylesheet" href="../../../css/style2.css">
@@ -87,7 +87,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Polizas" method="POST">
+        <form id="form_Anticipos" method="POST">
             <div class="card-header formulario_polizas">
                 <h5>Registrar Solicitud</h5>
                 <div class="row mb-5">
@@ -98,17 +98,18 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             aria-describedby="basic-addon1" readonly>
                     </div>
                     <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
-                        <input type="hidden" id="aduana-hidden" name="aduana" value=""> 
-                        <select id="aduana-select" name="aduana" class="form-control rounded-0 border-0 border-bottom text-muted"
-                                    style="background-color: transparent;" aria-label="Filtrar por fecha"
-                                    aria-describedby="basic-addon1">
-                                    <option value="" selected disabled>Aduana</option>
-                                    <?php foreach ($aduana as $aduana): ?>
-                                        <option value="<?php echo $aduana['id2201aduanas']; ?>">
-                                            <?php echo $aduana['nombre_corto_aduana']; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                        <input type="hidden" id="aduana-hidden" name="aduana" value="">
+                        <select id="aduana-select" name="aduana"
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
+                            style="background-color: transparent;" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1">
+                            <option value="" selected disabled>Aduana</option>
+                            <?php foreach ($aduana as $aduana): ?>
+                                <option value="<?php echo $aduana['id2201aduanas']; ?>">
+                                    <?php echo $aduana['nombre_corto_aduana']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="col-2 col-sm-3 d-flex align-items-center mt-4">
                         <select id="beneficiario-select" name="beneficiario"
@@ -175,7 +176,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
                     <!-- Botón para agregar partida -->
                     <div class="col-12 text-end mt-2">
-                        <button type="button" class="btn btn-outline-primary" onclick="agregarFila()">+ Agregar Partida</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="agregarFila()">+ Agregar
+                            Partida</button>
                     </div>
                 </div>
 
@@ -192,47 +194,47 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <script>
 
-const referencias = <?php echo json_encode($referencia); ?>;
+    const referencias = <?php echo json_encode($referencia); ?>;
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Inicializar Select2 SOLO UNA VEZ
-    $('#aduana-select').select2({
-        placeholder: 'Aduana*',
-        allowClear: false,
-        width: '100%'
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inicializar Select2 SOLO UNA VEZ
+        $('#aduana-select').select2({
+            placeholder: 'Aduana*',
+            allowClear: false,
+            width: '100%'
+        });
+
+        $('#beneficiario-select').select2({
+            placeholder: 'Beneficiario',
+            allowClear: false,
+            width: '100%'
+        });
     });
 
-    $('#beneficiario-select').select2({
-        placeholder: 'Beneficiario',
-        allowClear: false,
-        width: '100%'
-    });
-});
+    function agregarFila() {
+        // Leer la letra de la aduana actual cada vez que se agrega una fila
+        const aduanaSelect = document.getElementById('aduana-select');
+        const selectedOption = aduanaSelect.options[aduanaSelect.selectedIndex]?.text.trim() || '';
+        const letraAduanaSeleccionada = selectedOption.charAt(0).toUpperCase();
 
-function agregarFila() {
-    // Leer la letra de la aduana actual cada vez que se agrega una fila
-    const aduanaSelect = document.getElementById('aduana-select');
-    const selectedOption = aduanaSelect.options[aduanaSelect.selectedIndex]?.text.trim() || '';
-    const letraAduanaSeleccionada = selectedOption.charAt(0).toUpperCase();
+        if (!letraAduanaSeleccionada) {
+            alert("Primero selecciona una aduana.");
+            return;
+        }
 
-    if (!letraAduanaSeleccionada) {
-        alert("Primero selecciona una aduana.");
-        return;
-    }
+        // Filtrar referencias por letra de la aduana
+        const referenciasFiltradas = referencias.filter(r => r.Numero.charAt(0).toUpperCase() === letraAduanaSeleccionada);
 
-    // Filtrar referencias por letra de la aduana
-    const referenciasFiltradas = referencias.filter(r => r.Numero.charAt(0).toUpperCase() === letraAduanaSeleccionada);
+        const tbody = document.querySelector('#tabla-partidas tbody');
+        const fila = document.createElement('tr');
 
-    const tbody = document.querySelector('#tabla-partidas tbody');
-    const fila = document.createElement('tr');
+        // Generar opciones de referencia
+        let referenciaOptions = '<option value="">Seleccione</option>';
+        referenciasFiltradas.forEach(ref => {
+            referenciaOptions += `<option value="${ref.Id}">${ref.Numero}</option>`;
+        });
 
-    // Generar opciones de referencia
-    let referenciaOptions = '<option value="">Seleccione</option>';
-    referenciasFiltradas.forEach(ref => {
-        referenciaOptions += `<option value="${ref.Id}">${ref.Numero}</option>`;
-    });
-
-    fila.innerHTML = `
+        fila.innerHTML = `
         <td>
             <select name="Subcuenta[]" class="form-control select2" style="width:180px;" required>
                 <option value="">Seleccione</option>
@@ -265,46 +267,46 @@ function agregarFila() {
         </td>
     `;
 
-    tbody.appendChild(fila);
+        tbody.appendChild(fila);
 
-    if (tbody.rows.length > 0) {
-        aduanaSelect.disabled = true;
-        document.getElementById('aduana-hidden').value = aduanaSelect.value;
-    } else {
-        aduanaSelect.disabled = false;
-        document.getElementById('aduana-hidden').value = '';
+        if (tbody.rows.length > 0) {
+            aduanaSelect.disabled = true;
+            document.getElementById('aduana-hidden').value = aduanaSelect.value;
+        } else {
+            aduanaSelect.disabled = false;
+            document.getElementById('aduana-hidden').value = '';
+        }
+
+        // Inicializar Select2 SOLO para los selects de la fila recién creada
+        $(fila).find('select.select2').select2({
+            width: '100%',
+            placeholder: "Seleccione una opción",
+            allowClear: false
+        });
+
+        calcularTotales();
     }
 
-    // Inicializar Select2 SOLO para los selects de la fila recién creada
-    $(fila).find('select.select2').select2({
-        width: '100%',
-        placeholder: "Seleccione una opción",
-        allowClear: false
-    });
+    function eliminarFila(boton) {
+        const fila = boton.closest('tr');
+        fila.remove();
+        calcularTotales();
 
-    calcularTotales();
-}
-
-function eliminarFila(boton) {
-    const fila = boton.closest('tr');
-    fila.remove();
-    calcularTotales();
-
-    const tbody = document.querySelector('#tabla-partidas tbody');
-    if (tbody.rows.length === 0) {
-        document.getElementById('aduana-select').disabled = false;
+        const tbody = document.querySelector('#tabla-partidas tbody');
+        if (tbody.rows.length === 0) {
+            document.getElementById('aduana-select').disabled = false;
+        }
     }
-}
 
-function calcularTotales() {
-    let totalCargo = 0;
-    document.querySelectorAll('.input-cargo').forEach(input => {
-        const valor = parseFloat(input.value) || 0;
-        totalCargo += valor;
-    });
+    function calcularTotales() {
+        let totalCargo = 0;
+        document.querySelectorAll('.input-cargo').forEach(input => {
+            const valor = parseFloat(input.value) || 0;
+            totalCargo += valor;
+        });
 
-    document.getElementById('total-cargo').value = '$' + totalCargo.toFixed(2);
-}
+        document.getElementById('total-cargo').value = '$' + totalCargo.toFixed(2);
+    }
 
 </script>
 <script src="../../../js/guardar_Solicitudes.js"></script>
