@@ -194,31 +194,58 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
 <script>
-    agregarFila();
-    
-    $(document).ready(function() {
-        // Inicializar Select2
-        $('#aduana-select').select2({
-            placeholder: 'Aduana*',
-            allowClear: true,
-            width: '100%'
-        });
-    });
-    
-    $(document).ready(function () {
-        // Inicializar Select2
-        $('#beneficiario-select').select2({
-            placeholder: 'Beneficiario',
-            allowClear: true,
-            width: '100%'
+
+    const referencias = <?php echo json_encode($referencia); ?>;
+    let letraAduanaSeleccionada = '';
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const aduanaSelect = document.getElementById('aduana-select');
+        aduanaSelect.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex].text.trim();
+            letraAduanaSeleccionada = selectedOption.charAt(0).toUpperCase();
         });
     });
 
+
+
     function agregarFila() {
+
+        if (!letraAduanaSeleccionada) {
+        alert("Primero selecciona una aduana.");
+        return;
+        }
+        
+    // Filtrar referencias por letra de la aduana
+    const referenciasFiltradas = referencias.filter(r => r.Numero.charAt(0).toUpperCase() === letraAduanaSeleccionada);
+
+    $(document).ready(function() {
+        // Inicializar Select2
+        $('#aduana-select').select2({
+                placeholder: 'Aduana*',
+                allowClear: false,
+                width: '100%'
+            });
+        });
+        
+        $(document).ready(function () {
+            // Inicializar Select2
+            $('#beneficiario-select').select2({
+                placeholder: 'Beneficiario',
+                allowClear: false,
+                width: '100%'
+            });
+        });
+
         const tbody = document.querySelector('#tabla-partidas tbody');
         const fila = document.createElement('tr');
 
         const subcuentaOptions = document.getElementById('subcuenta_template').innerHTML;
+
+        // Generar HTML para opciones de referencia
+        let referenciaOptions = '<option value="">Seleccione</option>';
+        referenciasFiltradas.forEach(ref => {
+            referenciaOptions += `<option value="${ref.Id}">${ref.Numero}</option>`;
+        });
 
         fila.innerHTML = `
             <td>
@@ -234,14 +261,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
             <td>
                 <select name="Referencia[]" class="form-control select2" style="width:180px;" required>
-                    <option value="">Seleccione</option>
-                    <?php foreach ($referencia as $referencia): ?>
-                        <option value="<?php echo $referencia['Id']; ?>">
-                            <?php echo htmlspecialchars($referencia['Numero']); ?>
-                        </option>
-                    <?php endforeach; ?>
+                    ${referenciaOptions}
                 </select>
             </td>
+
             <td>
                 <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo" 
                     oninput="calcularTotales()" placeholder="0.00" />
@@ -261,20 +284,30 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
         tbody.appendChild(fila);
 
+        if (tbody.rows.length > 0) {
+        document.getElementById('aduana-select').disabled = true;
+        }
+
         //Inicializar Select2
         $(fila).find('select.select2').select2({
             width: '100%',
             placeholder: "Seleccione una subcuenta",
-            allowClear: true
+            allowClear: false
         });
 
         calcularTotales();
     }
 
-    function eliminarFila(boton) {
+        function eliminarFila(boton) {
         const fila = boton.closest('tr');
         fila.remove();
         calcularTotales(); // actualizar totales al eliminar
+
+        // Si ya no hay filas, habilitar el select de aduana
+        const tbody = document.querySelector('#tabla-partidas tbody');
+        if (tbody.rows.length === 0) {
+            document.getElementById('aduana-select').disabled = false;
+        }
     }
 
     function calcularTotales() {
