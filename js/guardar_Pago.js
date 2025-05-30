@@ -1,4 +1,4 @@
-document.getElementById('form_Pago').addEventListener('submit', function(event) {
+document.getElementById('form_Pago').addEventListener('submit', function (event) {
     event.preventDefault(); // Evita que se envíe de inmediato
 
     const formData = new FormData(this);
@@ -15,7 +15,7 @@ document.getElementById('form_Pago').addEventListener('submit', function(event) 
         data: formData,
         processData: false,  // Muy importante para enviar FormData sin procesar
         contentType: false,  // Muy importante para enviar FormData correctamente
-        success: function(response) {
+        success: function (response) {
             console.log('Respuesta del servidor:', response);
 
             let json;
@@ -52,7 +52,13 @@ document.getElementById('form_Pago').addEventListener('submit', function(event) 
                     if (tbody) {
                         tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Sin datos disponibles</td></tr>`;
                     }
+                    const tfoot = tablaPago.querySelector('tfoot');
+                    if (tfoot) {
+                        tfoot.innerHTML = '';  // Vacías el contenido del tfoot
+                    }
                 }
+                //Limpiar el modal
+                $('#tabla-aduanas-container').load('../../modulos/consultas_traf/tabla_solicitudes.php');
 
             } else {
                 Swal.fire({
@@ -63,7 +69,7 @@ document.getElementById('form_Pago').addEventListener('submit', function(event) 
                 });
             }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error('Error en la solicitud Ajax:', error);
             Swal.fire({
                 icon: 'error',

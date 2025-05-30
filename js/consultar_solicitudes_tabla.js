@@ -1,3 +1,4 @@
+//TABLA DINAMICA DE PAGO DE SOLICITUDES
 document.addEventListener('DOMContentLoaded', function () {
     const botones = document.querySelectorAll('.btn-aceptar');
 

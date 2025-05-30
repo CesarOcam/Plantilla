@@ -98,6 +98,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             aria-describedby="basic-addon1" readonly>
                     </div>
                     <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
+                        <input type="hidden" id="aduana-hidden" name="aduana" value=""> 
                         <select id="aduana-select" name="aduana" class="form-control rounded-0 border-0 border-bottom text-muted"
                                     style="background-color: transparent;" aria-label="Filtrar por fecha"
                                     aria-describedby="basic-addon1">
@@ -180,10 +181,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                        <button type="button" class="btn btn-outline-danger rounded-0"
-                            onclick="window.location.href='../../vistas/catalogos/cat_Polizas.php'">Salir</button>
-                    </div>
-                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>
                     </div>
                 </div>
@@ -195,133 +192,120 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <script>
 
-    const referencias = <?php echo json_encode($referencia); ?>;
-    let letraAduanaSeleccionada = '';
+const referencias = <?php echo json_encode($referencia); ?>;
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const aduanaSelect = document.getElementById('aduana-select');
-        aduanaSelect.addEventListener('change', function () {
-            const selectedOption = this.options[this.selectedIndex].text.trim();
-            letraAduanaSeleccionada = selectedOption.charAt(0).toUpperCase();
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    // Inicializar Select2 SOLO UNA VEZ
+    $('#aduana-select').select2({
+        placeholder: 'Aduana*',
+        allowClear: false,
+        width: '100%'
     });
 
+    $('#beneficiario-select').select2({
+        placeholder: 'Beneficiario',
+        allowClear: false,
+        width: '100%'
+    });
+});
 
+function agregarFila() {
+    // Leer la letra de la aduana actual cada vez que se agrega una fila
+    const aduanaSelect = document.getElementById('aduana-select');
+    const selectedOption = aduanaSelect.options[aduanaSelect.selectedIndex]?.text.trim() || '';
+    const letraAduanaSeleccionada = selectedOption.charAt(0).toUpperCase();
 
-    function agregarFila() {
-
-        if (!letraAduanaSeleccionada) {
+    if (!letraAduanaSeleccionada) {
         alert("Primero selecciona una aduana.");
         return;
-        }
-        
+    }
+
     // Filtrar referencias por letra de la aduana
     const referenciasFiltradas = referencias.filter(r => r.Numero.charAt(0).toUpperCase() === letraAduanaSeleccionada);
 
-    $(document).ready(function() {
-        // Inicializar Select2
-        $('#aduana-select').select2({
-                placeholder: 'Aduana*',
-                allowClear: false,
-                width: '100%'
-            });
-        });
-        
-        $(document).ready(function () {
-            // Inicializar Select2
-            $('#beneficiario-select').select2({
-                placeholder: 'Beneficiario',
-                allowClear: false,
-                width: '100%'
-            });
-        });
+    const tbody = document.querySelector('#tabla-partidas tbody');
+    const fila = document.createElement('tr');
 
-        const tbody = document.querySelector('#tabla-partidas tbody');
-        const fila = document.createElement('tr');
+    // Generar opciones de referencia
+    let referenciaOptions = '<option value="">Seleccione</option>';
+    referenciasFiltradas.forEach(ref => {
+        referenciaOptions += `<option value="${ref.Id}">${ref.Numero}</option>`;
+    });
 
-        const subcuentaOptions = document.getElementById('subcuenta_template').innerHTML;
+    fila.innerHTML = `
+        <td>
+            <select name="Subcuenta[]" class="form-control select2" style="width:180px;" required>
+                <option value="">Seleccione</option>
+                <?php foreach ($subcuentas as $subcuenta): ?>
+                    <option value="<?php echo $subcuenta['Id']; ?>">
+                        <?php echo htmlspecialchars($subcuenta['Numero'] . ' - ' . $subcuenta['Nombre']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </td>
+        <td>
+            <select name="Referencia[]" class="form-control select2" style="width:180px;" required>
+                ${referenciaOptions}
+            </select>
+        </td>
+        <td>
+            <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo" 
+                oninput="calcularTotales()" placeholder="0.00" />
+        </td>
+        <td>
+            <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
+        </td>
+        <td>
+            <input type="text" name="Factura[]" class="form-control" placeholder="Número de factura" />
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn-eliminar" onclick="eliminarFila(this)" title="Eliminar fila">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </td>
+    `;
 
-        // Generar HTML para opciones de referencia
-        let referenciaOptions = '<option value="">Seleccione</option>';
-        referenciasFiltradas.forEach(ref => {
-            referenciaOptions += `<option value="${ref.Id}">${ref.Numero}</option>`;
-        });
+    tbody.appendChild(fila);
 
-        fila.innerHTML = `
-            <td>
-                <select name="Subcuenta[]" class="form-control select2" style="width:180px;" required>
-                    <option value="">Seleccione</option>
-                    <?php foreach ($subcuentas as $subcuenta): ?>
-                        <option value="<?php echo $subcuenta['Id']; ?>">
-                            <?php echo htmlspecialchars($subcuenta['Numero'] . ' - ' . $subcuenta['Nombre']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </td>
-
-            <td>
-                <select name="Referencia[]" class="form-control select2" style="width:180px;" required>
-                    ${referenciaOptions}
-                </select>
-            </td>
-
-            <td>
-                <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo" 
-                    oninput="calcularTotales()" placeholder="0.00" />
-            </td>
-            <td>
-                <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
-            </td>
-            <td>
-                <input type="text" name="Factura[]" class="form-control" placeholder="Número de factura" />
-            </td>
-            <td class="text-center">
-                <button type="button" class="btn-eliminar" onclick="eliminarFila(this)" title="Eliminar fila">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </td>
-        `;
-
-        tbody.appendChild(fila);
-
-        if (tbody.rows.length > 0) {
-        document.getElementById('aduana-select').disabled = true;
-        }
-
-        //Inicializar Select2
-        $(fila).find('select.select2').select2({
-            width: '100%',
-            placeholder: "Seleccione una subcuenta",
-            allowClear: false
-        });
-
-        calcularTotales();
+    if (tbody.rows.length > 0) {
+        aduanaSelect.disabled = true;
+        document.getElementById('aduana-hidden').value = aduanaSelect.value;
+    } else {
+        aduanaSelect.disabled = false;
+        document.getElementById('aduana-hidden').value = '';
     }
 
-        function eliminarFila(boton) {
-        const fila = boton.closest('tr');
-        fila.remove();
-        calcularTotales(); // actualizar totales al eliminar
+    // Inicializar Select2 SOLO para los selects de la fila recién creada
+    $(fila).find('select.select2').select2({
+        width: '100%',
+        placeholder: "Seleccione una opción",
+        allowClear: false
+    });
 
-        // Si ya no hay filas, habilitar el select de aduana
-        const tbody = document.querySelector('#tabla-partidas tbody');
-        if (tbody.rows.length === 0) {
-            document.getElementById('aduana-select').disabled = false;
-        }
+    calcularTotales();
+}
+
+function eliminarFila(boton) {
+    const fila = boton.closest('tr');
+    fila.remove();
+    calcularTotales();
+
+    const tbody = document.querySelector('#tabla-partidas tbody');
+    if (tbody.rows.length === 0) {
+        document.getElementById('aduana-select').disabled = false;
     }
+}
 
-    function calcularTotales() {
-        let totalCargo = 0;
+function calcularTotales() {
+    let totalCargo = 0;
+    document.querySelectorAll('.input-cargo').forEach(input => {
+        const valor = parseFloat(input.value) || 0;
+        totalCargo += valor;
+    });
 
-        document.querySelectorAll('.input-cargo').forEach(input => {
-            const valor = parseFloat(input.value) || 0;
-            totalCargo += valor;
-        });
+    document.getElementById('total-cargo').value = '$' + totalCargo.toFixed(2);
+}
 
-
-        document.getElementById('total-cargo').value = '$' + totalCargo.toFixed(2);
-
-    }
 </script>
 <script src="../../../js/guardar_Solicitudes.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"

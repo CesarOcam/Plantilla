@@ -6,11 +6,16 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     // Recoger todos los valores del form
     $id_solicitud = $_POST['NoSolicitud'];
     $subcuenta_pago = $_POST['SubcuentaId_pago'];
-    $observaciones = $_POST['Observaciones_pago'] ?? ''; // Puede venir vacío
+    $observaciones_pago = $_POST['Observaciones_pago'] ?? ''; // Puede venir vacío
 
     function obtenerFechaHoraActual() {
         return date("Y-m-d H:i:s"); // Formato: Año-Mes-Día Hora:Minuto:Segundo
     }
+    //Se actualiza a 2 : Solicitud aprobada
+    $sql_update_status ="UPDATE solicitudes SET Status = 2 WHERE Id = :id";
+    $stmt = $con->prepare($sql_update_status);
+    $stmt->bindParam(':id', $id_solicitud, PDO::PARAM_INT);
+    $stmt->execute();
 
     // Obtener todos los datos de la solicitud aprobada
     $sql_get_solicitud = "SELECT * FROM solicitudes WHERE Id = :id";
@@ -71,6 +76,63 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         $fecha_alta_default,
         $usuarioAlta
     ]);
+
+    if ($resultado) {
+    $poliza_id = $con->lastInsertId(); // <-- Aquí obtienes el ID de la nueva póliza
+
+    $sql_partidas = "SELECT * 
+                 FROM partidassolicitudes 
+                 WHERE SolicitudId = :id_solicitud";
+
+    $stmt_partidas = $con->prepare($sql_partidas);
+    $stmt_partidas->bindParam(':id_solicitud', $id_solicitud, PDO::PARAM_INT);
+    $stmt_partidas->execute();
+
+    $partidas = $stmt_partidas->fetchAll(PDO::FETCH_ASSOC);
+   
+    
+    // Insertar partidasolicitud en partidaspolizas
+    $sql_insertar_partidas = "INSERT INTO partidaspolizas 
+        (PolizaId, SubcuentaId, ReferenciaId, PolizaPagoId, Cargo, Abono, Observaciones, Activo, NumeroFactura)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt_data = $con->prepare($sql_insertar_partidas);
+
+    foreach ($partidas as $partida) {
+    $stmt_data->execute([
+        $poliza_id,
+        $partida['SubcuentaId'],
+        $partida['ReferenciaId'],
+        $id_solicitud, // PolizaPagoId (aquí deberías guardar el ID de la solicitud)
+        $partida['Cargo'],
+        $partida['Abono'],
+        $partida['Observaciones'],
+        $activo,
+        $partida['NumeroFactura'],
+        ]);
+    }
+
+    $cargo = 0;
+    $sql_insertar_pago = "INSERT INTO partidaspolizas
+    (PolizaId, SubcuentaId, PolizaPagoId, Cargo, Abono, Observaciones, Activo)
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt_data = $con->prepare($sql_insertar_pago);
+    $pago = $stmt_data->execute([
+        $poliza_id,
+        $subcuenta_pago,
+        $id_solicitud,
+        $cargo,
+        $importe,
+        $observaciones_pago,
+        $activo
+
+    ]);
+
+
+    } else {
+        // Manejo de error
+        echo "Error al guardar la póliza.";
+    }
+
 
     echo json_encode([
         'success' => true,
