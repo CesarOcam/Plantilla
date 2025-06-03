@@ -34,6 +34,7 @@ $("#form_Referencia").on("submit", function (e) {
         data: formData2,
         processData: false, // Muy importante para FormData
         contentType: false, // Muy importante para FormData
+        dataType: 'json',
         success: function (response) {
             console.log('Respuesta del servidor:', response);
 
