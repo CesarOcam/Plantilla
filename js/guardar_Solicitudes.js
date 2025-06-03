@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("#form_Polizas").on("submit", function (e) {
+    $("#form_solicitud_pago").on("submit", function (e) {
         e.preventDefault();
 
         var formData = $(this).serialize();
@@ -34,10 +34,10 @@ $(document).ready(function () {
                     });
 
                     // Limpiar el formulario
-                    $("#form_Polizas")[0].reset();
+                    $("#form_solicitud_pago")[0].reset();
                     $('#beneficiario-select').val(null).trigger('change');
                     $('#aduana-select').val(null).trigger('change');
-                    $('#form_Polizas').find('select.select2').val(null).trigger('change');
+                    $('#form_solicitud_pago').find('select.select2').val(null).trigger('change');
                 } else {
                     Swal.fire({
                         icon: 'error',

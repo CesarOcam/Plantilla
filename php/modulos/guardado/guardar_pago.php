@@ -29,7 +29,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     }
 
     // Extraer datos de la solicitud
-    $poliza_id      = $solicitud['PolizaId'];
+    $solicitud_id      = $solicitud['Id'];
     $beneficiario_id = $solicitud['BeneficiarioId'];
     $aduana_id      = $solicitud['AduanaId'];
     $empresa_id     = $solicitud['EmpresaId'];
@@ -55,17 +55,18 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
     // Variables para insertar
     $fecha_alta_default = obtenerFechaHoraActual();
-    $activo = 1;
+    $activo = 2;
     $usuarioAlta = 1;
     $exportadoCoi = 1;
 
     // Insertar solicitud aprobada en tabla polizas
     $sql_insertar_poliza = "INSERT INTO polizas 
-        (BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (SolicitudId, BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_data = $con->prepare($sql_insertar_poliza);
 
     $resultado = $stmt_data->execute([
+        $solicitud_id,
         $beneficiario_id,
         $empresa_id,
         $numero_poliza,
@@ -93,8 +94,8 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     
     // Insertar partidasolicitud en partidaspolizas
     $sql_insertar_partidas = "INSERT INTO partidaspolizas 
-        (PolizaId, SubcuentaId, ReferenciaId, PolizaPagoId, Cargo, Abono, Observaciones, Activo, NumeroFactura)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, NumeroFactura)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_data = $con->prepare($sql_insertar_partidas);
 
     foreach ($partidas as $partida) {
@@ -102,7 +103,6 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         $poliza_id,
         $partida['SubcuentaId'],
         $partida['ReferenciaId'],
-        $id_solicitud, // PolizaPagoId (aquí deberías guardar el ID de la solicitud)
         $partida['Cargo'],
         $partida['Abono'],
         $partida['Observaciones'],
@@ -110,23 +110,21 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         $partida['NumeroFactura'],
         ]);
     }
-
+    //SE GUARDA LA PARTIDA ADICIONAL, LA DE PAGO
     $cargo = 0;
     $sql_insertar_pago = "INSERT INTO partidaspolizas
-    (PolizaId, SubcuentaId, PolizaPagoId, Cargo, Abono, Observaciones, Activo)
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
+    (PolizaId, SubcuentaId, Cargo, Abono, Observaciones, Activo)
+        VALUES (?, ?, ?, ?, ?, ?)";
     $stmt_data = $con->prepare($sql_insertar_pago);
     $pago = $stmt_data->execute([
         $poliza_id,
         $subcuenta_pago,
-        $id_solicitud,
         $cargo,
         $importe,
         $observaciones_pago,
         $activo
 
     ]);
-
 
     } else {
         // Manejo de error

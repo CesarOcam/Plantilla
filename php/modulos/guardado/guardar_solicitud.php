@@ -15,7 +15,6 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
     $cargos = $_POST['Cargo'] ?? [];
     $abonos = $_POST['Abono'] ?? [];
     $observaciones = $_POST['Observaciones'] ?? [];
-    $facturas = $_POST['Factura'] ?? [];
 
     $total_cargos = 0.0;
     $total_abonos = 0.0;
@@ -52,13 +51,13 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
         die("Error al guardar la póliza: " . implode(", ", $stmt_poliza->errorInfo()));
     }
 
-    // Obtener ID de la póliza
+    // Obtener ID de la solicitud
     $solicitud_id = $con->lastInsertId();
 
     // Insertar partidas
     $sql_insert_partidas = "INSERT INTO partidassolicitudes
-        (SolicitudId, Subcuentaid, ReferenciaId, Cargo, Abono, Importe, Observaciones, NumeroFactura)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        (SolicitudId, Subcuentaid, ReferenciaId, Cargo, Abono, Importe, Observaciones)
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);
 
     foreach ($subcuentas as $i => $subcuenta_id) {
@@ -76,7 +75,6 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
             $abono,
             $importe,
             $observacion,
-            $factura
         ]);
     }
 

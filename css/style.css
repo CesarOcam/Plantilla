@@ -78,6 +78,17 @@ body {
   box-shadow: none;
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Quitar flechas en Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 
   table, th, td {
     background-color: transparent !important;
@@ -173,7 +184,32 @@ body {
       width: 10% !important; /* Solo en esa página */
   }
 
+  /*--------------------------------Tabla detalles referencia ------------------------------------------*/
+    /* Selector corregido */
+    table.tabla-movimientos th:nth-child(1),
+    table.tabla-movimientos td:nth-child(1) {
+    width: 20% !important;
+    }
 
+    table.tabla-movimientos th:nth-child(2),
+    table.tabla-movimientos td:nth-child(2) {
+    width: 20% !important;
+    }
+
+    table.tabla-movimientos th:nth-child(3),
+    table.tabla-movimientos td:nth-child(3) {
+    width: 20% !important;
+    }
+
+    table.tabla-movimientos th:nth-child(4),
+    table.tabla-movimientos td:nth-child(4) {
+    width: 20% !important;
+    }
+
+    table.tabla-movimientos th:nth-child(5),
+    table.tabla-movimientos td:nth-child(5) {
+    width: 20% !important;
+    }
 
   /*--------------------------------Diseño parte superior catalogos -----------------------------------*/
   .input-transparent {
@@ -339,16 +375,15 @@ body {
     min-width: 200px;
 }
 
-.col-cargo{
-    width: 7%;      /* Poco espacio para números */
-    min-width: 70px;
-    max-width: 80px;
-}
+
+.col-cargo,
 .col-abono {
-    width: 7%;      /* Poco espacio para números */
-    min-width: 70px;
-    max-width: 80px;
+    width: 7%;       /* Más angosto que antes */
+    min-width: 60px;
+    max-width: 100px;
+    text-align: right !important;
 }
+
 
 .col-observaciones {
     width: 30%;     /* Igual que subcuenta, bastante espacio para texto */
@@ -507,7 +542,18 @@ body {
 }
 
 .tabla-partidas-estilo thead th:nth-child(5),
-.tabla-partidas-estilo tbody td:nth-child(5) {
+.tabla-partidas-estilo tbody td:nth-child(5){
+    width: 7%;
+    min-width: 70px;
+    max-width: 80px;
+    text-align: center;
+}
+.tabla-partidas-estilo thead th:nth-child(6),
+.tabla-partidas-estilo tbody td:nth-child(6),
+.tabla-partidas-estilo thead th:nth-child(7),
+.tabla-partidas-estilo tbody td:nth-child(7),
+.tabla-partidas-estilo thead th:nth-child(8),
+.tabla-partidas-estilo tbody td:nth-child(8)  {
     width: 15%;
     min-width: 200px;
 }

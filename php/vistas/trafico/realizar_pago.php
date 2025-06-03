@@ -32,6 +32,9 @@ include_once('../../modulos/conexion.php'); // Ajusta el path según sea necesar
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- Iconos Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Fechas -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 
     <link rel="stylesheet" href="../../../css/style.css">
@@ -77,17 +80,17 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="" readonly>
                     </div>
-                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
+                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                         <label for="FechaAlta" class="form-label text-muted small">FECHA:</label>
                         <input id="FechaAlta" name="FechaAlta" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="" readonly>
+                            class="form-control ps-4 rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="">
                     </div>
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="Fecha" class="form-label text-muted small">FECHA PÓLIZA:</label>
                         <input id="Fecha" name="Fecha" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="" readonly>
+                            class="form-control ps-4 rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="">
                     </div>
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="AduanaId" class="form-label text-muted small">ADUANA:</label>
@@ -104,8 +107,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 </div>
                 <div class="row mt-5">
                     <div class="col-12">
-                        <table class="table table-bordered table-sm tabla-partidas-pagar"
-                            id="tabla-partidas">
+                        <table class="table table-bordered table-sm tabla-partidas-pagar" id="tabla-partidas">
                             <thead class="table-light">
                                 <tr>
                                     <th>Subcuenta</th>
@@ -114,7 +116,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <th>Abono</th>
                                     <th>Exportador</th>
                                     <th>Observaciones</th>
-                                    <th>Factura</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -139,7 +140,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <td><?= '$ ' . number_format($fila['Abono'], 2) ?></td>
                                             <td><?= htmlspecialchars($fila['Exportador']) ?></td>
                                             <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
-                                            <td><?= htmlspecialchars($fila['Factura']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -177,13 +177,15 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     </div>
 </div>
 
-
-
-<script src="../../../js/guardar_Pago.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-    crossorigin="anonymous"></script>
 <script>
+    // Inicializar Calendarios
+    flatpickr("#FechaAlta", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#Fecha", {
+        dateFormat: "Y-m-d"
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         tooltipTriggerList.forEach(function (tooltipTriggerEl) {
@@ -192,6 +194,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     });
 
 </script>
+
+<script src="../../../js/guardar_Pago.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
 
 </body>
 

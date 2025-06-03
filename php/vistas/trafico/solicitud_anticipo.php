@@ -7,15 +7,17 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 include_once('../../modulos/conexion.php');
 
-//Obtener SUBCUENTAS
+// Obtener SUBCUENTAS específicas (solo 113 y 214)
 $stmt = $con->prepare("
     SELECT Id, Numero, Nombre 
     FROM cuentas
     WHERE Activo = 1
+      AND Numero IN (113, 214)
     ORDER BY Nombre
 ");
 $stmt->execute();
 $subcuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 //Obtener BENEFICIARIOS
 $stmt = $con->prepare("
@@ -49,6 +51,10 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- jQuery primero -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- Fechas -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <!-- SweetAlert2 después -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -60,6 +66,7 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 
     <link rel="stylesheet" href="../../../css/style.css">
@@ -83,7 +90,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <select id="aduana-select" name="aduana"
                             class="form-control rounded-0 border-0 border-bottom text-muted"
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
+                            aria-describedby="basic-addon1" required>
                             <option value="" selected disabled>Aduana</option>
                             <?php foreach ($aduana as $aduana): ?>
                                 <option value="<?php echo $aduana['id2201aduanas']; ?>">
@@ -98,10 +105,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             placeholder="AMEXPORT LOGÍSTICA" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" readonly>
                     </div>
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input id="Fecha" name="fecha" type="date" class="form-control rounded-0 border-0 border-bottom"
-                            style="background-color: transparent;" placeholder="Fecha y hora"
-                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
+                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4 position-relative">
+                        <i class="bi bi-calendar-week"
+                            style="position: absolute; left: 10px; z-index: 10; color: gray;"></i>
+                        <input id="Fecha" name="fecha" type="text"
+                            class="form-control ps-4 rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="Fecha y Hora">
                     </div>
                     <div class="col-2 col-sm-4 d-flex align-items-center mt-4">
                         <select id="beneficiario-select" name="beneficiario"
@@ -141,7 +150,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 <!-- Tabla dinámica -->
                 <div class="row mt-3">
                     <div class="col-12">
-                        <table class="table" id="tabla-partidas">
+                        <table class="table-anticipo" id="tabla-partidas">
                             <thead>
                                 <tr class="text-muted">
                                     <th class="col-subcuenta">Subcuenta</th>
@@ -159,8 +168,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <tfoot>
                                 <tr>
                                     <td colspan="2" class="text-end text-muted">Totales:</td>
-                                    <td><input type="text" id="total-cargo" class="form-control text-end" readonly></td>
-                                    <td><input type="text" id="total-abono" class="form-control text-end" readonly></td>
+                                    <td>
+                                        <input type="text" id="total-cargo"
+                                            class="form-control text-end input-total-cargo" readonly>
+                                    </td>
+                                    <td>
+                                        <input type="text" id="total-abono"
+                                            class="form-control text-end input-total-abono" readonly>
+                                    </td>
                                     <td colspan="3"></td>
                                 </tr>
                             </tfoot>
@@ -190,7 +205,27 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
+
+    function calcularTotales() {
+        let totalCargo = 0;
+        let totalAbono = 0;
+
+        document.querySelectorAll('.input-cargo').forEach(input => {
+            const valor = parseFloat(input.value) || 0;
+            totalCargo += valor;
+        });
+
+        document.querySelectorAll('.input-abono').forEach(input => {
+            const valor = parseFloat(input.value) || 0;
+            totalAbono += valor;
+        });
+
+        document.getElementById('total-cargo').value = '$ ' + totalCargo.toFixed(2);
+        document.getElementById('total-abono').value = '$ ' + totalAbono.toFixed(2);
+
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
         // Inicializar Select2 SOLO UNA VEZ
         $('#aduana-select').select2({
             placeholder: 'Aduana*',
@@ -203,7 +238,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             allowClear: false,
             width: '100%'
         });
+        calcularTotales();
     });
+
+    flatpickr("#Fecha", {
+        dateFormat: "Y-m-d"
+    });
+
 
     agregarFila();
     function agregarFila() {
@@ -225,10 +266,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             <input type="text" name="Referencia[]" class="form-control" readonly placeholder="Referencia automática" />
         </td>
         <td>
-            <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo" placeholder="0.00" />
+            <input type="number" name="Cargo[]" class="form-control input-cargo text-end" placeholder="0.00" />
         </td>
         <td>
-            <input type="number" name="Abono[]" step="0.01" class="form-control input-abono" placeholder="0.00" />
+            <input type="number" name="Abono[]" class="form-control input-abono text-end" placeholder="0.00" />
         </td>
         <td>
             <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
@@ -285,25 +326,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         calcularTotales(); // actualizar totales al eliminar
     }
 
-    function calcularTotales() {
-        let totalCargo = 0;
-        let totalAbono = 0;
-
-        document.querySelectorAll('.input-cargo').forEach(input => {
-            const valor = parseFloat(input.value) || 0;
-            totalCargo += valor;
-        });
-
-        document.querySelectorAll('.input-abono').forEach(input => {
-            const valor = parseFloat(input.value) || 0;
-            totalAbono += valor;
-        });
-
-        document.getElementById('total-cargo').value = '$ ' + totalCargo.toFixed(2);
-        document.getElementById('total-abono').value = '$ ' + totalAbono.toFixed(2);
-
-    }
-    
 
 </script>
 <script src="../../../js/guardar_Anticipo.js"></script>

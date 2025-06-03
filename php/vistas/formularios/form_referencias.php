@@ -7,13 +7,32 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 include_once('../../modulos/conexion.php');
 
-// ADUANAS
+// Si es petición AJAX para recintos
+if (isset($_GET['aduana_id']) && is_numeric($_GET['aduana_id'])) {
+    $aduana_id = (int) $_GET['aduana_id'];
+
+    $stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos 
+                           FROM 2221_recintos 
+                           WHERE aduana_id = :aduana_id
+                           ORDER BY inmueble_recintos");
+    $stmt->execute(['aduana_id' => $aduana_id]);
+    $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    header('Content-Type: application/json');
+    echo json_encode($recintos);
+    exit;
+}
+
+
+// Obtener aduanas
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
                        WHERE nombre_corto_aduana IS NOT NULL 
-                       AND TRIM(nombre_corto_aduana) != '' ORDER BY nombre_corto_aduana");
+                         AND TRIM(nombre_corto_aduana) != '' 
+                       ORDER BY nombre_corto_aduana");
 $stmt->execute();
-$aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 // EXPORTADORES Y LOGISTICOS
 $stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador
@@ -46,6 +65,14 @@ $stmt = $con->prepare("SELECT Id, Nombre
                        ORDER BY Nombre");
 $stmt->execute();
 $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Consolidadoras
+$stmt = $con->prepare("SELECT id_consolidadora, denominacion_consolidadora
+                       FROM consolidadoras 
+                       WHERE denominacion_consolidadora IS NOT NULL AND denominacion_consolidadora != ''
+                       ORDER BY denominacion_consolidadora");
+$stmt->execute();
+$consolidadora = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 
@@ -92,21 +119,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     <div class="card mt-3 border shadow rounded-0">
         <form id="form_Referencia" method="POST" enctype="multipart/form-data">
             <div class="card-header formulario_referencia">
-                <h5>+ Agregar Referencia</h5>
+                <h5 class="mt-3">Nueva Referencia</h5>
 
                 <!-- Tabs -->
                 <ul class="nav nav-tabs mt-3" id="clienteTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="datos-tab" data-bs-toggle="tab" data-bs-target="#datos"
                             type="button" role="tab">General</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="contacto-tab" data-bs-toggle="tab" data-bs-target="#contacto"
-                            type="button" role="tab">Otros Datos</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="direccion-tab" data-bs-toggle="tab" data-bs-target="#direccion"
-                            type="button" role="tab">Movimientos</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="opciones-tab" data-bs-toggle="tab" data-bs-target="#opciones"
@@ -126,14 +145,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     style="background-color: transparent;" placeholder="Referencia" readonly>
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                                <select id="aduana-select" name="aduana"
-                                    class="form-control rounded-0 border-0 border-bottom text-muted select-align-fix"
-                                    style="background-color: transparent;" aria-label="Filtrar por fecha"
-                                    aria-describedby="basic-addon1">
-                                    <option value="" selected disabled>Aduana</option>
-                                    <?php foreach ($aduana as $aduana): ?>
-                                        <option value="<?php echo $aduana['id2201aduanas']; ?>">
-                                            <?php echo $aduana['nombre_corto_aduana']; ?>
+                                <select id="aduana-select" name="aduana">
+                                    <option value="" selected disabled>-- Selecciona una aduana --</option>
+                                    <?php foreach ($aduanas as $aduana): ?>
+                                        <option value="<?= htmlspecialchars($aduana['id2201aduanas']) ?>">
+                                            <?= htmlspecialchars($aduana['nombre_corto_aduana']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -161,7 +177,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 </select>
                             </div>
                             <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                                <input name="mercancia" type="text"
+                                <input name="mercancia" type="text" maxlength="50"
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" placeholder="Identificación de Mercancía">
                             </div>
@@ -181,15 +197,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" placeholder="Pedimento">
                             </div>
-                            <div class="col-10 col-sm-1 d-flex align-items-center mt-4">
+                            <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                                 <input name="peso" type="text" class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Peso Bruto">
+                                    style="background-color: transparent;" placeholder="Peso Bruto / Cantidad">
                             </div>
-                            <div class="col-10 col-sm-1 d-flex align-items-center mt-4">
-                                <input name="cantidad" type="text" class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Cantidad">
-                            </div>
-
                             <!-- FILA 3 -->
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <input name="bultos" type="text" class="form-control rounded-0 border-0 border-bottom"
@@ -201,36 +212,41 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     style="background-color: transparent;" placeholder="Contenedor">
                             </div>
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
-                                <input name="consolidadora" type="text"
-                                    class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Consolidadora">
-                            </div>
-                            <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
-                                <input name="resultado_mod" type="text"
-                                    class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Resultado Modulación">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contacto -->
-                    <div class="tab-pane fade" id="contacto" role="tabpanel">
-                        <div class="row">
-                            <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
-                                <select id="recinto-select" name="recinto"
+                                <select id="consolidadora-select" name="consolidadora"
                                     class="form-control rounded-0 border-0 border-bottom text-muted">
-                                    <option value="" selected disabled>Recintos</option>
-                                    <?php foreach ($recinto as $item): ?>
-                                        <option value="<?php echo $item['id2221_recintos']; ?>">
-                                            <?php echo $item['nombre_recinto']; ?>
+                                    <option value="" selected disabled>Consolidadora</option>
+                                    <?php foreach ($consolidadora as $consolidadora): ?>
+                                        <option value="<?php echo $consolidadora['id_consolidadora']; ?>">
+                                            <?php echo $consolidadora['denominacion_consolidadora']; ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
+                                <select id="resultado_mod-select" name="resultado_mod"
+                                    class="form-control rounded-0 border-0 border-bottom text-muted" disabled>
+                                    <option value="" selected disabled>Resultado de Modulación</option>
+                                    <option value="1">Verde</option>
+                                    <option value="2">Rojo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--</div>
+
+                     Contacto 
+                    <div class="tab-pane fade" id="contacto" role="tabpanel">-->
+                        <div class="row">
+                            <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
+                                <select id="recinto-select" name="recinto" disabled>
+                                    <option value="" selected disabled>Seleccione una aduana primero</option>
+                                </select>
+
+                            </div>
+                            <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <select id="naviera-select" name="naviera"
                                     class="form-control rounded-0 border-0 border-bottom text-muted">
-                                    <option value="" selected disabled>Recintos</option>
+                                    <option value="" selected disabled>Naviera</option>
                                     <?php foreach ($naviera as $item): ?>
                                         <option value="<?php echo $item['Id']; ?>">
                                             <?php echo $item['Nombre']; ?>
@@ -433,7 +449,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
 <script>
-    
+
     $(document).ready(function () {
         function initSelect2(id, placeholder) {
             $(id).select2({
@@ -449,6 +465,42 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#recinto-select', 'Recinto');
         initSelect2('#naviera-select', 'Naviera');
         initSelect2('#buque-select', 'Buque');
+        initSelect2('#consolidadora-select', 'Consolidadora');
+        initSelect2('#resultado_mod-select', 'Resultado de Modulación');
+
+        // Evento change aquí, dentro del ready
+        $('#aduana-select').on('change', function () {
+            const aduanaId = this.value;
+            const recintoSelect = $('#recinto-select');
+
+            // Mostrar mensaje de carga dentro del select (opción)
+            recintoSelect.prop('disabled', true);
+            recintoSelect.empty().append('<option>Cargando recintos...</option>').trigger('change');
+
+            fetch(`form_referencias.php?aduana_id=${aduanaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    recintoSelect.empty(); // Limpiar opciones previas
+
+                    if (data.length > 0) {
+                        recintoSelect.append('<option value="" disabled selected>-- Selecciona un recinto --</option>');
+                        data.forEach(recinto => {
+                            recintoSelect.append(`<option value="${recinto.id2221_recintos}">${recinto.inmueble_recintos}</option>`);
+                        });
+                        recintoSelect.prop('disabled', false);
+                    } else {
+                        recintoSelect.append('<option value="" disabled selected>No hay recintos para esta aduana</option>');
+                        recintoSelect.prop('disabled', true);
+                    }
+
+                    recintoSelect.trigger('change'); // Refrescar Select2 visualmente
+                })
+                .catch(error => {
+                    console.error('Error al cargar recintos:', error);
+                    recintoSelect.empty().append('<option value="" disabled selected>Error al cargar recintos</option>').prop('disabled', true).trigger('change');
+                });
+        });
+
     });
 
     // Inicializar Calendarios
@@ -644,9 +696,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             e.target.closest('tr').remove();
         }
     });
-
-
-
 </script>
 
 <script src="../../../js/guardar_Referencia.js"></script>

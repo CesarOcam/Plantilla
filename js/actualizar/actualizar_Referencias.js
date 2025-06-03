@@ -63,29 +63,3 @@ $("#form_Referencia").on("submit", function (e) {
     });
 });
 
-function recargarTablaDocumentos() {
-    fetch('../../modulos/consultas/obtener_documentos.php') // Endpoint que devuelva JSON con los documentos
-        .then(res => res.json())
-        .then(documentos => {
-            const tbody = document.getElementById('tabla-documentos-body');
-            tbody.innerHTML = ''; // limpiar tabla
-            documentos.forEach(doc => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-          <td>${doc.icono} ${doc.nombre}</td>
-          <td class="text-center">${doc.extension.toUpperCase()}</td>
-          <td class="text-center">${doc.tamano}</td>
-          <td class="text-center">
-            <a href="${doc.ruta}" class="btn btn-sm btn-outline-success me-2" download title="Descargar">
-              <i class="bi bi-download"></i> Descargar
-            </a>
-            <button type="button" class="btn btn-sm btn-outline-danger" data-eliminar="true" data-id="${doc.id}" data-nombre="${doc.nombre}" data-ruta="${doc.ruta}" title="Eliminar">
-              Eliminar
-            </button>
-          </td>
-        `;
-                tbody.appendChild(tr);
-            });
-        })
-        .catch(err => console.error('Error al recargar tabla:', err));
-}

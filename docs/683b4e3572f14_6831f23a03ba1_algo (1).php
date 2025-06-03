@@ -77,16 +77,6 @@
 </head>
 <body>
 
-<?php
-$beneficiarios = ["TESORERIA DE LA FEDERACION", "OTRO BENEFICIARIO"];
-$subcuentas = [
-    ['subcuenta' => '123-001', 'descripcion' => 'PEDIMENTO - CONTRIBUCIONES', 'referencia' => 'M50056', 'exportador' => 'ADALBE DOMINGO HERNANDEZ MARTINEZ', 'cargo' => 1500.00, 'abono' => 0.00],
-    ['subcuenta' => '123-001', 'descripcion' => 'PEDIMENTO - CONTRIBUCIONES', 'referencia' => 'M50167', 'exportador' => 'CONGELADORA COMFRUT SA DE CV', 'cargo' => 2500.00, 'abono' => 0.00],
-    ['subcuenta' => '123-001', 'descripcion' => 'PEDIMENTO - CONTRIBUCIONES', 'referencia' => 'M50203', 'exportador' => 'CONGELADORA COMFRUT SA DE CV', 'cargo' => 100.00, 'abono' => 0.00],
-];
-$total_cargo = array_sum(array_column($subcuentas, 'cargo'));
-$total_abono = $total_cargo;
-?>
 
 <div class="container">
     <form method="post" action="">
@@ -97,10 +87,9 @@ $total_abono = $total_cargo;
                 <label>Beneficiario</label>
                 <div style="display: flex; gap: 5px;">
                     <select id="beneficiario" name="beneficiario" style="width: 100%;">
-                        <?php foreach ($beneficiarios as $b): ?>
-                            <option value="<?php echo $b; ?>"><?php echo $b; ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                                                    <option value="TESORERIA DE LA FEDERACION">TESORERIA DE LA FEDERACION</option>
+                                                    <option value="OTRO BENEFICIARIO">OTRO BENEFICIARIO</option>
+                                            </select>
                     <button type="button" class="btn">↗</button>
                 </div>
             </div>
@@ -153,26 +142,42 @@ $total_abono = $total_cargo;
                     </tr>
                 </thead>
                 <tbody id="subcuentas-lista">
-                    <?php foreach ($subcuentas as $item): ?>
-                        <tr>
-                            <td><?php echo $item['subcuenta']; ?></td>
-                            <td><?php echo $item['descripcion']; ?></td>
-                            <td><?php echo $item['referencia']; ?></td>
-                            <td><?php echo $item['exportador']; ?></td>
-                            <td>$<?php echo number_format($item['cargo'], 2); ?></td>
-                            <td>$<?php echo number_format($item['abono'], 2); ?></td>
+                                            <tr>
+                            <td>123-001</td>
+                            <td>PEDIMENTO - CONTRIBUCIONES</td>
+                            <td>M50056</td>
+                            <td>ADALBE DOMINGO HERNANDEZ MARTINEZ</td>
+                            <td>$1,500.00</td>
+                            <td>$0.00</td>
                             <td>Editar observaciones...</td>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
+                                            <tr>
+                            <td>123-001</td>
+                            <td>PEDIMENTO - CONTRIBUCIONES</td>
+                            <td>M50167</td>
+                            <td>CONGELADORA COMFRUT SA DE CV</td>
+                            <td>$2,500.00</td>
+                            <td>$0.00</td>
+                            <td>Editar observaciones...</td>
+                        </tr>
+                                            <tr>
+                            <td>123-001</td>
+                            <td>PEDIMENTO - CONTRIBUCIONES</td>
+                            <td>M50203</td>
+                            <td>CONGELADORA COMFRUT SA DE CV</td>
+                            <td>$100.00</td>
+                            <td>$0.00</td>
+                            <td>Editar observaciones...</td>
+                        </tr>
+                                    </tbody>
             </table>
 
             <button type="button" class="btn" onclick="agregarSubcuenta()">Agregar subcuenta</button>
         </div>
 
         <div class="footer">
-            <p class="total">TOTAL CARGO: $<?php echo number_format($total_cargo, 2); ?></p>
-            <p class="total">TOTAL ABONO: $<?php echo number_format($total_abono, 2); ?></p>
+            <p class="total">TOTAL CARGO: $4,100.00</p>
+            <p class="total">TOTAL ABONO: $4,100.00</p>
         </div>
     </form>
 </div>

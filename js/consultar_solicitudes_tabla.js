@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <td></td>
                                         <td>${p.RazonSocialExportador || ''}</td>
                                         <td>${p.Observaciones || ''}</td>
-                                        <td>${p.NumeroFactura || ''}</td>
                                     </tr>`;
                                     cuerpoTabla.insertAdjacentHTML('beforeend', fila);
                                 });
@@ -90,9 +89,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                         class="form-control form-control-sm text-center" 
                                         placeholder="Observaciones" />
                                 </td>
-
-                                <!-- Factura vacía -->
-                                <td></td>
                             </tr>
                                 `;
                                 cuerpoTabla.insertAdjacentHTML('beforeend', filaEditable);
@@ -119,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <td colspan="2">Total: </td>
                                     <td>$ ${totalCargo.toFixed(2)}</td>
                                     <td>$ ${totalCargo.toFixed(2)}</td>
-                                    <td colspan="3"></td>
+                                    <td colspan="2"></td>
                                 </tr>`;
                                 pieTabla.innerHTML = totalRow;
 

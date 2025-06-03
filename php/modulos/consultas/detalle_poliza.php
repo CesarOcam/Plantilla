@@ -22,7 +22,7 @@ $stmt = $con->prepare("
         u.Nombre AS UsuarioAlta,
         p.FechaAlta,
         CASE 
-            WHEN p.Activo = 1 THEN 'ACTIVA'
+            WHEN p.Activo = 1 THEN 'EN TRÁFICO'
             ELSE 'INACTIVA'
         END AS Activo
     FROM polizas p
@@ -44,9 +44,11 @@ $stmt = $con->prepare("
         p.Cargo,
         p.Abono,
         p.Observaciones,
-        p.FolioArchivo AS Factura
+        p.FolioArchivo AS Factura,
+        r.Numero AS ReferenciaNumero   -- número de la referencia
     FROM partidaspolizas p
     LEFT JOIN cuentas c ON p.SubcuentaId = c.Id
+    LEFT JOIN referencias r ON p.ReferenciaId = r.Id  -- unión con referencias
     WHERE p.PolizaId = :id
 ");
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -168,6 +170,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <th>Cargo</th>
                                     <th>Abono</th>
                                     <th>Observaciones</th>
+                                    <th>Referencia</th>
+                                    <th>Solicitado por</th>
+                                    <th>Aplicado por</th>
                                     <th>Factura</th>
                                 </tr>
                             </thead>
@@ -178,7 +183,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 ?>
                                 <?php if (empty($partidas)): ?>
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted">Sin subcuentas asociadas</td>
+                                        <td colspan="8" class="text-center text-muted">Sin subcuentas asociadas</td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($partidas as $fila): ?>
@@ -191,6 +196,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <td><?= '$ ' . number_format($fila['Cargo'], 2) ?></td>
                                             <td><?= '$ ' . number_format($fila['Abono'], 2) ?></td>
                                             <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
+                                            <td><?= htmlspecialchars($fila['ReferenciaNumero'], 2) ?></td>
+                                            <td>Admin1</td>
+                                            <td>Admin1</td>
                                             <td><?= htmlspecialchars($fila['Factura']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -202,7 +210,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         <td>Total</td>
                                         <td><?= '$ ' . number_format($total_cargo, 2) ?></td>
                                         <td><?= '$ ' . number_format($total_abono, 2) ?></td>
-                                        <td colspan="2"></td>
+                                        <td colspan="5"></td>
                                     </tr>
                                 </tfoot>
                             <?php endif; ?>

@@ -99,7 +99,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <th scope="col">Importe</th>
             <th scope="col">Empresa</th>
             <th scope="col">Fecha</th>
-            <th scope="col">Activo</th>
+            <th scope="col">Status</th>
         </tr>
     </thead>
     <tbody class="small">
@@ -126,7 +126,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     <td>
                         <?php
                         if ($poliza['Activo'] == 1) {
-                            echo '<span style="color: rgba(0, 128, 0, 0.6);">ACTIVA</span>';
+                            echo '<span style="color: rgba(167, 164, 0, 0.86);">EN TRÁFICO</span>';
                         } elseif ($poliza['Activo'] == 0) {
                             echo '<span style="color: rgba(255, 0, 0, 0.6);">INACTIVA</span>';
                         } else {

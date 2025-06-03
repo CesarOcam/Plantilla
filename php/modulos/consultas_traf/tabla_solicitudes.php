@@ -14,8 +14,8 @@ $stmt = $con->prepare("
     WHERE Activo = 1
       AND EmpresaId = 2
       AND (
-          SUBSTRING_INDEX(Numero, '-', 1) = '120' OR
-          SUBSTRING_INDEX(Numero, '-', 1) = '123'
+          SUBSTRING_INDEX(Numero, '-', 1) = '216' OR
+          SUBSTRING_INDEX(Numero, '-', 1) = '113'
       )
     ORDER BY Nombre
 ");

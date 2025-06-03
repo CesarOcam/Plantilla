@@ -38,13 +38,12 @@ document.getElementById('tabla-documentos-body').addEventListener('click', (e) =
 
                             // 2. Eliminar el archivo de la lista de archivos cargados
                             archivosCargados = archivosCargados.filter(file => file.name !== nombre);
-                            recargarTablaDocumentos();
                         });
                     } else {
                         Swal.fire({
-                            icon: 'warning',
-                            title: 'Recargar',
-                            text: 'Recargue la página'
+                            icon: 'success',
+                            title: 'Archivo eliminado',
+                            text: 'El archivo fue eliminado correctamente'
                         });
                     }
                 })
@@ -58,3 +57,5 @@ document.getElementById('tabla-documentos-body').addEventListener('click', (e) =
         }
     });
 });
+
+

@@ -31,12 +31,13 @@ $stmt = $con->prepare("
         cons.denominacion_consolidadora AS nombre_consolidadora,
         r.ResultadoModulacion,
         CASE 
-            WHEN r.Status = 1 THEN 'ACTIVO'
+            WHEN r.Status = 1 THEN 'EN TRÁFICO'
             ELSE 'INACTIVO'
         END AS Status_texto,
-        CASE
+        CASE 
             WHEN r.ResultadoModulacion = 1 THEN 'VERDE'
-            ELSE 'ROJO'
+            WHEN r.ResultadoModulacion = 0 THEN 'ROJO'
+            ELSE ''
         END AS ResultadoModulacion_texto,
         r.RecintoId,
         rec.nombre_recinto AS nombre_recinto,
@@ -169,10 +170,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 type="button" role="tab">General</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="contacto-tab" data-bs-toggle="tab" data-bs-target="#contacto"
-                                type="button" role="tab">Otros Datos</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
                             <button class="nav-link" id="direccion-tab" data-bs-toggle="tab" data-bs-target="#direccion"
                                 type="button" role="tab">Movimientos</button>
                         </li>
@@ -299,38 +296,21 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="modulacion" class="form-label text-muted small">RESULTADO
                                         MODULACIÓN:</label>
-                                    <input id="modulacion" name="modulacion" type="text"
+                                    <select id="modulacion" name="modulacion"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['ResultadoModulacion_texto']; ?>">
+                                        style="background-color: transparent;">
+                                        <option value="" <?php echo is_null($referencia['ResultadoModulacion']) ? 'selected' : ''; ?>></option>
+                                        <option value="1" <?php echo ($referencia['ResultadoModulacion'] === '1' || $referencia['ResultadoModulacion'] === 1) ? 'selected' : ''; ?>>VERDE</option>
+                                        <option value="0" <?php echo ($referencia['ResultadoModulacion'] === '0' || $referencia['ResultadoModulacion'] === 0) ? 'selected' : ''; ?>>ROJO</option>
+                                    </select>
                                 </div>
-                                <!-- FILA 4 -->
-                                <div class="col-2 col-sm-1 d-flex flex-column mt-4">
-                                    <label for="usuario_alta" class="form-label text-muted small">USUARIO ALTA:</label>
-                                    <input id="usuario_alta" name="usuario_alta" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['nombre_usuario_alta']; ?>" readonly>
-                                </div>
-                                <div class="col-2 col-sm-2 d-flex flex-column mt-4">
-                                    <label for="fecha_alta" class="form-label text-muted small">FECHA ALTA:</label>
-                                    <input id="fecha_alta" name="fecha_alta" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['FechaAlta']; ?>" readonly>
-                                </div>
-                                <div class="col-2 col-sm-1 d-flex flex-column mt-4">
-                                    <label for="status" class="form-label text-muted small">Status:</label>
-                                    <input id="status" name="status" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['Status_texto']; ?>" readonly>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Contacto -->
-                        <div class="tab-pane fade" id="contacto" role="tabpanel">
+                                <!-- FILA 4 -->
+                            </div>
+                            <!-- </div>
+
+                        Contacto 
+                        <div class="tab-pane fade" id="contacto" role="tabpanel">-->
                             <div class="row">
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="recinto" class="form-label text-muted small">RECINTO:</label>
@@ -453,13 +433,37 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         value="<?php echo $referencia['Comentarios']; ?>">
                                 </div>
 
+                                <div class="col-2 col-sm-1 d-flex flex-column mt-4">
+                                    <label for="usuario_alta" class="form-label text-muted small">USUARIO ALTA:</label>
+                                    <input id="usuario_alta" name="usuario_alta" type="text"
+                                        class="form-control input-transparent border-0 border-bottom rounded-0"
+                                        style="background-color: transparent;"
+                                        value="<?php echo $referencia['nombre_usuario_alta']; ?>" readonly>
+                                </div>
+                                <div class="col-2 col-sm-2 d-flex flex-column mt-4">
+                                    <label for="fecha_alta" class="form-label text-muted small">FECHA ALTA:</label>
+                                    <input id="fecha_alta" name="fecha_alta" type="text"
+                                        class="form-control input-transparent border-0 border-bottom rounded-0"
+                                        style="background-color: transparent;"
+                                        value="<?php echo $referencia['FechaAlta']; ?>" readonly>
+                                </div>
+                                <div class="col-2 col-sm-1 d-flex flex-column mt-4">
+                                    <label for="status" class="form-label text-muted small">Status:</label>
+                                    <input id="status" name="status" type="text"
+                                        class="form-control input-transparent border-0 border-bottom rounded-0"
+                                        style="background-color: transparent;"
+                                        value="<?php echo $referencia['Status_texto']; ?>" readonly>
+                                </div>
+
                             </div>
                         </div>
 
                         <!-- Dirección -->
                         <div class="tab-pane fade" id="direccion" role="tabpanel">
-                            <div class="row">
-
+                            <div class="row ms-2 me-2">
+                                <?php
+                                    include_once("tabla_movimientos.php");
+                                ?>
                             </div>
                         </div>
 

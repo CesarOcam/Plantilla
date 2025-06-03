@@ -50,6 +50,15 @@ $("#form_Referencia").on("submit", function (e) {
                 previewContainer.innerHTML = '';
                 previewContainer.classList.add('d-none');
                 dropZoneDefault.classList.remove('d-none');
+                // Limpiar los select2
+                $('#aduana-select').val(null).trigger('change');
+                $('#exportador-select').val(null).trigger('change');
+                $('#logistico-select').val(null).trigger('change');
+                $('#recinto-select').val(null).trigger('change');
+                $('#naviera-select').val(null).trigger('change');
+                $('#buque-select').val(null).trigger('change');
+                $('#consolidadora-select').val(null).trigger('change');
+                form.scrollIntoView({ behavior: 'smooth' });
             } else {
                 Swal.fire({
                     icon: 'error',

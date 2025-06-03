@@ -87,7 +87,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Anticipos" method="POST">
+        <form id="form_solicitud_pago" method="POST">
             <div class="card-header formulario_polizas">
                 <h5>Registrar Solicitud</h5>
                 <div class="row mb-5">
@@ -156,7 +156,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <th class="col-referencia">Referencia</th>
                                     <th class="col-cargo">Importe</th>
                                     <th class="col-observaciones">Observaciones</th>
-                                    <th class="col-factura">Factura</th>
                                     <th class="col-accion">Acción</th>
                                 </tr>
                             </thead>
@@ -256,9 +255,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         </td>
         <td>
             <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
-        </td>
-        <td>
-            <input type="text" name="Factura[]" class="form-control" placeholder="Número de factura" />
         </td>
         <td class="text-center">
             <button type="button" class="btn-eliminar" onclick="eliminarFila(this)" title="Eliminar fila">

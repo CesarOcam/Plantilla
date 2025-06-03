@@ -68,7 +68,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     <div class="card mt-3 border shadow rounded-0">
         <form id="form_Polizas" method="POST">
             <div class="card-header formulario_polizas">
-                <h5>+ Agregar Póliza</h5>
+                <h5>Nueva Póliza</h5>
                 <div class="row">
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input id="empresa" name="empresa" type="text"
@@ -145,7 +145,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 <!-- Tabla dinámica -->
                 <div class="row mt-3">
                     <div class="col-12">
-                        <table class="table" id="tabla-partidas">
+                        <table class="table-polizas" id="tabla-partidas">
                             <thead>
                                 <tr class="text-muted">
                                     <th class="col-subcuenta">Subcuenta</th>
@@ -163,8 +163,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <tfoot>
                                 <tr>
                                     <td colspan="2" class="text-end text-muted">Totales:</td>
-                                    <td><input type="text" id="total-cargo" class="form-control text-end" readonly></td>
-                                    <td><input type="text" id="total-abono" class="form-control text-end" readonly></td>
+                                    <td><input type="text" id="total-cargo" class="form-control text-end col-cargo" readonly></td>
+                                    <td><input type="text" id="total-abono" class="form-control text-end col-abono" readonly></td>
                                     <td colspan="3"></td>
                                 </tr>
                             </tfoot>
@@ -224,10 +224,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             <input type="text" name="Referencia[]" class="form-control" readonly placeholder="Referencia automática" />
         </td>
         <td>
-            <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo" placeholder="0.00" />
+            <input type="number" name="Cargo[]" step="0.01" class="form-control input-cargo col-cargo text-end" placeholder="0.00" />
         </td>
         <td>
-            <input type="number" name="Abono[]" step="0.01" class="form-control input-abono" placeholder="0.00" />
+            <input type="number" name="Abono[]" step="0.01" class="form-control input-abono col-abono text-end" placeholder="0.00" />
         </td>
         <td>
             <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
