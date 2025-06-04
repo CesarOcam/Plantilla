@@ -36,6 +36,11 @@ $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana
 $stmt->execute();
 $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Obtener todas las referencias
+$stmt = $con->prepare("SELECT Id, Numero FROM referencias WHERE Numero IS NOT NULL");
+$stmt->execute();
+$referencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -150,7 +155,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 <!-- Tabla dinámica -->
                 <div class="row mt-3">
                     <div class="col-12">
-                        <table class="table-anticipo" id="tabla-partidas">
+                        <table class="table-partidas" id="tabla-partidas">
                             <thead>
                                 <tr class="text-muted">
                                     <th class="col-subcuenta">Subcuenta</th>
@@ -206,6 +211,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <script>
 
+    const referencias = <?php echo json_encode($referencias); ?>;
+
     function calcularTotales() {
         let totalCargo = 0;
         let totalAbono = 0;
@@ -238,22 +245,42 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             allowClear: false,
             width: '100%'
         });
+        flatpickr("#Fecha", {
+            dateFormat: "Y-m-d"
+        });
+
+
         calcularTotales();
     });
 
-    flatpickr("#Fecha", {
-        dateFormat: "Y-m-d"
-    });
 
 
-    agregarFila();
     function agregarFila() {
+
+        const aduanaSelect = document.getElementById('aduana-select');
+        const selectedOption = aduanaSelect.options[aduanaSelect.selectedIndex]?.text.trim() || '';
+        const letraAduanaSeleccionada = selectedOption.charAt(0).toUpperCase();
+
+        if (!letraAduanaSeleccionada) {
+            alert("Primero selecciona una aduana.");
+            return;
+        }
+
+        // Filtrar referencias por letra de la aduana
+        const referenciasFiltradas = referencias.filter(r => r.Numero.charAt(0).toUpperCase() === letraAduanaSeleccionada);
+
         const tbody = document.querySelector('#tabla-partidas tbody');
         const fila = document.createElement('tr');
 
+        // Generar opciones de referencia
+        let referenciaOptions = '<option value="">Seleccione</option>';
+        referenciasFiltradas.forEach(ref => {
+            referenciaOptions += `<option value="${ref.Id}">${ref.Numero}</option>`;
+        });
+
         fila.innerHTML = `
         <td>
-            <select name="Subcuenta[]" class="form-control select2" style="width:180px;" required>
+            <select name="Subcuenta[]" class="form-control select2-subcuenta" style="width:180px;" required>
                 <option value="">Seleccione</option>
                 <?php foreach ($subcuentas as $subcuenta): ?>
                     <option value="<?php echo $subcuenta['Id']; ?>">
@@ -263,13 +290,16 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             </select>
         </td>
         <td>
-            <input type="text" name="Referencia[]" class="form-control" readonly placeholder="Referencia automática" />
+            <select name="Referencia[]" class="form-control select2-referencia" style="width:180px;">
+                <option value="">Seleccione</option>
+                ${referenciaOptions}
+            </select>
         </td>
         <td>
-            <input type="number" name="Cargo[]" class="form-control input-cargo text-end" placeholder="0.00" />
+            <input type="number" name="Cargo[]" class="form-control input-cargo text-end" placeholder="0.00" required> </>
         </td>
         <td>
-            <input type="number" name="Abono[]" class="form-control input-abono text-end" placeholder="0.00" />
+            <input type="number" name="Abono[]" class="form-control input-abono text-end" placeholder="0.00" required> </>
         </td>
         <td>
             <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
@@ -286,12 +316,25 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
         tbody.appendChild(fila);
 
-        // Inicializar Select2 para la nueva fila
-        $(fila).find('select.select2').select2({
-            width: '100%',
-            placeholder: "Seleccione una subcuenta",
-            allowClear: true
+        if (tbody.rows.length > 0) {
+            aduanaSelect.disabled = true;
+            document.getElementById('aduana-hidden').value = aduanaSelect.value;
+        } else {
+            aduanaSelect.disabled = false;
+            document.getElementById('aduana-hidden').value = '';
+        }
+
+        $(fila).find('.select2-subcuenta').select2({
+            placeholder: 'Subcuenta*',
+            allowClear: false,
+            width: '100%'
         });
+        $(fila).find('.select2-referencia').select2({
+            placeholder: 'Referencia*',
+            allowClear: false,
+            width: '100%'
+        });
+
 
         // Añadir listeners para bloqueo mutuo de inputs Cargo y Abono
         const inputCargo = fila.querySelector('.input-cargo');
@@ -324,6 +367,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         const fila = boton.closest('tr');
         fila.remove();
         calcularTotales(); // actualizar totales al eliminar
+
+        const tbody = document.querySelector('#tabla-partidas tbody');
+        if (tbody.rows.length === 0) {
+            document.getElementById('aduana-select').disabled = false;
+        }
     }
 
 

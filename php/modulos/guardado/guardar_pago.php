@@ -55,7 +55,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
     // Variables para insertar
     $fecha_alta_default = obtenerFechaHoraActual();
-    $activo = 2;
+    $activo = 1;
     $usuarioAlta = 1;
     $exportadoCoi = 1;
 

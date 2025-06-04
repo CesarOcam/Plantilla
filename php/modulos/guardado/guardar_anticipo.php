@@ -2,7 +2,7 @@
 include('../conexion.php');
 
 // Verificar que los campos obligatorios estén presentes
-if (isset($_POST['beneficiario'])) {
+if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST['Cargo'], $_POST['Abono'])) {
     // Recoger todos los valores
     $empresa = 2;
     $beneficiario = trim($_POST['beneficiario']);
@@ -10,6 +10,7 @@ if (isset($_POST['beneficiario'])) {
 
     //Recibe datos de las subcuentas
     $subcuentas = $_POST['Subcuenta'] ?? [];
+    $referencias = $_POST['Referencia'] ?? [];
     $cargos = $_POST['Cargo'] ?? [];
     $abonos = $_POST['Abono'] ?? [];
     $observaciones = $_POST['Observaciones'] ?? [];
@@ -89,19 +90,28 @@ if (isset($_POST['beneficiario'])) {
     $activo = 1;
     // Preparar inserción de partidas
     $sql_insert_partidas = "INSERT INTO partidaspolizas 
-    (Polizaid, Subcuentaid, Cargo, Abono, Observaciones, FolioArchivo, Activo, NumeroFactura)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Observaciones, FolioArchivo, Activo, NumeroFactura)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);
 
     foreach ($subcuentas as $i => $subcuenta_id) {
         $cargo = isset($cargos[$i]) && is_numeric($cargos[$i]) ? floatval($cargos[$i]) : 0;
         $abono = isset($abonos[$i]) && is_numeric($abonos[$i]) ? floatval($abonos[$i]) : 0;
+
+        $referencia = $referencias[$i] ?? '';
+        if (!is_numeric($referencia) || $referencia === '') {
+            $referencia = null;
+        } else {
+            $referencia = (int) $referencia;
+        }
+
         $observacion = $observaciones[$i] ?? '';
         $factura = $facturas[$i] ?? '';
 
         $stmt_partidas->execute([
             $poliza_id,
             $subcuenta_id,
+            $referencia,
             $cargo,
             $abono,
             $observacion,
@@ -110,6 +120,7 @@ if (isset($_POST['beneficiario'])) {
             $factura      // NumeroFactura
         ]);
     }
+
 
 
     echo json_encode([

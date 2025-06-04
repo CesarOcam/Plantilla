@@ -136,16 +136,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     <?php endforeach; ?>
                 </select>
 
-                <!-- Plantilla oculta para subcuentas -->
-                <select id="subcuenta_template" class="d-none">
-                    <option value="">Seleccione</option>
-                    <?php foreach ($subcuentas as $subcuenta): ?>
-                        <option value="<?php echo $subcuenta['Id']; ?>">
-                            <?php echo $subcuenta['Nombre']; ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-
                 <!-- Tabla dinámica -->
                 <div class="row mt-5">
                     <div class="col-12">

@@ -51,7 +51,7 @@ try {
                     <td><?php echo $datos['NumeroPoliza']; ?></td>
                     <td>AMEXPORT LOGÍSTICA</td>
                     <td><?php echo $datos['NumeroSubcuenta'] . '-' . $datos['NombreSubcuenta']; ?></td>
-                    <td><?php echo $datos['Cargo']; ?></td>
+                    <td><?php echo '$'.$datos['Cargo']; ?></td>
                     <td><?php echo $datos['Observaciones']; ?></td>
                 </tr>
             <?php endforeach; ?>
