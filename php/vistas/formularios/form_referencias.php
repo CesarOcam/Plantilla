@@ -241,7 +241,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <select id="recinto-select" name="recinto" disabled>
                                     <option value="" selected disabled>Seleccione una aduana primero</option>
                                 </select>
-
                             </div>
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <select id="naviera-select" name="naviera"
@@ -478,7 +477,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             recintoSelect.empty().append('<option>Cargando recintos...</option>').trigger('change');
 
             fetch(`form_referencias.php?aduana_id=${aduanaId}`)
-                .then(response => response.json())
+                .then(response => {
+                    const contentType = response.headers.get("content-type");
+                    if (!contentType || !contentType.includes("application/json")) {
+                        throw new Error("La respuesta no es JSON válida.");
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     recintoSelect.empty(); // Limpiar opciones previas
 
@@ -497,9 +502,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 })
                 .catch(error => {
                     console.error('Error al cargar recintos:', error);
-                    recintoSelect.empty().append('<option value="" disabled selected>Error al cargar recintos</option>').prop('disabled', true).trigger('change');
+                    recintoSelect.empty()
+                        .append('<option value="" disabled selected>Error al cargar recintos</option>')
+                        .prop('disabled', true)
+                        .trigger('change');
                 });
         });
+
 
     });
 

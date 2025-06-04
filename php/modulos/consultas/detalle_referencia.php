@@ -40,7 +40,7 @@ $stmt = $con->prepare("
             ELSE ''
         END AS ResultadoModulacion_texto,
         r.RecintoId,
-        rec.nombre_recinto AS nombre_recinto,
+        rec.inmueble_recintos AS inmueble_recintos,
         r.NavieraId,
         nav.Nombre AS nombre_naviera,
         r.CierreDocumentos,
@@ -250,7 +250,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="clave" class="form-label text-muted small">CLAVE PEDIMENTO:</label>
-                                    <input id="clave" name="clave" type="text"
+                                    <input id="clave" name="clave_pedimento" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['ClavePedimento']; ?>">
@@ -261,13 +261,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['PesoBruto']; ?>">
-                                </div>
-                                <div class="col-2 col-sm-2 d-flex flex-column mt-4">
-                                    <label for="cantidad" class="form-label text-muted small">CANTIDAD:</label>
-                                    <input id="cantidad" name="cantidad" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['Cantidad']; ?>">
                                 </div>
 
                                 <!-- FILA 3 -->
@@ -317,7 +310,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <input id="recinto" name="recinto" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
-                                        value="<?php echo $referencia['nombre_recinto']; ?>" readonly>
+                                        value="<?php echo $referencia['inmueble_recintos']; ?>" readonly>
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="naviera" class="form-label text-muted small">NAVIERA:</label>
