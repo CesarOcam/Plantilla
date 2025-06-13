@@ -5,19 +5,23 @@ header('Content-Type: application/json');
 // Verificar que los campos obligatorios estén presentes
 if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
 
-    function obtenerFechaHoraActual() {
+    function obtenerFechaHoraActual()
+    {
         return date("Y-m-d H:i:s");
     }
 
-    function parseFecha($fecha) {
+    function parseFecha($fecha)
+    {
         return !empty($fecha) ? date("Y-m-d H:i:s", strtotime($fecha)) : null;
     }
 
-    function parseHora($hora) {
+    function parseHora($hora)
+    {
         return !empty($hora) ? date("H:i:s", strtotime($hora)) : null;
     }
 
-        function parseInt($valor) {
+    function parseInt($valor)
+    {
         return (is_numeric($valor)) ? intval($valor) : null;
     }
 
@@ -30,7 +34,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
     $pedimento = $_POST['pedimento'] ?? null;
     $clave_ped = $_POST['clave_pedimento'] ?? null;
     $peso = $_POST['peso'] ?? 0.0;
-    $peso = is_numeric($peso) ? (float)$peso : 0.0;
+    $peso = is_numeric($peso) ? (float) $peso : 0.0;
     $bultos = $_POST['bultos'] ?? null;
     $contenedor = $_POST['contenedor'] ?? null;
     $consolidadora = parseInt($_POST['consolidadora'] ?? null);
@@ -102,12 +106,37 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $params = [
-        $aduana, $numero, $exportador, $logistico, $mercancia, $marcas,
-        $pedimento, $clave_ped, $peso, $bultos,
-        $contenedor, $consolidadora, $resultado_mod, $recinto,
-        $naviera, $cierre_doc, $fecha_pago, $buque, $booking, $cierre_desp,
-        $hora_desp, $viaje, $su_referencia, $fecha_doc, $fecha_eta,
-        $puerto_dec, $puerto_dest, $comentarios, $fecha_alta, $activo, $usuarioAlta
+        $aduana,
+        $numero,
+        $exportador,
+        $logistico,
+        $mercancia,
+        $marcas,
+        $pedimento,
+        $clave_ped,
+        $peso,
+        $bultos,
+        $contenedor,
+        $consolidadora,
+        $resultado_mod,
+        $recinto,
+        $naviera,
+        $cierre_doc,
+        $fecha_pago,
+        $buque,
+        $booking,
+        $cierre_desp,
+        $hora_desp,
+        $viaje,
+        $su_referencia,
+        $fecha_doc,
+        $fecha_eta,
+        $puerto_dec,
+        $puerto_dest,
+        $comentarios,
+        $fecha_alta,
+        $activo,
+        $usuarioAlta
     ];
 
     if (count($params) !== substr_count($sql, '?')) {
@@ -122,8 +151,11 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
         if ($stmt->execute($params)) {
             $referencia_id = $con->lastInsertId();
 
-            // Manejo de archivos
-            $uploadDir = '../../../docs/';
+            // Carpeta específica por referencia
+            $uploadBaseDir = '../../../docs/';
+            $uploadDir = $uploadBaseDir . $referencia_id . '/';
+
+            // Crear la carpeta si no existe
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }

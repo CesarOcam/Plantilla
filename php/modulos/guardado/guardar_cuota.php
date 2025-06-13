@@ -299,15 +299,24 @@ $archivosGuardados = [];
 
 if (is_array($archivos['name'])) {
     for ($i = 0; $i < count($archivos['name']); $i++) {
-        $tmpName = $archivos['tmp_name'][$i];
-        $fileName = basename($archivos['name'][$i]);
-        $destination = $targetDir . '/' . $fileName;
+        if ($archivos['error'][$i] === UPLOAD_ERR_OK) {
+            $tmpName = $archivos['tmp_name'][$i];
+            $nombreOriginal = basename($archivos['name'][$i]);
+            $nombreFinal = uniqid() . "_" . $nombreOriginal;
+            $rutaFinal = $targetDir . '/' . $nombreFinal;
 
-        if (move_uploaded_file($tmpName, $destination)) {
-            $archivosGuardados[] = $fileName;
+            if (move_uploaded_file($tmpName, $rutaFinal)) {
+                // Registrar en BD
+                $sqlArchivo = "INSERT INTO referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
+                $stmtArchivo = $con->prepare($sqlArchivo);
+                $stmtArchivo->execute([$referencia, $nombreOriginal, $rutaFinal]);
+
+                $archivosGuardados[] = $nombreFinal;
+            }
         }
     }
 }
+
 
 //---------------------Responder al Frontend-----------------------------
 echo json_encode([

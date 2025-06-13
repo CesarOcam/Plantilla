@@ -491,7 +491,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                         Nombre,
                                                         Ruta
                                                     FROM referencias_archivos 
-                                                    WHERE Referencia_Id = :id
+                                                    WHERE Referencia_id = :id
                                                 ");
                                                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                                                 $stmt->execute();
@@ -528,13 +528,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                     }
                                                 }
 
-                                                if (empty($documentos)):?>
+                                                if (empty($documentos)): ?>
                                                     <tr>
-                                                        <td colspan="4" class="text-center text-muted">Sin archivos adjuntos
-                                                        </td>
+                                                        <td colspan="4" class="text-center text-muted">Sin archivos adjuntos</td>
                                                     </tr>
-                                                <?php
-                                                    foreach ($documentos as $doc):
+                                                <?php else: ?>
+                                                    <?php foreach ($documentos as $doc):
                                                         $id = $doc['Id'];
                                                         $nombre = htmlspecialchars($doc['Nombre']);
                                                         $ruta = $doc['Ruta'];
@@ -554,31 +553,24 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                         ?>
                                                         <tr>
                                                             <td><?= $icono . $nombre ?></td>
-                                                            <td class="text-center text-uppercase"><?= strtoupper($extension) ?>
-                                                            </td>
+                                                            <td class="text-center text-uppercase"><?= strtoupper($extension) ?></td>
                                                             <td class="text-center"><?= $tamanoLegible ?></td>
                                                             <td class="text-center">
-                                                                <a href="<?= htmlspecialchars($ruta) ?>"
-                                                                    class="btn btn-sm btn-outline-success me-2" download
-                                                                    title="Descargar">
-                                                                    <i class="bi bi-download"></i>
-                                                                    Descargar
+                                                                <a href="<?= htmlspecialchars($ruta) ?>" class="btn btn-sm btn-outline-success me-2" download title="Descargar">
+                                                                    <i class="bi bi-download"></i> Descargar
                                                                 </a>
                                                                 <button type="button" class="btn btn-sm btn-outline-danger"
-                                                                    data-eliminar="true" data-id="<?= $id ?>"
-                                                                    data-nombre="<?= $nombre ?>"
-                                                                    data-ruta="<?= htmlspecialchars($ruta) ?>" title="Eliminar">
+                                                                        data-eliminar="true" data-id="<?= $id ?>"
+                                                                        data-nombre="<?= $nombre ?>"
+                                                                        data-ruta="<?= htmlspecialchars($ruta) ?>" title="Eliminar">
                                                                     Eliminar
                                                                 </button>
                                                             </td>
                                                         </tr>
-                                                        <?php
-                                                    endforeach;
-                                                endif;
-                                                ?>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
                                             </tbody>
                                         </table>
-
                                     </div>
                                 </div>
 
