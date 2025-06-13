@@ -16,6 +16,66 @@ if (!isset($_SESSION['usuario_id'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
   <link rel="stylesheet" href="../../css/style.css">
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const renderChart = (canvasId, chartType, labels, dataValues, backgroundColor, borderColor, label) => {
+        const canvas = document.getElementById(canvasId);
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          new Chart(ctx, {
+            type: chartType,
+            data: {
+              labels: labels,
+              datasets: [{
+                label: label,
+                data: dataValues,
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              animation: {
+                duration: 0,
+                animations: {
+                  numbers: {
+                    type: 'number',
+                    duration: 0
+                  },
+                  colors: {
+                    type: 'color',
+                    duration: 0
+                  }
+                }
+              },
+              scales: {
+                y: { beginAtZero: true }
+              }
+            }
+          });
+        }
+      };
+
+      renderChart('aduanasChart', 'bar',
+        ['Veracruz', 'Altamira', 'AIFA', 'Ciudad de México', 'Manzanillo', 'Lázaro Cardenas'],
+        [34, 28, 15, 22, 48, 36],
+        'rgba(98, 192, 75, 0.6)',
+        'rgb(85, 192, 75)',
+        'Operaciones'
+      );
+
+      renderChart('operativosChart', 'bar',
+        ['Operativo 1', 'Operativo 2', 'Operativo 3', 'Operativo 4', 'Operativo 5'],
+        [12, 19, 8, 14, 10],
+        'rgba(255, 159, 64, 0.6)',
+        'rgba(255, 159, 64, 1)',
+        'Tareas Asignadas'
+      );
+    });
+  </script>
 </head>
 
 <body>
@@ -147,9 +207,6 @@ if (!isset($_SESSION['usuario_id'])) {
         </div>
       </div>
 
-
-
-
       <!-- Límite de crédito por cliente -->
       <div class="col-12 pt-3">
         <div class="card rounded-0">
@@ -228,61 +285,12 @@ if (!isset($_SESSION['usuario_id'])) {
 
     </div>
 
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
       </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-      // Operaciones por aduana
-      const aduanasCtx = document.getElementById('aduanasChart').getContext('2d');
-      new Chart(aduanasCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Veracruz', 'Altamira', 'AIFA', 'Ciudad de México', 'Manzanillo', 'Lázaro Cardenas'],
-          datasets: [{
-            label: 'Operaciones',
-            data: [34, 28, 15, 22, 48, 36],
-            backgroundColor: 'rgba(98, 192, 75, 0.6)',
-            borderColor: 'rgb(85, 192, 75)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-
-      // Carga de trabajo por operativo
-      const operativosCtx = document.getElementById('operativosChart').getContext('2d');
-      new Chart(operativosCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Operativo 1', 'Operativo 2', 'Operativo 3', 'Operativo 4', 'Operativo 5'],
-          datasets: [{
-            label: 'Tareas Asignadas',
-            data: [12, 19, 8, 14, 10],
-            backgroundColor: 'rgba(255, 159, 64, 0.6)',
-            borderColor: 'rgba(255, 159, 64, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    </script>
-
 
 </body>
 
