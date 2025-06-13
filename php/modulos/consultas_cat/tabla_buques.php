@@ -11,7 +11,7 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina;
 $filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
 $filtroLike = '%' . $filtro . '%';
 
-$sql = "SELECT Id, Nombre FROM buques WHERE Activo = 1";
+$sql = "SELECT Id, Nombre FROM con_buques WHERE Activo = 1";
 
 if ($filtro !== '') {
     $sql .= " AND Nombre LIKE :filtro";
@@ -33,7 +33,7 @@ $buques = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Total de registros
-$stmtTotal = $con->prepare("SELECT COUNT(*) FROM buques");
+$stmtTotal = $con->prepare("SELECT COUNT(*) FROM con_buques");
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
 

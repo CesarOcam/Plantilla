@@ -11,12 +11,18 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 
 $stmt = $con->prepare("
     SELECT 
-    b.nombre_recinto, b.aduana_recintos, b.curp_recintos, b.inmueble_recintos, b.fechaAcceso_recintos, b.fechaCreate_recintos, b.usuarioAlta_recintos, b.status_recintos,
-    u.Nombre AS NombreUsuarioAlta
+        b.aduana_recintos, 
+        b.inmueble_recintos, 
+        b.fechaAcceso_recintos, 
+        b.fechaCreate_recintos, 
+        b.usuarioAlta_recintos, 
+        b.status_recintos,
+        CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS NombreUsuarioAlta
     FROM 2221_recintos b
-    LEFT JOIN usuarios u ON b.usuarioAlta_recintos = u.Id
+    LEFT JOIN usuarios u ON b.usuarioAlta_recintos = u.idusuarios
     WHERE b.id2221_recintos = :id
 ");
+
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $recinto = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -77,51 +83,18 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             style="background-color: transparent;" value="<?php echo $id; ?>">
                     </div>
                     <div class="col-10 col-sm-4 mt-4">
-                        <label for="nombre" class="form-label text-muted small">NOMBRE :</label>
-                        <input id="nombre" name="nombre" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $recinto['nombre_recinto']; ?>">
-                    </div>
-
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="tipo" class="form-label text-muted small">ADUANA :</label>
-                        <select id="aduana-select" name="aduana"
-                            class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
-
-                            <!-- Mostrar como seleccionada la aduana del recinto -->
-                            <?php if (!empty($recinto['aduana_recintos'])): ?>
-                                <option value="<?php echo htmlspecialchars($recinto['aduana_recintos']); ?>" selected>
-                                    <?php echo htmlspecialchars($recinto['aduana_recintos']); ?>
-                                </option>
-                            <?php else: ?>
-                                <option value="" selected disabled>Aduana</option>
-                            <?php endif; ?>
-
-                            <!-- Mostrar el resto de las aduanas, sin duplicar la ya seleccionada -->
-                            <?php foreach ($aduana as $a): ?>
-                                <?php if ($a['nombre_corto_aduana'] !== $recinto['aduana_recintos']): ?>
-                                    <option value="<?php echo htmlspecialchars($a['nombre_corto_aduana']); ?>">
-                                        <?php echo htmlspecialchars($a['nombre_corto_aduana']); ?>
-                                    </option>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </select>
-
-                    </div>
-                    <div class="col-10 col-sm-1 mt-4">
-                        <label for="curp" class="form-label text-muted small">CURP :</label>
-                        <input id="curp" name="curp" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $recinto['curp_recintos']; ?>">
-                    </div>
-                    <div class="col-10 col-sm-4 mt-4">
-                        <label for="recinto" class="form-label text-muted small">RECINTO :</label>
+                        <label for="recinto" class="form-label text-muted small">NOMBRE :</label>
                         <input id="recinto" name="recinto" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $recinto['inmueble_recintos']; ?>">
                     </div>
+                                        <div class="col-10 col-sm-4 mt-4">
+                        <label for="aduana" class="form-label text-muted small">ADUANA :</label>
+                        <input id="aduana" name="aduana" type="text"
+                            class="form-control input-transparent border-0 border-bottom rounded-0"
+                            style="background-color: transparent;" value="<?php echo $recinto['aduana_recintos']; ?>">
+                    </div>
+
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-2 mt-4">

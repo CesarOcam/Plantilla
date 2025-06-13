@@ -14,7 +14,7 @@ $filtroLike = '%' . $filtro . '%';
 $sql = "SELECT Id, Numero, Nombre, Saldo FROM cuentas WHERE Activo = 1";
 
 if ($filtro !== '') {
-    $sql .= " AND Nombre LIKE :filtro";
+    $sql .= " AND (Nombre LIKE :filtro OR Numero LIKE :filtro)";
 }
 
 $sql .= " ORDER BY Numero LIMIT :inicio, :registrosPorPagina";
@@ -24,6 +24,7 @@ $stmt = $con->prepare($sql);
 if ($filtro !== '') {
     $stmt->bindValue(':filtro', $filtroLike, PDO::PARAM_STR);
 }
+
 
 $stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
 $stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);

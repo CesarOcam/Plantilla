@@ -4,9 +4,7 @@ include('../conexion.php');
 // Verificar que los campos obligatorios estén presentes
 if (isset($_POST['id_recinto'], $_POST['aduana'], $_POST['recinto'])) {
     $id_recinto = (int) $_POST['id_recinto'];
-    $nombre = $_POST['nombre'];
     $aduana = $_POST['aduana'];
-    $curp = $_POST['curp'];
     $recinto = $_POST['recinto'];
 
     $usuarioModificacion = 1;
@@ -18,13 +16,11 @@ if (isset($_POST['id_recinto'], $_POST['aduana'], $_POST['recinto'])) {
 
     // Consulta UPDATE
     $sql = "UPDATE 2221_recintos SET 
-        nombre_recinto = ?, aduana_recintos = ?, curp_recintos = ?, inmueble_recintos = ?, updated_at = ?, usuarioModificacion_recintos = ?
+        aduana_recintos = ?, inmueble_recintos = ?, updated_at = ?, usuarioModificacion_recintos = ?
         WHERE id2221_recintos = ?";
 
     $params = [
-        $nombre,
         $aduana,
-        $curp,
         $recinto,
         $fecha_modificacion,
         $usuarioModificacion,

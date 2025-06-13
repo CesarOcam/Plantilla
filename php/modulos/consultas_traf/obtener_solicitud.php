@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
             FROM solicitudes s
             JOIN empresas e ON s.EmpresaId = e.Id
             JOIN beneficiarios b ON s.BeneficiarioId = b.Id
-            JOIN 2201aduanas a ON s.AduanaId = a.id2201aduanas
+            JOIN 2201aduanas a ON s.Aduana = a.id2201aduanas
             WHERE s.Id = :id LIMIT 1";
 
     $stmt = $con->prepare($sql);
@@ -25,8 +25,7 @@ if (isset($_GET['id'])) {
         // Obtener partidas relacionadas
         $sqlPartidas = "SELECT 
             CONCAT(c.Numero, ' - ', c.Nombre) AS SubcuentaNombre,
-            ps.Cargo, 
-            ps.Abono,
+            ps.Importe, 
             ps.Observaciones, 
             ps.NumeroFactura,
             r.Numero AS ReferenciaNumero,

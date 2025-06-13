@@ -40,7 +40,7 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
 
     // Insertar la póliza: agrego columna Numero para guardar $numero_poliza
     $sql_insert_poliza = "INSERT INTO solicitudes 
-        (BeneficiarioId, AduanaId, EmpresaId, Importe, Fecha, Status, FechaAlta, UsuarioAlta)
+        (BeneficiarioId, Aduana, EmpresaId, Importe, Fecha, Status, FechaAlta, UsuarioAlta)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $params = [$beneficiario, $aduana, $empresa, $importe, $fecha, $activo, $fecha_alta, $usuarioAlta];
 
@@ -53,11 +53,12 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
 
     // Obtener ID de la solicitud
     $solicitud_id = $con->lastInsertId();
+    $partida = 0;
 
     // Insertar partidas
     $sql_insert_partidas = "INSERT INTO partidassolicitudes
-        (SolicitudId, Subcuentaid, ReferenciaId, Cargo, Abono, Importe, Observaciones)
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
+        (Partida, SolicitudId, Subcuentaid, ReferenciaId, Importe, Observaciones)
+        VALUES (?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);
 
     foreach ($subcuentas as $i => $subcuenta_id) {
@@ -68,12 +69,11 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
         $factura = $facturas[$i] ?? '';
 
         $stmt_partidas->execute([
+            $partida,
             $solicitud_id,
             $subcuenta_id,
             $referencia,
             $cargo,
-            $abono,
-            $importe,
             $observacion,
         ]);
     }

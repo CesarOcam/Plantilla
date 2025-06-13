@@ -42,25 +42,25 @@ $stmt->execute();
 $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // RECINTOS
-$stmt = $con->prepare("SELECT id2221_recintos, nombre_recinto
+$stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos
                        FROM 2221_recintos 
-                       WHERE nombre_recinto IS NOT NULL AND nombre_recinto != ''
-                       ORDER BY nombre_recinto");
+                       WHERE inmueble_recintos IS NOT NULL AND inmueble_recintos != ''
+                       ORDER BY inmueble_recintos");
 $stmt->execute();
 $recinto = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // NAVIERAS
-$stmt = $con->prepare("SELECT Id, Nombre
-                       FROM navieras 
-                       WHERE Nombre IS NOT NULL AND Nombre != ''
-                       ORDER BY Nombre");
+$stmt = $con->prepare("SELECT idtransporte, identificacion
+                       FROM transporte 
+                       WHERE identificacion IS NOT NULL AND identificacion != ''
+                       ORDER BY identificacion");
 $stmt->execute();
 $naviera = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // BUQUES
 $stmt = $con->prepare("SELECT Id, Nombre
-                       FROM buques 
+                       FROM con_buques 
                        WHERE Nombre IS NOT NULL AND Nombre != ''
                        ORDER BY Nombre");
 $stmt->execute();
@@ -73,6 +73,11 @@ $stmt = $con->prepare("SELECT id_consolidadora, denominacion_consolidadora
                        ORDER BY denominacion_consolidadora");
 $stmt->execute();
 $consolidadora = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//Obtener referencias para select referencias
+$stm = $con->prepare("SELECT Id, Numero FROM referencias WHERE Status IS NOT NULL AND Status != 0 ORDER BY Numero ASC");
+$stm-> execute();
+$referencias = $stm->fetchAll();
 ?>
 
 
@@ -139,10 +144,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     <!-- Datos Generales -->
                     <div class="tab-pane fade show active" id="datos" role="tabpanel">
                         <div class="row">
-                            <div class="col-10 col-sm-1 d-flex align-items-center mt-4">
-                                <input name="referencia" type="text"
+                            <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
+                               <input id="input-referencia" name="referencia" type="text" maxlength="50"
                                     class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Referencia" readonly>
+                                    style="background-color: transparent;" placeholder="Referencia">
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                                 <select id="aduana-select" name="aduana">
@@ -458,6 +463,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             });
         }
 
+        initSelect2('#referencia-select', 'Referencia');
         initSelect2('#aduana-select', 'Aduana');
         initSelect2('#exportador-select', 'Exportador *');
         initSelect2('#logistico-select', 'Logístico *');
@@ -467,6 +473,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#consolidadora-select', 'Consolidadora');
         initSelect2('#resultado_mod-select', 'Resultado de Modulación');
 
+        /*ocument.getElementById('input-referencia').addEventListener('change', function () {
+            
+            const referencia = this.value.trim();
+            if (referencia !== '') {
+                window.location.href = `../../modulos/consultas/detalle_referencia.php?id=${referencia}`;
+            }   
+        });*/
+        
         // Evento change aquí, dentro del ready
         $('#aduana-select').on('change', function () {
             const aduanaId = this.value;

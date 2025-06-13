@@ -16,7 +16,7 @@ if (isset($_POST['id_buque'], $_POST['nombre'])) {
     $fecha_modificacion = obtenerFechaHoraActual();
 
     // Consulta UPDATE
-    $sql = "UPDATE buques SET 
+    $sql = "UPDATE con_buques SET 
         Nombre = ?, Pais = ?, FechaUltimaModificacion = ?, UsuarioUltimaModificacion = ?
         WHERE Id = ?";
 

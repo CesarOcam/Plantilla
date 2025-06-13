@@ -20,7 +20,7 @@ if (isset($_POST['nombre'], $_POST['pais'])) {
     $usuarioAlta = 1;
 
     // Asegurarse de que todos los campos coincidan con los de la base de datos
-    $sql = "INSERT INTO buques 
+    $sql = "INSERT INTO con_buques 
     (
         Nombre, Activo, FechaAlta, UsuarioAlta, Pais
     )

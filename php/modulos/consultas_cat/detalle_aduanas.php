@@ -36,14 +36,13 @@ $stmt = $con->prepare("
         sc6.Id AS SubcuentaCuotasCargoExpId,
         CONCAT(sc6.Numero, ' - ', sc6.Nombre) AS SubcuentaCuotasCargoExpNombre,
 
-
         a.fechaCreate_aduana, 
         a.usuarioAlta_aduana, 
         a.status_aduana,
-        u.Nombre AS NombreUsuarioAlta
+        CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS NombreUsuarioAlta
 
     FROM 2201aduanas a
-    LEFT JOIN usuarios u ON a.usuarioAlta_aduana = u.Id
+    LEFT JOIN usuarios u ON a.usuarioAlta_aduana = u.idusuarios
 
     LEFT JOIN cuentas sc1 ON a.SubcuentaClientesLogId = sc1.Id
     LEFT JOIN cuentas sc2 ON a.SubcuentaClientesExpId = sc2.Id
@@ -54,6 +53,7 @@ $stmt = $con->prepare("
 
     WHERE a.id2201aduanas = :id
 ");
+
 
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();

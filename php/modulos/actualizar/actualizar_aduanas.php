@@ -42,7 +42,7 @@ if (isset(
     $sql = "UPDATE 2201aduanas SET 
         nombre_corto_aduana = ?, aduana_aduana = ?,  seccion_aduana = ?, denominacion_aduana = ?, prefix_aduana = ?, tipoAduana = ?,
         SubcuentaClientesLogId = ?, SubcuentaCuotasAbonoLogId = ?, SubcuentaCuotasCargoLogId = ?, SubcuentaClientesExpId = ?, SubcuentaCuotasAbonoExpId = ?, SubcuentaCuotasCargoLogId = ?,
-        fechaModificacion_aduana = ?, usuarioAlta_Modificacion = ?
+        updated_at = ?, usuarioAlta_Modificacion = ?
         WHERE id2201aduanas = ?";
 
     $params = [

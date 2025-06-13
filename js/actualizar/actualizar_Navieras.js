@@ -12,9 +12,12 @@ $(document).ready(function () {
     // Envío del formulario por AJAX
     $('#form_Navieras').on('submit', function (e) {
         e.preventDefault(); // Evita recarga
+        
+        const formData = $(this).serialize();
+        console.log("Datos enviados:", formData); 
 
         $.ajax({
-            url: '../../modulos/actualizar/actualizar_navieras.php', // Ajusta esta ruta
+            url: '../../modulos/actualizar/actualizar_navieras.php', 
             type: 'POST',
             data: $(this).serialize(),
             success: function (response) {

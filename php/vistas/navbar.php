@@ -13,7 +13,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
 
           <!-- Menú desplegable de usuario -->
           <div class="dropdown me-3">
-            <button class="btn btn-dark dropdown-toggle d-flex align-items-center" type="button" id="usuarioDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-dark dropdown-toggle d-flex align-items-center rounded-0" type="button" id="usuarioDropdown" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-person-circle me-2"></i>
               <?php echo $_SESSION['usuario_nombre'] ?? 'Usuario'; ?>
             </button>
@@ -51,7 +51,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
                     <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/trafico/realizar_pago.php">Realizar Pago</a></li>
                     <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/trafico/solicitud_anticipo.php">Solicitud de Anticipo</a></li>
                     <hr>
-                    <li><a class="dropdown-item small" href="trafico">Registro Cuota</a></li>
+                    <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/trafico/registro_cuota.php">Registro Cuota</a></li>
                     <li><a class="dropdown-item small" href="trafico">Registro Facturas</a></li>
                     <hr>
                     <li><a class="dropdown-item small" href="<?php echo $base_url; ?>/php/vistas/formularios/form_polizas.php">Generar Póliza</a></li>

@@ -18,16 +18,17 @@ $stmt = $con->prepare("
         ce.contacto_cliente, ce.telefono_cliente, ce.emails_trafico, ce.pagaCon_cliente,
         ce.status_exportador, ce.fechaAlta_exportador, ce.usuarioAlta_exportador, ce.usuarioModificar_exportador, ce.fecha_ultimaActualizacionClientes,
         logi.razonSocial_exportador AS razonSocial_logistico,
-        u.nombre AS nombre_usuario_alta,
-        um.nombre AS nombre_usuario_modifica
+        CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS nombre_usuario_alta,
+        CONCAT_WS(' ', um.NombreUsuario, um.apePatUsuario, um.apeMatUsuario) AS nombre_usuario_modifica
     FROM 01clientes_exportadores ce
     LEFT JOIN cat11_estados est ON ce.idcat11_estado = est.idcat11_estado
     LEFT JOIN 2204claves_paises pais ON ce.id2204clave_pais = pais.id2204clave_pais
     LEFT JOIN 01clientes_exportadores logi ON ce.logistico_asociado = logi.id01clientes_exportadores
-    LEFT JOIN usuarios u ON ce.usuarioAlta_exportador = u.id
-    LEFT JOIN usuarios um ON ce.usuarioModificar_exportador = um.id
+    LEFT JOIN usuarios u ON ce.usuarioAlta_exportador = u.idusuarios
+    LEFT JOIN usuarios um ON ce.usuarioModificar_exportador = um.idusuarios
     WHERE ce.id01clientes_exportadores = :id
 ");
+
 
 
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);

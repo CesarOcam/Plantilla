@@ -1,3 +1,3 @@
 <?php
-$clave = 'Conta.2025';
+$clave = 'Admin.Amexport*';
 echo password_hash($clave, PASSWORD_DEFAULT);

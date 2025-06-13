@@ -25,16 +25,14 @@ if (isset($_POST['nombre_recinto'], $_POST['aduana'], $_POST['curp'], $_POST['do
     // Asegurarse de que todos los campos coincidan con los de la base de datos
     $sql = "INSERT INTO 2221_recintos 
     (
-        nombre_recinto, aduana_recintos, curp_recintos, inmueble_recintos,fechaAcceso_transportista, fechaCreate_recintos, usuarioAlta_recintos, status_recintos
+        inmueble_recintos, aduana_recintos,fechaAcceso_recintos, fechaCreate_recintos, usuarioAlta_recintos, status_recintos
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?)";
+    VALUES (?, ?, ?, ?, ?, ?)";
 
     // Crear el array de parámetros, sin incluir el valor de 'Activo' ya que ya está seteo como 1
     $params = [
     $nombre,
     $aduana,   // FechaAlta
-    $curp,  // UsuarioAlta
-    $domicilio, 
     $fecha_acceso,
     $fecha_alta,  // Activo
     $usuarioAlta,

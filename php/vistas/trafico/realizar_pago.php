@@ -98,12 +98,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="" readonly>
                     </div>
-                    <div class="col-4 col-sm-4 d-flex flex-column mt-4">
-                        <label for="EmpresaId" class="form-label text-muted small">EMPRESA:</label>
-                        <input id="EmpresaId" name="EmpresaId" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="" readonly>
-                    </div>
                 </div>
                 <div class="row mt-5">
                     <div class="col-12">

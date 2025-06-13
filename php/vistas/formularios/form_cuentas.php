@@ -53,7 +53,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <h5>+ Agregar Cuenta</h5>
                 <div class="row">
                     <div class="col-10 col-sm-6 d-flex align-items-center mt-4">
-                        <input name="numero" type="text" class="form-control rounded-0 border-0 border-bottom"
+                        <input name="numero" type="text" class="form-control rounded-0 border-0 border-bottom" maxlength="7"
                             style="background-color: transparent;" placeholder="Numero" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
                     </div>

@@ -22,7 +22,7 @@ try {
         WHERE pp.ReferenciaId = :id
         LIMIT :inicio, :limite
     ");
-    
+
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
     $stmt->bindValue(':limite', $registrosPorPagina, PDO::PARAM_INT);
@@ -48,10 +48,14 @@ try {
         <?php if ($datos): ?>
             <?php foreach ($datos as $datos): ?>
                 <tr>
-                    <td><?php echo $datos['NumeroPoliza']; ?></td>
+                    <td> 
+                        <a href="detalle_poliza.php?id=<?php echo $datos['PolizaId']; ?>">
+                            <?php echo $datos['NumeroPoliza']; ?>
+                        </a>
+                    </td>
                     <td>AMEXPORT LOGÍSTICA</td>
                     <td><?php echo $datos['NumeroSubcuenta'] . '-' . $datos['NombreSubcuenta']; ?></td>
-                    <td><?php echo '$'.$datos['Cargo']; ?></td>
+                    <td><?php echo '$' . $datos['Cargo']; ?></td>
                     <td><?php echo $datos['Observaciones']; ?></td>
                 </tr>
             <?php endforeach; ?>

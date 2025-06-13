@@ -14,7 +14,7 @@ if (!$input || !isset($input['usuario'], $input['clave'])) {
 $usuario = $input['usuario'];
 $clave = $input['clave'];
 
-$sql = "SELECT Id, Nombre, Hash FROM usuarios WHERE Nombre = :usuario LIMIT 1";
+$sql = "SELECT idusuarios, usuario, password FROM usuarios WHERE usuario = :usuario LIMIT 1";
 $stmt = $con->prepare($sql);
 $stmt->execute(['usuario' => $usuario]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -24,9 +24,9 @@ if (!$user) {
     exit;
 }
 
-if (password_verify($clave, $user['Hash'])) {
-    $_SESSION['usuario_id'] = $user['Id'];
-    $_SESSION['usuario_nombre'] = $user['Nombre'];
+if (password_verify($clave, $user['password'])) {
+    $_SESSION['usuario_id'] = $user['idusuarios'];
+    $_SESSION['usuario_nombre'] = $user['usuario'];
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['success' => false, 'error' => 'Contraseña incorrecta']);

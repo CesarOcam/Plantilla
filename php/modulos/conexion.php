@@ -3,7 +3,7 @@
 $host = "35.208.179.185"; // Cambia esto si tu base de datos está en otro servidor
 $usuario = "root"; // Tu usuario de MySQL
 $contraseña = "Am3xP0rt_2025"; // Tu contraseña de MySQL (deja vacío si no tienes contraseña configurada)
-$nombre_base_datos = "amexportdb"; // Nombre de tu base de datos
+$nombre_base_datos = "sap"; // Nombre de tu base de datos
 
 try {
     // Crear la conexión usando PDO

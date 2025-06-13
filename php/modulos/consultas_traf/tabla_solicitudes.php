@@ -117,24 +117,25 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
 <nav aria-label="Page navigation example" class="d-flex justify-content-center">
     <ul class="pagination">
         <li class="page-item <?php echo ($paginaActual == 1) ? 'disabled' : ''; ?>">
-            <a class="page-link" href="?pagina=<?php echo $paginaActual - 1; ?>" aria-label="Previous">
+            <a class="page-link" href="#" data-pagina="<?php echo max(1, $paginaActual - 1); ?>" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
 
         <?php for ($i = $inicioBloque; $i <= $finBloque; $i++): ?>
             <li class="page-item <?php echo ($i == $paginaActual) ? 'active' : ''; ?>">
-                <a class="page-link" href="?pagina=<?php echo $i; ?>"><?php echo $i; ?></a>
+                <a class="page-link" href="#" data-pagina="<?php echo $i; ?>"><?php echo $i; ?></a>
             </li>
         <?php endfor; ?>
 
         <li class="page-item <?php echo ($paginaActual == $totalPaginas) ? 'disabled' : ''; ?>">
-            <a class="page-link" href="?pagina=<?php echo $paginaActual + 1; ?>" aria-label="Next">
+            <a class="page-link" href="#" data-pagina="<?php echo min($totalPaginas, $paginaActual + 1); ?>" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
     </ul>
 </nav>
+
 <script>
     const subcuentas = <?php echo json_encode($subcuentas); ?>;
 </script>

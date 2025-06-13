@@ -9,7 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
 include_once(__DIR__ . '/../conexion.php'); // Ajusta el path según sea necesario
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
-
+$id2 = isset($_GET['id']) ? (int) $_GET['id'] : 1; //PDF
 $stmt = $con->prepare("
     SELECT 
         r.AduanaId,
@@ -42,7 +42,7 @@ $stmt = $con->prepare("
         r.RecintoId,
         rec.inmueble_recintos AS inmueble_recintos,
         r.NavieraId,
-        nav.Nombre AS nombre_naviera,
+        nav.identificacion AS nombre_naviera,
         r.CierreDocumentos,
         r.FechaPago,
         r.BuqueId,
@@ -52,7 +52,7 @@ $stmt = $con->prepare("
         r.HoraDespacho,
         r.Viaje,
         r.SuReferencia,
-        r.FechaDocumentado,
+        r.CierreDocumentado,
         r.LlegadaEstimada,
         r.PuertoDescarga,
         r.PuertoDestino,
@@ -60,18 +60,19 @@ $stmt = $con->prepare("
         r.FechaAlta,
         r.Status,
         r.UsuarioAlta,
-        u.Nombre AS nombre_usuario_alta
+        CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombre_usuario_alta
     FROM referencias r
     LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
     LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
     LEFT JOIN consolidadoras cons ON r.ConsolidadoraId = cons.id_consolidadora
     LEFT JOIN 2221_recintos rec ON r.RecintoId = rec.id2221_recintos
-    LEFT JOIN navieras nav ON r.NavieraId = nav.Id
-    LEFT JOIN buques bq ON r.BuqueId = bq.Id
-    LEFT JOIN usuarios u ON r.UsuarioAlta = u.Id
+    LEFT JOIN transporte nav ON r.NavieraId = nav.idtransporte
+    LEFT JOIN con_buques bq ON r.BuqueId = bq.Id
+    LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
     WHERE r.Id = :id
 ");
+
 
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
@@ -93,25 +94,25 @@ $stmt->execute();
 $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // RECINTOS
-$stmt = $con->prepare("SELECT id2221_recintos, nombre_recinto
+$stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos
                        FROM 2221_recintos 
-                       WHERE nombre_recinto IS NOT NULL AND nombre_recinto != ''
-                       ORDER BY nombre_recinto");
+                       WHERE inmueble_recintos IS NOT NULL AND inmueble_recintos != ''
+                       ORDER BY inmueble_recintos");
 $stmt->execute();
 $recinto = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // NAVIERAS
-$stmt = $con->prepare("SELECT Id, Nombre
-                       FROM navieras 
-                       WHERE Nombre IS NOT NULL AND Nombre != ''
-                       ORDER BY Nombre");
+$stmt = $con->prepare("SELECT idtransporte, identificacion
+                       FROM transporte 
+                       WHERE identificacion IS NOT NULL AND identificacion != ''
+                       ORDER BY identificacion");
 $stmt->execute();
 $naviera = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // BUQUES
 $stmt = $con->prepare("SELECT Id, Nombre
-                       FROM buques 
+                       FROM con_buques 
                        WHERE Nombre IS NOT NULL AND Nombre != ''
                        ORDER BY Nombre");
 $stmt->execute();
@@ -161,7 +162,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             <form id="form_Referencia" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $id; ?>">
                 <div class="card-header formulario_referencia">
-                    <h5>Información Referencia - <?php echo $referencia['Numero']; ?></h5>
+                    <h5 class="mt-3">Información Referencia - <?php echo $referencia['Numero']; ?></h5>
 
                     <!-- Tabs -->
                     <ul class="nav nav-tabs mt-3" id="clienteTabs" role="tablist">
@@ -391,7 +392,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <input id="fecha_doc" name="fecha_doc" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
-                                        value="<?php echo $referencia['FechaDocumentado']; ?>">
+                                        value="<?php echo $referencia['CierreDocumentado']; ?>">
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="fecha_eta" class="form-label text-muted small">FECHA ESTIMADA DE LLEGADA
@@ -455,7 +456,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <div class="tab-pane fade" id="direccion" role="tabpanel">
                             <div class="row ms-2 me-2">
                                 <?php
-                                    include_once("tabla_movimientos.php");
+                                include_once("tabla_movimientos.php");
                                 ?>
                             </div>
                         </div>
@@ -527,12 +528,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                     }
                                                 }
 
-                                                if (empty($documentos)): ?>
+                                                if (empty($documentos)):?>
                                                     <tr>
                                                         <td colspan="4" class="text-center text-muted">Sin archivos adjuntos
                                                         </td>
                                                     </tr>
-                                                <?php else:
+                                                <?php
                                                     foreach ($documentos as $doc):
                                                         $id = $doc['Id'];
                                                         $nombre = htmlspecialchars($doc['Nombre']);
@@ -573,11 +574,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                         </tr>
                                                         <?php
                                                     endforeach;
-
                                                 endif;
                                                 ?>
                                             </tbody>
-
                                         </table>
 
                                     </div>
@@ -588,10 +587,18 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     </div>
 
                     <!-- Botones -->
-                    <div class="row justify-content-end mt-5">
+                    <div class="row justify-content-end mt-auto">
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <button type="button" class="btn btn-outline-danger rounded-0"
                                 onclick="window.location.href='../../vistas/consultas/consulta_referencia.php'">Salir</button>
+                        </div>
+                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                            <a href="../../vistas/pdfs/formato-01.php?id=<?= $id2 ?>" target="_blank"
+                                class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-0 shadow-sm"
+                                style="font-size: 0.9rem;" title="Ver Solicitudes">
+                                <i class="fas fa-file-alt me-2"></i> Imprimir
+                            </a>
+                            </button>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>

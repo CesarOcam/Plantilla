@@ -1,6 +1,39 @@
 $("#form_Referencia").on("submit", function (e) {
     e.preventDefault();
 
+    const referenciaDirecta = $('#input-referencia').val().trim();
+    console.log(referenciaDirecta);
+    if (referenciaDirecta !== '') {
+        // Consulta para obtener el Id asociado a la referencia
+        $.ajax({
+            url: '../../modulos/consultas/obtener_referencia.php',
+            method: 'POST',
+            data: { numeroReferencia: referenciaDirecta },
+            dataType: 'json',
+            success: function(response) {
+                if(response.success && response.id) {
+                    window.location.href = `../../modulos/consultas/detalle_referencia.php?id=${response.id}`;
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Referencia no encontrada',
+                        text: 'El número de referencia no existe.',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo verificar la referencia, intenta más tarde.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        });
+        return;
+    }
+    
     var form = this;
     var formData = new FormData(form); // Recoge todos los campos del formulario incluyendo archivos del input
     console.log('Archivos en archivosCargados:', archivosCargados);

@@ -90,13 +90,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         <form id="form_solicitud_pago" method="POST">
             <div class="card-header formulario_polizas">
                 <h5>Registrar Solicitud</h5>
+                <input id="empresa" name="empresa" type="hidden">
                 <div class="row mb-5">
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input id="empresa" name="empresa" type="text"
-                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="AMEXPORT LOGÍSTICA" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1" readonly>
-                    </div>
                     <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                         <input type="hidden" id="aduana-hidden" name="aduana" value="">
                         <select id="aduana-select" name="aduana"

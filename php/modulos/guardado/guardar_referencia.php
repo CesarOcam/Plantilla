@@ -97,7 +97,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
         Pedimentos, ClavePedimento, PesoBruto, Bultos,
         Contenedor, ConsolidadoraId, ResultadoModulacion, RecintoId,
         NavieraId, CierreDocumentos, FechaPago, BuqueId, Booking, CierreDespacho,
-        HoraDespacho, Viaje, SuReferencia, FechaDocumentado, LlegadaEstimada,
+        HoraDespacho, Viaje, SuReferencia, CierreDocumentado, LlegadaEstimada,
         PuertoDescarga, PuertoDestino, Comentarios, FechaAlta, Status, UsuarioAlta
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

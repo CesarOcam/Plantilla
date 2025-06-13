@@ -54,7 +54,7 @@ if (isset($_POST['id'])) {
                 Mercancia = ?, Marcas = ?, Pedimentos = ?, ClavePedimento = ?, PesoBruto = ?, Cantidad = ?, Bultos = ?,
                 Contenedor = ?, ConsolidadoraId = ?, ResultadoModulacion = ?, RecintoId = ?, NavieraId = ?, CierreDocumentos = ?,
                 FechaPago = ?, BuqueId = ?, Booking = ?, CierreDespacho = ?, HoraDespacho = ?, Viaje = ?, SuReferencia = ?,
-                FechaDocumentado = ?, LlegadaEstimada = ?, PuertoDescarga = ?, PuertoDestino = ?, Comentarios = ?, 
+                CierreDocumentado = ?, LlegadaEstimada = ?, PuertoDescarga = ?, PuertoDestino = ?, Comentarios = ?, 
                 FechaUltimaModificacion = ?, UsuarioUltimaModificacion = ?
             WHERE Id = ?
         ";

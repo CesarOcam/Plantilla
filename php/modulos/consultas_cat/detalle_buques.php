@@ -12,14 +12,14 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 $stmt = $con->prepare("
     SELECT 
         b.Nombre, b.Activo, b.FechaAlta, b.UsuarioAlta, 
-        u.Nombre AS nombre_usuario_alta,
+        CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS nombre_usuario_alta,
         b.Pais, p.pais_clave, p.id2204clave_pais
     FROM 
-        buques b
+        con_buques b
     LEFT JOIN 
         2204claves_paises p ON b.Pais = p.id2204clave_pais
     LEFT JOIN 
-        usuarios u ON b.UsuarioAlta = u.Id
+        usuarios u ON b.UsuarioAlta = u.idusuarios
     WHERE 
         b.Id = :id
 ");

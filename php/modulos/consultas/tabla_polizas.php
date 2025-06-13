@@ -126,9 +126,9 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     <td>
                         <?php
                         if ($poliza['Activo'] == 1) {
-                            echo '<span style="color: rgba(167, 164, 0, 0.86);">EN TRÁFICO</span>';
+                            echo '<span>ACTIVA</span>';
                         } elseif ($poliza['Activo'] == 0) {
-                            echo '<span style="color: rgba(255, 0, 0, 0.6);">INACTIVA</span>';
+                            echo '<span>INACTIVA</span>';
                         } else {
                             echo '<span>Otro</span>';
                         }

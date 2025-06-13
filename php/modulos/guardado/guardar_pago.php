@@ -29,9 +29,9 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     }
 
     // Extraer datos de la solicitud
-    $solicitud_id      = $solicitud['Id'];
+    $solicitud_id    = $solicitud['Id'];
     $beneficiario_id = $solicitud['BeneficiarioId'];
-    $aduana_id      = $solicitud['AduanaId'];
+    $aduana_id      = $solicitud['Aduana'];
     $empresa_id     = $solicitud['EmpresaId'];
     $importe        = $solicitud['Importe'];
     $fecha          = $solicitud['Fecha'];
@@ -61,8 +61,8 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
     // Insertar solicitud aprobada en tabla polizas
     $sql_insertar_poliza = "INSERT INTO polizas 
-        (SolicitudId, BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (SolicitudId, BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta, Aduana)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_data = $con->prepare($sql_insertar_poliza);
 
     $resultado = $stmt_data->execute([
@@ -75,7 +75,8 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         $exportadoCoi,
         $activo,
         $fecha_alta_default,
-        $usuarioAlta
+        $usuarioAlta,
+        $aduana_id  
     ]);
 
     if ($resultado) {
@@ -98,13 +99,14 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_data = $con->prepare($sql_insertar_partidas);
 
+    $abono = 0;
     foreach ($partidas as $partida) {
     $stmt_data->execute([
         $poliza_id,
         $partida['SubcuentaId'],
         $partida['ReferenciaId'],
-        $partida['Cargo'],
-        $partida['Abono'],
+        $partida['Importe'],
+        $abono,
         $partida['Observaciones'],
         $activo,
         $partida['NumeroFactura'],

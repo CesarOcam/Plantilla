@@ -11,19 +11,11 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 
 $stmt = $con->prepare("
     SELECT 
-        t.idtransportista, 
-        t.nombre_transportista, 
-        t.rfc_transportista, 
-        t.curp_transportista, 
-        t.domicilio_fiscal_transportista, 
-        t.fechaAcceso_transportista, 
-        t.status_transportista, 
-        t.userCreate_transportista, 
-        t.created_at,
-        u.nombre AS nombre_usuario_alta
-    FROM transportista t
-    LEFT JOIN usuarios u ON t.userCreate_transportista = u.id
-    WHERE t.idtransportista = :id
+        t.*, 
+        CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombreCompletoUsuario
+    FROM transporte t
+    LEFT JOIN usuarios u ON t.UserCreate_transporte = u.idusuarios
+    WHERE t.idtransporte = :id
 ");
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
@@ -59,11 +51,11 @@ $naviera = $stmt->fetch(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../../css/style2.css">
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -73,88 +65,58 @@ $naviera = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="row">
                     <div class="col-10 col-sm-1 mt-4">
                         <label for="id" class="form-label text-muted small">ID :</label>
-                        <input id="id" name="id" type="text"
+                        <input id="id" name="idtransporte" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['idtransportista']; ?>"
+                            style="background-color: transparent;" value="<?php echo $naviera['idtransporte']; ?>"
                             readonly>
                     </div>
                     <div class="col-10 col-sm-4 mt-4">
                         <label for="nombre" class="form-label text-muted small">NOMBRE :</label>
-                        <input id="nombre" name="nombre" type="text"
+                        <input id="nombre" name="identificacion" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['nombre_transportista']; ?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $naviera['identificacion']; ?>"
+                            >
                     </div>
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="rfc" class="form-label text-muted small">RFC :</label>
-                        <input id="rfc" name="rfc" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['rfc_transportista']; ?>"
-                            readonly>
-                    </div>
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="curp" class="form-label text-muted small">CURP :</label>
-                        <input id="curp" name="curp" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['curp_transportista']; ?>"
-                            readonly>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="domicilio" class="form-label text-muted small">DOMICILIO :</label>
-                        <input id="domicilio" name="domicilio" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['domicilio_fiscal_transportista']; ?>"
-                            readonly>
-                    </div>
-                    <div class="col-10 col-sm-2 mt-4">
-                        <label for="fechaAcceso" class="form-label text-muted small">FECHA ACCESO :</label>
-                        <input id="fechaAcceso" name="fechaAcceso" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['fechaAcceso_transportista']; ?>"
-                            readonly>
-                    </div>
-
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="usuarioAlta" class="form-label text-muted small">USUARIO ALTA :</label>
                         <input id="usuarioAlta" name="usuarioAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['nombre_usuario_alta']; ?>"
-                            readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $naviera['nombreCompletoUsuario']; ?>" readonly>
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="fechaAlta" class="form-label text-muted small">FECHA ALTA :</label>
                         <input id="fechaAlta" name="fechaAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['created_at']; ?>"
-                            readonly>
+                            style="background-color: transparent;"
+                            value="<?php echo $naviera['fechaCreate_transporte']; ?>" readonly>
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="status" class="form-label text-muted small">STATUS :</label>
                         <input id="status" name="status" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php 
-                            if ($naviera['status_transportista'] == 1){
+                            style="background-color: transparent;" value="<?php
+                            if ($naviera['statusTransporte'] == 1) {
                                 echo 'ACTIVO';
                             } else {
                                 echo 'INACTIVO';
                             }
-                            ?>"
-                            readonly>
+                            ?>" readonly>
                     </div>
                 </div>
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="button" class="btn btn-outline-danger rounded-0"
-                                onclick="window.location.href='../../vistas/catalogos/cat_Navieras.php'">Salir</button>
-                        </div>
-                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="submit" class="btn btn-secondary rounded-0"
-                                id="btn_guardar">Modificar</button>
-                        </div>
+                        <button type="button" class="btn btn-outline-danger rounded-0"
+                            onclick="window.location.href='../../vistas/catalogos/cat_Navieras.php'">Salir</button>
+                    </div>
+                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                        <button type="button" id="btn_editar" class="btn btn-secondary rounded-0">Modificar</button>
+                    </div>
+                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                        <button type="submit" class="btn btn-success rounded-0" id="btn_guardar"
+                            style="display:none;">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -162,8 +124,7 @@ $naviera = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-
-<script src="../../../js/guardar_Naviera.js"></script>
+<script src="../../../js/actualizar/actualizar_Navieras.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

@@ -96,7 +96,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             class="form-control rounded-0 border-0 border-bottom text-muted"
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
-                            <option value="" selected disabled>Aduana</option>
+                            <option></option> <!-- para que Select2 lo use como placeholder -->
                             <?php foreach ($aduana as $aduana): ?>
                                 <option value="<?php echo $aduana['id2201aduanas']; ?>">
                                     <?php echo $aduana['nombre_corto_aduana']; ?>
@@ -211,6 +211,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <script>
 
+
     const referencias = <?php echo json_encode($referencias); ?>;
 
     function calcularTotales() {
@@ -246,14 +247,18 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             width: '100%'
         });
         flatpickr("#Fecha", {
-            dateFormat: "Y-m-d"
+            enableTime: true,
+            time_24hr: true,
+            enableSeconds: true,
+            dateFormat: "Y-m-d H:i:S",
+            defaultDate: new Date()
         });
 
 
         calcularTotales();
     });
 
-
+    let contadorFilas = 0;
 
     function agregarFila() {
 
@@ -280,7 +285,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
         fila.innerHTML = `
         <td>
-            <select name="Subcuenta[]" class="form-control select2-subcuenta" style="width:180px;" required>
+            <select name="Subcuenta[${contadorFilas}]" class="form-control select2-subcuenta" style="width:180px;" required>
                 <option value="">Seleccione</option>
                 <?php foreach ($subcuentas as $subcuenta): ?>
                     <option value="<?php echo $subcuenta['Id']; ?>">
@@ -290,22 +295,22 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             </select>
         </td>
         <td>
-            <select name="Referencia[]" class="form-control select2-referencia" style="width:180px;">
+            <select name="Referencia[${contadorFilas}]" class="form-control select2-referencia" style="width:180px;">
                 <option value="">Seleccione</option>
                 ${referenciaOptions}
             </select>
         </td>
         <td>
-            <input type="number" name="Cargo[]" class="form-control input-cargo text-end" placeholder="0.00" required> </>
+            <input type="number" name="Cargo[${contadorFilas}]" class="form-control input-cargo text-end" placeholder="0.00" required> </>
         </td>
         <td>
-            <input type="number" name="Abono[]" class="form-control input-abono text-end" placeholder="0.00" required> </>
+            <input type="number" name="Abono[${contadorFilas}]" class="form-control input-abono text-end" placeholder="0.00" required> </>
         </td>
         <td>
-            <input type="text" name="Observaciones[]" class="form-control" placeholder="Observaciones (opcional)" />
+            <input type="text" name="Observaciones[${contadorFilas}]" class="form-control" placeholder="Observaciones (opcional)" />
         </td>
         <td>
-            <input type="text" name="Factura[]" class="form-control" placeholder="Número de factura" />
+            <input type="text" name="Factura[${contadorFilas}]" class="form-control" placeholder="Número de factura" />
         </td>
         <td class="text-center">
             <button type="button" class="btn-eliminar" onclick="eliminarFila(this)" title="Eliminar fila">
@@ -315,6 +320,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     `;
 
         tbody.appendChild(fila);
+        contadorFilas++;
+
 
         if (tbody.rows.length > 0) {
             aduanaSelect.disabled = true;

@@ -78,6 +78,7 @@ body {
   box-shadow: none;
 }
 
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -270,6 +271,34 @@ input[type="number"] {
 
   .formulario_clientes input::placeholder {
     opacity: 0.7 !important;  /* Forzar la opacidad */
+}
+
+/*-------------------------INPUTS DE MODULO CUOTAS---------------------------------------*/
+
+/* Solo inputs readonly dentro del form con id "form_Cuota" */
+#form_Cuota .card input[readonly] {
+    background-color: #f7f8fa !important;
+    border: 1px solid #ddd !important;
+    color: #6c757d !important;
+    box-shadow: none;
+}
+
+/* También si llegas a usar disabled en este mismo form */
+#form_Cuota .card input:disabled {
+    background-color: #f7f8fa !important;
+    border: 1px solid #ddd !important;
+    color: #6c757d !important;
+    font-style: italic;
+    box-shadow: none;
+}
+
+/* Opcional: quitar estilos de otros inputs solo dentro de este form */
+#form_Cuota .card input {
+    background-color: #fff;
+}
+
+.file-row:hover {
+    background-color: #e9ecef !important;
 }
 
 /*-------------------------DISEÑOS DE LA TABLA DINAMICA POLIZA FORMULARIO ---------------------------------------*/

@@ -11,12 +11,13 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 
 $stmt = $con->prepare("
     SELECT 
-    b.SubcuentaDefaultId, b.Nombre, b.Tipo, b.Rfc, b.Activo, b.FechaAlta, b.UsuarioAlta,
-    u.Nombre AS NombreUsuarioAlta
+        b.SubcuentaDefaultId, b.Nombre, b.Tipo, b.Rfc, b.Activo, b.FechaAlta, b.UsuarioAlta,
+        CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS NombreUsuarioAlta
     FROM beneficiarios b
-    LEFT JOIN usuarios u ON b.UsuarioAlta = u.Id
+    LEFT JOIN usuarios u ON b.UsuarioAlta = u.idusuarios
     WHERE b.Id = :id
 ");
+
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -18,16 +18,19 @@ $sql = "SELECT
             prefix_aduana, 
             tipoAduana, 
             status_aduana 
-        FROM 2201aduanas";
+        FROM 2201aduanas 
+        WHERE nombre_corto_aduana IS NOT NULL
+          AND TRIM(nombre_corto_aduana) <> ''";
 
 if ($filtro !== '') {
-    $sql .= " WHERE nombre_corto_aduana LIKE :filtro";
+    $sql .= " AND nombre_corto_aduana LIKE :filtro";
 }
 
 $sql .= " ORDER BY status_aduana DESC 
           LIMIT :inicio, :limite";
 
 $stmt = $con->prepare($sql);
+
 
 if ($filtro !== '') {
     $stmt->bindValue(':filtro', $filtroLike, PDO::PARAM_STR);

@@ -19,12 +19,13 @@ if (isset(
 
     $tipo = $_POST['tipoAduana'];
 
-    $sub_cli_log = $_POST['SubcuentaClientesLogId'];
-    $sub_cli_exp = $_POST['SubcuentaClientesExpId'];
-    $sub_abono_log = $_POST['SubcuentaCuotasAbonoLogId'];
-    $sub_abono_exp = $_POST['SubcuentaCuotasAbonoExpId'];
-    $sub_cargo_log = $_POST['SubcuentaCuotasCargoLogId'];
-    $sub_cargo_exp = $_POST['SubcuentaCuotasCargoExpId'];
+    $sub_cli_log   = isset($_POST['SubcuentaClientesLogId'])   ? $_POST['SubcuentaClientesLogId']   : 0;
+    $sub_cli_exp   = isset($_POST['SubcuentaClientesExpId'])   ? $_POST['SubcuentaClientesExpId']   : 0;
+    $sub_abono_log = isset($_POST['SubcuentaCuotasAbonoLogId']) ? $_POST['SubcuentaCuotasAbonoLogId'] : 0;
+    $sub_abono_exp = isset($_POST['SubcuentaCuotasAbonoExpId']) ? $_POST['SubcuentaCuotasAbonoExpId'] : 0;
+    $sub_cargo_log = isset($_POST['SubcuentaCuotasCargoLogId']) ? $_POST['SubcuentaCuotasCargoLogId'] : 0;
+    $sub_cargo_exp = isset($_POST['SubcuentaCuotasCargoExpId']) ? $_POST['SubcuentaCuotasCargoExpId'] : 0;
+
     // Función para obtener la fecha y hora actual
     function obtenerFechaHoraActual() {
         return date("Y-m-d H:i:s"); // Formato: Año-Mes-Día Hora:Minuto:Segundo

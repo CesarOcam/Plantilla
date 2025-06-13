@@ -19,6 +19,7 @@ if (isset($_POST['beneficiario'])) {
     $total_cargos = 0.0;
     $total_abonos = 0.0;
 
+
     // Sumar cargos
     foreach ($cargos as $c) {
         $total_cargos += is_numeric($c) ? floatval($c) : 0;
@@ -121,7 +122,6 @@ if (isset($_POST['beneficiario'])) {
             $factura      // NumeroFactura
         ]);
     }
-
 
     echo json_encode([
         'success' => true,
