@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 alert(data.error);
                             } else {
                                 // Rellenar campos del modal
-                                document.getElementById('EmpresaId').value = data.EmpresaNombre || '';
                                 document.getElementById('NoSolicitud').value = data.Id || '';
                                 document.getElementById('Fecha').value = data.Fecha || '';
                                 document.getElementById('BeneficiarioId').value = data.BeneficiarioNombre || '';
