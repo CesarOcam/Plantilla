@@ -110,7 +110,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                         <?php endif; ?>
                     </td>
                     <td><?php echo $cuenta['Nombre']; ?></td>
-                    <td><?php echo $cuenta['Saldo']; ?></td>
+                    <td><?php echo '$ '.$cuenta['Saldo']; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

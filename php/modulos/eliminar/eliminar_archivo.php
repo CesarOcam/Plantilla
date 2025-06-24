@@ -1,5 +1,4 @@
 <?php
-// eliminar_archivo.php
 header('Content-Type: application/json');
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -8,13 +7,9 @@ if (!isset($data['ruta'])) {
     echo json_encode(['success' => false, 'message' => 'Ruta no especificada']);
     exit;
 }
-
 $ruta = $data['ruta'];
 
-// Aquí debes sanitizar y validar $ruta para evitar borrado de archivos que no corresponden
-
-// Ejemplo básico: solo borrar si existe el archivo y está en una carpeta específica
-$basePath = __DIR__ . '/uploads/';  // carpeta donde guardas archivos
+$basePath = __DIR__ . '/uploads/';
 $rutaCompleta = realpath($ruta);
 
 if (!$rutaCompleta || strpos($rutaCompleta, realpath($basePath)) !== 0) {
@@ -32,7 +27,6 @@ if (file_exists($rutaCompleta)) {
     exit;
 }
 
-// Además, elimina el registro en la base de datos (si aplica)
 try {
     include_once(__DIR__ . '/../conexion.php');
 

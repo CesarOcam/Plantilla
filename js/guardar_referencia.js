@@ -94,6 +94,7 @@ $("#form_Referencia").on("submit", function (e) {
                 $('#consolidadora-select').val(null).trigger('change');
                 form.scrollIntoView({ behavior: 'smooth' });
             } else {
+                console.error("Error en la solicitud Ajax:", xhr.responseText);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',

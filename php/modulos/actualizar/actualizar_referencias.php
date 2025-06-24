@@ -17,7 +17,9 @@ if (isset($_POST['id'])) {
 
     // Datos recibidos
     $id = $_POST['id']; // ID de la referencia a actualizar
-
+    
+    $exportador = trim($_POST['exportador']) ?: null;
+    $logistico = trim($_POST['logistico']) ?: null;
     $mercancia = $_POST['mercancia'] ?? null;
     $marcas = $_POST['marcas'] ?? null;
     $pedimento = $_POST['pedimento'] ?? null;
@@ -27,9 +29,10 @@ if (isset($_POST['id'])) {
     $bultos = isset($_POST['bultos']) && $_POST['bultos'] !== '' ? intval($_POST['bultos']) : null;
     $contenedor = $_POST['contenedor'] ?? null;
     $consolidadora = isset($_POST['consolidadora']) && $_POST['consolidadora'] !== '' ? intval($_POST['consolidadora']) : null;
-    $resultado_mod = $_POST['resultado_mod'] ?? null;
+    $resultado_mod = $_POST['modulacion'] ?? null;
+    $resultado_mod = ($resultado_mod === '' ? null : (int)$resultado_mod);
     $recinto = isset($_POST['recinto']) && $_POST['recinto'] !== '' ? intval($_POST['recinto']) : null;
-    $naviera = isset($_POST['naviera_id']) && $_POST['naviera_id'] !== '' ? intval($_POST['naviera_id']) : null;
+    $naviera = isset($_POST['naviera']) && $_POST['naviera'] !== '' ? intval($_POST['naviera']) : null;
     $cierre_doc = parseFecha($_POST['cierre_doc'] ?? null);
     $fecha_pago = parseFecha($_POST['fecha_pago'] ?? null);
     $buque = isset($_POST['buque_id']) && $_POST['buque_id'] !== '' ? intval($_POST['buque_id']) : null;
@@ -51,7 +54,7 @@ if (isset($_POST['id'])) {
 
         $sql = "
             UPDATE referencias SET
-                Mercancia = ?, Marcas = ?, Pedimentos = ?, ClavePedimento = ?, PesoBruto = ?, Cantidad = ?, Bultos = ?,
+                ClienteExportadorId = ?, ClienteLogisticoId = ?, Mercancia = ?, Marcas = ?, Pedimentos = ?, ClavePedimento = ?, PesoBruto = ?, Cantidad = ?, Bultos = ?,
                 Contenedor = ?, ConsolidadoraId = ?, ResultadoModulacion = ?, RecintoId = ?, NavieraId = ?, CierreDocumentos = ?,
                 FechaPago = ?, BuqueId = ?, Booking = ?, CierreDespacho = ?, HoraDespacho = ?, Viaje = ?, SuReferencia = ?,
                 CierreDocumentado = ?, LlegadaEstimada = ?, PuertoDescarga = ?, PuertoDestino = ?, Comentarios = ?, 
@@ -60,7 +63,7 @@ if (isset($_POST['id'])) {
         ";
 
         $params = [
-            $mercancia, $marcas, $pedimento, $clave_ped, $peso, $cantidad, $bultos,
+            $exportador, $logistico, $mercancia, $marcas, $pedimento, $clave_ped, $peso, $cantidad, $bultos,
             $contenedor, $consolidadora, $resultado_mod, $recinto, $naviera, $cierre_doc,
             $fecha_pago, $buque, $booking, $cierre_desp, $hora_desp, $viaje, $su_referencia,
             $fecha_doc, $fecha_eta, $puerto_dec, $puerto_dest, $comentarios,

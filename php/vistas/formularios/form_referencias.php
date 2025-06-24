@@ -76,7 +76,7 @@ $consolidadora = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //Obtener referencias para select referencias
 $stm = $con->prepare("SELECT Id, Numero FROM referencias WHERE Status IS NOT NULL AND Status != 0 ORDER BY Numero ASC");
-$stm-> execute();
+$stm->execute();
 $referencias = $stm->fetchAll();
 ?>
 
@@ -133,6 +133,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             type="button" role="tab">General</button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contenedores-tab" data-bs-toggle="tab"
+                            data-bs-target="#contenedores" type="button" role="tab">Contenedores</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="opciones-tab" data-bs-toggle="tab" data-bs-target="#opciones"
                             type="button" role="tab">Documentos</button>
                     </li>
@@ -144,8 +148,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     <!-- Datos Generales -->
                     <div class="tab-pane fade show active" id="datos" role="tabpanel">
                         <div class="row">
-                            <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                               <input id="input-referencia" name="referencia" type="text" maxlength="50"
+                            <div class="col-10 col-sm-2 d-flex align-items-center mt-4"
+                                style="background-color: transparent;">
+                                <input id="input-referencia" name="referencia" type="text" maxlength="50"
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" placeholder="Referencia">
                             </div>
@@ -211,11 +216,26 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <input name="bultos" type="text" class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" placeholder="Bultos">
                             </div>
-                            <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
-                                <input name="contenedor" type="text"
-                                    class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Contenedor">
+                            <div class="col-10 col-sm-3 mt-4 position-relative">
+                                <div class="col-12 mt-4">
+                                    <div class="row align-items-center">
+                                        <!-- Input del contenedor -->
+                                        <div class="col-11">
+                                            <input name="contenedor" id="contenedor" type="text"
+                                                class="form-control rounded-0 border-0 border-bottom border-secondary"
+                                                style="background-color: transparent;" placeholder="Contenedor"
+                                                maxlength="11">
+                                        </div>
+
+                                        <!-- Icono de validación -->
+                                        <div class="col-1">
+                                            <i id="iconoValidacion" class="fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <small id="mensajeContenedor" class="form-text text-muted ms-1 mt-1"></small>
+                                </div>
                             </div>
+
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <select id="consolidadora-select" name="consolidadora"
                                     class="form-control rounded-0 border-0 border-bottom text-muted">
@@ -237,10 +257,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </div>
                         </div>
 
-                        <!--</div>
-
-                     Contacto 
-                    <div class="tab-pane fade" id="contacto" role="tabpanel">-->
                         <div class="row">
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <select id="recinto-select" name="recinto" disabled>
@@ -345,14 +361,40 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" placeholder="Comentarios">
                             </div>
-
                         </div>
                     </div>
 
-                    <!-- Dirección -->
-                    <div class="tab-pane fade" id="direccion" role="tabpanel">
+                    <div class="tab-pane fade" id="contenedores" role="tabpanel">
                         <div class="row">
 
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-secondary text-white fw-bold">
+                                    <i class="bi bi-box-fill me-2"></i> Contenedores Agregados
+                                </div>
+                                <div class="card-body p-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered tabla-contenedores"
+                                            id="tabla-contenedores">
+                                            <thead class="table-light text-center">
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Contenedor</th>
+                                                    <th>Tipo</th>
+                                                    <th>Sello</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Filas se agregarán dinámicamente -->
+                                            </tbody>
+                                        </table>
+                                        <button type="button" id="btn-nuevo-contenedor"
+                                            class="btn btn-outline-secondary mb-3 rounded-0">
+                                            <i class="bi bi-plus-circle me-1"></i> Nuevo Contenedor
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -360,8 +402,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     <div class="tab-pane fade" id="opciones" role="tabpanel">
                         <div class="row mt-4">
                             <div class="col-12 mt-5">
-                                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalDocumentos">
+                                <button type="button" class="btn btn-outline-secondary rounded-0 btn-md"
+                                    data-bs-toggle="modal" data-bs-target="#modalDocumentos">
                                     <i class="bi bi-upload me-1"></i> Subir Documentos
                                 </button>
 
@@ -428,7 +470,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <!-- Vistas previas dinámicas -->
                                 </div>
                             </div>
-
                             <!-- Botón para seleccionar archivos debajo del recuadro con icono carpeta -->
                             <div class="text-center mb-3">
                                 <button type="button" class="btn btn-outline-primary" id="btnBuscarArchivos">
@@ -442,7 +483,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <button type="button" class="btn btn-primary" id="btnAgregarDocs">Agregar a la
                                     tabla</button>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -453,6 +493,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
 <script>
+
+    const botonGuardar = document.getElementById('btn_guardar');
 
     $(document).ready(function () {
         function initSelect2(id, placeholder) {
@@ -473,14 +515,156 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#consolidadora-select', 'Consolidadora');
         initSelect2('#resultado_mod-select', 'Resultado de Modulación');
 
-        /*ocument.getElementById('input-referencia').addEventListener('change', function () {
+        /*document.getElementById('input-referencia').addEventListener('change', function () {
             
             const referencia = this.value.trim();
             if (referencia !== '') {
                 window.location.href = `../../modulos/consultas/detalle_referencia.php?id=${referencia}`;
             }   
         });*/
-        
+
+        let contador = 1;
+
+        const tablaContenedores = document.getElementById("tabla-contenedores").querySelector("tbody");
+        const botonGuardar = document.getElementById("btn_guardar");
+
+        function verificarCodificacion(contenedor) {
+            const tabla = {
+                'A': 10, 'B': 12, 'C': 13, 'D': 14, 'E': 15,
+                'F': 16, 'G': 17, 'H': 18, 'I': 19, 'J': 20,
+                'K': 21, 'L': 23, 'M': 24, 'N': 25, 'O': 26,
+                'P': 27, 'Q': 28, 'R': 29, 'S': 30, 'T': 31,
+                'U': 32, 'V': 34, 'W': 35, 'X': 36, 'Y': 37,
+                'Z': 38
+            };
+
+            if (!/^[A-Z]{4}\d{7}$/.test(contenedor)) return false;
+
+            let suma = 0;
+            for (let i = 0; i < 10; i++) {
+                const char = contenedor[i];
+                let valor = isNaN(char) ? tabla[char] : parseInt(char);
+                if (valor === undefined || isNaN(valor)) return false;
+                suma += valor * Math.pow(2, i);
+            }
+
+            const checkDigit = suma % 11;
+            const digitoCalculado = checkDigit === 10 ? 0 : checkDigit;
+            const digitoIngresado = parseInt(contenedor[10]);
+
+            return digitoCalculado === digitoIngresado;
+        }
+
+        document.getElementById('btn-nuevo-contenedor').addEventListener('click', function () {
+            const rowId = `fila-${contador}`;
+            const inputId = `input-contenedor-${contador}`;
+            const mensajeId = `mensajeContenedor-${contador}`;
+            const iconoId = `iconoValidacion-${contador}`;
+
+            const fila = `
+            <tr id="${rowId}" class="text-center">
+                <td class="text-center align-middle"><i class="bi bi-box-fill fs-4 me-2"></i></td>
+                <td>
+                    <div class="position-relative">
+                        <input type="text" id="${inputId}" name="contenedor[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el código" maxlength="11">
+                        <i id="${iconoId}" class="bi position-absolute top-50 end-0 translate-middle-y me-2"></i>
+                        <small id="${mensajeId}" class="form-text ms-1 mt-1"></small>
+                    </div>
+                </td>
+                <td class="text-center"><input type="text" name="tipo[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el tipo"></td>
+                <td class="text-center"><input type="text" name="sello[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el sello"></td>
+                <td class="text-center align-middle">
+                    <button type="button" id="btn-eliminar" class="btn btn-md btn-danger rounded-0">Eliminar</button>
+                </td>
+            </tr>`;
+
+            tablaContenedores.insertAdjacentHTML('beforeend', fila);
+
+            agregarValidacion(inputId, mensajeId, iconoId);
+
+            contador++;
+        });
+
+        function agregarValidacion(inputId, mensajeId, iconoId) {
+            const inputContenedor = document.getElementById(inputId);
+            const mensajeContenedor = document.getElementById(mensajeId);
+            const icono = document.getElementById(iconoId);
+
+            // Busca ícono que puede ser box-fill o box-seam en la primera celda
+            const fila = inputContenedor.closest("tr");
+            const iconoContenedor = fila.querySelector(".bi-box-fill, .bi-box-seam");
+
+            inputContenedor.addEventListener('input', function () {
+                const valor = this.value.toUpperCase();
+                this.value = valor;
+
+                inputContenedor.classList.remove('border-success', 'border-danger', 'border-secondary');
+                mensajeContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+                icono.className = ''; // limpiar icono
+                iconoContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+
+                if (valor.length === 0) {
+                    botonGuardar.disabled = false;
+                    mensajeContenedor.textContent = "";
+                    iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger', 'text-muted');
+                    iconoContenedor.classList.add('bi-box-fill');
+                } else if (valor.length === 11) {
+                    if (verificarCodificacion(valor)) {
+                        // ✅ Válido
+                        mensajeContenedor.textContent = ""; // sin texto
+                        inputContenedor.classList.add('border-success');
+                        iconoContenedor.classList.remove('bi-box-fill', 'text-danger', 'text-muted');
+                        iconoContenedor.classList.add('bi-box-fill', 'text-success');
+                        botonGuardar.disabled = false;
+                    } else {
+                        // ❌ Inválido
+                        mensajeContenedor.textContent = "Contenedor inválido";
+                        mensajeContenedor.classList.add('text-danger');
+                        inputContenedor.classList.add('border-danger');
+                        icono.className = ''; // limpiar icono validación al lado del input
+                        icono.classList.add('bi', 'bi-x-circle-fill', 'text-danger');
+
+                        iconoContenedor.classList.remove('bi-box-fill', 'text-success');
+                        iconoContenedor.classList.add('bi-box-fill', 'text-danger');
+
+                        botonGuardar.disabled = true;
+                    }
+                } else {
+                    // ⚠️ Incompleto
+                    mensajeContenedor.textContent = "Debe tener 11 caracteres";
+                    mensajeContenedor.classList.add('text-muted');
+                    inputContenedor.classList.add('border-secondary');
+                    icono.className = '';
+                    icono.classList.add('bi', 'bi-exclamation-circle', 'text-muted');
+
+                    iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger');
+                    iconoContenedor.classList.add('bi-box-fill', 'text-muted');
+
+                    botonGuardar.disabled = true;
+                }
+            });
+        }
+
+        tablaContenedores.addEventListener('click', function (e) {
+            if (e.target.closest('#btn-eliminar')) {
+                const filaEliminada = e.target.closest('tr');
+                filaEliminada.remove();
+                actualizarNumeracion(); // si quieres renumerar IDs
+
+                // Revalidar inputs en filas restantes para refrescar iconos
+                const filas = tablaContenedores.querySelectorAll('tr');
+                filas.forEach(fila => {
+                    const input = fila.querySelector('input[name="contenedor[]"]');
+                    if (input) {
+                        // Forzar evento input para actualizar iconos
+                        input.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+        });
+
+
+
         // Evento change aquí, dentro del ready
         $('#aduana-select').on('change', function () {
             const aduanaId = this.value;
@@ -522,8 +706,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         .trigger('change');
                 });
         });
-
-
     });
 
     // Inicializar Calendarios
@@ -551,7 +733,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     });
 
     //lÓGICA DEL MODAL
-
     function obtenerIconoPorExtension(nombreArchivo) {
         const extension = nombreArchivo.split('.').pop().toLowerCase();
 
@@ -590,13 +771,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             const icono = obtenerIconoPorExtension(file.name);
             const row = document.createElement('tr');
             row.innerHTML = `
-            <td>${icono} ${file.name}</td>
+                < td > ${icono} ${file.name}</td >
             <td>${file.type || 'Desconocido'}</td>
             <td>${(file.size / 1024).toFixed(2)} KB</td>
             <td class="text-center">
                 <button type="button" class="btn btn-sm btn-outline-danger" data-eliminar="true">Eliminar</button>
             </td>
-        `;
+            `;
             tableBody.appendChild(row);
         });
 
@@ -666,11 +847,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
             } else if (file.type === 'application/pdf') {
                 preview.innerHTML = `
-        <div class="border p-3 text-center rounded bg-white">
-          <i class="bi bi-file-earmark-pdf-fill fs-1 text-danger"></i>
-          <p class="small mt-2">${file.name}</p>
-          <iframe src="${URL.createObjectURL(file)}" style="width: 100%; height: 150px;" frameborder="0"></iframe>
-        </div>`;
+                < div class="border p-3 text-center rounded bg-white" >
+                <i class="bi bi-file-earmark-pdf-fill fs-1 text-danger"></i>
+                <p class="small mt-2">${file.name}</p>
+                <iframe src="${URL.createObjectURL(file)}" style="width: 100%; height: 150px;" frameborder="0"></iframe>
+            </div > `;
 
             } else if (
                 file.type ===
@@ -678,30 +859,30 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 file.type === 'application/vnd.ms-excel'
             ) {
                 preview.innerHTML = `
-        <div class="border p-3 text-center rounded bg-white">
-          <i class="bi bi-file-earmark-excel-fill fs-1 text-success"></i>
-          <p class="small mt-2">${file.name}</p>
-          <p class="small text-muted">Previsualización no disponible</p>
-        </div>`;
+                < div class="border p-3 text-center rounded bg-white" >
+                    <i class="bi bi-file-earmark-excel-fill fs-1 text-success"></i>
+                    <p class="small mt-2">${file.name}</p>
+                    <p class="small text-muted">Previsualización no disponible</p>
+                </div > `;
 
             } else if (file.type.startsWith('text/')) {
                 const reader = new FileReader();
                 reader.onload = () => {
                     preview.innerHTML = `
-          <div class="border p-3 rounded bg-white text-start" style="max-height: 150px; overflow-y: auto;">
-            <p class="small fw-bold">${file.name}</p>
-            <pre class="small mb-0">${reader.result.substring(0, 200)}...</pre>
-          </div>`;
+                < div class="border p-3 rounded bg-white text-start" style = "max-height: 150px; overflow-y: auto;" >
+                    <p class="small fw-bold">${file.name}</p>
+                    <pre class="small mb-0">${reader.result.substring(0, 200)}...</pre>
+                </div > `;
                 };
                 reader.readAsText(file);
 
             } else {
                 preview.innerHTML = `
-        <div class="border p-3 text-center rounded bg-white">
-          <i class="bi bi-file-earmark-fill fs-1 text-secondary"></i>
-          <p class="small mt-2">${file.name}</p>
-          <p class="small text-muted">Previsualización no disponible</p>
-        </div>`;
+                < div class="border p-3 text-center rounded bg-white" >
+                    <i class="bi bi-file-earmark-fill fs-1 text-secondary"></i>
+                    <p class="small mt-2">${file.name}</p>
+                    <p class="small text-muted">Previsualización no disponible</p>
+                </div >`;
             }
 
             previewContainer.appendChild(preview);

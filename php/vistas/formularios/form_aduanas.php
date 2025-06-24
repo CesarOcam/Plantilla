@@ -59,35 +59,35 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
                         <input name="nombre_corto_aduana" type="text" maxlength="15"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Nombre Corto*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                            placeholder="Nombre Corto*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input name="aduana_aduana" type="text" maxlength="3"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Clave Aduana*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                            placeholder="Clave Aduana*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input name="seccion_aduana" type="text" maxlength="1"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Clave Seccion*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                            placeholder="Clave Seccion*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input name="denominacion_aduana" type="text"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Denominación*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                            placeholder="Denominación*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input name="prefix_aduana" type="text" maxlength="10"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Prefijo*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                            placeholder="Prefijo*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <select id="tipoAduana-select" name="tipoAduana"
                             class="form-control rounded-0 border-0 border-bottom text-muted"
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1">
+                            aria-describedby="basic-addon1" required>
                             <option value="" selected disabled>Tipo de Aduana*</option>
                             <option value="M">MARÍTIMO</option>
                             <option value="A">AÉREO</option>
@@ -104,7 +104,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select id="SubcuentaClientesLogId-select" name="SubcuentaClientesLogId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1">
+                                aria-describedby="basic-addon1" required>
                                 <option value="" disabled selected hidden>Subcuenta Logístico</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -118,7 +118,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select id="SubcuentaCuotasAbonoLogId-select" name="SubcuentaCuotasAbonoLogId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1">
+                                aria-describedby="basic-addon1" required>
                                 <option value="" disabled selected hidden>Subcuenta Cuotas Abono Logístico</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -132,7 +132,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select id="SubcuentaCuotasCargoLogId-select" name="SubcuentaCuotasCargoLogId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1">
+                                aria-describedby="basic-addon1" required>
                                 <option value="" disabled selected hidden>Subcuenta Cuotas Cargo Logístico</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -148,7 +148,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select id="SubcuentaClientesExpId-select" name="SubcuentaClientesExpId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1">
+                                aria-describedby="basic-addon1" required>
                                 <option value="" disabled selected hidden>Subcuenta Exportador</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -163,7 +163,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select id="SubcuentaCuotasAbonoExpId-select" name="SubcuentaCuotasAbonoExpId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1">
+                                aria-describedby="basic-addon1" required>
                                 <option value="" disabled selected hidden>Subcuenta Cuotas Abono Exportador</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -178,7 +178,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select id="SubcuentaCuotasCargoExpId-select" name="SubcuentaCuotasCargoExpId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1">
+                                aria-describedby="basic-addon1" required>
                                 <option value="" disabled selected hidden>Subcuenta Cuotas Cargo Logístico</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"

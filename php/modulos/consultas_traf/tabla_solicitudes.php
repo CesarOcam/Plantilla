@@ -6,8 +6,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
-//Obtener SUBCUENTAS
 $stmt = $con->prepare("
     SELECT Id, Numero, Nombre 
     FROM cuentas
@@ -22,13 +20,8 @@ $stmt = $con->prepare("
 
 $stmt->execute();
 $subcuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-
-// Número de registros por página (4 en este caso)
 $registrosPorPagina = 4;
 
-// Determinar el número de la página actual
 $paginaActual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina;
 
@@ -53,15 +46,12 @@ $stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 $stmt->execute();
 $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Consulta para contar el total de registros con Status = 1
 $stmtTotal = $con->prepare("SELECT COUNT(*) FROM solicitudes WHERE Status = 1");
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
 
-// Calcular el total de páginas
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
-// Calcular el bloque de páginas a mostrar (de 10 en 10)
 $inicioBloque = floor(($paginaActual - 1) / 10) * 10 + 1;
 $finBloque = min($inicioBloque + 9, $totalPaginas);
 ?>
@@ -98,8 +88,8 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     </td>
                     <td>
                         <button type="button" class="btn btn-link p-0 btn-trash" data-id="<?php echo $solicitud['Id']; ?>"
-                            data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="Eliminar" style="color: #a19b9b; font-size: 1.5rem; cursor: pointer;">
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"
+                            style="color: #a19b9b; font-size: 1.5rem; cursor: pointer;">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
@@ -107,7 +97,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="5">No se encontraron registros</td>
+                <td colspan="7">No se encontraron registros</td>
             </tr>
         <?php endif; ?>
     </tbody>
@@ -129,7 +119,8 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
         <?php endfor; ?>
 
         <li class="page-item <?php echo ($paginaActual == $totalPaginas) ? 'disabled' : ''; ?>">
-            <a class="page-link" href="#" data-pagina="<?php echo min($totalPaginas, $paginaActual + 1); ?>" aria-label="Next">
+            <a class="page-link" href="#" data-pagina="<?php echo min($totalPaginas, $paginaActual + 1); ?>"
+                aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>

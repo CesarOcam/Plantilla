@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $("#form_Clientes").on("submit", function(e) {
+$(document).ready(function () {
+    $("#form_Clientes").on("submit", function (e) {
         e.preventDefault();
 
         var formData = $(this).serialize();
@@ -9,31 +9,33 @@ $(document).ready(function() {
             url: '../../modulos/guardado/guardar_cliente.php',
             type: 'POST',
             data: formData,
-            success: function(response) {
-                console.log('Respuesta del servidor:', response);
+            dataType: 'json', // IMPORTANTE: para que jQuery haga el parse automático
+            success: function (data) {
+                console.log('Respuesta del servidor:', data);
 
-                // Verificamos si la respuesta es el mensaje de éxito
-                if (response.trim() === "Cliente guardado correctamente.") {
+                if (data.success) {
                     Swal.fire({
+                        toast: true,
+                        position: 'top-end',
                         icon: 'success',
-                        title: 'Cliente guardado correctamente',
-                        //text: 'Cliente guardado correctamente.',
-                        confirmButtonText: 'Aceptar'
+                        title: 'Guardado',
+                        html: data.message,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     });
 
-                    // Limpiar el formulario
                     $("#form_Clientes")[0].reset();
                 } else {
-                    // Si la respuesta es otro mensaje, mostrarlo (puedes personalizar esto)
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        html: response,
+                        html: data.message,
                         confirmButtonText: 'Aceptar'
                     });
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log('Error en la solicitud Ajax:', error);
                 Swal.fire({
                     icon: 'error',
@@ -43,5 +45,6 @@ $(document).ready(function() {
                 });
             }
         });
+
     });
 });

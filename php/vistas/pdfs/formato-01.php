@@ -145,7 +145,7 @@ $pdf->SetFillColor(180, 180, 180);
 $pdf->SetFont('Arial', 'B', 7);
 $pdf->Cell(42, 4, '', 'LTR', 1, 'C', true);
 $pdf->SetXY($startX + 149, $startY + 3);
-$pdf->Cell(0, 3, 'COMPROBACION DED GASTOS');
+$pdf->Cell(0, 3, 'COMPROBACION DE GASTOS');
 // Fondo blanco
 $pdf->SetFillColor(255, 255, 255);
 

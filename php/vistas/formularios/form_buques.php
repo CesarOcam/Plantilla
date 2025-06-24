@@ -96,7 +96,7 @@ $paises = $stmt->fetchAll(PDO::FETCH_ASSOC);
             // Inicializar Select2
             $('#pais-select').select2({
                 placeholder: 'País',
-                allowClear: true,
+                allowClear: false,
                 width: '100%'
             });
         });

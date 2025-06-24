@@ -1,5 +1,13 @@
 <?php
+session_start(); 
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 
 // Verificar que los campos obligatorios estén presentes
 if (isset($_POST['nombre'], $_POST['pais'])) {
@@ -17,7 +25,7 @@ if (isset($_POST['nombre'], $_POST['pais'])) {
     // Obtener la fecha y hora actual
     $fecha_alta = obtenerFechaHoraActual();
     $activo = 1;
-    $usuarioAlta = 1;
+    $usuarioAlta = $_SESSION['usuario_id'];
 
     // Asegurarse de que todos los campos coincidan con los de la base de datos
     $sql = "INSERT INTO con_buques 

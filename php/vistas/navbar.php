@@ -62,7 +62,8 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
             <hr>
             <li><a class="dropdown-item small"
                 href="<?php echo $base_url; ?>/php/vistas/trafico/registro_cuota.php">Registro Cuota</a></li>
-            <li><a class="dropdown-item small" href="trafico">Registro Facturas</a></li>
+            <li><a class="dropdown-item small"
+                href="<?php echo $base_url; ?>/php/vistas/trafico/registro_factura.php">Registro Facturas</a></li>
             <hr>
             <li><a class="dropdown-item small"
                 href="<?php echo $base_url; ?>/php/vistas/formularios/form_polizas.php">Generar Póliza</a></li>
@@ -122,9 +123,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
           <a class="nav-link dropdown-toggle" href="seg" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">Seguridad</a>
           <ul class="dropdown-menu border shadow">
-            <li><a class="dropdown-item small" href="seg">Pólizas</a></li>
-            <li><a class="dropdown-item small" href="seg">Referencias</a></li>
-            <li><a class="dropdown-item small" href="seg">Kardex</a></li>
+            <li><a class="dropdown-item small" href="seg">Usuarios</a></li>
           </ul>
         </li>
       </ul>

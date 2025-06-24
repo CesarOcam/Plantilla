@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $("#form_Consolidadora").on("submit", function(e) {
+$(document).ready(function () {
+    $("#form_Consolidadora").on("submit", function (e) {
         e.preventDefault();
 
         var formData = $(this).serialize();
@@ -9,16 +9,20 @@ $(document).ready(function() {
             url: '../../modulos/guardado/guardar_consolidadora.php',
             type: 'POST',
             data: formData,
-            success: function(response) {
+            success: function (response) {
                 console.log('Respuesta del servidor:', response);
 
                 // Verificamos si la respuesta es el mensaje de éxito
                 if (response.trim() === "Consolidadora guardada correctamente.") {
                     Swal.fire({
+                        toast: true,
+                        position: 'top-end',
                         icon: 'success',
-                        title: 'Consolidadora guardada correctamente',
-                        //text: 'Cliente guardado correctamente.',
-                        confirmButtonText: 'Aceptar'
+                        title: 'Guardado',
+                        html: `Consolidadora guardada correctamente.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     });
 
                     // Limpiar el formulario
@@ -33,7 +37,7 @@ $(document).ready(function() {
                     });
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log('Error en la solicitud Ajax:', error);
                 Swal.fire({
                     icon: 'error',

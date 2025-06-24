@@ -28,9 +28,14 @@ $(document).ready(function () {
 
                 if (json.success) {
                     Swal.fire({
+                        toast: true,
+                        position: 'top-end',
                         icon: 'success',
-                        title: 'Solicitud registrada correctamente',
-                        confirmButtonText: 'Aceptar'
+                        title: 'Solicitud registrada',
+                        html: `Nueva solicitud generada`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     });
 
                     // Limpiar el formulario

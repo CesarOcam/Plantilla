@@ -27,11 +27,14 @@ document.getElementById('tabla-documentos-body').addEventListener('click', (e) =
                 .then(data => {
                     if (data.success) {
                         Swal.fire({
+                            toast: true,
+                            position: 'top-end',
                             icon: 'success',
-                            title: 'Archivo eliminado',
-                            text: 'El archivo fue eliminado correctamente.',
-                            timer: 2000,
-                            showConfirmButton: true
+                            title: 'Archivo Eliminado',
+                            html: `El archivo se eliminó del servidor.`,
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
                         }).then(() => {
                             // 1. Eliminar la fila de la tabla
                             btn.closest('tr').remove();

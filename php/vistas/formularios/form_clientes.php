@@ -81,7 +81,7 @@ $logisticos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <input name="curp" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="CURP" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                                <input name="rfc" type="text" class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;" placeholder="RFC*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                                <input name="rfc" type="text" class="form-control rounded-0 border-0 border-bottom" maxlength="13" style="background-color: transparent;" placeholder="RFC*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                                 <select id="persona-select" name="persona" class="form-control rounded-0 border-0 border-bottom text-muted"

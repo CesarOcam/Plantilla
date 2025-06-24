@@ -1,38 +1,39 @@
 <?php
+session_start(); 
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 
-// Verificar que los campos obligatorios estén presentes
 if (isset($_POST['denominacion_consolidadora'])) {
     // Recoger todos los valores
     $nombre = trim($_POST['denominacion_consolidadora']);
  
-    // Función para obtener la fecha y hora actual
     function obtenerFechaHoraActual() {
-        return date("Y-m-d H:i:s"); // Formato: Año-Mes-Día Hora:Minuto:Segundo
+        return date("Y-m-d H:i:s"); 
     }
 
-    // Obtener la fecha y hora actual
     $fecha_alta = obtenerFechaHoraActual();
     $activo = 1;
-    $usuarioAlta = 1;
+    $usuarioAlta = $_SESSION['usuario_id'];
 
-    // Asegurarse de que todos los campos coincidan con los de la base de datos
     $sql = "INSERT INTO consolidadoras 
     (
         fechaCreate_consolidadora, userCreate_consolidadora, status_consolidadora, denominacion_consolidadora
     )
     VALUES (?, ?, ?, ?)";
 
-    // Crear el array de parámetros, sin incluir el valor de 'Activo' ya que ya está seteo como 1
     $params = [
-    $fecha_alta,   // FechaAlta
-    $usuarioAlta,  // UsuarioAlta
-    $activo,       // Activo
-    $nombre,       // Nombre
+    $fecha_alta, 
+    $usuarioAlta,
+    $activo,
+    $nombre,
     ];
 
-
-    // Verificar que el número de parámetros coincida con el número de `?` en la consulta
     if (count($params) !== substr_count($sql, '?')) {
         echo "Error: El número de parámetros no coincide con el número de tokens `?` en la consulta.";
     } else {

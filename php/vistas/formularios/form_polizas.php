@@ -238,7 +238,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 <i class="fa-solid fa-trash"></i>
             </button>
         </td>
-    `;
+        `;
 
         tbody.appendChild(fila);
         contadorFilas++;

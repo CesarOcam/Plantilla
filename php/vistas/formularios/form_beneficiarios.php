@@ -77,7 +77,6 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <select id="subcuenta-select" name="subcuentas[]" multiple class="form-control rounded-0 border-0 border-bottom text-muted"
                         style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
                         aria-describedby="basic-addon1">
-                        <option value="" disabled hidden>Subcuenta (Amexport Logística)*</option>
                         <?php foreach ($subcuenta as $cuenta): ?>
                             <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
                                 <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>

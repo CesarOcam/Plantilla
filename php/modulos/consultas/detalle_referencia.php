@@ -10,6 +10,7 @@ include_once(__DIR__ . '/../conexion.php'); // Ajusta el path según sea necesar
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 $id2 = isset($_GET['id']) ? (int) $_GET['id'] : 1; //PDF
+
 $stmt = $con->prepare("
     SELECT 
         r.AduanaId,
@@ -32,6 +33,8 @@ $stmt = $con->prepare("
         r.ResultadoModulacion,
         CASE 
             WHEN r.Status = 1 THEN 'EN TRÁFICO'
+            WHEN r.Status = 2 THEN 'EN CONTABILIDAD'
+            WHEN r.Status = 3 THEN 'FACTURADA'
             ELSE 'INACTIVO'
         END AS Status_texto,
         CASE 
@@ -78,6 +81,9 @@ $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $referencia = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$aduanaId = $referencia['AduanaId'];
+$recintoSeleccionado = $referencia['RecintoId'];
+
 // ADUANAS
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
@@ -94,13 +100,17 @@ $stmt->execute();
 $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // RECINTOS
-$stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos
-                       FROM 2221_recintos 
-                       WHERE inmueble_recintos IS NOT NULL AND inmueble_recintos != ''
-                       ORDER BY inmueble_recintos");
-$stmt->execute();
-$recinto = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+$recintos = [];
+if (!empty($aduanaId)) {
+    $stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos
+                           FROM 2221_recintos
+                           WHERE aduana_id = :aduana_id
+                             AND inmueble_recintos IS NOT NULL
+                             AND inmueble_recintos != ''
+                           ORDER BY inmueble_recintos");
+    $stmt->execute(['aduana_id' => $aduanaId]);
+    $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 // NAVIERAS
 $stmt = $con->prepare("SELECT idtransporte, identificacion
@@ -108,14 +118,20 @@ $stmt = $con->prepare("SELECT idtransporte, identificacion
                        WHERE identificacion IS NOT NULL AND identificacion != ''
                        ORDER BY identificacion");
 $stmt->execute();
-$naviera = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+$navieras = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // BUQUES
 $stmt = $con->prepare("SELECT Id, Nombre
                        FROM con_buques 
                        WHERE Nombre IS NOT NULL AND Nombre != ''
                        ORDER BY Nombre");
 $stmt->execute();
+
+$stmtCons = $con->prepare("SELECT id_consolidadora, denominacion_consolidadora 
+                        FROM consolidadoras 
+                        ORDER BY denominacion_consolidadora");
+$stmtCons->execute();
+$consolidadoras = $stmtCons->fetchAll(PDO::FETCH_ASSOC);
+
 
 ?>
 
@@ -182,7 +198,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
                     <!-- Tab Content -->
                     <div class="tab-content mt-4" id="clienteTabsContent">
-
                         <!-- Datos Generales -->
                         <div class="tab-pane fade show active" id="datos" role="tabpanel">
                             <div class="row">
@@ -199,32 +214,37 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['nombre_aduana']; ?>" readonly>
-                                    <!--<select id="aduana-select" name="aduana"
-                                        class="form-control rounded-0 border-0 border-bottom text-muted select-align-fix"
-                                        style="background-color: transparent;" aria-label="Filtrar por fecha"
-                                        aria-describedby="basic-addon1">
-                                        <option value="" disabled>Selecciona una aduana</option>
-                                        <?php foreach ($aduana as $item): ?>
-                                            <option value="<?= $item['id2201aduanas']; ?>"
-                                                <?= ($item['id2201aduanas'] == $referencia['AduanaId']) ? 'selected' : '' ?>>
-                                                <?= $item['nombre_corto_aduana']; ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>-->
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="exportador" class="form-label text-muted small">EXPORTADOR:</label>
-                                    <input id="exportador" name="exportador" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['nombre_exportador']; ?>" readonly>
+                                    <select id="exportador-select" name="exportador"
+                                        class="form-control rounded-0 border-0 border-bottom text-muted">
+                                        <option value="" disabled <?= empty($referencia['ClienteExportadorId']) ? 'selected' : '' ?>>
+                                            Exportador *
+                                        </option>
+                                        <?php foreach ($exp as $item): ?>
+                                            <option value="<?= $item['id01clientes_exportadores'] ?>"
+                                                <?= $item['id01clientes_exportadores'] == $referencia['ClienteExportadorId'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($item['razonSocial_exportador']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="logistico" class="form-label text-muted small">LOGÍSTICO:</label>
-                                    <input id="logistico" name="logistico" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['nombre_logistico']; ?>" readonly>
+                                    <select id="logistico-select" name="logistico"
+                                        class="form-control rounded-0 border-0 border-bottom text-muted">
+                                        <option value="" disabled <?= empty($referencia['ClienteLogisticoId']) ? 'selected' : '' ?>>
+                                            Exportador *
+                                        </option>
+                                        <?php foreach ($exp as $item): ?>
+                                            <option value="<?= $item['id01clientes_exportadores'] ?>"
+                                                <?= $item['id01clientes_exportadores'] == $referencia['ClienteLogisticoId'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($item['razonSocial_exportador']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="mercancia" class="form-label text-muted small">IDENTIFICACIÓN DE LA
@@ -247,7 +267,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <input id="pedimento" name="pedimento" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
-                                        value="<?php echo $referencia['Mercancia']; ?>">
+                                        value="<?php echo $referencia['Pedimentos']; ?>">
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="clave" class="form-label text-muted small">CLAVE PEDIMENTO:</label>
@@ -272,20 +292,36 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['Bultos']; ?>">
                                 </div>
-                                <div class="col-2 col-sm-3 d-flex flex-column mt-4">
-                                    <label for="contenedor" class="form-label text-muted small">CONTENEDOR:</label>
-                                    <input id="contenedor" name="contenedor" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['Contenedor']; ?>">
+                                <div class="col-12 col-sm-3 mt-4 pt-0">
+                                    <label for="contenedor" class="form-label text-muted small pt-0">CONTENEDOR:</label>
+                                    <div class="d-flex align-items-center pt-0">
+                                        <input name="contenedor" id="contenedor" type="text"
+                                            class="form-control pt-1 rounded-0 border-0 border-bottom border-secondary flex-grow-1"
+                                            style="background-color: transparent;" maxlength="11"
+                                            value="<?php echo htmlspecialchars($referencia['Contenedor']); ?>">
+                                        <div class="d-flex justify-content-center align-items-center pt-0 ms-2 mb-0 pb-0"
+                                            style="width: 2.5rem; margin-top: 0.80rem;">
+                                            <i id="iconoValidacion" class="fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <small id="mensajeContenedor" class="form-text text-muted ms-1 mt-1"></small>
                                 </div>
+
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="consolidadora"
                                         class="form-label text-muted small">CONSOLIDADORA:</label>
-                                    <input id="consolidadora" name="consolidadora" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['nombre_consolidadora']; ?>">
+                                    <select id="consolidadora-select" name="consolidadora"
+                                        class="form-control rounded-0 border-0 border-bottom text-muted">
+                                        <option value="" disabled <?= empty($referencia['ConsolidadoraId']) ? 'selected' : '' ?>>
+                                            Consolidadora *
+                                        </option>
+                                        <?php foreach ($consolidadoras as $cons): ?>
+                                            <option value="<?= $cons['id_consolidadora'] ?>"
+                                                <?= $cons['id_consolidadora'] == $referencia['ConsolidadoraId'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($cons['denominacion_consolidadora']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="modulacion" class="form-label text-muted small">RESULTADO
@@ -298,29 +334,43 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         <option value="0" <?php echo ($referencia['ResultadoModulacion'] === '0' || $referencia['ResultadoModulacion'] === 0) ? 'selected' : ''; ?>>ROJO</option>
                                     </select>
                                 </div>
-
-                                <!-- FILA 4 -->
                             </div>
-                            <!-- </div>
 
-                        Contacto 
-                        <div class="tab-pane fade" id="contacto" role="tabpanel">-->
                             <div class="row">
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="recinto" class="form-label text-muted small">RECINTO:</label>
-                                    <input id="recinto" name="recinto" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['inmueble_recintos']; ?>" readonly>
+                                    <select id="recinto-select" name="recinto"
+                                        class="form-control rounded-0 border-0 border-bottom text-muted"
+                                        <?= empty($aduanaId) ? 'disabled' : '' ?>>
+
+                                        <?php if (empty($aduanaId)): ?>
+                                            <option value="" selected disabled>Seleccione una aduana primero</option>
+                                        <?php else: ?>
+                                            <option value="" disabled <?= empty($recintoSeleccionado) ? 'selected' : '' ?>>--
+                                                Selecciona un recinto --</option>
+                                            <?php foreach ($recintos as $rec): ?>
+                                                <option value="<?= $rec['id2221_recintos'] ?>"
+                                                    <?= $rec['id2221_recintos'] == $recintoSeleccionado ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($rec['inmueble_recintos']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="naviera" class="form-label text-muted small">NAVIERA:</label>
-                                    <input id="naviera" name="naviera" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['nombre_naviera']; ?>" readonly>
-                                    <input type="hidden" name="naviera_id"
-                                        value="<?php echo $referencia['NavieraId']; ?>">
+                                    <select id="naviera-select" name="naviera"
+                                        class="form-control rounded-0 border-0 border-bottom text-muted">
+                                        <option value="" disabled <?= empty($referencia['NavieraId']) ? 'selected' : '' ?>>
+                                            Naviera *
+                                        </option>
+                                        <?php foreach ($navieras as $item): ?>
+                                            <option value="<?= $item['idtransporte'] ?>"
+                                                <?= $item['idtransporte'] == $referencia['NavieraId'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($item['identificacion']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
 
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
@@ -427,7 +477,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         value="<?php echo $referencia['Comentarios']; ?>">
                                 </div>
 
-                                <div class="col-2 col-sm-1 d-flex flex-column mt-4">
+                                <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                                     <label for="usuario_alta" class="form-label text-muted small">USUARIO ALTA:</label>
                                     <input id="usuario_alta" name="usuario_alta" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
@@ -441,8 +491,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['FechaAlta']; ?>" readonly>
                                 </div>
-                                <div class="col-2 col-sm-1 d-flex flex-column mt-4">
-                                    <label for="status" class="form-label text-muted small">Status:</label>
+                                <div class="col-2 col-sm-2 d-flex flex-column mt-4">
+                                    <label for="status" class="form-label text-muted small">STATUS:</label>
                                     <input id="status" name="status" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
@@ -465,8 +515,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <div class="tab-pane fade" id="opciones" role="tabpanel">
                             <div class="row mt-4">
                                 <div class="col-12 mt-5">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modalDocumentos">
+                                    <button type="button" class="btn btn-outline-secondary btn-md rounded-0"
+                                        data-bs-toggle="modal" data-bs-target="#modalDocumentos">
                                         <i class="bi bi-upload me-1"></i> Subir Documentos
                                     </button>
 
@@ -530,7 +580,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
                                                 if (empty($documentos)): ?>
                                                     <tr>
-                                                        <td colspan="4" class="text-center text-muted">Sin archivos adjuntos</td>
+                                                        <td colspan="4" class="text-center text-muted">Sin archivos adjuntos
+                                                        </td>
                                                     </tr>
                                                 <?php else: ?>
                                                     <?php foreach ($documentos as $doc):
@@ -553,16 +604,20 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                         ?>
                                                         <tr>
                                                             <td><?= $icono . $nombre ?></td>
-                                                            <td class="text-center text-uppercase"><?= strtoupper($extension) ?></td>
+                                                            <td class="text-center text-uppercase"><?= strtoupper($extension) ?>
+                                                            </td>
                                                             <td class="text-center"><?= $tamanoLegible ?></td>
                                                             <td class="text-center">
-                                                                <a href="<?= htmlspecialchars($ruta) ?>" class="btn btn-sm btn-outline-success me-2" download title="Descargar">
+                                                                <a href="<?= htmlspecialchars($ruta) ?>"
+                                                                    class="btn btn-sm btn-outline-success me-2 rounded-0"
+                                                                    download title="Descargar">
                                                                     <i class="bi bi-download"></i> Descargar
                                                                 </a>
-                                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                                        data-eliminar="true" data-id="<?= $id ?>"
-                                                                        data-nombre="<?= $nombre ?>"
-                                                                        data-ruta="<?= htmlspecialchars($ruta) ?>" title="Eliminar">
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-outline-danger rounded-0"
+                                                                    data-eliminar="true" data-id="<?= $id ?>"
+                                                                    data-nombre="<?= $nombre ?>"
+                                                                    data-ruta="<?= htmlspecialchars($ruta) ?>" title="Eliminar">
                                                                     Eliminar
                                                                 </button>
                                                             </td>
@@ -581,19 +636,27 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     <!-- Botones -->
                     <div class="row justify-content-end mt-auto">
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="button" class="btn btn-outline-danger rounded-0"
-                                onclick="window.location.href='../../vistas/consultas/consulta_referencia.php'">Salir</button>
-                        </div>
-                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <a href="../../vistas/pdfs/formato-01.php?id=<?= $id2 ?>" target="_blank"
                                 class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-0 shadow-sm"
                                 style="font-size: 0.9rem;" title="Ver Solicitudes">
                                 <i class="fas fa-file-alt me-2"></i> Imprimir
                             </a>
+                        </div>
+                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                            <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_actualizar"
+                                data-id="<?= $id2 ?>">
+                                <i class="fas fa-share me-2"></i> Pasar a Contabilidad
                             </button>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>
+                            <button type="button" class="btn btn-outline-danger rounded-0"
+                                onclick="window.location.href='../../vistas/consultas/consulta_referencia.php'">Salir</button>
+                        </div>
+                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                            <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar"
+                                <?= ($referencia['Status'] == 3) ? 'disabled' : '' ?>>
+                                Guardar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -641,7 +704,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <button type="button" class="btn btn-primary" id="btnAgregarDocs">Agregar a la
                                         tabla</button>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -654,11 +716,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <script>
 
+    const botonGuardar = document.getElementById('btn_guardar');
+
     $(document).ready(function () {
         function initSelect2(id, placeholder) {
             $(id).select2({
                 placeholder: placeholder,
-                allowClear: true,
+                allowClear: false,
                 width: '100%'
             });
         }
@@ -667,6 +731,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#exportador-select', 'Exportador *');
         initSelect2('#logistico-select', 'Logístico *');
         initSelect2('#recinto-select', 'Recinto');
+        initSelect2('#consolidadora-select', 'Consolidadora');
         initSelect2('#naviera-select', 'Naviera');
         initSelect2('#buque-select', 'Buque');
     });
@@ -694,6 +759,74 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     flatpickr("#fecha_eta", {
         dateFormat: "Y-m-d"
     });
+
+    //VALIDACIÓN DEL CONTENEDOR
+    function verificarCodificacion(contenedor) {
+        const tabla = {
+            'A': 10, 'B': 12, 'C': 13, 'D': 14, 'E': 15,
+            'F': 16, 'G': 17, 'H': 18, 'I': 19, 'J': 20,
+            'K': 21, 'L': 23, 'M': 24, 'N': 25, 'O': 26,
+            'P': 27, 'Q': 28, 'R': 29, 'S': 30, 'T': 31,
+            'U': 32, 'V': 34, 'W': 35, 'X': 36, 'Y': 37,
+            'Z': 38
+        };
+
+        if (!/^[A-Z]{4}\d{7}$/.test(contenedor)) return false;
+
+        let suma = 0;
+        for (let i = 0; i < 10; i++) {
+            const char = contenedor[i];
+            let valor = isNaN(char) ? tabla[char] : parseInt(char);
+            if (valor === undefined || isNaN(valor)) return false;
+            suma += valor * Math.pow(2, i);
+        }
+
+        const checkDigit = suma % 11;
+        const digitoCalculado = checkDigit === 10 ? 0 : checkDigit;
+        const digitoIngresado = parseInt(contenedor[10]);
+
+        return digitoCalculado === digitoIngresado;
+    }
+
+    const inputContenedor = document.getElementById('contenedor');
+    const mensajeContenedor = document.getElementById('mensajeContenedor');
+    const icono = document.getElementById('iconoValidacion');
+    inputContenedor.addEventListener('input', function () {
+        const valor = this.value.toUpperCase();
+        this.value = valor;
+
+        inputContenedor.classList.remove('border-success', 'border-danger', 'border-secondary');
+        mensajeContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+        icono.className = ''; // Resetear ícono
+
+        if (valor.length === 0) {
+            // Campo vacío: desbloquear botón, sin mensaje
+            botonGuardar.disabled = false;
+            mensajeContenedor.textContent = "";
+            inputContenedor.classList.remove('border-secondary'); // opcional
+        } else if (valor.length === 11) {
+            if (verificarCodificacion(valor)) {
+                mensajeContenedor.textContent = "Contenedor válido";
+                mensajeContenedor.classList.add('text-success');
+                inputContenedor.classList.add('border-success');
+                icono.classList.add('bi', 'bi-check-circle-fill', 'text-success');
+                botonGuardar.disabled = false; // desbloquear botón
+            } else {
+                mensajeContenedor.textContent = "Contenedor inválido";
+                mensajeContenedor.classList.add('text-danger');
+                inputContenedor.classList.add('border-danger');
+                icono.classList.add('bi', 'bi-x-circle-fill', 'text-danger');
+                botonGuardar.disabled = true; // bloquear botón
+            }
+        } else {
+            mensajeContenedor.textContent = "Debe tener 11 caracteres";
+            mensajeContenedor.classList.add('text-muted');
+            inputContenedor.classList.add('border-secondary');
+            botonGuardar.disabled = true; // bloquear botón
+        }
+    });
+
+
 
     //lÓGICA DEL MODAL
 
@@ -867,6 +1000,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
 </script>
+<script src="../../../js/actualizar/pasar_Conta.js"></script>
 <script src="../../../js/eliminar/eliminar_archivo.js"></script>
 <script src="../../../js/actualizar/actualizar_Referencias.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"

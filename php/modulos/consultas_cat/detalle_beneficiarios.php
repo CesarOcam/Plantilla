@@ -9,6 +9,7 @@ include_once('../../modulos/conexion.php');
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 
+// 1. Consulta principal del beneficiario
 $stmt = $con->prepare("
     SELECT 
         b.SubcuentaDefaultId, b.Nombre, b.Tipo, b.Rfc, b.Activo, b.FechaAlta, b.UsuarioAlta,
@@ -17,10 +18,24 @@ $stmt = $con->prepare("
     LEFT JOIN usuarios u ON b.UsuarioAlta = u.idusuarios
     WHERE b.Id = :id
 ");
-
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Subcuentas asignadas
+$stmtSub = $con->prepare("
+    SELECT subcuenta_id
+    FROM subcuentas_beneficiarios
+    WHERE beneficiario_id = :id
+");
+$stmtSub->bindParam(':id', $id, PDO::PARAM_INT);
+$stmtSub->execute();
+$subcuentaIds = $stmtSub->fetchAll(PDO::FETCH_COLUMN); // array plano con los IDs seleccionados
+
+// Obtener subcuentas en select
+$stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas WHERE CuentaPadreId IS NOT NULL");
+$stmt->execute();
+$subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -52,11 +67,11 @@ $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../../css/style2.css">
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -81,7 +96,7 @@ $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
                         <label for="tipo" class="form-label text-muted small">TIPO :</label>
                         <select id="tipo" name="tipo"
                             class="form-control input-transparent border-0 border-bottom rounded-0 text-muted"
-                            style="background-color: transparent;" >
+                            style="background-color: transparent;">
                             <option value="1" <?php echo ($beneficiario['Tipo'] == 1) ? 'selected' : ''; ?>>PHCA</option>
                             <option value="2" <?php echo ($beneficiario['Tipo'] == 2) ? 'selected' : ''; ?>>GASTOS
                                 GENERALES</option>
@@ -94,6 +109,22 @@ $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $beneficiario['Rfc']; ?>">
                     </div>
+
+                    <div class="col-10 col-sm-4 mt-4">
+                        <select id="subcuenta-select" name="subcuentas[]" multiple
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
+                            style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1">
+                            <?php foreach ($subcuenta as $cuenta): ?>
+                                <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>"
+                                    <?php echo in_array($cuenta['Id'], $subcuentaIds) ? 'selected' : ''; ?>>
+                                    <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                </option>
+                            <?php endforeach; ?>
+
+                        </select>
+                    </div>
+
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-2 mt-4">
@@ -144,6 +175,41 @@ $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+        // Inicializar Select2
+        $('#subcuenta-select').select2({
+            placeholder: 'Subcuenta (Amexport Logística)*',
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('#tipo-select').on('change', function () {
+            const tipo = $(this).val();
+            let filtro = '';
+
+            if (tipo === '1') {
+                filtro = '123-';
+            } else if (tipo === '2') {
+                filtro = '601-';
+            }
+
+            // Mostrar u ocultar opciones según filtro
+            $('#subcuenta-select option').each(function () {
+                const numero = $(this).data('numero');
+                if (numero && numero.startsWith(filtro)) {
+                    $(this).show();
+                } else {
+                    $(this).hide().prop('selected', false); // También deselecciona si estaba elegido
+                }
+            });
+
+            // Refrescar Select2 para que oculte/actualice el dropdown
+            $('#subcuenta-select').val(null).trigger('change');
+        });
+    });
+</script>
 
 <script src="../../../js/actualizar/actualizar_Beneficiarios.js"></script>
 

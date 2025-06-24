@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $("#form_Recintos").on("submit", function(e) {
+$(document).ready(function () {
+    $("#form_Recintos").on("submit", function (e) {
         e.preventDefault();
 
         var formData = $(this).serialize();
@@ -9,20 +9,25 @@ $(document).ready(function() {
             url: '../../modulos/guardado/guardar_recinto.php',
             type: 'POST',
             data: formData,
-            success: function(response) {
+            success: function (response) {
                 console.log('Respuesta del servidor:', response);
 
                 // Verificamos si la respuesta es el mensaje de éxito
                 if (response.trim() === "Recinto guardado correctamente.") {
                     Swal.fire({
+                        toast: true,
+                        position: 'top-end',
                         icon: 'success',
-                        title: 'Recinto guardado correctamente',
-                        //text: 'Cliente guardado correctamente.',
-                        confirmButtonText: 'Aceptar'
+                        title: 'Guardado',
+                        html: `Recinto guardado correctamente.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     });
 
                     // Limpiar el formulario
                     $("#form_Recintos")[0].reset();
+                    $("#form_Recintos select").val(null).trigger('change');
                 } else {
                     // Si la respuesta es otro mensaje, mostrarlo (puedes personalizar esto)
                     Swal.fire({
@@ -33,7 +38,7 @@ $(document).ready(function() {
                     });
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log('Error en la solicitud Ajax:', error);
                 Swal.fire({
                     icon: 'error',

@@ -62,8 +62,8 @@ if (!isset($_SESSION['usuario_id'])) {
       renderChart('aduanasChart', 'bar',
         ['Veracruz', 'Altamira', 'AIFA', 'Ciudad de México', 'Manzanillo', 'Lázaro Cardenas'],
         [34, 28, 15, 22, 48, 36],
-        'rgba(98, 192, 75, 0.6)',
-        'rgb(85, 192, 75)',
+        'rgba(8, 69, 211, 0.64)',
+        'rgb(107, 122, 156)',
         'Operaciones'
       );
 
@@ -85,212 +85,188 @@ if (!isset($_SESSION['usuario_id'])) {
   ?>
 
   <div class="container-fluid">
-    <div class="row my-4">
-      <!-- Operaciones por aduana -->
-      <div class="col-md-6">
-        <div class="card h-100 rounded-0">
-          <div class="card-header">
-            Número de Operaciones por Aduana
-          </div>
-          <div class="card-body">
-            <canvas id="aduanasChart" height="100"></canvas>
-          </div>
+  <div class="row my-4">
+    <!-- Operaciones por aduana -->
+    <div class="col-md-6">
+      <div class="card h-100 rounded-0">
+        <div class="card-header bg-light text-dark fw-semibold">
+          Número de Operaciones por Aduana
+        </div>
+        <div class="card-body">
+          <canvas id="aduanasChart" height="100"></canvas>
         </div>
       </div>
+    </div>
 
-      <!-- Carga de trabajo por operativo -->
-      <div class="col-md-6">
-        <div class="card h-100 rounded-0"> <!-- <-- envolvemos todo en una card -->
-          <div class="card-header rounded-0">
-            Carga de Trabajo por Operativo
-          </div>
-          <div class="card-body">
-            <div class="row row-cols-2 g-2 mb-3">
-              <!-- Operativo 1 -->
-              <div class="col">
-                <div class="card text-center shadow-sm rounded-0">
-                  <div class="card-body p-2">
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                      <i class="bi bi-person-circle me-2 fs-4 text-primary"></i>
-                      <span class="fw-semibold">Operativo 1</span>
-                    </div>
-                    <h4 class="mb-1 text-primary">6</h4>
-                    <div class="progress" style="height: 6px;">
-                      <div class="progress-bar bg-primary" style="width: 70%;"></div>
-                    </div>
+    <!-- Carga de trabajo por operativo -->
+    <div class="col-md-6">
+      <div class="card h-100 rounded-0">
+        <div class="card-header bg-light text-dark fw-semibold">
+          Carga de Trabajo por Operativo
+        </div>
+        <div class="card-body">
+          <div class="row row-cols-2 g-2 mb-3">
+            <!-- Repite esta plantilla para cada operativo -->
+            <!-- Operativo 1 -->
+            <div class="col">
+              <div class="card text-center shadow-sm rounded-0">
+                <div class="card-body p-2">
+                  <div class="d-flex align-items-center justify-content-center mb-1">
+                    <i class="bi bi-person-circle me-2 fs-4 text-primary"></i>
+                    <span class="fw-semibold text-dark">Operativo 1</span>
                   </div>
-                </div>
-              </div>
-
-              <!-- Operativo 2 -->
-              <div class="col">
-                <div class="card text-center shadow-sm rounded-0">
-                  <div class="card-body p-2">
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                      <i class="bi bi-person-circle me-2 fs-4 text-success"></i>
-                      <span class="fw-semibold">Operativo 2</span>
-                    </div>
-                    <h4 class="mb-1 text-success">4</h4>
-                    <div class="progress" style="height: 6px;">
-                      <div class="progress-bar bg-success" style="width: 50%;"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Operativo 3 -->
-              <div class="col">
-                <div class="card text-center shadow-sm rounded-0">
-                  <div class="card-body p-2">
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                      <i class="bi bi-person-circle me-2 fs-4 text-warning"></i>
-                      <span class="fw-semibold">Operativo 3</span>
-                    </div>
-                    <h4 class="mb-1 text-warning">17</h4>
-                    <div class="progress" style="height: 6px;">
-                      <div class="progress-bar bg-warning" style="width: 40%;"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Operativo 5 -->
-              <div class="col">
-                <div class="card text-center shadow-sm rounded-0">
-                  <div class="card-body p-2">
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                      <i class="bi bi-person-circle me-2 fs-4 text-info"></i>
-                      <span class="fw-semibold">Operativo 5</span>
-                    </div>
-                    <h4 class="mb-1 text-info">7</h4>
-                    <div class="progress" style="height: 6px;">
-                      <div class="progress-bar bg-info" style="width: 65%;"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Operativo 6 -->
-              <div class="col">
-                <div class="card text-center shadow-sm rounded-0">
-                  <div class="card-body p-2">
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                      <i class="bi bi-person-circle me-2 fs-4 text-secondary"></i>
-                      <span class="fw-semibold">Operativo 6</span>
-                    </div>
-                    <h4 class="mb-1 text-secondary">5</h4>
-                    <div class="progress" style="height: 6px;">
-                      <div class="progress-bar bg-secondary" style="width: 30%;"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-              <!-- Operativo 4 -->
-              <div class="col">
-                <div class="card text-center shadow-sm rounded-0">
-                  <div class="card-body p-2">
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                      <i class="bi bi-person-circle me-2 fs-4 text-danger"></i>
-                      <span class="fw-semibold">Operativo 4</span>
-                    </div>
-                    <h4 class="mb-1 text-danger">12</h4>
-                    <div class="progress" style="height: 6px;">
-                      <div class="progress-bar bg-danger" style="width: 85%;"></div>
-                    </div>
+                  <h4 class="mb-1 text-secondary">6</h4>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: 70%;"></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Límite de crédito por cliente -->
-      <div class="col-12 pt-3">
-        <div class="card rounded-0">
-          <div class="card-header">
-            Límite de Crédito por Cliente
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-striped align-middle">
-                <thead>
-                  <tr>
-                    <th style="width: 25%;">Cliente</th>
-                    <th style="width: 25%;">Crédito Límite</th>
-                    <th style="width: 25%;">Monto Utilizado</th>
-                    <th style="width: 25%;">Disponible</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Cliente C - 60% usado - sin alerta -->
-                  <tr>
-                    <td>Cliente A</td>
-                    <td>$100,000</td>
-                    <td>$40,000</td>
-                    <td>$60,000</td>
-                  </tr>
-
-                  <!-- Cliente B - 90,000 de 150,000 = 60% - sin alerta -->
-                  <tr class="table-warning">
-                    <td>
-                      <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
-                      Cliente B
-                    </td>
-                    <td>$150,000</td>
-                    <td>$120,000</td>
-                    <td>$30,000</td>
-                  </tr>
-
-                  <!-- Cliente C - 120,000 de 200,000 = 60% - sin alerta -->
-                  <tr class="table-warning">
-                    <td>
-                      <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
-                      Cliente C
-                    </td>
-                    <td>$200,000</td>
-                    <td>$180,000</td>
-                    <td>$20,000</td>
-                  </tr>
-
-                  <!-- Cliente D - 100% gastado -->
-                  <tr class="table-danger">
-                    <td>
-                      <i class="bi bi-x-circle-fill text-danger me-1"></i>
-                      Cliente D
-                    </td>
-                    <td>$120,000</td>
-                    <td>$120,000</td>
-                    <td>$0</td>
-                  </tr>
-
-                  <!-- Cliente E - Excede límite -->
-                  <tr class="table-danger">
-                    <td>
-                      <i class="bi bi-x-circle-fill text-danger me-1"></i>
-                      Cliente E
-                    </td>
-                    <td>$100,000</td>
-                    <td>$130,000</td>
-                    <td class="text-danger">-$30,000</td>
-                  </tr>
-                </tbody>
-              </table>
+            <!-- Operativo 2 -->
+            <div class="col">
+              <div class="card text-center shadow-sm rounded-0">
+                <div class="card-body p-2">
+                  <div class="d-flex align-items-center justify-content-center mb-1">
+                    <i class="bi bi-person-circle me-2 fs-4 text-primary"></i>
+                    <span class="fw-semibold text-dark">Operativo 2</span>
+                  </div>
+                  <h4 class="mb-1 text-secondary">4</h4>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: 50%;"></div>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            <!-- Operativo 3 -->
+            <div class="col">
+              <div class="card text-center shadow-sm rounded-0">
+                <div class="card-body p-2">
+                  <div class="d-flex align-items-center justify-content-center mb-1">
+                    <i class="bi bi-person-circle me-2 fs-4 text-primary"></i>
+                    <span class="fw-semibold text-dark">Operativo 3</span>
+                  </div>
+                  <h4 class="mb-1 text-secondary">17</h4>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: 40%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Operativo 4 -->
+            <div class="col">
+              <div class="card text-center shadow-sm rounded-0">
+                <div class="card-body p-2">
+                  <div class="d-flex align-items-center justify-content-center mb-1">
+                    <i class="bi bi-person-circle me-2 fs-4 text-primary"></i>
+                    <span class="fw-semibold text-dark">Operativo 4</span>
+                  </div>
+                  <h4 class="mb-1 text-secondary">12</h4>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: 85%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Operativo 5 -->
+            <div class="col">
+              <div class="card text-center shadow-sm rounded-0">
+                <div class="card-body p-2">
+                  <div class="d-flex align-items-center justify-content-center mb-1">
+                    <i class="bi bi-person-circle me-2 fs-4 text-primary"></i>
+                    <span class="fw-semibold text-dark">Operativo 5</span>
+                  </div>
+                  <h4 class="mb-1 text-secondary">7</h4>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: 65%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Operativo 6 -->
+            <div class="col">
+              <div class="card text-center shadow-sm rounded-0">
+                <div class="card-body p-2">
+                  <div class="d-flex align-items-center justify-content-center mb-1">
+                    <i class="bi bi-person-circle me-2 fs-4 text-primary"></i>
+                    <span class="fw-semibold text-dark">Operativo 6</span>
+                  </div>
+                  <h4 class="mb-1 text-secondary">5</h4>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" style="width: 30%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Límite de crédito por cliente -->
+    <div class="col-12 pt-3">
+      <div class="card rounded-0">
+        <div class="card-header bg-light text-dark fw-semibold">
+          Límite de Crédito por Cliente
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 25%;">Cliente</th>
+                  <th style="width: 25%;">Crédito Límite</th>
+                  <th style="width: 25%;">Monto Utilizado</th>
+                  <th style="width: 25%;">Disponible</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <i class="bi bi-check-circle-fill text-success me-1"></i>
+                    Cliente A
+                  </td>
+                  <td>$100,000</td>
+                  <td>$40,000</td>
+                  <td>$60,000</td>
+                </tr>
+                  <td>
+                    <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
+                    Cliente C
+                  </td>
+                  <td>$200,000</td>
+                  <td>$180,000</td>
+                  <td>$20,000</td>
+                </tr>
+                <tr>
+                  <td>
+                    <i class="bi bi-x-circle-fill text-danger me-1"></i>
+                    Cliente E
+                  </td>
+                  <td>$100,000</td>
+                  <td>$130,000</td>
+                  <td class="text-danger">-$30,000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
     </div>
 
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
-      </script>
+    </script>
 
 </body>
 

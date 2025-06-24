@@ -136,13 +136,16 @@ switch ((int)$aduana) {
         $subcuenta = 37;
         break;
     case 126:
-        $subcuenta = 39;
+        $subcuenta = 44;
         break;
     case 91:
         $subcuenta = 40;
         break;
+    case 81:
+        $subcuenta = 39;
+        break;
     default:
-        $subcuenta = 0; // O algún valor por defecto o manejo de error
+        $subcuenta = 0;
         break;
 }
 
@@ -201,7 +204,7 @@ switch ((int)$aduana) {
         $subcuenta = 443;
         break;
     default:
-        $subcuenta = 0; // O algún valor por defecto o manejo de error
+        $subcuenta = 0;
         break;
 }
 

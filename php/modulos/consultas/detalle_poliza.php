@@ -247,9 +247,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <button type="button" class="btn btn-outline-danger rounded-0"
                             onclick="window.location.href='../../vistas/consultas/consulta_poliza.php'">Salir</button>
                     </div>
-                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                        <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>
-                    </div>
                 </div>
             </div>
         </form>

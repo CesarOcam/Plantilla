@@ -1,7 +1,14 @@
 <?php
+session_start(); 
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 
-// Verificar que los campos obligatorios estén presentes
 if (isset($_POST['beneficiario'])) {
     // Recoger todos los valores
     $empresa = 2;
@@ -20,30 +27,23 @@ if (isset($_POST['beneficiario'])) {
     $total_abonos = 0.0;
 
 
-    // Sumar cargos
     foreach ($cargos as $c) {
         $total_cargos += is_numeric($c) ? floatval($c) : 0;
     }
-
-    // Sumar abonos
     foreach ($abonos as $a) {
         $total_abonos += is_numeric($a) ? floatval($a) : 0;
     }
     $importe = $total_cargos;
 
-    // Función para obtener la fecha y hora actual
     function obtenerFechaHoraActual()
     {
-        return date("Y-m-d H:i:s"); // Formato: Año-Mes-Día Hora:Minuto:Segundo
+        return date("Y-m-d H:i:s"); 
     }
-    // Obtener la fecha y hora actual
     $fecha_alta = obtenerFechaHoraActual();
     $activo = 1;
-    $usuarioAlta = 1;
+    $usuarioAlta = $_SESSION['usuario_id'];
     $exportadoCoi = 1;
 
-
-    // GENERAR NÚMERO DE PÓLIZA AUTOMÁTICO SEGÚN EL TIPO
     $numero_poliza = '';
     if (!empty($tipo)) {
         $tipo_int = (int) $tipo;
@@ -68,7 +68,6 @@ if (isset($_POST['beneficiario'])) {
         $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
     }
 
-    // Asegurarse de que todos los campos coincidan con los de la base de datos
     $sql_insert_poliza = "INSERT INTO polizas 
     (
         BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta
@@ -96,7 +95,6 @@ if (isset($_POST['beneficiario'])) {
         die("Error al guardar la póliza: " . implode(", ", $stmt_poliza->errorInfo()));
     }
 
-    // Obtener el ID generado de la póliza para vincular partidas
     $poliza_id = $con->lastInsertId();
     $activo = 1;
     // Preparar inserción de partidas
@@ -117,9 +115,9 @@ if (isset($_POST['beneficiario'])) {
             $cargo,
             $abono,
             $observacion,
-            $factura,     // FolioArchivo
+            $factura,
             $activo,
-            $factura      // NumeroFactura
+            $factura
         ]);
     }
 
@@ -128,7 +126,6 @@ if (isset($_POST['beneficiario'])) {
         'mensaje' => 'Póliza guardada correctamente.',
         'numero' => $numero_poliza
     ]);
-
 
 } else {
     echo json_encode([

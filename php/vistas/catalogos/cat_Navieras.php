@@ -51,7 +51,7 @@ if (!isset($_SESSION['usuario_id'])) {
                             class="me-5 mt-2">
                             <i class="fas fa-ban"></i>
                         </button>
-                        <a href="../form_navieras.php"
+                        <a href="../formularios/form_navieras.php"
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar nuevo"
                             style="text-decoration: none; color: black; font-size: 1.3rem;">
                             <i class="fas fa-plus mt-2"></i>

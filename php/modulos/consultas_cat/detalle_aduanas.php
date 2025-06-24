@@ -261,7 +261,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
-            </div>
+            
 
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">

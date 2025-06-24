@@ -87,8 +87,7 @@ $paisActual = $buque['id2204clave_pais'] ?? '';
                                 <label for="nombre" class="form-label text-muted small">NOMBRE :</label>
                                 <input id="nombre" name="nombre" type="text"
                                     class="form-control input-transparent border-0 border-bottom rounded-0"
-                                    style="background-color: transparent;" value="<?php echo $buque['Nombre']; ?>"
-                                    >
+                                    style="background-color: transparent;" value="<?php echo $buque['Nombre']; ?>">
                             </div>
                             <div class="col-10 col-sm-4 mt-4">
                                 <label for="pais" class="form-label text-muted small">PAÍS:</label>
@@ -118,7 +117,7 @@ $paisActual = $buque['id2204clave_pais'] ?? '';
                                     style="background-color: transparent;" value="<?php echo $buque['FechaAlta']; ?>"
                                     readonly>
                             </div>
-                                                <div class="row justify-content-end mt-5">
+                                                
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
                                 <button type="button" class="btn btn-outline-danger rounded-0" onclick="window.location.href='../../vistas/catalogos/cat_Buques.php'">Salir</button>
                             </div>
@@ -129,7 +128,6 @@ $paisActual = $buque['id2204clave_pais'] ?? '';
                                 <button type="submit" class="btn btn-success rounded-0" id="btn_guardar" style="display:none;">Guardar</button>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </form>

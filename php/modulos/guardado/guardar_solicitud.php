@@ -1,15 +1,20 @@
 <?php
+session_start(); 
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 
-// Verificar que los campos obligatorios estén presentes
 if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
-    // Recoger todos los valores
     $empresa = 2;
     $tipo = 1;
     $beneficiario = trim($_POST['beneficiario']);
     $aduana = trim($_POST['aduana']);
 
-    // Recibe datos de las subcuentas
     $subcuentas = $_POST['Subcuenta'] ?? [];
     $referencias = $_POST['Referencia'] ?? [];
     $cargos = $_POST['Cargo'] ?? [];
@@ -19,12 +24,9 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
     $total_cargos = 0.0;
     $total_abonos = 0.0;
 
-    // Sumar cargos
     foreach ($cargos as $c) {
         $total_cargos += is_numeric($c) ? floatval($c) : 0;
     }
-
-    // Sumar abonos
     foreach ($abonos as $a) {
         $total_abonos += is_numeric($a) ? floatval($a) : 0;
     }
@@ -33,12 +35,11 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
     $fecha_alta = date("Y-m-d H:i:s");
     $fecha = date("Y-m-d H:i:s");
     $activo = 1;
-    $usuarioAlta = 1;
+    $usuarioAlta = $_SESSION['usuario_id'];
     $exportadoCoi = 1;
     $tipo_poliza = 1;
     $referencia_id = 2;
 
-    // Insertar la póliza: agrego columna Numero para guardar $numero_poliza
     $sql_insert_poliza = "INSERT INTO solicitudes 
         (BeneficiarioId, Aduana, EmpresaId, Importe, Fecha, Status, FechaAlta, UsuarioAlta)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -51,11 +52,9 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
         die("Error al guardar la póliza: " . implode(", ", $stmt_poliza->errorInfo()));
     }
 
-    // Obtener ID de la solicitud
     $solicitud_id = $con->lastInsertId();
     $partida = 0;
 
-    // Insertar partidas
     $sql_insert_partidas = "INSERT INTO partidassolicitudes
         (Partida, SolicitudId, Subcuentaid, ReferenciaId, Importe, Observaciones)
         VALUES (?, ?, ?, ?, ?, ?)";

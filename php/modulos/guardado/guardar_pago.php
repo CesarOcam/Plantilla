@@ -1,15 +1,22 @@
 <?php
+session_start(); 
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 
-// Verificar que los campos obligatorios estén presentes
 if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     // Recoger todos los valores del form
     $id_solicitud = $_POST['NoSolicitud'];
     $subcuenta_pago = $_POST['SubcuentaId_pago'];
-    $observaciones_pago = $_POST['Observaciones_pago'] ?? ''; // Puede venir vacío
+    $observaciones_pago = $_POST['Observaciones_pago'] ?? '';
 
     function obtenerFechaHoraActual() {
-        return date("Y-m-d H:i:s"); // Formato: Año-Mes-Día Hora:Minuto:Segundo
+        return date("Y-m-d H:i:s");
     }
     //Se actualiza a 2 : Solicitud aprobada
     $sql_update_status ="UPDATE solicitudes SET Status = 2 WHERE Id = :id";
@@ -56,10 +63,9 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     // Variables para insertar
     $fecha_alta_default = obtenerFechaHoraActual();
     $activo = 1;
-    $usuarioAlta = 1;
+    $usuarioAlta = $_SESSION['usuario_id'];
     $exportadoCoi = 1;
 
-    // Insertar solicitud aprobada en tabla polizas
     $sql_insertar_poliza = "INSERT INTO polizas 
         (SolicitudId, BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta, Aduana)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -80,7 +86,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     ]);
 
     if ($resultado) {
-    $poliza_id = $con->lastInsertId(); // <-- Aquí obtienes el ID de la nueva póliza
+    $poliza_id = $con->lastInsertId();
 
     $sql_partidas = "SELECT * 
                  FROM partidassolicitudes 
@@ -93,7 +99,6 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     $partidas = $stmt_partidas->fetchAll(PDO::FETCH_ASSOC);
    
     
-    // Insertar partidasolicitud en partidaspolizas
     $sql_insertar_partidas = "INSERT INTO partidaspolizas 
         (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, NumeroFactura)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -112,7 +117,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         $partida['NumeroFactura'],
         ]);
     }
-    //SE GUARDA LA PARTIDA ADICIONAL, LA DE PAGO
+
     $cargo = 0;
     $sql_insertar_pago = "INSERT INTO partidaspolizas
     (PolizaId, SubcuentaId, Cargo, Abono, Observaciones, Activo)
@@ -129,7 +134,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     ]);
 
     } else {
-        // Manejo de error
+
         echo "Error al guardar la póliza.";
     }
 

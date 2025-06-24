@@ -19,37 +19,48 @@ document.addEventListener('DOMContentLoaded', () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id: id })
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log('Respuesta:', data); // Debug
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log('Respuesta:', data); // Debug
 
-                        if (data.success) {
-                            Swal.fire('Solicitud cancelada', 'La solicitud fue cancelada correctamente.', 'success');
-                            // Quitar la fila de la tabla sin recargar
-                            btn.closest('tr').remove();
+                            if (data.success) {
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Solicitud cancelada',
+                                    html: `Se canceló la solicitud.`,
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true
+                                });
 
-                            // Limpiar el formulario form_Pago
-                            const formPago = document.getElementById('form_Pago');
-                            if (formPago) {
-                                formPago.reset();
-                            }
+                                // Elimina la fila sin esperar a que el toast desaparezca
+                                btn.closest('tr').remove();
 
-                            // Limpiar la tabla table-pago (vaciar tbody o colocar mensaje)
-                            const tablaPago = document.getElementById('tabla-partidas');
-                            if (tablaPago) {
-                                const tbody = tablaPago.querySelector('tbody');
-                                if (tbody) {
-                                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Sin datos disponibles</td></tr>`;
+
+                                // Limpiar el formulario form_Pago
+                                const formPago = document.getElementById('form_Pago');
+                                if (formPago) {
+                                    formPago.reset();
                                 }
+
+                                // Limpiar la tabla table-pago (vaciar tbody o colocar mensaje)
+                                const tablaPago = document.getElementById('tabla-partidas');
+                                if (tablaPago) {
+                                    const tbody = tablaPago.querySelector('tbody');
+                                    if (tbody) {
+                                        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Sin datos disponibles</td></tr>`;
+                                    }
+                                }
+                            } else {
+                                Swal.fire('Error', data.message || 'Error al desactivar.', 'error');
                             }
-                        } else {
-                            Swal.fire('Error', data.message || 'Error al desactivar.', 'error');
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Error:', err);
-                        Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
-                    });
+                        })
+                        .catch(err => {
+                            console.error('Error:', err);
+                            Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
+                        });
                 }
             });
         });

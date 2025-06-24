@@ -40,11 +40,11 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../../css/style2.css">
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -52,31 +52,53 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="card-header formulario_clientes">
                 <h5>+ Agregar Cuenta</h5>
                 <div class="row">
-                    <div class="col-10 col-sm-6 d-flex align-items-center mt-4">
-                        <input name="numero" type="text" class="form-control rounded-0 border-0 border-bottom" maxlength="7"
-                            style="background-color: transparent;" placeholder="Numero" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1" required>
+                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
+                        <input name="numero" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            maxlength="7" style="background-color: transparent;" placeholder="Numero"
+                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
-                    <div class="col-10 col-sm-6 d-flex align-items-center mt-4">
+                    <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
                         <input name="nombre" type="text" class="form-control rounded-0 border-0 border-bottom"
                             style="background-color: transparent;" placeholder="Nombre*" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="empresa-select" name="empresa" class="form-control rounded-0 border-0 border-bottom text-muted"
-                            style="background-color: transparent;" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1" disabled>
-                            <option value="2">Empresa - Amexport Logística</option>
-                        </select>
-                    </div>
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="tipo_saldo-select" name="tipo_saldo" class="form-control rounded-0 border-0 border-bottom text-muted"
+                        <select id="tipo_saldo-select" name="tipo_saldo"
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
                             <option value="" selected disabled>Tipo</option>
                             <option value="1">Acreedor</option>
                             <option value="2">Deudor</option>
                         </select>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <table class="table-subcuentas" id="tabla-subcuentas">
+                            <thead>
+                                <tr class="text-muted">
+                                    <th class="col-numero_Subcuenta">Subcuenta</th>
+                                    <th class="col-nombre_Subcuenta">Nombre</th>
+                                    <th class="col-saldo_Subcuenta">Saldo</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Filas dinámicas -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Botón para agregar partida -->
+                    <div class="col-12 text-end mt-2">
+                        <button type="button" class="btn btn-outline-primary" onclick="agregarFila()">+ Agregar
+                            Subcuenta</button>
                     </div>
                 </div>
                 <div class="row">
@@ -95,7 +117,40 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
+<script>
+    let contadorFilas = 0;
+    function agregarFila() {
+        const tbody = document.querySelector('#tabla-subcuentas tbody');
+        const fila = document.createElement('tr');
 
+        fila.innerHTML = `
+        <td>
+            <input type="text" name="numero_subcuenta[${contadorFilas}]" class="form-control" placeholder="Agregar Subcuenta" />
+        </td>
+        <td>
+            <input type="text" name="nombre_subcuenta[${contadorFilas}]" class="form-control" placeholder="Agregar Nombre" />
+        </td>
+        <td>
+            <input type="number" name="saldo_subcuenta[${contadorFilas}]" step="0.01" class="form-control text-center" placeholder="$ 0.00" />
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn-eliminar" onclick="eliminarFila(this)" title="Eliminar fila">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </td>
+        `;
+
+        tbody.appendChild(fila);
+        contadorFilas++;
+    }
+
+    function eliminarFila(boton) {
+        const fila = boton.closest('tr');
+        fila.remove();
+        calcularTotales(); // actualizar totales al eliminar
+    }
+
+</script>
 <script src="../../../js/guardar_Cuenta.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"

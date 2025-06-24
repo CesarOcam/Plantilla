@@ -15,10 +15,14 @@ $(document).ready(function() {
                 // Verificamos si la respuesta es el mensaje de éxito
                 if (response.trim() === "Buque guardado correctamente.") {
                     Swal.fire({
+                        toast: true,
+                        position: 'top-end',
                         icon: 'success',
-                        title: 'Buque guardado correctamente',
-                        //text: 'Cliente guardado correctamente.',
-                        confirmButtonText: 'Aceptar'
+                        title: 'Guardado',
+                        html: `Buque guardado correctamente.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     });
 
                     // Limpiar el formulario

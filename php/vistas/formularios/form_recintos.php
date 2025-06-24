@@ -64,7 +64,7 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
                                 <select id="aduana-select" name="aduana" class="form-control rounded-0 border-0 border-bottom text-muted"
                                     style="background-color: transparent;" aria-label="Filtrar por fecha"
-                                    aria-describedby="basic-addon1">
+                                    aria-describedby="basic-addon1" required>
                                     <option value="" selected disabled>Aduana</option>
                                     <?php foreach ($aduana as $aduana): ?>
                                         <option value="<?php echo $aduana['nombre_corto_aduana']; ?>">

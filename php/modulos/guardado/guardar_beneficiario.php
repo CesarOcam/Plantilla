@@ -1,5 +1,13 @@
 <?php
+session_start(); 
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 
 if (isset($_POST['nombre'], $_POST['tipo'])) {
     $nombre = trim($_POST['nombre']);
@@ -12,23 +20,19 @@ if (isset($_POST['nombre'], $_POST['tipo'])) {
         exit;
     }
 
-    // Primer subcuenta para SubcuentaDefaultId
-    $subcuentaDefaultId = array_shift($subcuentas); // Extrae el primer elemento y lo elimina del array
-
     function obtenerFechaHoraActual() {
         return date("Y-m-d H:i:s");
     }
 
     $fecha_alta = obtenerFechaHoraActual();
     $activo = 1;
-    $usuarioAlta = 1;
+    $usuarioAlta = $_SESSION['usuario_id'];
 
-    // Insertar el buque / beneficiario
-    $sql = "INSERT INTO beneficiarios (SubcuentaDefaultId, Nombre, Tipo, Rfc, Activo, FechaAlta, UsuarioAlta)
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Insertar beneficiario
+    $sql = "INSERT INTO beneficiarios (Nombre, Tipo, Rfc, Activo, FechaAlta, UsuarioAlta)
+            VALUES (?, ?, ?, ?, ?, ?)";
     
     $params = [
-        $subcuentaDefaultId,
         $nombre,
         $tipo,
         $rfc,
@@ -61,7 +65,7 @@ if (isset($_POST['nombre'], $_POST['tipo'])) {
 
     // Insertar las subcuentas restantes en subcuentasbeneficiarios
     if (count($subcuentas) > 0) {
-        $sqlSubcuentas = "INSERT INTO subcuentasbeneficiarios (BeneficiarioId, SubcuentaId) VALUES (?, ?)";
+        $sqlSubcuentas = "INSERT INTO subcuentas_beneficiarios (beneficiario_id, subcuenta_id) VALUES (?, ?)";
         $stmtSub = $con->prepare($sqlSubcuentas);
 
         foreach ($subcuentas as $idSubcuenta) {

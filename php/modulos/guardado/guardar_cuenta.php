@@ -1,39 +1,49 @@
 <?php
+session_start();
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 
-// Verificar que los campos obligatorios estén presentes
 if (isset($_POST['numero'], $_POST['nombre'], $_POST['tipo_saldo'])) {
     // Recoger todos los valores
     $numero = $_POST['numero'];
     $nombre = $_POST['nombre'];
     $tipo = $_POST['tipo_saldo'];
 
-    // Función para obtener la fecha y hora actual
+    $subcuentas = $_POST['numero_subcuenta'] ?? [];
+    $subcuenta_formateadas = array_map(function($sub) use ($numero) {
+        return "$numero-$sub";
+    }, $subcuentas);
+
+    $nombre_subcuenta = $_POST['nombre_subcuenta'] ?? [];
+    $saldo_subcuenta = $_POST['saldo_subcuenta'] ?? [];
+
     function obtenerFechaHoraActual()
     {
-        return date("Y-m-d H:i:s"); // Formato: Año-Mes-Día Hora:Minuto:Segundo
+        return date("Y-m-d H:i:s");
     }
 
-    // Obtener la fecha y hora actual
     $fecha_alta = obtenerFechaHoraActual();
     $activo = 1;
-    $usuarioAlta = 1;
+    $usuarioAlta = $_SESSION['usuario_id'];
     $empresa = 2;
     $saldo = 0;
 
-    // Asegurarse de que todos los campos coincidan con los de la base de datos
     $sql = "INSERT INTO cuentas 
     (
         Numero, Nombre, TipoSaldo, EmpresaId, Activo, FechaAlta, UsuarioAlta, Saldo
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-
-    // Crear el array de parámetros, sin incluir el valor de 'Activo' ya que ya está seteo como 1
     $params = [
         $numero,
-        $nombre,   // nombre va en segundo lugar
-        $tipo,     // tipo_saldo en tercero
+        $nombre,
+        $tipo,
         $empresa,
         $activo,
         $fecha_alta,
@@ -41,14 +51,43 @@ if (isset($_POST['numero'], $_POST['nombre'], $_POST['tipo_saldo'])) {
         $saldo
     ];
 
-
-    // Verificar que el número de parámetros coincida con el número de `?` en la consulta
     if (count($params) !== substr_count($sql, '?')) {
         echo "Error: El número de parámetros no coincide con el número de tokens `?` en la consulta.";
     } else {
         $stmt = $con->prepare($sql);
         if ($stmt) {
             $resultado = $stmt->execute($params); // Pasamos el array de parámetros
+
+            $cuenta_Id = $con->lastInsertId();
+
+            // Preparar inserción de subcuentas
+            $sql_subcuenta = "INSERT INTO cuentas 
+                (
+                    CuentaPadreId, Numero, Nombre, TipoSaldo, EmpresaId, Activo, FechaAlta, UsuarioAlta, Saldo
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            $stmt_subcuenta = $con->prepare($sql_subcuenta);
+
+            foreach ($subcuenta_formateadas as $i => $subcuenta_numero) {
+                $nombre = $nombre_subcuenta[$i] ?? '';
+                $saldo = $saldo_subcuenta[$i] ?? 0;
+
+                $stmt_subcuenta->execute([
+                    $cuenta_Id,
+                    $subcuenta_numero,
+                    $nombre,
+                    $tipo,
+                    $empresa,
+                    $activo,
+                    $fecha_alta,
+                    $usuarioAlta,
+                    $saldo
+                    
+                ]);
+            }
+
+
 
             if ($resultado) {
                 echo "Cuenta guardada correctamente.";

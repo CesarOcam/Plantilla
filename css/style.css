@@ -1,70 +1,78 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');*/
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 body {
   /*font-family: 'Poppins', sans-serif;*/
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
-
-.bg-body-secondary{
-    /*background-color:rgb(100, 45, 189) !important;*/
-    background-color:rgb(107, 122, 156) !important;
+.bg-body-secondary {
+  /*background-color:rgb(100, 45, 189) !important;*/
+  background-color: rgb(107, 122, 156) !important;
 }
 
-.navbar-brand{
-    color: #efefef;
+.navbar-brand {
+  color: #efefef;
+  text-decoration: none;
+}
+.navbar-brand:hover,
+.navbar-brand:focus,
+.navbar-brand:visited,
+.navbar-brand:active {
+  color: #efefef;
+  text-decoration: none;
 }
 
 .shadow-bottom {
-    box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  }
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
 
-  a.nav-link.dropdown-toggle::after {
-    display: none !important;
-  }
+a.nav-link.dropdown-toggle::after {
+  display: none !important;
+}
 
-  .dropdown-menu {
-    border-radius: 0 !important;
-  }
+.dropdown-menu {
+  border-radius: 0 !important;
+}
 
-  .form-control {
-    border-bottom: 2px solid #efefef !important; /* Color de borde inferior por defecto */
-  }
+.form-control {
+  border-bottom: 2px solid #efefef !important; /* Color de borde inferior por defecto */
+}
 
-  .form-control:focus {
-    border-color: transparent;        /* Elimina el borde superior, izquierdo y derecho */
-    /*border-bottom-color: rgb(100, 45, 189)!important;*/  /* Resalta solo el borde inferior */
-    border-bottom-color:rgb(52, 62, 83) !important;
-    box-shadow: none;                  /* Elimina la sombra por defecto */
-  }
+.form-control:focus {
+  border-color: transparent; /* Elimina el borde superior, izquierdo y derecho */
+  /*border-bottom-color: rgb(100, 45, 189)!important;*/ /* Resalta solo el borde inferior */
+  border-bottom-color: rgb(52, 62, 83) !important;
+  box-shadow: none; /* Elimina la sombra por defecto */
+}
 
-  .select2-container--default .select2-selection--multiple {
-    background-color: transparent;
-    border: none;
-    border-bottom: 2px solid #efefef !important;
-    border-radius: 0;
-    padding: 4px;
-  }
+.select2-container--default .select2-selection--multiple {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #efefef !important;
+  border-radius: 0;
+  padding: 4px;
+}
 
-  .select2-container--default .select2-selection--multiple:focus {
-      /*border-bottom-color: rgb(100, 45, 189) !important;*/
-      border-bottom-color: rgb(52, 62, 83) !important;
-      box-shadow: none;
-  }
+.select2-container--default .select2-selection--multiple:focus {
+  /*border-bottom-color: rgb(100, 45, 189) !important;*/
+  border-bottom-color: rgb(52, 62, 83) !important;
+  box-shadow: none;
+}
 
-  .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    /*background-color: rgba(100, 45, 189, 0.1);*/
-    background-color: rgba(25, 48, 196, 0.205);
-    /*border: 1px solid #642dbd;*/
-    border: 1px solid rgb(52, 62, 83);
-    /*color: #642dbd;*/
-    color: rgb(52, 62, 83);
-    font-size: 0.85rem;
-  }
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice {
+  /*background-color: rgba(100, 45, 189, 0.1);*/
+  background-color: rgba(25, 48, 196, 0.205);
+  /*border: 1px solid #642dbd;*/
+  border: 1px solid rgb(52, 62, 83);
+  /*color: #642dbd;*/
+  color: rgb(52, 62, 83);
+  font-size: 0.85rem;
+}
 
-  .select2-container--default .select2-selection--single {
+.select2-container--default .select2-selection--single {
   background-color: transparent;
   border: none;
   border-bottom: 2px solid #efefef !important;
@@ -78,597 +86,821 @@ body {
   box-shadow: none;
 }
 
-
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Quitar flechas en Firefox */
 input[type="number"] {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+table,
+th,
+td {
+  background-color: transparent !important;
+}
+
+.table th,
+.table td {
+  color: rgba(0, 0, 0, 0.6); /* Negro con 60% de opacidad */
+}
+
+.table thead th {
+  color: rgba(0, 0, 0, 0.6); /* Negro con 60% de opacidad */
+}
+
+.form-check-input {
+  transform: scale(1.4); /* Cambia este valor para ajustar el tamaño */
+  margin-left: 10px; /* Ajusta si es necesario para alinearlo correctamente */
+}
+
+#form_Referencia input::placeholder {
+  color: #00000073;
 }
 
 
-  table, th, td {
-    background-color: transparent !important;
-  }
+/*-----------------------------------------------Animaciones TOAST------------------------------------------*/
+/* Ajustes para toasts */
+.swal2-toast .swal2-title {
+  margin: 4px 0 2px 0;       /* Menor separación arriba y abajo */
+  font-size: 0.95rem;        /* Tamaño de fuente más pequeño */
+  line-height: 1.2;
+}
 
-  .table th, .table td {
-    color: rgba(0, 0, 0, 0.6); /* Negro con 60% de opacidad */
-  }
+.swal2-toast .swal2-html-container {
+  margin: 0;
+  font-size: 0.85rem;        /* Tamaño más compacto */
+  line-height: 1.2;
+}
 
-  .table thead th {
-    color: rgba(0, 0, 0, 0.6); /* Negro con 60% de opacidad */
-  }
+/* Reduce padding general del toast */
+.swal2-toast {
+  padding: 0.75rem 1rem !important;
+  min-height: auto !important;
+}
+/* Quitar animaciones por defecto de SweetAlert2 */
+.swal2-show {
+  animation: none !important;
+}
 
-  .form-check-input {
-    transform: scale(1.4); /* Cambia este valor para ajustar el tamaño */
-    margin-left: 10px; /* Ajusta si es necesario para alinearlo correctamente */
-  }
+/* Entrada personalizada */
+.swal2-toast {
+  animation: slideInRight 0.4s ease-out forwards !important;
+}
 
-  /* Ajusta el ancho de las dos primeras columnas */
-  .table th:nth-child(1), .table td:nth-child(1),
-  .table th:nth-child(2), .table td:nth-child(2) {
-    width: 3%; /* Ajusta el porcentaje según lo que desees */
-  }
+/* Salida personalizada */
+.swal2-toast.swal2-hide {
+  animation: slideOutRight 0.4s ease-in forwards !important;
+}
 
-  .table th:nth-child(2), .table td:nth-child(2) {
-    width: 4%; /* Ajusta el porcentaje según lo que desees */
-  }
-
-  .table th:nth-child(3), .table td:nth-child(3) {
-    width: 60%; /* Ajusta el porcentaje según lo que desees */
-  }
-
-    /* Solo aplicar en cat_Cuentas.php */
-  body.cat-cuentas .table th:nth-child(3),
-  body.cat-cuentas .table td:nth-child(3) {
-      width: 5% !important; /* Solo en esa página */
-  }
-
-  body.cat-clientes .table th:nth-child(3),
-  body.cat-clientes .table td:nth-child(3) {
-      width: 5% !important; /* Solo en esa página */
-  }
-
-  body.cat-aduanas .table th:nth-child(3),
-  body.cat-aduanas .table td:nth-child(3) {
-      width: 10% !important; /* Solo en esa página */
-  }
-
-  body.cat-aduanas .table th:nth-child(4),
-  body.cat-aduanas .table td:nth-child(4) {
-      width: 10% !important; /* Solo en esa página */
-  }
-
-
-  body.cat-aduanas .table th:nth-child(5),
-  body.cat-aduanas .table td:nth-child(5) {
-      width: 50% !important; /* Solo en esa página */
-  }
-
-  body.cat-aduanas .table th:nth-child(6),
-  body.cat-aduanas .table td:nth-child(6) {
-      width: 10% !important; /* Solo en esa página */
-  }
-  body.cat-aduanas .table th:nth-child(7),
-  body.cat-aduanas .table td:nth-child(7) {
-      width: 10% !important; /* Solo en esa página */
-  }
- 
-  /*--------------------------------SOLO PARA LA TABLA DE REFERENCIAS------------------------------- */
-
-    body.consulta-referencias .table th:nth-child(3),
-    body.consulta-referencias .table td:nth-child(3) {
-      width: 5% !important; /* Solo en esa página */
-  }
-
-    body.consulta-referencias .table th:nth-child(4),
-    body.consulta-referencias .table td:nth-child(4) {
-      width: 25% !important; /* Solo en esa página */
-  }
-
-    body.consulta-referencias .table th:nth-child(5),
-    body.consulta-referencias .table td:nth-child(5) {
-      width: 25% !important; /* Solo en esa página */
-  }
-
-    body.consulta-referencias .table th:nth-child(7),
-    body.consulta-referencias .table td:nth-child(7) {
-      width: 10% !important; /* Solo en esa página */
-  }
-
-    body.consulta-referencias .table th:nth-child(8),
-    body.consulta-referencias .table td:nth-child(8) {
-      width: 10% !important; /* Solo en esa página */
-  }
-
-  /*--------------------------------Tabla detalles referencia ------------------------------------------*/
-    /* Selector corregido */
-    table.tabla-movimientos th:nth-child(1),
-    table.tabla-movimientos td:nth-child(1) {
-    width: 20% !important;
-    }
-
-    table.tabla-movimientos th:nth-child(2),
-    table.tabla-movimientos td:nth-child(2) {
-    width: 20% !important;
-    }
-
-    table.tabla-movimientos th:nth-child(3),
-    table.tabla-movimientos td:nth-child(3) {
-    width: 20% !important;
-    }
-
-    table.tabla-movimientos th:nth-child(4),
-    table.tabla-movimientos td:nth-child(4) {
-    width: 20% !important;
-    }
-
-    table.tabla-movimientos th:nth-child(5),
-    table.tabla-movimientos td:nth-child(5) {
-    width: 20% !important;
-    }
-
-  /*--------------------------------Diseño parte superior catalogos -----------------------------------*/
-  .input-transparent {
-      background-color: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-      border-radius: 0;
-      color: rgba(0, 0, 0, 0.6); /* Texto con opacidad */
-      font-weight: 500;
-    }
-
-
-  /* Estilos del interruptor */
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px; /* Tamaño reducido */
-    height: 28px; /* Tamaño reducido */
-  }
-
-  .switch input {
+/* Definimos ambas animaciones */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
     opacity: 0;
-    width: 0;
-    height: 0;
   }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 34px;
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
+}
 
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 20px; /* Tamaño reducido */
-    width: 20px; /* Tamaño reducido */
-    border-radius: 50%;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: 0.4s;
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
   }
-
-  input:checked + .slider {
-    background-color: rgb(245, 99, 31);
+  to {
+    transform: translateX(100%);
+    opacity: 0;
   }
+}
 
-  input:checked + .slider:before {
-    transform: translateX(22px); /* Ajustado para el tamaño reducido */
-  }
+/*--------------------------------TABLAS------------------------------------------*/
 
-  .formulario_clientes input::placeholder {
-    opacity: 0.7 !important;  /* Forzar la opacidad */
+/* Ajusta el ancho de las dos primeras columnas */
+.table th:nth-child(1),
+.table td:nth-child(1),
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 3%; /* Ajusta el porcentaje según lo que desees */
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 4%; /* Ajusta el porcentaje según lo que desees */
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 60%; /* Ajusta el porcentaje según lo que desees */
+}
+
+/* Solo aplicar en cat_Cuentas.php */
+body.cat-cuentas .table th:nth-child(3),
+body.cat-cuentas .table td:nth-child(3) {
+  width: 5% !important; /* Solo en esa página */
+}
+
+body.cat-clientes .table th:nth-child(3),
+body.cat-clientes .table td:nth-child(3) {
+  width: 5% !important; /* Solo en esa página */
+}
+
+body.cat-aduanas .table th:nth-child(3),
+body.cat-aduanas .table td:nth-child(3) {
+  width: 10% !important; /* Solo en esa página */
+}
+
+body.cat-aduanas .table th:nth-child(4),
+body.cat-aduanas .table td:nth-child(4) {
+  width: 10% !important; /* Solo en esa página */
+}
+
+body.cat-aduanas .table th:nth-child(5),
+body.cat-aduanas .table td:nth-child(5) {
+  width: 50% !important; /* Solo en esa página */
+}
+
+body.cat-aduanas .table th:nth-child(6),
+body.cat-aduanas .table td:nth-child(6) {
+  width: 10% !important; /* Solo en esa página */
+}
+body.cat-aduanas .table th:nth-child(7),
+body.cat-aduanas .table td:nth-child(7) {
+  width: 10% !important; /* Solo en esa página */
+}
+
+/*--------------------------------SOLO PARA LA TABLA DE REFERENCIAS------------------------------- */
+
+body.consulta-referencias .table th:nth-child(3),
+body.consulta-referencias .table td:nth-child(3) {
+  width: 5% !important; /* Solo en esa página */
+}
+
+body.consulta-referencias .table th:nth-child(4),
+body.consulta-referencias .table td:nth-child(4) {
+  width: 25% !important; /* Solo en esa página */
+}
+
+body.consulta-referencias .table th:nth-child(5),
+body.consulta-referencias .table td:nth-child(5) {
+  width: 25% !important; /* Solo en esa página */
+}
+
+body.consulta-referencias .table th:nth-child(7),
+body.consulta-referencias .table td:nth-child(7) {
+  width: 10% !important; /* Solo en esa página */
+}
+
+body.consulta-referencias .table th:nth-child(8),
+body.consulta-referencias .table td:nth-child(8) {
+  width: 10% !important; /* Solo en esa página */
+}
+
+/*----------------TABLA MOVIMIENTOS 1 -----------------*/
+/* Encabezado tabla 1 - gris claro */
+
+table.tabla-movimientos-1 thead {
+  background-color: #f1f3f5; /* Gris cálido */
+  color: #212529;
+  font-weight: 500;
+  border-bottom: 1px solid #dee2e6;
+}
+
+table.tabla-movimientos-1 th:nth-child(1),
+table.tabla-movimientos-1 td:nth-child(1) {
+  width: 10% !important;
+}
+
+table.tabla-movimientos-1 th:nth-child(2),
+table.tabla-movimientos-1 td:nth-child(2) {
+  width: 20% !important;
+}
+
+table.tabla-movimientos-1 th:nth-child(3),
+table.tabla-movimientos-1 td:nth-child(3) {
+  width: 10% !important;
+}
+
+table.tabla-movimientos-1 th:nth-child(4),
+table.tabla-movimientos-1 td:nth-child(4) {
+  width: 10% !important;
+}
+
+/*--------------TABLA MOVIMIENTOS 2-----------------*/
+/* Encabezado tabla 2 - gris cálido */
+table.tabla-movimientos-2 thead {
+  background-color: #f1f3f5; /* Gris cálido */
+  color: #212529;
+  font-weight: 500;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Selector corregido */
+table.tabla-movimientos-2 th:nth-child(1),
+table.tabla-movimientos-2 td:nth-child(1) {
+  width: 20% !important;
+}
+
+table.tabla-movimientos-2 th:nth-child(2),
+table.tabla-movimientos-2 td:nth-child(2) {
+  width: 10% !important;
+}
+
+table.tabla-movimientos-2 th:nth-child(3),
+table.tabla-movimientos-2 td:nth-child(3) {
+  width: 10% !important;
+}
+
+table.tabla-movimientos-2 th:nth-child(4),
+table.tabla-movimientos-2 td:nth-child(4) {
+  width: 20% !important;
+}
+
+
+/*--------------------------------TABLA CONTENEDORES-----------------------------------*/
+table.tabla-contenedores th:nth-child(1),
+table.tabla-contenedores td:nth-child(1) {
+  width: 5% !important;
+}
+
+table.tabla-contenedores th:nth-child(2),
+table.tabla-contenedores td:nth-child(2) {
+  width: 30% !important;
+}
+
+table.tabla-contenedores th:nth-child(3),
+table.tabla-contenedores td:nth-child(3) {
+  width: 30% !important;
+}
+
+table.tabla-contenedores th:nth-child(4),
+table.tabla-contenedores td:nth-child(4) {
+  width: 20% !important;
+}
+
+
+
+/*--------------------------------Diseño parte superior catalogos -----------------------------------*/
+.input-transparent {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 0;
+  color: rgba(0, 0, 0, 0.6); /* Texto con opacidad */
+  font-weight: 500;
+}
+
+/* Estilos del interruptor */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px; /* Tamaño reducido */
+  height: 28px; /* Tamaño reducido */
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px; /* Tamaño reducido */
+  width: 20px; /* Tamaño reducido */
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: rgb(245, 99, 31);
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px); /* Ajustado para el tamaño reducido */
+}
+
+.formulario_clientes input::placeholder {
+  opacity: 0.7 !important; /* Forzar la opacidad */
 }
 
 /*-------------------------INPUTS DE MODULO CUOTAS---------------------------------------*/
 
 /* Solo inputs readonly dentro del form con id "form_Cuota" */
 #form_Cuota .card input[readonly] {
-    background-color: #f7f8fa !important;
-    border: 1px solid #ddd !important;
-    color: #6c757d !important;
-    box-shadow: none;
+  background-color: #f7f8fa !important;
+  border: 1px solid #ddd !important;
+  color: #6c757d !important;
+  box-shadow: none;
 }
 
 /* También si llegas a usar disabled en este mismo form */
 #form_Cuota .card input:disabled {
-    background-color: #f7f8fa !important;
-    border: 1px solid #ddd !important;
-    color: #6c757d !important;
-    font-style: italic;
-    box-shadow: none;
+  background-color: #f7f8fa !important;
+  border: 1px solid #ddd !important;
+  color: #6c757d !important;
+  font-style: italic;
+  box-shadow: none;
 }
 
 /* Opcional: quitar estilos de otros inputs solo dentro de este form */
 #form_Cuota .card input {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .file-row:hover {
-    background-color: #e9ecef !important;
+  background-color: #e9ecef !important;
+}
+
+/*-------------------------Tabla Subcuentas-----------------------------------------------------------------------*/
+#tabla-subcuentas thead {
+  text-align: center;
+  background-color: rgba(52, 62, 83, 0.829) !important;
+  color: white;
+  border-bottom: 1px solid #dee2e6;
+}
+
+#tabla-subcuentas thead th {
+  color: white !important;
+  vertical-align: middle;
+  padding: 0.5rem;
+}
+
+/* Redondeo de esquinas superiores */
+#tabla-subcuentas thead th:first-child {
+  border-top-left-radius: 0.5rem;
+}
+
+#tabla-subcuentas thead th:last-child {
+  border-top-right-radius: 0.5rem;
+}
+
+#tabla-subcuentas th,
+#tabla-subcuentas td {
+  vertical-align: middle;
+  padding: 0.5rem;
+}
+
+#tabla-subcuentas input,
+#tabla-subcuentas select {
+  border: none;
+  border-bottom: 1px solid #ced4da;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+#tabla-subcuentas input:focus,
+#tabla-subcuentas select:focus {
+  box-shadow: none;
+  outline: none;
+  border-color: #6c757d;
+}
+
+#tabla-subcuentas tfoot input {
+  font-weight: bold;
+  text-align: right;
+  background-color: #f1f3f5;
+}
+
+/* Botón agregar: sobrio, empresarial */
+.btn-outline-primary {
+  border-color: #444;
+  color: #444;
+  background-color: transparent;
+  transition: 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #444;
+  color: white;
+}
+
+/* Botón eliminar: más discreto */
+.btn-eliminar {
+  background-color: transparent;
+  border: none;
+  color: #aa1e1e;
+  padding: 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-eliminar:hover {
+  color: #d9534f; /* rojo más claro al pasar el mouse */
+}
+
+/* Botones base */
+.btn-sm {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.d-none {
+  display: none;
+}
+
+/* Columnas iguales para contenido principal */
+.col-numero_Subcuenta,
+.col-nombre_Subcuenta,
+.col-saldo_Subcuenta {
+  width: 32%; /* Reparten aproximadamente 96% entre las 3 */
+  min-width: 600px; /* Ajustable según necesidad mínima */
+}
+
+/* Columna pequeña para acciones */
+.col-accion {
+  width: 4%;
+  min-width: 40px;
+  text-align: center; /* Centra el ícono o botón */
 }
 
 /*-------------------------DISEÑOS DE LA TABLA DINAMICA POLIZA FORMULARIO ---------------------------------------*/
 
 #tabla-partidas thead {
-    text-align: center;
-    background-color: rgba(52, 62, 83, 0.829) !important;
-    color: white;
-    border-bottom: 1px solid #dee2e6;
+  text-align: center;
+  background-color: rgba(52, 62, 83, 0.829) !important;
+  color: white;
+  border-bottom: 1px solid #dee2e6;
 }
 
 #tabla-partidas thead th {
-    color: white !important;
-    vertical-align: middle;
-    padding: 0.5rem;
+  color: white !important;
+  vertical-align: middle;
+  padding: 0.5rem;
 }
 
 /* Redondeo de esquinas superiores */
 #tabla-partidas thead th:first-child {
-    border-top-left-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
 }
 
 #tabla-partidas thead th:last-child {
-    border-top-right-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 #tabla-partidas th,
 #tabla-partidas td {
-    vertical-align: middle;
-    padding: 0.5rem;
+  vertical-align: middle;
+  padding: 0.5rem;
 }
 
 #tabla-partidas input,
 #tabla-partidas select {
-    border: none;
-    border-bottom: 1px solid #ced4da;
-    border-radius: 0;
-    background-color: transparent;
-    font-size: 0.9rem;
-    width: 100%;
+  border: none;
+  border-bottom: 1px solid #ced4da;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 0.9rem;
+  width: 100%;
 }
 
 #tabla-partidas input:focus,
 #tabla-partidas select:focus {
-    box-shadow: none;
-    outline: none;
-    border-color: #6c757d;
+  box-shadow: none;
+  outline: none;
+  border-color: #6c757d;
 }
 
-
 #tabla-partidas tfoot input {
-    font-weight: bold;
-    text-align: right;
-    background-color: #f1f3f5;
+  font-weight: bold;
+  text-align: right;
+  background-color: #f1f3f5;
 }
 
 /* Botón agregar: sobrio, empresarial */
 .btn-outline-primary {
-    border-color: #444;
-    color: #444;
-    background-color: transparent;
-    transition: 0.2s ease;
+  border-color: #444;
+  color: #444;
+  background-color: transparent;
+  transition: 0.2s ease;
 }
 
 .btn-outline-primary:hover {
-    background-color: #444;
-    color: white;
+  background-color: #444;
+  color: white;
 }
 
 /* Botón eliminar: más discreto */
 .btn-eliminar {
-    background-color: transparent;
-    border: none;
-    color: #aa1e1e;
-    padding: 0;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: color 0.2s ease;
+  background-color: transparent;
+  border: none;
+  color: #aa1e1e;
+  padding: 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .btn-eliminar:hover {
-    color: #d9534f; /* rojo más claro al pasar el mouse */
+  color: #d9534f; /* rojo más claro al pasar el mouse */
 }
 
 /* Botones base */
 .btn-sm {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
 }
 
 .d-none {
-    display: none;
+  display: none;
 }
 
 /* Anchuras personalizadas */
 .col-subcuenta {
-    width: 30%;     /* Más espacio para nombres largos */
-    min-width: 400px;
+  width: 30%; /* Más espacio para nombres largos */
+  min-width: 400px;
 }
 
 .col-referencia {
-    width: 15%;     /* Menos espacio que subcuenta */
-    min-width: 200px;
+  width: 15%; /* Menos espacio que subcuenta */
+  min-width: 200px;
 }
-
 
 .col-cargo,
 .col-abono {
-    width: 7%;       /* Más angosto que antes */
-    min-width: 60px;
-    max-width: 100px;
-    text-align: right !important;
+  width: 7%; /* Más angosto que antes */
+  min-width: 60px;
+  max-width: 100px;
+  text-align: right !important;
 }
 
-
 .col-observaciones {
-    width: 30%;     /* Igual que subcuenta, bastante espacio para texto */
-    min-width: 400px;
+  width: 30%; /* Igual que subcuenta, bastante espacio para texto */
+  min-width: 400px;
 }
 
 .col-factura {
-    width: 15%;     /* Igual que referencia */
-    min-width: 200px;
+  width: 15%; /* Igual que referencia */
+  min-width: 200px;
 }
 
 .col-accion {
-    width: 3%;      /* Botón eliminar pequeño */
-    min-width: 40px;
+  width: 3%; /* Botón eliminar pequeño */
+  min-width: 40px;
 }
 
-
 .select2-container .select2-selection--single {
-    height: 31px !important;       /* altura del campo */
-    line-height: 50px !important;  /* para centrar texto verticalmente */
-    padding: 0 10px !important;    /* espaciado horizontal */
-    border-radius: 0;              /* opcional, para que combine con tu estilo */
+  height: 31px !important; /* altura del campo */
+  line-height: 50px !important; /* para centrar texto verticalmente */
+  padding: 0 10px !important; /* espaciado horizontal */
+  border-radius: 0; /* opcional, para que combine con tu estilo */
 }
 
 /* ALINEA LOS SELECT 2 JUNTO CON LOS DEMAS INPUTS*/
 .select2-container--default .select2-selection--single {
-    height: 34px !important;
-
+  height: 34px !important;
 }
 
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 35px !important;
-    padding-left: 0 !important;
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  line-height: 35px !important;
+  padding-left: 0 !important;
 }
-
 
 /*-------------------------DISEÑOS DE LA TABLA DINAMICA SOLICITUDES ---------------------------------------*/
 .tabla-partidas-estilo thead th:nth-child(2),
 .tabla-partidas-estilo tbody td:nth-child(2),
 .tabla-partidas-estilo thead th:nth-child(3),
 .tabla-partidas-estilo tbody td:nth-child(3) {
-    width: 7%;
-    min-width: 70px;
-    max-width: 80px;
-    text-align: right;
+  width: 7%;
+  min-width: 70px;
+  max-width: 80px;
+  text-align: right;
 }
 
 #tabla-partidas tbody td {
   font-size: 0.9rem; /* tamaño pequeño, puedes ajustar */
 }
 
-
 /*-------------------------DISEÑOS DE LA TABLA DINAMICA POLIZA DETALLE ---------------------------------------*/
 .tabla-partidas-estilo {
-    border-collapse: separate;
-    border-spacing: 0;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .tabla-partidas-estilo thead {
-    text-align: center;
-    background-color: rgb(52, 62, 83);
-    color: white;
+  text-align: center;
+  background-color: rgb(52, 62, 83);
+  color: white;
 }
 
 .tabla-partidas-estilo thead th {
-    color: white;
-    vertical-align: middle;
-    padding: 0.5rem;
-    border: none; /* Quita bordes solo del head */
+  color: white;
+  vertical-align: middle;
+  padding: 0.5rem;
+  border: none; /* Quita bordes solo del head */
 }
 
 /* Redondeo limpio de esquinas superiores */
 .tabla-partidas-estilo thead th:first-child {
-    border-top-left-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
 }
 
 .tabla-partidas-estilo thead th:last-child {
-    border-top-right-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 .tabla-partidas-estilo tbody td {
-    vertical-align: middle;
-    padding: 0.5rem;
-    border-bottom: 1px solid #dee2e6; /* Se conserva la línea en el cuerpo */
+  vertical-align: middle;
+  padding: 0.5rem;
+  border-bottom: 1px solid #dee2e6; /* Se conserva la línea en el cuerpo */
 }
 
 .tabla-partidas-estilo input,
 .tabla-partidas-estilo select {
-    border: none;
-    border-bottom: 1px solid #ced4da;
-    border-radius: 0;
-    background-color: transparent;
-    font-size: 0.9rem;
-    width: 100%;
+  border: none;
+  border-bottom: 1px solid #ced4da;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 0.9rem;
+  width: 100%;
 }
 
 .tabla-partidas-estilo input:focus,
 .tabla-partidas-estilo select:focus {
-    box-shadow: none;
-    outline: none;
-    border-color: #6c757d;
+  box-shadow: none;
+  outline: none;
+  border-color: #6c757d;
 }
 
 .tabla-partidas-estilo .btn-outline-primary {
-    border-color: #444;
-    color: #444;
-    background-color: transparent;
-    transition: 0.2s ease;
+  border-color: #444;
+  color: #444;
+  background-color: transparent;
+  transition: 0.2s ease;
 }
 
 .tabla-partidas-estilo .btn-outline-primary:hover {
-    background-color: #444;
-    color: white;
+  background-color: #444;
+  color: white;
 }
 
 .tabla-partidas-estilo .btn-eliminar {
-    background-color: transparent;
-    border: none;
-    color: #aa1e1e;
-    padding: 0;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: color 0.2s ease;
+  background-color: transparent;
+  border: none;
+  color: #aa1e1e;
+  padding: 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .tabla-partidas-estilo .btn-eliminar:hover {
-    color: #d9534f;
+  color: #d9534f;
 }
 
 .tabla-partidas-estilo .btn-sm {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
 }
 
 /* Anchuras personalizadas */
 .tabla-partidas-estilo thead th:nth-child(1),
 .tabla-partidas-estilo tbody td:nth-child(1) {
-    width: 30%;
-    min-width: 400px;
+  width: 30%;
+  min-width: 400px;
 }
 
 .tabla-partidas-estilo thead th:nth-child(2),
 .tabla-partidas-estilo tbody td:nth-child(2),
 .tabla-partidas-estilo thead th:nth-child(3),
 .tabla-partidas-estilo tbody td:nth-child(3) {
-    width: 7%;
-    min-width: 70px;
-    max-width: 80px;
-    text-align: right;
+  width: 7%;
+  min-width: 70px;
+  max-width: 80px;
+  text-align: right;
 }
 
 .tabla-partidas-estilo thead th:nth-child(4),
 .tabla-partidas-estilo tbody td:nth-child(4) {
-    width: 30%;
-    min-width: 400px;
+  width: 30%;
+  min-width: 400px;
 }
 
 .tabla-partidas-estilo thead th:nth-child(5),
-.tabla-partidas-estilo tbody td:nth-child(5){
-    width: 7%;
-    min-width: 70px;
-    max-width: 80px;
-    text-align: center;
+.tabla-partidas-estilo tbody td:nth-child(5) {
+  width: 7%;
+  min-width: 70px;
+  max-width: 80px;
+  text-align: center;
 }
 .tabla-partidas-estilo thead th:nth-child(6),
 .tabla-partidas-estilo tbody td:nth-child(6),
 .tabla-partidas-estilo thead th:nth-child(7),
 .tabla-partidas-estilo tbody td:nth-child(7),
 .tabla-partidas-estilo thead th:nth-child(8),
-.tabla-partidas-estilo tbody td:nth-child(8)  {
-    width: 15%;
-    min-width: 200px;
+.tabla-partidas-estilo tbody td:nth-child(8) {
+  width: 15%;
+  min-width: 200px;
 }
 
 /* Estilos personalizados SOLO para la tabla de documentos */
 .tabla-documentos thead th,
 .tabla-documentos tbody td {
-    border-right: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
 }
 
 /* Evitar línea a la derecha del último */
 .tabla-documentos thead th:last-child,
 .tabla-documentos tbody td:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 /* Anchos de columnas personalizados */
 .tabla-documentos thead th:nth-child(1),
 .tabla-documentos tbody td:nth-child(1) {
-    width: 45%;
-    min-width: 250px;
+  width: 45%;
+  min-width: 250px;
 }
 
 .tabla-documentos thead th:nth-child(2),
 .tabla-documentos tbody td:nth-child(2) {
-    width: 20%;
-    min-width: 100px;
-    text-align: center !important;
+  width: 20%;
+  min-width: 100px;
+  text-align: center !important;
 }
 
 .tabla-documentos thead th:nth-child(3),
 .tabla-documentos tbody td:nth-child(3) {
-    width: 20%;
-    min-width: 100px;
-    text-align: center !important;
+  width: 20%;
+  min-width: 100px;
+  text-align: center !important;
 }
 
-.tabla-documentos thead th:nth-child(4), 
-.tabla-documentos tbody td:nth-child(4) { 
-    width: 15%;
-    min-width: 80;
-    text-align: center !important;
-    vertical-align: middle;
+.tabla-documentos thead th:nth-child(4),
+.tabla-documentos tbody td:nth-child(4) {
+  width: 15%;
+  min-width: 80;
+  text-align: center !important;
+  vertical-align: middle;
 }
 
 .tfoot-total {
-    background-color: #f1f1f1;
-    border-top: 2px solid #333;
-    height: 45px;
-    vertical-align: middle;
+  background-color: #f1f1f1;
+  border-top: 2px solid #333;
+  height: 45px;
+  vertical-align: middle;
 }
 .tabla-partidas-estilo tfoot td:nth-child(2),
 .tabla-partidas-estilo tfoot td:nth-child(3) {
-    width: 7%;
-    min-width: 70px;
-    max-width: 80px;
-    text-align: right;
-    vertical-align: middle;
+  width: 7%;
+  min-width: 70px;
+  max-width: 80px;
+  text-align: right;
+  vertical-align: middle;
 }
 
 /*---------------------TABLA DEL REALIZAR PAGO----------------------------*/
 .tabla-partidas-pagar {
-    border-collapse: separate;
-    border-spacing: 0;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .tabla-partidas-pagar thead {
-    text-align: center;
-    background-color: rgb(52, 62, 83);
-    color: white;
+  text-align: center;
+  background-color: rgb(52, 62, 83);
+  color: white;
 }
 
 .tabla-partidas-pagar thead th {
-    color: white;
-    vertical-align: middle;
-    padding: 0.5rem;
-    border: none; /* Quita bordes solo del head */
+  color: white;
+  vertical-align: middle;
+  padding: 0.5rem;
+  border: none; /* Quita bordes solo del head */
 }
 
 /* Redondeo limpio de esquinas superiores */
 .tabla-partidas-pagar thead th:first-child {
-    border-top-left-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
 }
 
 .tabla-partidas-pagar thead th:last-child {
-    border-top-right-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 .tabla-partidas-pagar td,
 .tabla-partidas-pagar th {
@@ -676,66 +908,65 @@ input[type="number"] {
   border-right: none !important;
 }
 
-
 .tabla-partidas-pagar tbody td {
-    vertical-align: middle;
-    padding: 0.5rem;
-    border-bottom: 1px solid #dee2e6; /* Se conserva la línea en el cuerpo */
+  vertical-align: middle;
+  padding: 0.5rem;
+  border-bottom: 1px solid #dee2e6; /* Se conserva la línea en el cuerpo */
 }
 
 .tabla-partidas-pagar input,
 .tabla-partidas-pagar select {
-    border: none;
-    border-bottom: 1px solid #ced4da;
-    border-radius: 0;
-    background-color: transparent;
-    font-size: 0.9rem;
-    width: 100%;
+  border: none;
+  border-bottom: 1px solid #ced4da;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 0.9rem;
+  width: 100%;
 }
 
 .tabla-partidas-pagar input:focus,
 .tabla-partidas-pagar select:focus {
-    box-shadow: none;
-    outline: none;
-    border-color: #6c757d;
+  box-shadow: none;
+  outline: none;
+  border-color: #6c757d;
 }
 
 .tabla-partidas-pagar .btn-outline-primary {
-    border-color: #444;
-    color: #444;
-    background-color: transparent;
-    transition: 0.2s ease;
+  border-color: #444;
+  color: #444;
+  background-color: transparent;
+  transition: 0.2s ease;
 }
 
 .tabla-partidas-pagar .btn-outline-primary:hover {
-    background-color: #444;
-    color: white;
+  background-color: #444;
+  color: white;
 }
 
 .tabla-partidas-pagar .btn-eliminar {
-    background-color: transparent;
-    border: none;
-    color: #aa1e1e;
-    padding: 0;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: color 0.2s ease;
+  background-color: transparent;
+  border: none;
+  color: #aa1e1e;
+  padding: 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .tabla-partidas-pagar .btn-eliminar:hover {
-    color: #d9534f;
+  color: #d9534f;
 }
 
 .tabla-partidas-pagar .btn-sm {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
 }
 
 /* Anchuras personalizadas */
 .tabla-partidas-pagar thead th:nth-child(1),
 .tabla-partidas-pagar tbody td:nth-child(1) {
-    width: 30%;
-    min-width: 400px;
+  width: 30%;
+  min-width: 400px;
 }
 
 .tabla-partidas-pagar thead th:nth-child(2),
@@ -746,121 +977,206 @@ input[type="number"] {
 .tabla-partidas-pagar tbody td:nth-child(4),
 .tabla-partidas-pagar thead th:nth-child(5),
 .tabla-partidas-pagar tbody td:nth-child(5) {
-    width: 7%;
-    min-width: 70px;
-    max-width: 80px;
-    text-align: center;
+  width: 7%;
+  min-width: 70px;
+  max-width: 80px;
+  text-align: center;
 }
-
 
 .tabla-partidas-pagar thead th:nth-child(5),
 .tabla-partidas-pagar tbody td:nth-child(5) {
-    width: 15%;
-    min-width: 200px;
+  width: 15%;
+  min-width: 200px;
 }
 .tabla-partidas-pagar thead td:nth-child(6),
 .tabla-partidas-pagar tbody td:nth-child(6) {
-    width: 30%;
-    min-width: 200px;
+  width: 30%;
+  min-width: 200px;
 }
 
 .tfoot-total-pagar {
-    font-size: 0.9rem;
-    background-color: #f1f1f1;
-    border-top: 2px solid #333;
-    height: 45px;
-    vertical-align: middle;
+  font-size: 0.9rem;
+  background-color: #f1f1f1;
+  border-top: 2px solid #333;
+  height: 45px;
+  vertical-align: middle;
 }
 
 .tabla-partidas-pagar tfoot td:nth-child(2),
 .tabla-partidas-pagar tfoot td:nth-child(3) {
-    width: 7%;
-    min-width: 70px;
-    max-width: 100px;
-    text-align: center;
-    vertical-align: middle;
+  width: 7%;
+  min-width: 70px;
+  max-width: 100px;
+  text-align: center;
+  vertical-align: middle;
 }
 /*---------------------TABLA DEL MODAL SOLICITUDES----------------------------*/
 .tabla-solicitudes thead th:nth-child(1),
 .tabla-solicitudes tbody td:nth-child(1) {
-    width: 7%;   /* Id */
-    min-width: 70px;
-    max-width: 80px;
-    text-align: center;
-    vertical-align: middle;
+  width: 7%; /* Id */
+  min-width: 70px;
+  max-width: 80px;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .tabla-solicitudes thead th:nth-child(2),
-.tabla-solicitudes tbody td:nth-child(2) 
+.tabla-solicitudes tbody td:nth-child(2),
 .tabla-solicitudes thead th:nth-child(3),
 .tabla-solicitudes tbody td:nth-child(3) {
-    width: 14%;  /* Empresa */
-    min-width: 120px;
-    max-width: 150px;
-    text-align: left;
-    vertical-align: middle;
+  width: 14%; /* Empresa */
+  min-width: 120px;
+  max-width: 150px;
+  text-align: left;
+  vertical-align: middle;
 }
 
 .tabla-solicitudes thead th:nth-child(3),
 .tabla-solicitudes tbody td:nth-child(3) {
-    width: 16%;  /* Beneficiario */
-    min-width: 90px;
-    max-width: 110px;
-    padding-left: 1px;
-    padding-right: 1px;
-    text-align: left;
-    vertical-align: middle;
+  width: 16%; /* Beneficiario */
+  min-width: 90px;
+  max-width: 110px;
+  padding-left: 1px;
+  padding-right: 1px;
+  text-align: left;
+  vertical-align: middle;
 }
 
 .tabla-solicitudes thead th:nth-child(4),
 .tabla-solicitudes tbody td:nth-child(4) {
-    width: 7%;  /* Importe */
-    min-width: 60px;
-    max-width: 75px;
-    padding-left: 1px;
-    padding-right: 1px;
-    text-align: right;
-    vertical-align: middle;
+  width: 7%; /* Importe */
+  min-width: 60px;
+  max-width: 75px;
+  padding-left: 1px;
+  padding-right: 1px;
+  text-align: right;
+  vertical-align: middle;
 }
 
 /* Para eliminar espacio entre bordes */
 .tabla-solicitudes {
-    border-collapse: collapse;
+  border-collapse: collapse;
 }
 
 /* Opcional: reduce padding en todas las celdas para maximizar espacio */
 .tabla-solicitudes th,
 .tabla-solicitudes td {
-    padding-left: 4px;
-    padding-right: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
-
-
 
 .tabla-solicitudes thead th:nth-child(5),
 .tabla-solicitudes tbody td:nth-child(5) {
-    width: 15%;  /* Fecha */
-    min-width: 130px;
-    max-width: 160px;
-    text-align: center;
-    vertical-align: middle;
+  width: 15%; /* Fecha */
+  min-width: 130px;
+  max-width: 160px;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .tabla-solicitudes thead th:nth-child(6),
 .tabla-solicitudes tbody td:nth-child(6),
 .tabla-solicitudes thead th:nth-child(7),
 .tabla-solicitudes tbody td:nth-child(7) {
-    width: 5%;  /* Iconos */
-    min-width: 40px;
-    max-width: 40px;
-    text-align: center;
-    vertical-align: middle;
+  width: 5%; /* Iconos */
+  min-width: 40px;
+  max-width: 40px;
+  text-align: center;
+  vertical-align: middle;
 }
 
+/*---------------------TABLA DE FACTURAS----------------------------*/
+.tabla-facturas {
+  border-collapse: collapse;
+}
 
+.tabla-facturas th,
+.tabla-facturas td {
+  padding-left: 4px;
+  padding-right: 4px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
 
+/* Factura (Columna 1) */
+.tabla-facturas thead th:nth-child(1),
+.tabla-facturas tbody td:nth-child(1) {
+  width: 3%;
+  min-width: 90px;
+  max-width: 110px;
+  text-align: left;
+}
 
+/* Referencia (Columna 2) */
+.tabla-facturas thead th:nth-child(2),
+.tabla-facturas tbody td:nth-child(2) {
+  width: 14%;
+  min-width: 90px;
+  max-width: 110px;
+  text-align: left;
+}
 
+/* Subcuenta (Columna 3) */
+.tabla-facturas thead th:nth-child(3),
+.tabla-facturas tbody td:nth-child(3) {
+  width: 16%;
+  min-width: 110px;
+  max-width: 130px;
+  text-align: left;
+}
+
+/* RFC Proveedor (Columna 4) */
+.tabla-facturas thead th:nth-child(4),
+.tabla-facturas tbody td:nth-child(4) {
+  width: 3%;
+  min-width: 90px;
+  max-width: 110px;
+  text-align: center;
+}
+
+/* Proveedor (Columna 5) */
+.tabla-facturas thead th:nth-child(5),
+.tabla-facturas tbody td:nth-child(5) {
+  width: 9%;
+  min-width: 130px;
+  max-width: 160px;
+  text-align: left;
+}
+
+/* Cliente (Columna 6) */
+.tabla-facturas thead th:nth-child(6),
+.tabla-facturas tbody td:nth-child(6) {
+  width: 14%;
+  min-width: 130px;
+  max-width: 160px;
+  text-align: left;
+}
+
+/* Fecha (Columna 7) */
+.tabla-facturas thead th:nth-child(7),
+.tabla-facturas tbody td:nth-child(7) {
+  width: 9%;
+  min-width: 70px;
+  max-width: 90px;
+  text-align: left;
+}
+
+/* Importe (Columna 8) */
+.tabla-facturas thead th:nth-child(8),
+.tabla-facturas tbody td:nth-child(8) {
+  width: 9%;
+  min-width: 70px;
+  max-width: 90px;
+  text-align: left;
+}
+
+/* Íconos/Acciones (Columna 9) */
+.tabla-facturas thead th:nth-child(9),
+.tabla-facturas tbody td:nth-child(9) {
+  width: 14%;
+  min-width: 35px;
+  max-width: 45px;
+  text-align: center;
+}
 
 /* BOTONES.............................................................*/
-  

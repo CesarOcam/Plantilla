@@ -48,11 +48,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.success) {
                         Swal.fire({
-                            title: 'Desactivado',
-                            text: 'Consolidadoras desactivados correctamente.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Desactivado',
+                        html: `Consolidadoras desactivadas correctamente.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(() => {
                             location.reload();
                         });
                     } else {

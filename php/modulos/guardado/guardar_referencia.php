@@ -1,8 +1,19 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 header('Content-Type: application/json');
 
-// Verificar que los campos obligatorios estén presentes
 if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
 
     function obtenerFechaHoraActual()
@@ -25,7 +36,6 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
         return (is_numeric($valor)) ? intval($valor) : null;
     }
 
-    // Recoger valores
     $aduana = trim($_POST['aduana']) ?: null;
     $exportador = trim($_POST['exportador']) ?: null;
     $logistico = trim($_POST['logistico']) ?: null;
@@ -56,10 +66,9 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
     $comentarios = $_POST['comentarios'] ?? null;
 
     $fecha_alta = obtenerFechaHoraActual();
-    $activo = 1;
+    $usuarioAlta = $_SESSION['usuario_id'];
     $usuarioAlta = 1;
 
-    // Obtener nombre corto de la aduana
     $sqlAduana = "SELECT nombre_corto_aduana FROM 2201aduanas WHERE id2201aduanas = ?";
     $stmtAduana = $con->prepare($sqlAduana);
     $stmtAduana->execute([$aduana]);
@@ -73,10 +82,10 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
         exit;
     }
 
-    // Generar número de referencia
     $letra = strtoupper(substr(trim($nombreCorto), 0, 1));
     $anioDigito = date('Y') % 10;
     $prefijo = $letra . $anioDigito;
+    $activo = 1;
 
     $sqlUltimoNumero = "
         SELECT Numero 
@@ -145,17 +154,56 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
     }
 
     try {
+        foreach ($params as $k => $v) {
+            if (is_array($v)) {
+                $params[$k] = implode(',', $v); // O convierte a string según convenga
+            }
+        }
+
         $con->beginTransaction();
 
         $stmt = $con->prepare($sql);
         if ($stmt->execute($params)) {
             $referencia_id = $con->lastInsertId();
 
-            // Carpeta específica por referencia
+            // Asegurar que recibimos arrays o arrays vacíos
+            $contenedores = isset($_POST['contenedor']) ? (array) $_POST['contenedor'] : [];
+            $tipos = isset($_POST['tipo']) ? (array) $_POST['tipo'] : [];
+            $sellos = isset($_POST['sello']) ? (array) $_POST['sello'] : [];
+
+            $sqlContenedor = "INSERT INTO contenedores (referencia_id, codigo, tipo, sello, status) VALUES (?, ?, ?, ?, 1)";
+            $stmtContenedor = $con->prepare($sqlContenedor);
+
+            $total = max(count($contenedores), count($tipos), count($sellos));
+
+            for ($i = 0; $i < $total; $i++) {
+                // Obtener valores o null
+                $cont = $contenedores[$i] ?? null;
+                $tipo = $tipos[$i] ?? null;
+                $sello = $sellos[$i] ?? null;
+
+                // Si el valor es array, convertir a string separada por comas o saltar
+                if (is_array($cont)) {
+                    $cont = implode(',', $cont);
+                }
+                if (is_array($tipo)) {
+                    $tipo = implode(',', $tipo);
+                }
+                if (is_array($sello)) {
+                    $sello = implode(',', $sello);
+                }
+
+                // Solo insertar si contenedor no está vacío
+                if (!empty($cont)) {
+                    $stmtContenedor->execute([$referencia_id, $cont, $tipo, $sello]);
+                }
+            }
+
+
+
             $uploadBaseDir = '../../../docs/';
             $uploadDir = $uploadBaseDir . $referencia_id . '/';
 
-            // Crear la carpeta si no existe
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
