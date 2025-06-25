@@ -35,10 +35,15 @@ $("#form_Referencia").on("submit", function (e) {
 
             if (response.trim() === "Referencia guardada correctamente.") {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Referencia actualizada correctamente',
-                    confirmButtonText: 'Aceptar'
-                }).then(() => {
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Actualizada',
+                        html: `Referencia actualizada correctamente.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(() => {
                     recargarTablaDocumentos(); // Actualiza la tabla al aceptar el SweetAlert
                 });
             }

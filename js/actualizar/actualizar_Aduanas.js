@@ -20,10 +20,14 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.trim() === 'ok') {
                     Swal.fire({
+                        toast: true,
+                        position: 'top-end',
                         icon: 'success',
-                        title: 'Aduana actualizada correctamente',
-                        //text: 'Beneficiario actualizado correctamente.',
-                        confirmButtonText: 'Aceptar'
+                        title: 'Actualizado',
+                        html: `Aduana actualizada correctamente.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     }).then(() => {
                         location.reload();
                     });

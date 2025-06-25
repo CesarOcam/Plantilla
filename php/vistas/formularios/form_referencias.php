@@ -490,8 +490,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         </form>
     </div>
 </div>
-
-
 <script>
 
     const botonGuardar = document.getElementById('btn_guardar');
@@ -514,14 +512,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#buque-select', 'Buque');
         initSelect2('#consolidadora-select', 'Consolidadora');
         initSelect2('#resultado_mod-select', 'Resultado de Modulación');
-
-        /*document.getElementById('input-referencia').addEventListener('change', function () {
-            
-            const referencia = this.value.trim();
-            if (referencia !== '') {
-                window.location.href = `../../modulos/consultas/detalle_referencia.php?id=${referencia}`;
-            }   
-        });*/
 
         let contador = 1;
 
@@ -610,14 +600,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     iconoContenedor.classList.add('bi-box-fill');
                 } else if (valor.length === 11) {
                     if (verificarCodificacion(valor)) {
-                        // ✅ Válido
                         mensajeContenedor.textContent = ""; // sin texto
                         inputContenedor.classList.add('border-success');
                         iconoContenedor.classList.remove('bi-box-fill', 'text-danger', 'text-muted');
                         iconoContenedor.classList.add('bi-box-fill', 'text-success');
                         botonGuardar.disabled = false;
                     } else {
-                        // ❌ Inválido
                         mensajeContenedor.textContent = "Contenedor inválido";
                         mensajeContenedor.classList.add('text-danger');
                         inputContenedor.classList.add('border-danger');
@@ -662,8 +650,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 });
             }
         });
-
-
 
         // Evento change aquí, dentro del ready
         $('#aduana-select').on('change', function () {

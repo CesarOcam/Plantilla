@@ -20,10 +20,14 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.trim() === 'ok') {
                     Swal.fire({
+                        toast: true,
+                        position: 'top-end',
                         icon: 'success',
-                        title: 'Cuenta actualizada correctamente',
-                        //text: 'Cliente actualizado correctamente.',
-                        confirmButtonText: 'Aceptar'
+                        title: 'Actualizada',
+                        html: `Cuenta actualizada correctamente.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     }).then(() => {
                         location.reload();
                     });

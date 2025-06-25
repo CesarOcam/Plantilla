@@ -6,6 +6,7 @@ if (isset($_POST['id_beneficiario'], $_POST['nombre'])) {
     $id_beneficiario = (int) $_POST['id_beneficiario'];
     $subcuentas = $_POST['subcuentas'] ?? [];
     $nombre = $_POST['nombre'];
+    $nombreCorto = $_POST['nombre_corto'];
     $tipo = $_POST['tipo'];
     $rfc = $_POST['rfc'];
 
@@ -19,11 +20,12 @@ if (isset($_POST['id_beneficiario'], $_POST['nombre'])) {
 
     // Consulta UPDATE
     $sql = "UPDATE beneficiarios SET 
-        Nombre = ?, Tipo = ?, Rfc = ?,  FechaUltimaModificacion = ?, UsuarioUltimaModificacion = ?
+        Nombre = ?, NombreCorto = ?, Tipo = ?, Rfc = ?,  FechaUltimaModificacion = ?, UsuarioUltimaModificacion = ?
         WHERE Id = ?";
 
     $params = [
         $nombre,
+        $nombreCorto,
         $tipo,
         $rfc,
         $fecha_modificacion,

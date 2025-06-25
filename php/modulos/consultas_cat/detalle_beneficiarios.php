@@ -12,7 +12,7 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 // 1. Consulta principal del beneficiario
 $stmt = $con->prepare("
     SELECT 
-        b.SubcuentaDefaultId, b.Nombre, b.Tipo, b.Rfc, b.Activo, b.FechaAlta, b.UsuarioAlta,
+        b.SubcuentaDefaultId, b.Nombre, b.NombreCorto, b.Tipo, b.Rfc, b.Activo, b.FechaAlta, b.UsuarioAlta,
         CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS NombreUsuarioAlta
     FROM beneficiarios b
     LEFT JOIN usuarios u ON b.UsuarioAlta = u.idusuarios
@@ -92,7 +92,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             style="background-color: transparent;" value="<?php echo $beneficiario['Nombre']; ?>">
                     </div>
 
-                    <div class="col-10 col-sm-4 mt-4">
+                    <div class="col-10 col-sm-2 mt-4">
+                        <label for="nombre_corto" class="form-label text-muted small">NOMBRE CORTO :</label>
+                        <input id="nombre_corto" name="nombre_corto" type="text"
+                            class="form-control input-transparent border-0 border-bottom rounded-0"
+                            style="background-color: transparent;" value="<?php echo $beneficiario['NombreCorto']; ?>">
+                    </div>
+
+                    <div class="col-10 col-sm-2 mt-4">
                         <label for="tipo" class="form-label text-muted small">TIPO :</label>
                         <select id="tipo" name="tipo"
                             class="form-control input-transparent border-0 border-bottom rounded-0 text-muted"

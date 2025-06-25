@@ -42,11 +42,11 @@ foreach ($data['archivos'] as $index => $archivo) {
     $uuid = $archivo['uuid'] ?? null;
 
     //Se obtienen datos de la tabla 505_factura para validar uuid--------------
+// 1. Verificar en 505_factura
     $stmtFacturas = $con->prepare("SELECT idCFactura, 505_04_numFactura FROM 505_factura");
     $stmtFacturas->execute();
     $facturas = $stmtFacturas->fetchAll(PDO::FETCH_ASSOC);
 
-    // Validar si el UUID ya existe
     foreach ($facturas as $factura) {
         if ($factura['505_04_numFactura'] === $uuid) {
             echo json_encode([
@@ -54,11 +54,37 @@ foreach ($data['archivos'] as $index => $archivo) {
                 'duplicado' => true,
                 'uuid' => $uuid,
                 'idRegistro' => $factura['idCFactura'],
-                'mensaje' => "El UUID $uuid ya existe en la base de datos con el ID {$factura['idCFactura']}."
+                'tabla' => '505_factura',
+                'mensaje' => "El UUID $uuid ya existe en la tabla 505_factura con el ID {$factura['idCFactura']}."
             ]);
-            exit; // Detener el procesamiento completamente
+            exit;
         }
     }
+
+    // 2. Verificar en facturas_registradas
+    $stmtFacturasReg = $con->prepare("
+    SELECT fr.id, fr.uuid, fr.referencia_id, r.Numero AS numero_referencia
+    FROM facturas_registradas fr
+    LEFT JOIN referencias r ON fr.referencia_id = r.Id
+    WHERE fr.uuid = :uuid
+");
+    $stmtFacturasReg->bindParam(':uuid', $uuid);
+    $stmtFacturasReg->execute();
+    $facturaReg = $stmtFacturasReg->fetch(PDO::FETCH_ASSOC);
+
+    if ($facturaReg) {
+        echo json_encode([
+            'success' => false,
+            'duplicado' => true,
+            'uuid' => $uuid,
+            'idRegistro' => $facturaReg['id'],
+            'referenciaNumero' => $facturaReg['numero_referencia'],
+            'tabla' => 'facturas_registradas',
+            'mensaje' => "El UUID $uuid ya existe en la tabla facturas_registradas con el ID {$facturaReg['id']} y está vinculado a la referencia {$facturaReg['numero_referencia']}."
+        ]);
+        exit;
+    }
+
 
     //---------------------------------------------------------------------------------------------------------
 

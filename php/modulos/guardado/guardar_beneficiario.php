@@ -11,6 +11,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 if (isset($_POST['nombre'], $_POST['tipo'])) {
     $nombre = trim($_POST['nombre']);
+    $nombreCorto = trim($_POST['nombre_corto']);
     $tipo = trim($_POST['tipo']);
     $rfc = trim($_POST['rfc'] ?? '');
     $subcuentas = $_POST['subcuentas'] ?? [];
@@ -29,11 +30,12 @@ if (isset($_POST['nombre'], $_POST['tipo'])) {
     $usuarioAlta = $_SESSION['usuario_id'];
 
     // Insertar beneficiario
-    $sql = "INSERT INTO beneficiarios (Nombre, Tipo, Rfc, Activo, FechaAlta, UsuarioAlta)
-            VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO beneficiarios (Nombre, NombreCorto, Tipo, Rfc, Activo, FechaAlta, UsuarioAlta)
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
     
     $params = [
         $nombre,
+        $nombreCorto,
         $tipo,
         $rfc,
         $activo,

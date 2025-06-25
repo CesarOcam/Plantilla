@@ -3,21 +3,24 @@ include('../conexion.php');
 
 if (isset($_POST['id'])) {
     // Funciones auxiliares
-    function obtenerFechaHoraActual() {
+    function obtenerFechaHoraActual()
+    {
         return date("Y-m-d H:i:s");
     }
 
-    function parseFecha($fecha) {
+    function parseFecha($fecha)
+    {
         return !empty($fecha) ? date("Y-m-d H:i:s", strtotime($fecha)) : null;
     }
 
-    function parseHora($hora) {
+    function parseHora($hora)
+    {
         return !empty($hora) ? date("H:i:s", strtotime($hora)) : null;
     }
 
     // Datos recibidos
     $id = $_POST['id']; // ID de la referencia a actualizar
-    
+
     $exportador = trim($_POST['exportador']) ?: null;
     $logistico = trim($_POST['logistico']) ?: null;
     $mercancia = $_POST['mercancia'] ?? null;
@@ -27,10 +30,9 @@ if (isset($_POST['id'])) {
     $peso = isset($_POST['peso']) && $_POST['peso'] !== '' ? floatval($_POST['peso']) : null;
     $cantidad = isset($_POST['cantidad']) && $_POST['cantidad'] !== '' ? intval($_POST['cantidad']) : null;
     $bultos = isset($_POST['bultos']) && $_POST['bultos'] !== '' ? intval($_POST['bultos']) : null;
-    $contenedor = $_POST['contenedor'] ?? null;
     $consolidadora = isset($_POST['consolidadora']) && $_POST['consolidadora'] !== '' ? intval($_POST['consolidadora']) : null;
     $resultado_mod = $_POST['modulacion'] ?? null;
-    $resultado_mod = ($resultado_mod === '' ? null : (int)$resultado_mod);
+    $resultado_mod = ($resultado_mod === '' ? null : (int) $resultado_mod);
     $recinto = isset($_POST['recinto']) && $_POST['recinto'] !== '' ? intval($_POST['recinto']) : null;
     $naviera = isset($_POST['naviera']) && $_POST['naviera'] !== '' ? intval($_POST['naviera']) : null;
     $cierre_doc = parseFecha($_POST['cierre_doc'] ?? null);
@@ -55,7 +57,7 @@ if (isset($_POST['id'])) {
         $sql = "
             UPDATE referencias SET
                 ClienteExportadorId = ?, ClienteLogisticoId = ?, Mercancia = ?, Marcas = ?, Pedimentos = ?, ClavePedimento = ?, PesoBruto = ?, Cantidad = ?, Bultos = ?,
-                Contenedor = ?, ConsolidadoraId = ?, ResultadoModulacion = ?, RecintoId = ?, NavieraId = ?, CierreDocumentos = ?,
+                ConsolidadoraId = ?, ResultadoModulacion = ?, RecintoId = ?, NavieraId = ?, CierreDocumentos = ?,
                 FechaPago = ?, BuqueId = ?, Booking = ?, CierreDespacho = ?, HoraDespacho = ?, Viaje = ?, SuReferencia = ?,
                 CierreDocumentado = ?, LlegadaEstimada = ?, PuertoDescarga = ?, PuertoDestino = ?, Comentarios = ?, 
                 FechaUltimaModificacion = ?, UsuarioUltimaModificacion = ?
@@ -63,16 +65,88 @@ if (isset($_POST['id'])) {
         ";
 
         $params = [
-            $exportador, $logistico, $mercancia, $marcas, $pedimento, $clave_ped, $peso, $cantidad, $bultos,
-            $contenedor, $consolidadora, $resultado_mod, $recinto, $naviera, $cierre_doc,
-            $fecha_pago, $buque, $booking, $cierre_desp, $hora_desp, $viaje, $su_referencia,
-            $fecha_doc, $fecha_eta, $puerto_dec, $puerto_dest, $comentarios,
-            $fecha_modificacion, $usuario_modificacion, $id
+            $exportador,
+            $logistico,
+            $mercancia,
+            $marcas,
+            $pedimento,
+            $clave_ped,
+            $peso,
+            $cantidad,
+            $bultos,
+            $consolidadora,
+            $resultado_mod,
+            $recinto,
+            $naviera,
+            $cierre_doc,
+            $fecha_pago,
+            $buque,
+            $booking,
+            $cierre_desp,
+            $hora_desp,
+            $viaje,
+            $su_referencia,
+            $fecha_doc,
+            $fecha_eta,
+            $puerto_dec,
+            $puerto_dest,
+            $comentarios,
+            $fecha_modificacion,
+            $usuario_modificacion,
+            $id
         ];
 
         $stmt = $con->prepare($sql);
-        $stmt->execute($params);
-        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // esto puede ir antes
+
+        if ($stmt->execute($params)) {
+            $referencia_id = $id;
+
+            $contenedores = isset($_POST['contenedor']) ? (array) $_POST['contenedor'] : [];
+            $tipos = isset($_POST['tipo']) ? (array) $_POST['tipo'] : [];
+            $sellos = isset($_POST['sello']) ? (array) $_POST['sello'] : [];
+            $contenedor_ids = isset($_POST['contenedor_id']) ? (array) $_POST['contenedor_id'] : [];
+
+            $sqlUpdateContenedor = "UPDATE contenedores SET codigo = ?, tipo = ?, sello = ? WHERE idcontenedor = ? AND referencia_id = ?";
+            $stmtUpdateContenedor = $con->prepare($sqlUpdateContenedor);
+
+            $sqlInsertContenedor = "INSERT INTO contenedores (referencia_id, codigo, tipo, sello, status) VALUES (?, ?, ?, ?, 1)";
+            $stmtInsertContenedor = $con->prepare($sqlInsertContenedor);
+
+            $total = max(count($contenedores), count($tipos), count($sellos), count($contenedor_ids));
+
+            for ($i = 0; $i < $total; $i++) {
+                $cont = $contenedores[$i] ?? null;
+                $tipo = $tipos[$i] ?? null;
+                $sello = $sellos[$i] ?? null;
+                $idContenedor = $contenedor_ids[$i] ?? null;
+
+                if (is_array($cont))
+                    $cont = implode(',', $cont);
+                if (is_array($tipo))
+                    $tipo = implode(',', $tipo);
+                if (is_array($sello))
+                    $sello = implode(',', $sello);
+
+                if (!empty($cont)) {
+                    if (!empty($idContenedor)) {
+                        // Actualizar si ya existe
+                        $stmtUpdateContenedor->execute([$cont, $tipo, $sello, $idContenedor, $referencia_id]);
+                    } else {
+                        // Verificar si el contenedor ya existe para esta referencia para evitar duplicados
+                        $sqlCheck = "SELECT COUNT(*) FROM contenedores WHERE referencia_id = ? AND codigo = ?";
+                        $stmtCheck = $con->prepare($sqlCheck);
+                        $stmtCheck->execute([$referencia_id, $cont]);
+                        $existe = $stmtCheck->fetchColumn();
+
+                        if (!$existe) {
+                            // Insertar si es nuevo y no existe ya
+                            $stmtInsertContenedor->execute([$referencia_id, $cont, $tipo, $sello]);
+                        }
+                    }
+                }
+            }
+        }
 
         // Subida de archivos
         $uploadDir = '../../../docs/';
@@ -100,6 +174,18 @@ if (isset($_POST['id'])) {
                 }
             }
         }
+
+        $contenedores_eliminados = isset($_POST['contenedores_eliminados']) ? (array) $_POST['contenedores_eliminados'] : [];
+
+        if (!empty($contenedores_eliminados)) {
+            $sqlDeleteContenedor = "DELETE FROM contenedores WHERE idcontenedor = ? AND referencia_id = ?";
+            $stmtDeleteContenedor = $con->prepare($sqlDeleteContenedor);
+
+            foreach ($contenedores_eliminados as $idContenedor) {
+                $stmtDeleteContenedor->execute([$idContenedor, $referencia_id]);
+            }
+        }
+
 
         $con->commit();
         echo "Referencia guardada correctamente.";

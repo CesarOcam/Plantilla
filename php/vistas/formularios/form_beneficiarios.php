@@ -2,11 +2,11 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /portal_web/Contabilidad/login.php');  // Ruta desde la raíz del servidor web
+    header('Location: /portal_web/Contabilidad/login.php'); 
     exit;
 }
 include_once('../../modulos/conexion.php');
-$stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas WHERE CuentaPadreId IS NOT NULL"); // Cambia a tu tabla/campos reales
+$stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas WHERE CuentaPadreId IS NOT NULL");
 $stmt->execute();
 $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -40,11 +40,11 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../../css/style2.css">
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -52,13 +52,19 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="card-header formulario_clientes">
                 <h5>+ Agregar Beneficiario</h5>
                 <div class="row">
-                    <div class="col-10 col-sm-7 d-flex align-items-center mt-4">
+                    <div class="col-10 col-sm-5 d-flex align-items-center mt-4">
                         <input name="nombre" type="text" class="form-control rounded-0 border-0 border-bottom"
                             style="background-color: transparent;" placeholder="Nombre*" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <select id="tipo-select" name="tipo" class="form-control rounded-0 border-0 border-bottom text-muted"
+                        <input name="nombre_corto" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="Nombre Corto"
+                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
+                        <select id="tipo-select" name="tipo"
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1">
                             <option value="" selected disabled hidden>Tipo*</option>
@@ -74,20 +80,21 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="row">
                     <div class="col-2 col-sm-6 d-flex align-items-center mt-4">
-                    <select id="subcuenta-select" name="subcuentas[]" multiple class="form-control rounded-0 border-0 border-bottom text-muted"
-                        style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                        aria-describedby="basic-addon1">
-                        <?php foreach ($subcuenta as $cuenta): ?>
-                            <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
-                                <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                        <select id="subcuenta-select" name="subcuentas[]" multiple
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
+                            style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1">
+                            <?php foreach ($subcuenta as $cuenta): ?>
+                                <option value="<?php echo $cuenta['Id']; ?>" data-numero="<?php echo $cuenta['Numero']; ?>">
+                                    <?php echo $cuenta['Numero'] . ' - ' . $cuenta['Nombre']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="row justify-content-end mt-5">
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <button type="button" class="btn btn-outline-danger rounded-0"
-                            onclick="window.location.href='../../vistas/catalogos/cat_Beneficiarios.php'">Salir</button>
+                                onclick="window.location.href='../../vistas/catalogos/cat_Beneficiarios.php'">Salir</button>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>
@@ -100,38 +107,39 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
-    $(document).ready(function() {
-        // Inicializar Select2
-        $('#subcuenta-select').select2({
-            placeholder: 'Subcuenta (Amexport Logística)*',
-            allowClear: true,
-            width: '100%'
+   $(document).ready(function() {
+    // Guardar todas las opciones originales
+    const allOptions = $('#subcuenta-select option').toArray();
+
+    $('#tipo-select').on('change', function () {
+        const tipo = $(this).val();
+        let filtro = '';
+
+        if (tipo === '1') {
+            filtro = '123-';
+        } else if (tipo === '2') {
+            filtro = '601-';
+        }
+
+        const filteredOptions = allOptions.filter(opt => {
+            const numero = $(opt).data('numero');
+            return numero && numero.startsWith(filtro);
         });
 
-        $('#tipo-select').on('change', function () {
-            const tipo = $(this).val();
-            let filtro = '';
+        $('#subcuenta-select').empty();
 
-            if (tipo === '1') {
-                filtro = '123-';
-            } else if (tipo === '2') {
-                filtro = '601-';
-            }
+        filteredOptions.forEach(opt => $('#subcuenta-select').append(opt));
 
-            // Mostrar u ocultar opciones según filtro
-            $('#subcuenta-select option').each(function () {
-                const numero = $(this).data('numero');
-                if (numero && numero.startsWith(filtro)) {
-                    $(this).show();
-                } else {
-                    $(this).hide().prop('selected', false); // También deselecciona si estaba elegido
-                }
-            });
-
-            // Refrescar Select2 para que oculte/actualice el dropdown
-            $('#subcuenta-select').val(null).trigger('change');
-        });
+        $('#subcuenta-select').val(null).trigger('change');
     });
+
+    $('#subcuenta-select').select2({
+        placeholder: 'Subcuenta (Amexport Logística)*',
+        allowClear: true,
+        width: '100%'
+    });
+});
+
 </script>
 
 <script src="../../../js/guardar_Beneficiario.js"></script>

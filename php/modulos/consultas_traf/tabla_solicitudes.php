@@ -7,14 +7,14 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 $stmt = $con->prepare("
-    SELECT Id, Numero, Nombre 
+    SELECT Id, Numero, Nombre
     FROM cuentas
     WHERE Activo = 1
-      AND EmpresaId = 2
-      AND (
-          SUBSTRING_INDEX(Numero, '-', 1) = '216' OR
-          SUBSTRING_INDEX(Numero, '-', 1) = '113'
-      )
+    AND EmpresaId = 2
+    AND (
+        (SUBSTRING_INDEX(Numero, '-', 1) = '216' AND Numero LIKE '216-%') OR
+        (SUBSTRING_INDEX(Numero, '-', 1) = '113' AND Numero LIKE '113-%')
+    )
     ORDER BY Nombre
 ");
 
@@ -77,14 +77,12 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     <td><?php echo htmlspecialchars($solicitud['BeneficiarioNombre']); ?></td>
                     <td><?php echo '$' . htmlspecialchars(number_format($solicitud['Importe'], 2)); ?></td>
                     <td><?php echo htmlspecialchars($solicitud['Fecha']); ?></td>
-
                     <td>
                         <button type="button" class="btn btn-link p-0 btn-aceptar" data-id="<?php echo $solicitud['Id']; ?>"
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Aceptar"
                             style="color:rgb(105, 177, 108); font-size: 1.5rem; cursor: pointer;">
                             <i class="fas fa-check-circle"></i>
                         </button>
-
                     </td>
                     <td>
                         <button type="button" class="btn btn-link p-0 btn-trash" data-id="<?php echo $solicitud['Id']; ?>"

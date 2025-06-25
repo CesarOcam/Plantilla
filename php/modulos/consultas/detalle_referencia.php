@@ -132,6 +132,12 @@ $stmtCons = $con->prepare("SELECT id_consolidadora, denominacion_consolidadora
 $stmtCons->execute();
 $consolidadoras = $stmtCons->fetchAll(PDO::FETCH_ASSOC);
 
+$stmtContenedor = $con->prepare("SELECT idcontenedor, codigo, tipo, sello 
+                                 FROM contenedores 
+                                 WHERE referencia_id = :id
+                                 ORDER BY idcontenedor ASC");
+$stmtContenedor->execute(['id' => $id]);
+$contenedores = $stmtContenedor->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -185,6 +191,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="datos-tab" data-bs-toggle="tab" data-bs-target="#datos"
                                 type="button" role="tab">General</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="contenedores-tab" data-bs-toggle="tab"
+                                data-bs-target="#contenedores" type="button" role="tab">Contenedores</button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="direccion-tab" data-bs-toggle="tab" data-bs-target="#direccion"
@@ -291,20 +301,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['Bultos']; ?>">
-                                </div>
-                                <div class="col-12 col-sm-3 mt-4 pt-0">
-                                    <label for="contenedor" class="form-label text-muted small pt-0">CONTENEDOR:</label>
-                                    <div class="d-flex align-items-center pt-0">
-                                        <input name="contenedor" id="contenedor" type="text"
-                                            class="form-control pt-1 rounded-0 border-0 border-bottom border-secondary flex-grow-1"
-                                            style="background-color: transparent;" maxlength="11"
-                                            value="<?php echo htmlspecialchars($referencia['Contenedor']); ?>">
-                                        <div class="d-flex justify-content-center align-items-center pt-0 ms-2 mb-0 pb-0"
-                                            style="width: 2.5rem; margin-top: 0.80rem;">
-                                            <i id="iconoValidacion" class="fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <small id="mensajeContenedor" class="form-text text-muted ms-1 mt-1"></small>
                                 </div>
 
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
@@ -511,6 +507,92 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </div>
                         </div>
 
+                        <div class="tab-pane fade" id="contenedores" role="tabpanel">
+                            <div class="row">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header bg-secondary text-white fw-bold">
+                                        <i class="bi bi-box-fill me-2"></i> Contenedores Agregados
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered tabla-contenedores"
+                                                id="tabla-contenedores">
+                                                <thead class="table-light text-center">
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Contenedor</th>
+                                                        <th>Tipo</th>
+                                                        <th>Sello</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php if (!empty($contenedores)): ?>
+                                                        <?php foreach ($contenedores as $index => $c): ?>
+                                                            <?php
+                                                            $rowId = "fila-{$index}";
+                                                            $inputId = "input-contenedor-{$index}";
+                                                            $mensajeId = "mensajeContenedor-{$index}";
+                                                            $iconoId = "iconoValidacion-{$index}";
+                                                            ?>
+                                                            <tr id="<?= $rowId ?>" class="text-center">
+                                                                <td class="text-center align-middle">
+                                                                    <i class="bi bi-box-fill text-success fs-4 me-2"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="position-relative">
+                                                                        <input type="text" id="<?= $inputId ?>"
+                                                                            name="contenedor[]"
+                                                                            class="form-control ps-4 rounded-0 border-0 border-bottom text-center"
+                                                                            value="<?= htmlspecialchars($c['codigo']) ?>"
+                                                                            maxlength="11">
+                                                                        <i id="<?= $iconoId ?>"
+                                                                            class="bi position-absolute top-50 end-0 translate-middle-y me-2"></i>
+                                                                        <small id="<?= $mensajeId ?>"
+                                                                            class="form-text ms-1 mt-1"></small>
+                                                                        <input type="hidden" name="contenedor_id[]"
+                                                                            value="<?= $c['idcontenedor'] ?>">
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <input type="text" name="tipo[]"
+                                                                        class="form-control ps-4 rounded-0 border-0 border-bottom text-center"
+                                                                        value="<?= htmlspecialchars($c['tipo']) ?>">
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <input type="text" name="sello[]"
+                                                                        class="form-control ps-4 rounded-0 border-0 border-bottom text-center"
+                                                                        value="<?= htmlspecialchars($c['sello']) ?>">
+                                                                </td>
+                                                                <td class="text-center align-middle">
+                                                                    <button type="button"
+                                                                        class="btn btn-md btn-danger rounded-0">Eliminar</button>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+
+                                                        <!-- Aplicar validación a cada input generado -->
+                                                        <script>
+                                                            document.addEventListener("DOMContentLoaded", function () {
+                                                                <?php foreach ($contenedores as $index => $c): ?>
+                                                                    agregarValidacion("<?= "input-contenedor-{$index}" ?>", "<?= "mensajeContenedor-{$index}" ?>", "<?= "iconoValidacion-{$index}" ?>");
+                                                                <?php endforeach; ?>
+                                                                contador = <?= count($contenedores) ?>;
+                                                            });
+                                                        </script>
+                                                    <?php endif; ?>
+                                                </tbody>
+                                            </table>
+                                            <button type="button" id="btn-nuevo-contenedor"
+                                                class="btn btn-outline-secondary mb-3 rounded-0">
+                                                <i class="bi bi-plus-circle me-1"></i> Nuevo Contenedor
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Opciones -->
                         <div class="tab-pane fade" id="opciones" role="tabpanel">
                             <div class="row mt-4">
@@ -628,7 +710,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         </table>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -643,11 +724,19 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </a>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_actualizar"
-                                data-id="<?= $id2 ?>">
-                                <i class="fas fa-share me-2"></i> Pasar a Contabilidad
-                            </button>
+                            <?php if (isset($referencia['Status']) && $referencia['Status'] == 2): ?>
+                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_kardex"
+                                    data-id="<?= $id2 ?>">
+                                    <i class="fas fa-dolly me-2"></i> Afectar Kardex
+                                </button>
+                            <?php else: ?>
+                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_actualizar"
+                                    data-id="<?= $id2 ?>">
+                                    <i class="fas fa-share me-2"></i> Pasar a Contabilidad
+                                </button>
+                            <?php endif; ?>
                         </div>
+
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <button type="button" class="btn btn-outline-danger rounded-0"
                                 onclick="window.location.href='../../vistas/consultas/consulta_referencia.php'">Salir</button>
@@ -712,12 +801,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         </div>
     </div>
 </body>
-
-
 <script>
-
     const botonGuardar = document.getElementById('btn_guardar');
-
     $(document).ready(function () {
         function initSelect2(id, placeholder) {
             $(id).select2({
@@ -760,7 +845,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         dateFormat: "Y-m-d"
     });
 
-    //VALIDACIÓN DEL CONTENEDOR
+    let contador = 1;
+
+    const tablaContenedores = document.getElementById("tabla-contenedores").querySelector("tbody");
+
     function verificarCodificacion(contenedor) {
         const tabla = {
             'A': 10, 'B': 12, 'C': 13, 'D': 14, 'E': 15,
@@ -788,48 +876,130 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         return digitoCalculado === digitoIngresado;
     }
 
-    const inputContenedor = document.getElementById('contenedor');
-    const mensajeContenedor = document.getElementById('mensajeContenedor');
-    const icono = document.getElementById('iconoValidacion');
-    inputContenedor.addEventListener('input', function () {
-        const valor = this.value.toUpperCase();
-        this.value = valor;
+    document.getElementById('btn-nuevo-contenedor').addEventListener('click', function () {
+        const rowId = `fila-${contador}`;
+        const inputId = `input-contenedor-${contador}`;
+        const mensajeId = `mensajeContenedor-${contador}`;
+        const iconoId = `iconoValidacion-${contador}`;
 
-        inputContenedor.classList.remove('border-success', 'border-danger', 'border-secondary');
-        mensajeContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
-        icono.className = ''; // Resetear ícono
 
-        if (valor.length === 0) {
-            // Campo vacío: desbloquear botón, sin mensaje
-            botonGuardar.disabled = false;
-            mensajeContenedor.textContent = "";
-            inputContenedor.classList.remove('border-secondary'); // opcional
-        } else if (valor.length === 11) {
-            if (verificarCodificacion(valor)) {
-                mensajeContenedor.textContent = "Contenedor válido";
-                mensajeContenedor.classList.add('text-success');
-                inputContenedor.classList.add('border-success');
-                icono.classList.add('bi', 'bi-check-circle-fill', 'text-success');
-                botonGuardar.disabled = false; // desbloquear botón
+        tablaContenedores.insertAdjacentHTML('beforeend', fila);
+
+        agregarValidacion(inputId, mensajeId, iconoId);
+
+        contador++;
+    });
+
+    function agregarValidacion(inputId, mensajeId, iconoId) {
+        const inputContenedor = document.getElementById(inputId);
+        const mensajeContenedor = document.getElementById(mensajeId);
+        const icono = document.getElementById(iconoId);
+
+        // Busca ícono que puede ser box-fill o box-seam en la primera celda
+        const fila = inputContenedor.closest("tr");
+        const iconoContenedor = fila.querySelector(".bi-box-fill, .bi-box-seam");
+
+        inputContenedor.addEventListener('input', function () {
+            const valor = this.value.toUpperCase();
+            this.value = valor;
+
+            inputContenedor.classList.remove('border-success', 'border-danger', 'border-secondary');
+            mensajeContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+            icono.className = ''; // limpiar icono
+            iconoContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+
+            if (valor.length === 0) {
+                botonGuardar.disabled = false;
+                mensajeContenedor.textContent = "";
+                iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger', 'text-muted');
+                iconoContenedor.classList.add('bi-box-fill');
+            } else if (valor.length === 11) {
+                if (verificarCodificacion(valor)) {
+
+                    mensajeContenedor.textContent = ""; // sin texto
+                    inputContenedor.classList.add('border-success');
+                    iconoContenedor.classList.remove('bi-box-fill', 'text-danger', 'text-muted');
+                    iconoContenedor.classList.add('bi-box-fill', 'text-success');
+                    botonGuardar.disabled = false;
+                } else {
+
+                    mensajeContenedor.textContent = "Contenedor inválido";
+                    mensajeContenedor.classList.add('text-danger');
+                    inputContenedor.classList.add('border-danger');
+                    icono.className = ''; // limpiar icono validación al lado del input
+                    icono.classList.add('bi', 'bi-x-circle-fill', 'text-danger');
+
+                    iconoContenedor.classList.remove('bi-box-fill', 'text-success');
+                    iconoContenedor.classList.add('bi-box-fill', 'text-danger');
+
+                    botonGuardar.disabled = true;
+                }
             } else {
-                mensajeContenedor.textContent = "Contenedor inválido";
-                mensajeContenedor.classList.add('text-danger');
-                inputContenedor.classList.add('border-danger');
-                icono.classList.add('bi', 'bi-x-circle-fill', 'text-danger');
-                botonGuardar.disabled = true; // bloquear botón
+
+                mensajeContenedor.textContent = "Debe tener 11 caracteres";
+                mensajeContenedor.classList.add('text-muted');
+                inputContenedor.classList.add('border-secondary');
+                icono.className = '';
+                icono.classList.add('bi', 'bi-exclamation-circle', 'text-muted');
+
+                iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger');
+                iconoContenedor.classList.add('bi-box-fill', 'text-muted');
+
+                botonGuardar.disabled = true;
             }
-        } else {
-            mensajeContenedor.textContent = "Debe tener 11 caracteres";
-            mensajeContenedor.classList.add('text-muted');
-            inputContenedor.classList.add('border-secondary');
-            botonGuardar.disabled = true; // bloquear botón
+        });
+    }
+
+    function actualizarNumeracion() {
+        const filas = tablaContenedores.querySelectorAll("tr");
+        filas.forEach((fila, index) => {
+            // Si tuvieras una columna con número de fila, actualízala aquí
+            const celdaNumero = fila.querySelector(".numero-fila"); // Asegúrate de tener esta clase si quieres mostrar números
+            if (celdaNumero) {
+                celdaNumero.textContent = index + 1;
+            }
+
+            // También puedes actualizar los IDs de los inputs y sus atributos si lo necesitas
+            fila.id = `fila-${index}`;
+            const input = fila.querySelector('input[name="contenedor[]"]');
+            const tipo = fila.querySelector('input[name="tipo[]"]');
+            const sello = fila.querySelector('input[name="sello[]"]');
+            const icono = fila.querySelector('i.bi');
+            const mensaje = fila.querySelector('small.form-text');
+
+            if (input) input.id = `input-contenedor-${index}`;
+            if (icono) icono.id = `iconoValidacion-${index}`;
+            if (mensaje) mensaje.id = `mensajeContenedor-${index}`;
+
+            // Reasignar validación por si se cambiaron IDs
+            if (input && icono && mensaje) {
+                agregarValidacion(input.id, mensaje.id, icono.id);
+            }
+        });
+
+        // Actualizar contador para nuevos elementos
+        contador = filas.length;
+    }
+
+    tablaContenedores.addEventListener('click', function (e) {
+        if (e.target.classList.contains('btn-danger')) {
+            const filaEliminada = e.target.closest('tr');
+            filaEliminada.remove();
+            actualizarNumeracion(); // si quieres renumerar IDs
+
+            // Revalidar inputs en filas restantes para refrescar iconos
+            const filas = tablaContenedores.querySelectorAll('tr');
+            filas.forEach(fila => {
+                const input = fila.querySelector('input[name="contenedor[]"]');
+                if (input) {
+                    // Forzar evento input para actualizar iconos
+                    input.dispatchEvent(new Event('input'));
+                }
+            });
         }
     });
 
-
-
     //lÓGICA DEL MODAL
-
     function obtenerIconoPorExtension(nombreArchivo) {
         const extension = nombreArchivo.split('.').pop().toLowerCase();
 
@@ -990,12 +1160,34 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     }
 
 
-    // Evento para eliminar fila de la tabla (delegación)
-    document.getElementById('tabla-documentos-body').addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-eliminar')) {
-            e.target.closest('tr').remove();
+    tablaContenedores.addEventListener('click', function (e) {
+        if (e.target.closest('.btn-danger')) { // o '#btn-eliminar', según tengas el selector
+            const filaEliminada = e.target.closest('tr');
+
+            // Capturar el idcontenedor de esa fila
+            const inputIdContenedor = filaEliminada.querySelector('input[name="contenedor_id[]"]');
+            if (inputIdContenedor) {
+                const idContenedor = inputIdContenedor.value;
+
+                // Crear input hidden para indicar eliminación
+                const inputEliminado = document.createElement('input');
+                inputEliminado.type = 'hidden';
+                inputEliminado.name = 'contenedores_eliminados[]';
+                inputEliminado.value = idContenedor;
+
+                // Agregar al formulario
+                document.querySelector('form').appendChild(inputEliminado);
+            }
+
+            // Eliminar fila visualmente
+            filaEliminada.remove();
+
+            // Si tienes función para renumerar IDs
+            if (typeof actualizarNumeracion === 'function') actualizarNumeracion();
         }
     });
+
+
 
 
 

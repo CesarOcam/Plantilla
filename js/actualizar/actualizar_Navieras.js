@@ -23,10 +23,14 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.trim() === 'ok') {
                     Swal.fire({
+                        toast: true,
+                        position: 'top-end',
                         icon: 'success',
-                        title: 'Naviera actualizada correctamente',
-                        //text: 'Naviera actualizado correctamente.',
-                        confirmButtonText: 'Aceptar'
+                        title: 'Actualizada',
+                        html: `Naviera actualizada correctamente.`,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     }).then(() => {
                         location.reload();
                     });

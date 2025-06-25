@@ -214,7 +214,7 @@ document.getElementById('btnCargarTodos').addEventListener('click', () => {
                 Swal.fire({
                     icon: 'warning',
                     title: 'UUID duplicado',
-                    html: `El UUID <strong>${data.uuid}</strong> ya existe en el registro con ID <strong>${data.idRegistro}</strong>.`,
+                    html: `El UUID <strong>${data.uuid}</strong> ya existe en la referencia: <strong>${data.referenciaNumero}</strong>.`,
                     confirmButtonText: 'Aceptar'
                 });
                 return;

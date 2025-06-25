@@ -74,7 +74,7 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                             <?php endforeach; ?>
                         </select>
                     </td>
-                    <td>
+                    <td class="text-start">
                         <select name="subcuentas[]" class="form-control subcuenta-select">
                             <option value="">Subcuenta</option>
                             <?php
@@ -88,7 +88,6 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                             <?php endforeach; ?>
                         </select>
                     </td>
-
                     <td class="text-center"><?= htmlspecialchars($factura['rfc_proveedor']) ?></td>
                     <td>
                         <?php if (!empty($factura['beneficiario_id'])): ?>
@@ -117,7 +116,6 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                             title="Eliminar" style="color: #a19b9b; font-size: 1.5rem; cursor: pointer;">
                             <i class="fas fa-trash-alt"></i>
                         </button>
-
                     </td>
                 </tr>
             <?php endforeach; ?>

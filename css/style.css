@@ -264,63 +264,106 @@ body.consulta-referencias .table td:nth-child(8) {
 /*----------------TABLA MOVIMIENTOS 1 -----------------*/
 /* Encabezado tabla 1 - gris claro */
 
-table.tabla-movimientos-1 thead {
+table.tabla-mov1 thead {
   background-color: #f1f3f5; /* Gris cálido */
   color: #212529;
   font-weight: 500;
   border-bottom: 1px solid #dee2e6;
 }
 
-table.tabla-movimientos-1 th:nth-child(1),
-table.tabla-movimientos-1 td:nth-child(1) {
-  width: 10% !important;
+table.tabla-mov1 {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse;
 }
 
-table.tabla-movimientos-1 th:nth-child(2),
-table.tabla-movimientos-1 td:nth-child(2) {
+table.tabla-mov1 th,
+table.tabla-mov1 td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.tabla-mov1 th:nth-child(1),
+table.tabla-mov1 td:nth-child(1) {
+  width: 15% !important;
+}
+
+table.tabla-mov1 th:nth-child(2),
+table.tabla-mov1 td:nth-child(2) {
   width: 20% !important;
 }
 
-table.tabla-movimientos-1 th:nth-child(3),
-table.tabla-movimientos-1 td:nth-child(3) {
+table.tabla-mov1 th:nth-child(3),
+table.tabla-mov1 td:nth-child(3) {
+  width: 25% !important;
+}
+
+table.tabla-mov1 th:nth-child(4),
+table.tabla-mov1 td:nth-child(4) {
   width: 10% !important;
 }
 
-table.tabla-movimientos-1 th:nth-child(4),
-table.tabla-movimientos-1 td:nth-child(4) {
+table.tabla-mov1 th:nth-child(5),
+table.tabla-mov1 td:nth-child(5) {
   width: 10% !important;
+}
+
+table.tabla-mov1 th:nth-child(6),
+table.tabla-mov1 td:nth-child(6) {
+  width: 20% !important;
 }
 
 /*--------------TABLA MOVIMIENTOS 2-----------------*/
 /* Encabezado tabla 2 - gris cálido */
-table.tabla-movimientos-2 thead {
+table.tabla-mov2 thead {
   background-color: #f1f3f5; /* Gris cálido */
   color: #212529;
   font-weight: 500;
   border-bottom: 1px solid #dee2e6;
 }
+table.tabla-mov2 {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse;
+}
 
-/* Selector corregido */
-table.tabla-movimientos-2 th:nth-child(1),
-table.tabla-movimientos-2 td:nth-child(1) {
+table.tabla-mov2 th,
+table.tabla-mov2 td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.tabla-mov2 th:nth-child(1),
+table.tabla-mov2 td:nth-child(1) {
+  width: 15% !important;
+}
+
+table.tabla-mov2 th:nth-child(2),
+table.tabla-mov2 td:nth-child(2) {
   width: 20% !important;
 }
 
-table.tabla-movimientos-2 th:nth-child(2),
-table.tabla-movimientos-2 td:nth-child(2) {
+table.tabla-mov2 th:nth-child(3),
+table.tabla-mov2 td:nth-child(3) {
+  width: 25% !important;
+}
+
+table.tabla-mov2 th:nth-child(4),
+table.tabla-mov2 td:nth-child(4) {
   width: 10% !important;
 }
 
-table.tabla-movimientos-2 th:nth-child(3),
-table.tabla-movimientos-2 td:nth-child(3) {
+table.tabla-mov2 th:nth-child(5),
+table.tabla-mov2 td:nth-child(5) {
   width: 10% !important;
 }
 
-table.tabla-movimientos-2 th:nth-child(4),
-table.tabla-movimientos-2 td:nth-child(4) {
+table.tabla-mov2 th:nth-child(6),
+table.tabla-mov2 td:nth-child(6) {
   width: 20% !important;
 }
-
 
 /*--------------------------------TABLA CONTENEDORES-----------------------------------*/
 table.tabla-contenedores th:nth-child(1),
