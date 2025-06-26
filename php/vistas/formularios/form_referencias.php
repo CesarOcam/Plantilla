@@ -233,25 +233,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <input name="bultos" type="text" class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" placeholder="Bultos">
                             </div>
-                            <div class="col-10 col-sm-3 mt-4 position-relative">
-                                <div class="col-12 mt-4">
-                                    <div class="row align-items-center">
-                                        <!-- Input del contenedor -->
-                                        <div class="col-11">
-                                            <input name="contenedor" id="contenedor" type="text"
-                                                class="form-control rounded-0 border-0 border-bottom border-secondary"
-                                                style="background-color: transparent;" placeholder="Contenedor"
-                                                maxlength="11">
-                                        </div>
-
-                                        <!-- Icono de validación -->
-                                        <div class="col-1">
-                                            <i id="iconoValidacion" class="fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <small id="mensajeContenedor" class="form-text text-muted ms-1 mt-1"></small>
-                                </div>
-                            </div>
 
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <select id="consolidadora-select" name="consolidadora"
