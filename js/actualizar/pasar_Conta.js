@@ -43,6 +43,11 @@ $('#btn_actualizar').on('click', function () {
                     // Reemplazar el botón anterior por el nuevo
                     botonAnterior.parentNode.replaceChild(nuevoBoton, botonAnterior);
 
+                    const statusInput = document.getElementById('status');
+                    if (statusInput) {
+                        statusInput.value = 'EN CONTABILIDAD';
+                    }
+
                     // Opcional: agregar evento al nuevo botón
                     nuevoBoton.addEventListener('click', function () {
                         // Lógica para afectar el kardex

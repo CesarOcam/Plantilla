@@ -119,12 +119,13 @@ $stmt = $con->prepare("SELECT idtransporte, identificacion
                        ORDER BY identificacion");
 $stmt->execute();
 $navieras = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// BUQUES
+
 $stmt = $con->prepare("SELECT Id, Nombre
                        FROM con_buques 
                        WHERE Nombre IS NOT NULL AND Nombre != ''
                        ORDER BY Nombre");
 $stmt->execute();
+$buques = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $stmtCons = $con->prepare("SELECT id_consolidadora, denominacion_consolidadora 
                         FROM consolidadoras 
@@ -139,6 +140,15 @@ $stmtContenedor = $con->prepare("SELECT idcontenedor, codigo, tipo, sello
 $stmtContenedor->execute(['id' => $id]);
 $contenedores = $stmtContenedor->fetchAll(PDO::FETCH_ASSOC);
 
+//CONTENEDORES
+$stmt = $con->prepare("SELECT id2210_tipo_contenedor, descripcion_contenedor FROM 2210_tipo_contenedor");
+$stmt->execute();
+$tiposContenedor = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//CLAVE PEDIMENTO
+$stmt = $con->prepare("SELECT id2202clave_pedimento, claveCve FROM 2202clavepedimento");
+$stmt->execute();
+$clavePedimento = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -281,10 +291,17 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="clave" class="form-label text-muted small">CLAVE PEDIMENTO:</label>
-                                    <input id="clave" name="clave_pedimento" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['ClavePedimento']; ?>">
+                                    <select id="clave-select" name="clave"
+                                        class="form-control rounded-0 border-0 border-bottom text-muted">
+                                        <option value="" disabled <?= empty($referencia['ClavePedimento']) ? 'selected' : '' ?>>
+                                            Seleccione Clave *</option>
+                                        <?php foreach ($clavePedimento as $item): ?>
+                                            <option value="<?= htmlspecialchars($item['id2202clave_pedimento']) ?>"
+                                                <?= ($item['id2202clave_pedimento'] == $referencia['ClavePedimento']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($item['claveCve']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                                 <div class="col-2 col-sm-1 d-flex flex-column mt-4">
                                     <label for="peso" class="form-label text-muted small">PESO BRUTO:</label>
@@ -387,12 +404,19 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <!-- Tab2 Row2 -->
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="buque" class="form-label text-muted small">BUQUE:</label>
-                                    <input id="buque" name="buque" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['nombre_buque']; ?>" readonly>
-                                    <input type="hidden" name="buque_id" value="<?php echo $referencia['BuqueId']; ?>">
+                                    <select id="buque-select" name="buque"
+                                        class="form-control rounded-0 border-0 border-bottom text-muted">
+                                        <option value="" disabled <?= empty($referencia['BuqueId']) ? 'selected' : '' ?>>
+                                            Seleccione buque *</option>
+                                        <?php foreach ($buques as $item): ?>
+                                            <option value="<?= htmlspecialchars($item['Id']) ?>"
+                                                <?= ($item['Id'] == $referencia['BuqueId']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($item['Nombre']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
+
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="booking" class="form-label text-muted small">BOOKING:</label>
                                     <input id="booking" name="booking" type="text"
@@ -545,7 +569,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                                             name="contenedor[]"
                                                                             class="form-control ps-4 rounded-0 border-0 border-bottom text-center"
                                                                             value="<?= htmlspecialchars($c['codigo']) ?>"
-                                                                            maxlength="11">
+                                                                            maxlength="11" required>
                                                                         <i id="<?= $iconoId ?>"
                                                                             class="bi position-absolute top-50 end-0 translate-middle-y me-2"></i>
                                                                         <small id="<?= $mensajeId ?>"
@@ -555,9 +579,18 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                                     </div>
                                                                 </td>
                                                                 <td class="text-center">
-                                                                    <input type="text" name="tipo[]"
-                                                                        class="form-control ps-4 rounded-0 border-0 border-bottom text-center"
-                                                                        value="<?= htmlspecialchars($c['tipo']) ?>">
+                                                                    <select name="tipo[]"
+                                                                        class="form-select tipo-select form-control ps-4 rounded-0 border-0 border-bottom text-center"
+                                                                        style="width: 100%;" required>
+                                                                        <option value="">Seleccione un tipo</option>
+                                                                        <?php foreach ($tiposContenedor as $tc): ?>
+                                                                            <option
+                                                                                value="<?= htmlspecialchars($tc['id2210_tipo_contenedor']) ?>"
+                                                                                <?= ($tc['id2210_tipo_contenedor'] == $c['tipo']) ? 'selected' : '' ?>>
+                                                                                <?= htmlspecialchars($tc['descripcion_contenedor']) ?>
+                                                                            </option>
+                                                                        <?php endforeach; ?>
+                                                                    </select>
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <input type="text" name="sello[]"
@@ -802,6 +835,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     </div>
 </body>
 <script>
+    const tiposContenedor = <?= json_encode($tiposContenedor) ?>;
+
     const botonGuardar = document.getElementById('btn_guardar');
     $(document).ready(function () {
         function initSelect2(id, placeholder) {
@@ -816,9 +851,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#exportador-select', 'Exportador *');
         initSelect2('#logistico-select', 'Logístico *');
         initSelect2('#recinto-select', 'Recinto');
+        initSelect2('#clave-select', 'Clave Pedimento');
         initSelect2('#consolidadora-select', 'Consolidadora');
         initSelect2('#naviera-select', 'Naviera');
         initSelect2('#buque-select', 'Buque');
+        initSelect2('.tipo-select', 'Tipo Buque');
     });
 
     // Inicializar Calendarios
@@ -892,7 +929,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <small id="${mensajeId}" class="form-text ms-1 mt-1"></small>
                     </div>
                 </td>
-                <td class="text-center"><input type="text" name="tipo[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el tipo"></td>
+                <td class="text-center">
+                    <select name="tipo[]" class="form-select tipo-select form-control ps-4 rounded-0 border-0 border-bottom text-center" style="width: 100%;">
+                        <option value="">Seleccione un tipo</option>
+                        ${tiposContenedor.map(tc => `<option value="${tc.id2210_tipo_contenedor}">${tc.descripcion_contenedor}</option>`).join('')}
+                    </select>
+                </td>
                 <td class="text-center"><input type="text" name="sello[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el sello"></td>
                 <td class="text-center align-middle">
                     <button type="button" id="btn-eliminar" class="btn btn-md btn-danger rounded-0">Eliminar</button>
@@ -900,6 +942,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             </tr>`;
 
         tablaContenedores.insertAdjacentHTML('beforeend', fila);
+
+        // Inicializa select2 solo en el nuevo select agregado
+        $('.tipo-select').last().select2({
+            placeholder: 'Seleccione un tipo',
+            allowClear: false,
+            width: '100%'
+        });
+
 
         agregarValidacion(inputId, mensajeId, iconoId);
 
@@ -969,7 +1019,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     function actualizarNumeracion() {
         const filas = tablaContenedores.querySelectorAll("tr");
         filas.forEach((fila, index) => {
-            const celdaNumero = fila.querySelector(".numero-fila"); 
+            const celdaNumero = fila.querySelector(".numero-fila");
             if (celdaNumero) {
                 celdaNumero.textContent = index + 1;
             }

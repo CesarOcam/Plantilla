@@ -10,7 +10,6 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 $usuarioAlta = $_SESSION['usuario_id'];
 
-// Acceder a JSON enviado en FormData (campo 'datos')
 if (!isset($_POST['datos'])) {
     echo json_encode(['success' => false, 'message' => 'No se recibieron datos JSON.']);
     exit;
@@ -23,7 +22,7 @@ if (!is_array($data)) {
     exit;
 }
 
-// Validar archivos enviados
+
 if (empty($_FILES)) {
     echo json_encode(['success' => false, 'message' => 'No se recibieron archivos.']);
     exit;

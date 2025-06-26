@@ -26,7 +26,7 @@ if (isset($_POST['id'])) {
     $mercancia = $_POST['mercancia'] ?? null;
     $marcas = $_POST['marcas'] ?? null;
     $pedimento = $_POST['pedimento'] ?? null;
-    $clave_ped = $_POST['clave_pedimento'] ?? null;
+    $clave_ped = $_POST['clave'] ?? null;
     $peso = isset($_POST['peso']) && $_POST['peso'] !== '' ? floatval($_POST['peso']) : null;
     $cantidad = isset($_POST['cantidad']) && $_POST['cantidad'] !== '' ? intval($_POST['cantidad']) : null;
     $bultos = isset($_POST['bultos']) && $_POST['bultos'] !== '' ? intval($_POST['bultos']) : null;
@@ -37,7 +37,7 @@ if (isset($_POST['id'])) {
     $naviera = isset($_POST['naviera']) && $_POST['naviera'] !== '' ? intval($_POST['naviera']) : null;
     $cierre_doc = parseFecha($_POST['cierre_doc'] ?? null);
     $fecha_pago = parseFecha($_POST['fecha_pago'] ?? null);
-    $buque = isset($_POST['buque_id']) && $_POST['buque_id'] !== '' ? intval($_POST['buque_id']) : null;
+    $buque = isset($_POST['buque']) && $_POST['buque'] !== '' ? intval($_POST['buque']) : null;
     $booking = $_POST['booking'] ?? null;
     $cierre_desp = parseFecha($_POST['cierre_desp'] ?? null);
     $hora_desp = parseHora($_POST['hora_desp'] ?? null);

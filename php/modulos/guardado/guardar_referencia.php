@@ -42,7 +42,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
     $mercancia = $_POST['mercancia'] ?? null;
     $marcas = $_POST['marcas'] ?? null;
     $pedimento = $_POST['pedimento'] ?? null;
-    $clave_ped = $_POST['clave_pedimento'] ?? null;
+    $clave_ped = $_POST['clave'] ?? null;
     $peso = $_POST['peso'] ?? 0.0;
     $peso = is_numeric($peso) ? (float) $peso : 0.0;
     $bultos = $_POST['bultos'] ?? null;

@@ -78,6 +78,16 @@ $consolidadora = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stm = $con->prepare("SELECT Id, Numero FROM referencias WHERE Status IS NOT NULL AND Status != 0 ORDER BY Numero ASC");
 $stm->execute();
 $referencias = $stm->fetchAll();
+
+//CONTENEDORES
+$stmt = $con->prepare("SELECT id2210_tipo_contenedor, descripcion_contenedor FROM 2210_tipo_contenedor");
+$stmt->execute();
+$tiposContenedor = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//CLAVE PEDIMENTO
+$stmt = $con->prepare("SELECT id2202clave_pedimento, claveCve FROM 2202clavepedimento");
+$stmt->execute();
+$clavePedimento = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 
@@ -203,9 +213,16 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     style="background-color: transparent;" placeholder="Pedimento">
                             </div>
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
-                                <input name="clave_pedimento" type="text"
-                                    class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Clave Pedimento">
+                                <select id="clave-select" name="clave"
+                                    class="form-control rounded-0 border-0 border-bottom text-muted">
+                                    <option value="" selected disabled>Clave Pedimento</option>
+                                    <?php foreach ($clavePedimento as $item): ?>
+                                        <option value="<?php echo $item['id2202clave_pedimento']; ?>">
+                                            <?php echo $item['claveCve']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                                 <input name="peso" type="text" class="form-control rounded-0 border-0 border-bottom"
@@ -491,6 +508,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     </div>
 </div>
 <script>
+    const tiposContenedor = <?= json_encode($tiposContenedor) ?>;
 
     const botonGuardar = document.getElementById('btn_guardar');
 
@@ -508,6 +526,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#exportador-select', 'Exportador *');
         initSelect2('#logistico-select', 'Logístico *');
         initSelect2('#recinto-select', 'Recinto');
+        initSelect2('#clave-select', 'Clave Pedimento');
         initSelect2('#naviera-select', 'Naviera');
         initSelect2('#buque-select', 'Buque');
         initSelect2('#consolidadora-select', 'Consolidadora');
@@ -561,7 +580,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <small id="${mensajeId}" class="form-text ms-1 mt-1"></small>
                     </div>
                 </td>
-                <td class="text-center"><input type="text" name="tipo[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el tipo"></td>
+                <td class="text-center">
+                    <select name="tipo[]" class="form-select tipo-select form-control ps-4 rounded-0 border-0 border-bottom text-center" style="width: 100%;">
+                        <option value="">Seleccione un tipo</option>
+                        ${tiposContenedor.map(tc => `<option value="${tc.id2210_tipo_contenedor}">${tc.descripcion_contenedor}</option>`).join('')}
+                    </select>
+                </td>
                 <td class="text-center"><input type="text" name="sello[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el sello"></td>
                 <td class="text-center align-middle">
                     <button type="button" id="btn-eliminar" class="btn btn-md btn-danger rounded-0">Eliminar</button>
@@ -571,6 +595,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             tablaContenedores.insertAdjacentHTML('beforeend', fila);
 
             agregarValidacion(inputId, mensajeId, iconoId);
+
+            $('.tipo-select').last().select2({
+                placeholder: 'Seleccione un tipo',
+                allowClear: false,
+                width: '100%'
+            });
 
             contador++;
         });
@@ -757,7 +787,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             const icono = obtenerIconoPorExtension(file.name);
             const row = document.createElement('tr');
             row.innerHTML = `
-                < td > ${icono} ${file.name}</td >
+            <td> ${icono} ${file.name}</td>
             <td>${file.type || 'Desconocido'}</td>
             <td>${(file.size / 1024).toFixed(2)} KB</td>
             <td class="text-center">

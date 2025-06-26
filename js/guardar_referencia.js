@@ -88,6 +88,7 @@ $("#form_Referencia").on("submit", function (e) {
                 $('#aduana-select').val(null).trigger('change');
                 $('#exportador-select').val(null).trigger('change');
                 $('#logistico-select').val(null).trigger('change');
+                $('#clave-select').val(null).trigger('change');
                 $('#recinto-select').val(null).trigger('change');
                 $('#naviera-select').val(null).trigger('change');
                 $('#buque-select').val(null).trigger('change');
