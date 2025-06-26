@@ -101,6 +101,16 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
     </tbody>
 </table>
 
+<!-- Inputs ocultos fuera de la tabla para evitar descuadre -->
+<div style="display:none;">
+    <?php if ($solicitudes): ?>
+        <?php foreach ($solicitudes as $solicitud): ?>
+            <input type="hidden" class="referencia-id-hidden" id="referencia_<?php echo $solicitud['SolicitudFacturaId']; ?>" value="<?php echo htmlspecialchars($solicitud['ReferenciaId']); ?>">
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
+
 <!-- Paginación -->
 <nav aria-label="Page navigation example" class="d-flex justify-content-center">
     <ul class="pagination">

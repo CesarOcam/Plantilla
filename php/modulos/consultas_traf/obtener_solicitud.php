@@ -9,7 +9,7 @@ include_once(__DIR__ . '/../conexion.php');
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
 
-    $sql = "SELECT s.Id, e.Nombre AS EmpresaNombre, b.Nombre AS BeneficiarioNombre, s.Importe, s.Fecha, s.FechaAlta, a.nombre_corto_aduana AS AduanaNombre
+    $sql = "SELECT s.Id, s.ReferenciaFacturaId, e.Nombre AS EmpresaNombre, b.Nombre AS BeneficiarioNombre, s.Importe, s.Fecha, s.FechaAlta, a.nombre_corto_aduana AS AduanaNombre
             FROM solicitudes s
             JOIN empresas e ON s.EmpresaId = e.Id
             JOIN beneficiarios b ON s.BeneficiarioId = b.Id

@@ -5,31 +5,35 @@ header('Content-Type: application/json');
 
 // Validar sesión de usuario
 if (!isset($_SESSION['usuario_id'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Usuario no autenticado.'
-    ]);
+    echo json_encode(['success' => false, 'message' => 'Usuario no autenticado.']);
     exit;
 }
 $usuarioAlta = $_SESSION['usuario_id'];
 
-//Leer y decodificar los datos JSON------------------------------
-$input = file_get_contents('php://input');
-$data = json_decode($input, true);
+// Acceder a JSON enviado en FormData (campo 'datos')
+if (!isset($_POST['datos'])) {
+    echo json_encode(['success' => false, 'message' => 'No se recibieron datos JSON.']);
+    exit;
+}
 
-// Validación de estructura básica
-if (!isset($data['archivos']) || !is_array($data['archivos'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Datos inválidos: se esperaba un arreglo de archivos.'
-    ]);
+$data = json_decode($_POST['datos'], true);
+
+if (!is_array($data)) {
+    echo json_encode(['success' => false, 'message' => 'Datos JSON inválidos.']);
+    exit;
+}
+
+// Validar archivos enviados
+if (empty($_FILES)) {
+    echo json_encode(['success' => false, 'message' => 'No se recibieron archivos.']);
     exit;
 }
 
 $errores = [];
 $insertados = 0;
 
-foreach ($data['archivos'] as $index => $archivo) {
+foreach ($data as $index => $archivo) {
+    // Datos básicos de la factura
     $serie = $archivo['serie'] ?? null;
     $folio = $archivo['folio'] ?? null;
     $serieFolio = ($serie ?? '') . ($folio ?? '');
@@ -41,8 +45,42 @@ foreach ($data['archivos'] as $index => $archivo) {
     $importe = $archivo['importe'] ?? null;
     $uuid = $archivo['uuid'] ?? null;
 
-    //Se obtienen datos de la tabla 505_factura para validar uuid--------------
-// 1. Verificar en 505_factura
+    // Carpeta con ID de referencia o "sin_referencia"
+    $idReferencia = $archivo['referencia_id'] ?? 'sin_referencia';
+    $uploadDirBase = '../../../docs/';
+    $uploadDir = $uploadDirBase . $idReferencia . '/';
+    if (!is_dir($uploadDir)) {
+        if (!mkdir($uploadDir, 0777, true)) {
+            $errores[] = "No se pudo crear la carpeta para la referencia $idReferencia.";
+            continue; // saltar este registro porque no hay carpeta
+        }
+    }
+
+    // Mover archivos XML y PDF a carpeta específica
+    $destinoXml = null;
+    $destinoPdf = null;
+
+    if (isset($_FILES["xml_$index"]) && $_FILES["xml_$index"]['error'] === UPLOAD_ERR_OK) {
+        $tmpXml = $_FILES["xml_$index"]['tmp_name'];
+        $nombreXml = basename($_FILES["xml_$index"]['name']);
+        $destinoXml = $uploadDir . $nombreXml;
+        if (!move_uploaded_file($tmpXml, $destinoXml)) {
+            $errores[] = "Error al mover archivo XML $nombreXml del índice $index";
+            $destinoXml = null; // No existirá archivo
+        }
+    }
+
+    if (isset($_FILES["pdf_$index"]) && $_FILES["pdf_$index"]['error'] === UPLOAD_ERR_OK) {
+        $tmpPdf = $_FILES["pdf_$index"]['tmp_name'];
+        $nombrePdf = basename($_FILES["pdf_$index"]['name']);
+        $destinoPdf = $uploadDir . $nombrePdf;
+        if (!move_uploaded_file($tmpPdf, $destinoPdf)) {
+            $errores[] = "Error al mover archivo PDF $nombrePdf del índice $index";
+            $destinoPdf = null;
+        }
+    }
+
+    // Validación UUID duplicado en 505_factura
     $stmtFacturas = $con->prepare("SELECT idCFactura, 505_04_numFactura FROM 505_factura");
     $stmtFacturas->execute();
     $facturas = $stmtFacturas->fetchAll(PDO::FETCH_ASSOC);
@@ -61,13 +99,14 @@ foreach ($data['archivos'] as $index => $archivo) {
         }
     }
 
-    // 2. Verificar en facturas_registradas
+
+    // Validar UUID duplicado en facturas_registradas
     $stmtFacturasReg = $con->prepare("
-    SELECT fr.id, fr.uuid, fr.referencia_id, r.Numero AS numero_referencia
-    FROM facturas_registradas fr
-    LEFT JOIN referencias r ON fr.referencia_id = r.Id
-    WHERE fr.uuid = :uuid
-");
+        SELECT fr.id, fr.uuid, fr.referencia_id, r.Numero AS numero_referencia
+        FROM facturas_registradas fr
+        LEFT JOIN referencias r ON fr.referencia_id = r.Id
+        WHERE fr.uuid = :uuid
+    ");
     $stmtFacturasReg->bindParam(':uuid', $uuid);
     $stmtFacturasReg->execute();
     $facturaReg = $stmtFacturasReg->fetch(PDO::FETCH_ASSOC);
@@ -85,17 +124,13 @@ foreach ($data['archivos'] as $index => $archivo) {
         exit;
     }
 
-
-    //---------------------------------------------------------------------------------------------------------
-
     // Validación básica por archivo
     if (!$folio || !$rfc_proveedor || !$rfc_cliente || !$proveedor || !$cliente || !$fecha) {
         $errores[] = "Archivo #$index con datos incompletos.";
         continue;
     }
 
-    $rfc_cliente;
-
+    // Insertar factura
     $sql = "INSERT INTO facturas_registradas 
             (folio, rfc_proveedor, proveedor, rfc_cliente, cliente, fecha, importe, uuid, created_by) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -116,6 +151,26 @@ foreach ($data['archivos'] as $index => $archivo) {
 
         if ($resultado) {
             $insertados++;
+            $facturaId = $con->lastInsertId();
+
+            // Insertar archivos relacionados en referencias_archivos
+            $archivosParaInsertar = [];
+            if ($destinoXml !== null) {
+                $archivosParaInsertar[] = ['nombre' => $nombreXml, 'ruta' => $destinoXml];
+            }
+            if ($destinoPdf !== null) {
+                $archivosParaInsertar[] = ['nombre' => $nombrePdf, 'ruta' => $destinoPdf];
+            }
+
+            foreach ($archivosParaInsertar as $archivoInfo) {
+                $sqlArchivos = "INSERT INTO referencias_archivos (Nombre, Ruta, Solicitud_factura_id) VALUES (?, ?, ?)";
+                $stmtArchivo = $con->prepare($sqlArchivos);
+                $stmtArchivo->execute([
+                    $archivoInfo['nombre'],
+                    $archivoInfo['ruta'],
+                    $facturaId
+                ]);
+            }
         } else {
             $errores[] = "Error al insertar el archivo #$index.";
         }

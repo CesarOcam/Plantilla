@@ -31,6 +31,26 @@ $('#btn_actualizar').on('click', function () {
                     timer: 3000,
                     timerProgressBar: true
                 });
+                const botonAnterior = document.getElementById('btn_actualizar');
+                if (botonAnterior) {
+                    const nuevoBoton = document.createElement('button');
+                    nuevoBoton.type = 'button';
+                    nuevoBoton.className = 'btn btn-outline-secondary rounded-0';
+                    nuevoBoton.id = 'btn_kardex';
+                    nuevoBoton.dataset.id = data.id;
+                    nuevoBoton.innerHTML = `<i class="fas fa-dolly me-2"></i> Afectar Kardex`;
+
+                    // Reemplazar el botón anterior por el nuevo
+                    botonAnterior.parentNode.replaceChild(nuevoBoton, botonAnterior);
+
+                    // Opcional: agregar evento al nuevo botón
+                    nuevoBoton.addEventListener('click', function () {
+                        // Lógica para afectar el kardex
+                        console.log('Afectando Kardex con ID:', this.dataset.id);
+                    });
+                }
+
+
             } else {
                 Swal.fire({
                     icon: 'error',

@@ -15,9 +15,9 @@ $(document).ready(function () {
 });
 
 const fileInput = document.getElementById('fileUpload');
+const uploadAlert = document.getElementById('uploadAlert');
 const fileRows = document.getElementById('fileRows');
 const uploadPrompt = document.getElementById('uploadPrompt');
-const uploadAlert = document.getElementById('uploadAlert');
 const uploadBox = document.getElementById('uploadBox');
 let selectedPair = null; // { xml: File, pdf: File }
 
@@ -59,8 +59,9 @@ function renderFilePairs() {
     const grouped = {};
     fileRows.innerHTML = '';
     uploadAlert.style.display = 'none';
-    uploadAlert.innerHTML = '';
+    uploadAlert.textContent = '';
 
+    // Agrupar archivos por base sin extensión
     allFiles.forEach(file => {
         const nameParts = file.name.split('.');
         const base = nameParts.slice(0, -1).join('.');
@@ -75,12 +76,14 @@ function renderFilePairs() {
     Object.keys(grouped).forEach(base => {
         const pair = grouped[base];
         const exts = Object.keys(pair);
+        // Verifica si no tiene exactamente xml y pdf
         if (exts.length !== 2 || !('xml' in pair) || !('pdf' in pair)) {
             invalidPairs.push(base);
         }
     });
 
-    //Caja de ERROR roja
+    console.log('Pares inválidos detectados:', invalidPairs);
+
     if (invalidPairs.length > 0) {
         uploadAlert.style.display = 'block';
         uploadAlert.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
@@ -90,13 +93,15 @@ function renderFilePairs() {
         uploadAlert.style.borderRadius = '5px';
         uploadAlert.style.whiteSpace = 'pre-line';
         uploadAlert.textContent = `¡ERROR!\nLos archivos deben formar pares con el mismo nombre base y deben ser un archivo XML y un PDF.\nPares inválidos:\n${invalidPairs.join('\n')}`;
+    } else {
+        uploadAlert.style.display = 'none';
     }
 
+    // Mostrar filas para pares válidos
     Object.keys(grouped).forEach(base => {
         const pair = grouped[base];
         if (pair['xml'] && pair['pdf']) {
             hasPairs = true;
-
             pairs.push({ xml: pair['xml'], pdf: pair['pdf'] });
 
             const row = document.createElement('div');
@@ -107,7 +112,7 @@ function renderFilePairs() {
                     <strong>${base}</strong><br>
                     <span class="text-muted small">${[pair['xml'].name, pair['pdf'].name].join(' + ')}</span>
                 </div>
-                `;
+            `;
 
             row.addEventListener('mouseenter', () => {
                 row.style.backgroundColor = '#f8f9fa';
@@ -124,7 +129,6 @@ function renderFilePairs() {
     updateFileInput(allFiles);
 }
 
-//Lógica al seleccionar una fila
 document.getElementById('btnCargarTodos').addEventListener('click', () => {
     renderFilePairs();
     if (pairs.length === 0) {
@@ -197,15 +201,29 @@ document.getElementById('btnCargarTodos').addEventListener('click', () => {
     // Esperamos a que todos los archivos se procesen
     Promise.all(readXmlPromises)
         .then(results => {
-            console.log('Todos los datos a enviar:', results);
+            const formData = new FormData();
 
-            // Enviamos todos los datos en una sola llamada AJAX
+            // Archivos: agrega XML y PDF al FormData
+            pairs.forEach((pair, index) => {
+                formData.append(`xml_${index}`, pair.xml);
+                formData.append(`pdf_${index}`, pair.pdf);
+            });
+
+            // Datos extraídos del XML (results)
+            formData.append('datos', JSON.stringify(results));
+            console.log('Todos los datos a enviar:', results);
+            // Mostrar en consola qué se está enviando
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`Archivo -> ${key}:`, value.name);
+                } else {
+                    console.log(`Campo -> ${key}:`, value);
+                }
+            }
+            // Ahora enviar todo junto (archivos + datos)
             return fetch('../../modulos/guardado/guardar_factura.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ archivos: results })
+                body: formData
             });
         })
         .then(response => response.json())
@@ -214,7 +232,7 @@ document.getElementById('btnCargarTodos').addEventListener('click', () => {
                 Swal.fire({
                     icon: 'warning',
                     title: 'UUID duplicado',
-                    html: `El UUID <strong>${data.uuid}</strong> ya existe en la referencia: <strong>${data.referenciaNumero}</strong>.`,
+                    html: `El UUID <strong>${data.uuid}</strong> ya existe en la referencia: <strong>${data.referenciaNumero}</strong>. O está cargado en la tabla`,
                     confirmButtonText: 'Aceptar'
                 });
                 return;
@@ -392,8 +410,6 @@ document.getElementById('tabla-aduanas-container').addEventListener('click', fun
                         timer: 3000,
                         timerProgressBar: true
                     });
-
-
                     // Recargar tabla
                     fetch('../../modulos/consultas_traf/tabla_facturas.php')
                         .then(resp => resp.text())

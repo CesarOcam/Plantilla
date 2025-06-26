@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 document.getElementById('BeneficiarioId').value = data.BeneficiarioNombre || '';
                                 document.getElementById('FechaAlta').value = data.FechaAlta || '';
                                 document.getElementById('AduanaId').value = data.AduanaNombre || '';
+                                document.getElementById('ReferenciaFacturaId').value = data.ReferenciaFacturaId || '';
 
                                 // Llenar tabla de partidas
                                 const cuerpoTabla = document.querySelector('#tabla-partidas tbody');
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     const filaEditable = `
                                     <tr class="text-center align-middle">
                                         <td>
-                                            <select name="SubcuentaId_pago" class="form-control form-control-sm select-subcuenta text-center" style="width: 100%;">
+                                            <select name="SubcuentaId_pago" class="form-control form-control-sm select-subcuenta text-center" style="width: 100%;" required>
                                                 ${opcionesSubcuenta}
                                             </select>
                                         </td>

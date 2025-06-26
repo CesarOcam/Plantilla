@@ -75,16 +75,17 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                     <div id="uploadPrompt" class="text-center">
                                                         <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-3"></i>
                                                         <p class="text-muted small mb-2">Arrastra los archivos aquí o
-                                                            haz clic en el
-                                                            botón para subir</p>
+                                                            haz clic en el botón para subir</p>
                                                         <button type="button"
                                                             class="btn btn-outline-secondary btn-md mt-2 rounded-0"
                                                             onclick="document.getElementById('fileUpload').click();">
                                                             Seleccionar Archivos
                                                         </button>
-                                                        <div id="uploadAlert" class="rounded-0"
-                                                            style="margin-top: 1rem; display: none;"></div>
                                                     </div>
+
+                                                    <div id="uploadAlert" class="rounded-0"
+                                                        style="margin-top: 1rem; display: none;"></div>
+
                                                     <input type="file" class="form-control-file d-none" id="fileUpload"
                                                         multiple>
                                                     <div id="fileRows" class="mt-4 mb-4 w-100 text-start"></div>

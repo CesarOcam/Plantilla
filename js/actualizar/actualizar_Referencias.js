@@ -44,7 +44,6 @@ $("#form_Referencia").on("submit", function (e) {
                         timer: 3000,
                         timerProgressBar: true
                     }).then(() => {
-                    recargarTablaDocumentos(); // Actualiza la tabla al aceptar el SweetAlert
                 });
             }
             else {
@@ -67,4 +66,6 @@ $("#form_Referencia").on("submit", function (e) {
         }
     });
 });
+
+
 

@@ -97,6 +97,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <input id="AduanaId" name="AduanaId" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="" readonly>
+                            <input id="ReferenciaFacturaId" name="ReferenciaFacturaId" type="hidden" value="">
                     </div>
                 </div>
                 <div class="row mt-5">

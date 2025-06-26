@@ -69,26 +69,35 @@ if (
             error_log("Factura ID: {$factura['factura_id']}, Status: {$factura['status']}, BeneficiarioId: {$factura['beneficiario_id']}, AduanaId: {$factura['aduana_id']}");
         }
 
-        // 3. Insertar en solicitudes y partidas_solicitudes
+        // Preparar las consultas
         $stmtSolicitud = $con->prepare("
-            INSERT INTO solicitudes (BeneficiarioId, EmpresaId, Importe, Aduana, Fecha, status, FechaAlta, UsuarioAlta)
-            VALUES (?, 2, ?, ?, ?, 1, ?, ?)
-        ");
+        INSERT INTO solicitudes (BeneficiarioId, EmpresaId, Importe, Aduana, Fecha, status, FechaAlta, UsuarioAlta)
+        VALUES (?, 2, ?, ?, ?, 1, ?, ?)
+");
 
         $stmtPartida = $con->prepare("
-            INSERT INTO partidassolicitudes (Partida, SolicitudId, SubcuentaId, ReferenciaId, Importe, UuidArchivoFactura)
-            VALUES (0, ?, ?, ?, ?, ?)
-        ");
+        INSERT INTO partidassolicitudes (Partida, SolicitudId, SubcuentaId, ReferenciaId, Importe, UuidArchivoFactura)
+        VALUES (0, ?, ?, ?, ?, ?)
+");
 
         $stmtFacturaStatus = $con->prepare("UPDATE facturas_registradas SET status = 2 WHERE Id = ?");
+
+        $stmtActualizarSolicitudFacturaId = $con->prepare("
+        UPDATE solicitudes 
+        SET ReferenciaFacturaId = :referenciaId 
+        WHERE Id = :solicitudId
+");
+
         error_log("Iniciando ciclo de inserción, total facturas: " . count($facturasInfo));
 
+        // Array temporal para acumular solicitudId y referenciaId
+        $actualizaciones = [];
 
         foreach ($facturasInfo as $factura) {
             error_log("Procesando factura con ID: {$factura['factura_id']}");
 
             if ($factura['beneficiario_id'] && $factura['aduana_id']) {
-                error_log("Insertando solicitud para factura_id={$factura['factura_id']}");
+                // Insertar solicitud
                 $stmtSolicitud->execute([
                     $factura['beneficiario_id'],
                     $factura['importe'],
@@ -98,9 +107,8 @@ if (
                     $usuarioUpdate
                 ]);
                 $solicitudId = $con->lastInsertId();
-                error_log("Solicitud insertada con ID: $solicitudId");
 
-                error_log("Insertando partida solicitud para solicitudId=$solicitudId");
+                // Insertar partida
                 $stmtPartida->execute([
                     $solicitudId,
                     $factura['subcuenta_id'],
@@ -109,15 +117,29 @@ if (
                     $factura['uuid']
                 ]);
 
-                // Actualizar status = 2 para marcar que ya fue procesada
-                $stmtFacturaStatus->execute([$factura['factura_id']]);
-                error_log("Insertando solicitud para factura_id={$factura['factura_id']}");
+                // Guardar par para actualización posterior
+                $actualizaciones[] = [
+                    'solicitudId' => $solicitudId,
+                    'referenciaId' => $factura['referencia_id']
+                ];
 
-                error_log("Actualizado status=2 para factura_id={$factura['factura_id']}");
+                // Actualizar estatus de la factura
+                $stmtFacturaStatus->execute([$factura['factura_id']]);
+
             } else {
                 error_log("Factura ID {$factura['factura_id']} no tiene beneficiario_id o aduana_id válido");
             }
         }
+
+        // Ejecutar actualizaciones fuera del foreach
+        foreach ($actualizaciones as $pair) {
+            $stmtActualizarSolicitudFacturaId->execute([
+                ':referenciaId' => $pair['referenciaId'],
+                ':solicitudId' => $pair['solicitudId']
+            ]);
+            error_log("Actualizado SolicitudFacturaId para solicitudId={$pair['solicitudId']}, referenciaId={$pair['referenciaId']}");
+        }
+
 
         $con->commit();
         error_log("Transacción COMMIT exitosa.");

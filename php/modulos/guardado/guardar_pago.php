@@ -1,5 +1,5 @@
 <?php
-session_start(); 
+session_start();
 include('../conexion.php');
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode([
@@ -15,11 +15,12 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     $subcuenta_pago = $_POST['SubcuentaId_pago'];
     $observaciones_pago = $_POST['Observaciones_pago'] ?? '';
 
-    function obtenerFechaHoraActual() {
+    function obtenerFechaHoraActual()
+    {
         return date("Y-m-d H:i:s");
     }
     //Se actualiza a 2 : Solicitud aprobada
-    $sql_update_status ="UPDATE solicitudes SET Status = 2 WHERE Id = :id";
+    $sql_update_status = "UPDATE solicitudes SET Status = 2 WHERE Id = :id";
     $stmt = $con->prepare($sql_update_status);
     $stmt->bindParam(':id', $id_solicitud, PDO::PARAM_INT);
     $stmt->execute();
@@ -31,20 +32,27 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     $stmt->execute();
     $solicitud = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    
+    //var_dump($solicitud);
+    //exit;
+
+
     if (!$solicitud) {
         die("Solicitud no encontrada.");
     }
 
     // Extraer datos de la solicitud
-    $solicitud_id    = $solicitud['Id'];
+    $solicitud_id = $solicitud['Id'];
+    $referenciaFacturaId = $solicitud['ReferenciaFacturaId'];
     $beneficiario_id = $solicitud['BeneficiarioId'];
-    $aduana_id      = $solicitud['Aduana'];
-    $empresa_id     = $solicitud['EmpresaId'];
-    $importe        = $solicitud['Importe'];
-    $fecha          = $solicitud['Fecha'];
-    $status         = $solicitud['Status'];
-    $fecha_alta     = $solicitud['FechaAlta'];
-    $usuario_alta   = $solicitud['UsuarioAlta'];
+    $aduana_id = $solicitud['Aduana'];
+    $empresa_id = $solicitud['EmpresaId'];
+    $importe = $solicitud['Importe'];
+    $fecha = $solicitud['Fecha'];
+    $status = $solicitud['Status'];
+    $fecha_alta = $solicitud['FechaAlta'];
+    $usuario_alta = $solicitud['UsuarioAlta'];
+
 
     // Generar el numero de poliza, siempre cheque
     $prefijo = 'C'; // Cheques
@@ -82,61 +90,85 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         $activo,
         $fecha_alta_default,
         $usuarioAlta,
-        $aduana_id  
+        $aduana_id
     ]);
 
     if ($resultado) {
-    $poliza_id = $con->lastInsertId();
+        $poliza_id = $con->lastInsertId();
 
-    $sql_partidas = "SELECT * 
+        $sql_partidas = "SELECT * 
                  FROM partidassolicitudes 
                  WHERE SolicitudId = :id_solicitud";
 
-    $stmt_partidas = $con->prepare($sql_partidas);
-    $stmt_partidas->bindParam(':id_solicitud', $id_solicitud, PDO::PARAM_INT);
-    $stmt_partidas->execute();
+        $stmt_partidas = $con->prepare($sql_partidas);
+        $stmt_partidas->bindParam(':id_solicitud', $id_solicitud, PDO::PARAM_INT);
+        $stmt_partidas->execute();
 
-    $partidas = $stmt_partidas->fetchAll(PDO::FETCH_ASSOC);
-   
-    
-    $sql_insertar_partidas = "INSERT INTO partidaspolizas 
+        $partidas = $stmt_partidas->fetchAll(PDO::FETCH_ASSOC);
+
+
+        $sql_insertar_partidas = "INSERT INTO partidaspolizas 
         (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, NumeroFactura)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt_data = $con->prepare($sql_insertar_partidas);
+        $stmt_data = $con->prepare($sql_insertar_partidas);
 
-    $abono = 0;
-    foreach ($partidas as $partida) {
-    $stmt_data->execute([
-        $poliza_id,
-        $partida['SubcuentaId'],
-        $partida['ReferenciaId'],
-        $partida['Importe'],
-        $abono,
-        $partida['Observaciones'],
-        $activo,
-        $partida['NumeroFactura'],
-        ]);
-    }
+        $abono = 0;
+        foreach ($partidas as $partida) {
+            $stmt_data->execute([
+                $poliza_id,
+                $partida['SubcuentaId'],
+                $partida['ReferenciaId'],
+                $partida['Importe'],
+                $abono,
+                $partida['Observaciones'],
+                $activo,
+                $partida['NumeroFactura'],
+            ]);
+        }
 
-    $cargo = 0;
-    $sql_insertar_pago = "INSERT INTO partidaspolizas
+        $cargo = 0;
+        $sql_insertar_pago = "INSERT INTO partidaspolizas
     (PolizaId, SubcuentaId, Cargo, Abono, Observaciones, Activo)
         VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt_data = $con->prepare($sql_insertar_pago);
-    $pago = $stmt_data->execute([
-        $poliza_id,
-        $subcuenta_pago,
-        $cargo,
-        $importe,
-        $observaciones_pago,
-        $activo
+        $stmt_data = $con->prepare($sql_insertar_pago);
+        $pago = $stmt_data->execute([
+            $poliza_id,
+            $subcuenta_pago,
+            $cargo,
+            $importe,
+            $observaciones_pago,
+            $activo
 
-    ]);
+        ]);
 
     } else {
 
         echo "Error al guardar la póliza.";
     }
+
+    // 1. Obtener todos los Ids de facturas_registradas con esa referencia
+    $sql_facturas = "SELECT Id FROM facturas_registradas WHERE referencia_id = :referencia_id";
+    $stmt_facturas = $con->prepare($sql_facturas);
+    $stmt_facturas->execute([':referencia_id' => $referenciaFacturaId]);
+
+    $facturaIds = $stmt_facturas->fetchAll(PDO::FETCH_COLUMN);
+
+    if (!empty($facturaIds)) {
+        // Construir placeholders dinámicamente para el IN (...)
+        $placeholders = implode(',', array_fill(0, count($facturaIds), '?'));
+
+        // 2. Actualizar referencias_archivos para todos esos Ids
+        $sql_update_ref_archivos = "
+        UPDATE referencias_archivos
+        SET Referencia_id = ?
+        WHERE Solicitud_factura_id IN ($placeholders)
+    ";
+
+        $params = array_merge([$referenciaFacturaId], $facturaIds);
+        $stmt_update_ref = $con->prepare($sql_update_ref_archivos);
+        $stmt_update_ref->execute($params);
+    }
+
 
 
     echo json_encode([

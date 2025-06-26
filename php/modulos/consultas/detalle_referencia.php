@@ -882,6 +882,22 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         const mensajeId = `mensajeContenedor-${contador}`;
         const iconoId = `iconoValidacion-${contador}`;
 
+        const fila = `
+            <tr id="${rowId}" class="text-center">
+                <td class="text-center align-middle"><i class="bi bi-box-fill fs-4 me-2"></i></td>
+                <td>
+                    <div class="position-relative">
+                        <input type="text" id="${inputId}" name="contenedor[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el código" maxlength="11">
+                        <i id="${iconoId}" class="bi position-absolute top-50 end-0 translate-middle-y me-2"></i>
+                        <small id="${mensajeId}" class="form-text ms-1 mt-1"></small>
+                    </div>
+                </td>
+                <td class="text-center"><input type="text" name="tipo[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el tipo"></td>
+                <td class="text-center"><input type="text" name="sello[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el sello"></td>
+                <td class="text-center align-middle">
+                    <button type="button" id="btn-eliminar" class="btn btn-md btn-danger rounded-0">Eliminar</button>
+                </td>
+            </tr>`;
 
         tablaContenedores.insertAdjacentHTML('beforeend', fila);
 
@@ -897,7 +913,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
         // Busca ícono que puede ser box-fill o box-seam en la primera celda
         const fila = inputContenedor.closest("tr");
-        const iconoContenedor = fila.querySelector(".bi-box-fill, .bi-box-seam");
+        const iconoContenedor = fila.querySelector(".bi-box-fill, .bi-box-fill");
 
         inputContenedor.addEventListener('input', function () {
             const valor = this.value.toUpperCase();
@@ -953,31 +969,26 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     function actualizarNumeracion() {
         const filas = tablaContenedores.querySelectorAll("tr");
         filas.forEach((fila, index) => {
-            // Si tuvieras una columna con número de fila, actualízala aquí
-            const celdaNumero = fila.querySelector(".numero-fila"); // Asegúrate de tener esta clase si quieres mostrar números
+            const celdaNumero = fila.querySelector(".numero-fila"); 
             if (celdaNumero) {
                 celdaNumero.textContent = index + 1;
             }
-
-            // También puedes actualizar los IDs de los inputs y sus atributos si lo necesitas
             fila.id = `fila-${index}`;
             const input = fila.querySelector('input[name="contenedor[]"]');
             const tipo = fila.querySelector('input[name="tipo[]"]');
             const sello = fila.querySelector('input[name="sello[]"]');
             const icono = fila.querySelector('i.bi');
-            const mensaje = fila.querySelector('small.form-text');
+            const mensaje = fila.querySelector('fill.form-text');
 
             if (input) input.id = `input-contenedor-${index}`;
             if (icono) icono.id = `iconoValidacion-${index}`;
             if (mensaje) mensaje.id = `mensajeContenedor-${index}`;
 
-            // Reasignar validación por si se cambiaron IDs
             if (input && icono && mensaje) {
                 agregarValidacion(input.id, mensaje.id, icono.id);
             }
         });
 
-        // Actualizar contador para nuevos elementos
         contador = filas.length;
     }
 

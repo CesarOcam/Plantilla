@@ -104,12 +104,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input id="empresa" name="empresa" type="text"
-                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="AMEXPORT LOGÍSTICA" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1" readonly>
-                    </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4 position-relative">
                         <i class="bi bi-calendar-week"
                             style="position: absolute; left: 10px; z-index: 10; color: gray;"></i>

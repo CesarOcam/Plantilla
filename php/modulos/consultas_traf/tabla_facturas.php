@@ -1,33 +1,50 @@
 <?php
 include_once(__DIR__ . '/../conexion.php');
+
+// Paso 1: Obtener referencias con su RFC exportador (de 01clientes_exportadores)
+$stmt = $con->prepare("
+    SELECT r.Id, r.Numero, r.ClienteExportadorId, ce.rfc_exportador
+    FROM referencias r
+    INNER JOIN 01clientes_exportadores ce ON r.ClienteExportadorId = ce.id01clientes_exportadores
+    WHERE r.Numero IS NOT NULL AND r.Status IN (1, 2)
+");
+$stmt->execute();
+$referenciasConRFC = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Paso 2: Obtener facturas
 $stmtFacturas = $con->prepare("SELECT * FROM facturas_registradas WHERE status != 2");
 $stmtFacturas->execute();
 $facturas = $stmtFacturas->fetchAll(PDO::FETCH_ASSOC);
 
-// Obtener todas las referencias en tráfico y contabilidad
-$stmt = $con->prepare("SELECT Id, Numero FROM referencias WHERE Numero IS NOT NULL AND Status IN (1, 2)");
-$stmt->execute();
-$referencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 $facturasConSubcuentas = [];
 
 foreach ($facturas as $factura) {
-    $rfc = $factura['rfc_proveedor'] ?? null;
-    $subcuentas = [];
+    $rfcProveedor = $factura['rfc_proveedor'] ?? null;
 
-    if ($rfc) {
+    // Filtrar las referencias que coinciden con el RFC del proveedor
+    $referenciasFiltradas = array_filter($referenciasConRFC, function ($ref) use ($rfcProveedor) {
+        return $ref['rfc_exportador'] === $rfcProveedor;
+    });
+
+    // Obtener subcuentas y beneficiario de la tabla correcta
+    $subcuentas = [];
+    $beneficiarioId = null;
+
+    if ($rfcProveedor) {
+        // Aquí usamos beneficiarios en lugar de 01clientes_exportadores para buscar beneficiario
         $stmt = $con->prepare("SELECT Id FROM beneficiarios WHERE Rfc = ?");
-        $stmt->execute([$rfc]);
+        $stmt->execute([$rfcProveedor]);
         $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($beneficiario) {
             $beneficiarioId = $beneficiario['Id'];
+
             $stmt = $con->prepare("SELECT subcuenta_id FROM subcuentas_beneficiarios WHERE beneficiario_id = ?");
             $stmt->execute([$beneficiarioId]);
             $subcuentaIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
             if (!empty($subcuentaIds)) {
-                $placeholders = str_repeat('?,', count($subcuentaIds) - 1) . '?';
+                $placeholders = implode(',', array_fill(0, count($subcuentaIds), '?'));
                 $stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas WHERE Id IN ($placeholders)");
                 $stmt->execute($subcuentaIds);
                 $subcuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -35,11 +52,17 @@ foreach ($facturas as $factura) {
         }
     }
 
-    // Asociar las subcuentas al registro de la factura
+    // Guardar todo en la factura
+    $factura['referencias_filtradas'] = array_values($referenciasFiltradas);
     $factura['subcuentas'] = $subcuentas;
-    $factura['beneficiario_id'] = $beneficiarioId ?? null;
+    $factura['beneficiario_id'] = $beneficiarioId;
+
     $facturasConSubcuentas[] = $factura;
 }
+
+// Ahora sigue con tu HTML para imprimir tabla, selects, etc.
+
+
 echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>";
 ?>
 
@@ -49,7 +72,6 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
             <th scope="col-id">Factura</th>
             <th scope="col-referencia">Referencia</th>
             <th scope="col-beneficiario">Subcuenta</th>
-            <th scope="col-importe">RFC Proveedor</th>
             <th scope="col-fecha">Proveedor</th>
             <th scope="col-fecha">Cliente</th>
             <th scope="col-fecha">Fecha</th>
@@ -64,14 +86,19 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                     <input type="hidden" name="factura_id[]" value="<?= $factura['Id'] ?>">
                     <td><?= htmlspecialchars($factura['folio']) ?></td>
                     <td>
-                        <select name="referencia_id[]" class="form-control referencia-select">
-                            <option value="">Referencia</option>
-                            <?php foreach ($referencias as $referencia): ?>
-                                <option value="<?= htmlspecialchars($referencia['Id']) ?>"
-                                    <?= ($referencia['Id'] == $factura['referencia_id']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($referencia['Numero']) ?>
-                                </option>
-                            <?php endforeach; ?>
+                        <select name="referencia_id[]" class="form-control referencia-select"
+                            <?= empty($factura['referencias_filtradas']) ? 'disabled' : '' ?>>
+                            <?php if (!empty($factura['referencias_filtradas'])): ?>
+                                <option value="">Referencia</option>
+                                <?php foreach ($factura['referencias_filtradas'] as $referencia): ?>
+                                    <option value="<?= htmlspecialchars($referencia['Id']) ?>"
+                                        <?= ($referencia['Id'] == $factura['referencia_id']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($referencia['Numero']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <option value="">Sin referencias disponibles</option>
+                            <?php endif; ?>
                         </select>
                     </td>
                     <td class="text-start">
@@ -88,8 +115,8 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                             <?php endforeach; ?>
                         </select>
                     </td>
-                    <td class="text-center"><?= htmlspecialchars($factura['rfc_proveedor']) ?></td>
-                    <td>
+                    <td class="text-center" style="display: none;"><?= htmlspecialchars($factura['rfc_proveedor']) ?></td>
+                    <td class="text-start">
                         <?php if (!empty($factura['beneficiario_id'])): ?>
                             <a href="../../modulos/consultas_cat/detalle_beneficiarios.php?id=<?= urlencode($factura['beneficiario_id']) ?>"
                                 style="color: blue;">
@@ -101,7 +128,7 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                     </td>
 
                     <td><?= htmlspecialchars($factura['cliente']) ?></td>
-                    <td><?= htmlspecialchars($factura['fecha']) ?></td>
+                    <td class="text-start"><?= htmlspecialchars($factura['fecha']) ?></td>
                     <td class="text-start">
                         <?php
                         $importe = isset($factura['importe']) && $factura['importe'] !== ''
