@@ -303,8 +303,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div class="col-2 col-sm-1 d-flex flex-column mt-4">
-                                    <label for="peso" class="form-label text-muted small">PESO BRUTO:</label>
+                                <div class="col-2 col-sm-2 d-flex flex-column mt-4">
+                                    <label for="peso" class="form-label text-muted small">PESO BRUTO/CANTIDAD:</label>
                                     <input id="peso" name="peso" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
@@ -749,6 +749,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
                     <!-- Botones -->
                     <div class="row justify-content-end mt-auto">
+                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                            <a href="../../vistas/pdfs/formato-02.php?id=<?= $id2 ?>" target="_blank"
+                                class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-0 shadow-sm"
+                                style="font-size: 0.9rem;" title="Ver Solicitudes">
+                                <i class="fas fa-file-alt me-2"></i> Carátula
+                            </a>
+                        </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <a href="../../vistas/pdfs/formato-01.php?id=<?= $id2 ?>" target="_blank"
                                 class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-0 shadow-sm"
