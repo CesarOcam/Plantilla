@@ -3,10 +3,25 @@ include_once(__DIR__ . '/../conexion.php');
 
 // Paso 1: Obtener referencias con su RFC exportador (de 01clientes_exportadores)
 $stmt = $con->prepare("
-    SELECT r.Id, r.Numero, r.ClienteExportadorId, ce.rfc_exportador
-    FROM referencias r
-    INNER JOIN 01clientes_exportadores ce ON r.ClienteExportadorId = ce.id01clientes_exportadores
-    WHERE r.Numero IS NOT NULL AND r.Status IN (1, 2)
+    SELECT 
+    r.Id, 
+    r.Numero, 
+    r.ClienteExportadorId, 
+    ce.rfc_exportador,
+    r.ClienteLogisticoId,
+    cl.rfc_exportador AS rfc_logistico
+FROM 
+    referencias r
+INNER JOIN 
+    01clientes_exportadores ce 
+    ON r.ClienteExportadorId = ce.id01clientes_exportadores
+LEFT JOIN 
+    01clientes_exportadores cl 
+    ON r.ClienteLogisticoId = cl.id01clientes_exportadores
+WHERE 
+    r.Numero IS NOT NULL 
+    AND r.Status IN (1, 2)
+
 ");
 $stmt->execute();
 $referenciasConRFC = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -20,11 +35,14 @@ $facturasConSubcuentas = [];
 
 foreach ($facturas as $factura) {
     $rfcProveedor = $factura['rfc_proveedor'] ?? null;
+    $rfcCliente = $factura['rfc_cliente'] ?? null;
 
     // Filtrar las referencias que coinciden con el RFC del proveedor
-    $referenciasFiltradas = array_filter($referenciasConRFC, function ($ref) use ($rfcProveedor) {
-        return $ref['rfc_exportador'] === $rfcProveedor;
+    $referenciasFiltradas = array_filter($referenciasConRFC, function ($ref) use ($rfcCliente, $rfcProveedor) {
+        return $ref['rfc_exportador'] === $rfcCliente || $ref['rfc_logistico'] === $rfcCliente
+            || $ref['rfc_exportador'] === $rfcProveedor || $ref['rfc_logistico'] === $rfcProveedor;
     });
+
 
     // Obtener subcuentas y beneficiario de la tabla correcta
     $subcuentas = [];

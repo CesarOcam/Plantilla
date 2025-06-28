@@ -266,8 +266,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     class="form-control rounded-0 border-0 border-bottom text-muted">
                                     <option value="" selected disabled>Naviera</option>
                                     <?php foreach ($naviera as $item): ?>
-                                        <option value="<?php echo $item['Id']; ?>">
-                                            <?php echo $item['Nombre']; ?>
+                                        <option value="<?php echo $item['idtransporte']; ?>">
+                                            <?php echo $item['identificacion']; ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
