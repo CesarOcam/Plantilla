@@ -302,6 +302,16 @@ try {
 
         }
 
+        //actualizar referencia
+        //actualizar referencia
+        $sql_statusRef = "UPDATE referencias SET Status = 3 WHERE Id = :referenciaId";
+        $stmt = $con->prepare($sql_statusRef); // Usa $con en lugar de $pdo
+        $stmt->execute([
+            ':referenciaId' => $referenciaId
+        ]);
+
+
+
 
         echo json_encode([
             'success' => true,

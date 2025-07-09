@@ -13,7 +13,7 @@ $('#btn_kardex').on('click', function () {
     });
 
     $.ajax({
-        url: '../../modulos/actualizar/afectar_Kardex.php',
+        url: '../../modulos/actualizar/afectar_kardex.php',
         type: 'POST',
         data: { id: id },
         dataType: 'json',
@@ -34,8 +34,8 @@ $('#btn_kardex').on('click', function () {
 
                 // Muestra en SweetAlert
                 Swal.fire({
-                    title: '¡Datos obtenidos!',
-                    html: html,
+                    title: 'Referencia Facturada',
+                    html: 'Kardex afectado correctamente',
                     icon: 'success'
                 });
 

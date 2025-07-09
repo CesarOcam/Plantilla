@@ -757,15 +757,16 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </a>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                            <?php if (isset($referencia['Status']) && $referencia['Status'] == 2): ?>
-                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_kardex"
-                                    data-id="<?= $id2 ?>">
-                                    <i class="fas fa-dolly me-2"></i> Afectar Kardex
-                                </button>
-                            <?php else: ?>
+
+                            <?php if (isset($referencia['Status']) && $referencia['Status'] == 1): ?>
                                 <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_actualizar"
                                     data-id="<?= $id2 ?>">
                                     <i class="fas fa-share me-2"></i> Pasar a Contabilidad
+                                </button>
+                            <?php elseif (isset($referencia['Status']) && $referencia['Status'] == 2): ?>
+                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_kardex"
+                                    data-id="<?= $id2 ?>">
+                                    <i class="fas fa-dolly me-2"></i> Afectar Kardex
                                 </button>
                             <?php endif; ?>
                         </div>

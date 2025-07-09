@@ -11,21 +11,22 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para l
 
 try {
     $stmt = $con->prepare("
-    SELECT 
-        p.Numero AS NumeroPoliza,
-        b.NombreCorto AS NombreCorto,
-        CONCAT(c.Numero, ' - ', c.Nombre) AS Cuenta,
-        pp.PolizaId,
-        pp.Cargo AS Cargo,
-        pp.Abono AS Abono,
-        pp.Observaciones
-    FROM partidaspolizas pp
-    LEFT JOIN polizas p ON pp.PolizaId = p.Id
-    LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
-    LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
-    WHERE pp.ReferenciaId = :id
-    AND c.Numero IN (123, 114) AND EnKardex != 1
-    LIMIT :inicio, :limite
+        SELECT 
+            p.Numero AS NumeroPoliza,
+            b.Nombre AS NombreBeneficiario,
+            CONCAT(c.Numero, ' - ', c.Nombre) AS Cuenta,
+            pp.PolizaId,
+            pp.Cargo AS Cargo,
+            pp.Abono AS Abono,
+            pp.Observaciones
+        FROM partidaspolizas pp
+        LEFT JOIN polizas p ON pp.PolizaId = p.Id
+        LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
+        LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
+        WHERE pp.ReferenciaId = :id
+        AND c.Numero IN (123, 114)
+        AND pp.EnKardex != 1
+        LIMIT :inicio, :limite
     ");
 
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -34,30 +35,36 @@ try {
     $stmt->execute();
 
     $datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
     //-------------------------------------------------------------------------------------
     $stmt2 = $con->prepare("
-    SELECT 
-        p.Numero AS NumeroPoliza,
-        b.NombreCorto AS NombreCorto,
-        CONCAT(c.Numero, ' - ', c.Nombre) AS Cuenta,
-        pp.PolizaId,
-        pp.Cargo AS Cargo,
-        pp.Abono AS Abono,
-        pp.Observaciones
-    FROM partidaspolizas pp
-    LEFT JOIN polizas p ON pp.PolizaId = p.Id
-    LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
-    LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
-    WHERE pp.ReferenciaId = :id
-    AND c.Numero NOT IN (123, 114) AND EnKardex != 1
-    LIMIT :inicio, :limite
+        SELECT 
+            p.Numero AS NumeroPoliza,
+            b.Nombre AS NombreBeneficiario,
+            CONCAT(c.Numero, ' - ', c.Nombre) AS Cuenta,
+            pp.PolizaId,
+            pp.Cargo AS Cargo,
+            pp.Abono AS Abono,
+            pp.Observaciones
+        FROM partidaspolizas pp
+        LEFT JOIN polizas p ON pp.PolizaId = p.Id
+        LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
+        LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
+        WHERE pp.ReferenciaId = :id
+        AND c.Numero NOT IN (123, 114)
+        AND pp.EnKardex != 1
+        LIMIT :inicio, :limite
     ");
+
     $stmt2->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt2->bindValue(':inicio', $inicio, PDO::PARAM_INT);
     $stmt2->bindValue(':limite', $registrosPorPagina, PDO::PARAM_INT);
     $stmt2->execute();
 
     $datos2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
 
 } catch (PDOException $e) {
     echo "Error en la consulta: " . $e->getMessage();
@@ -94,7 +101,7 @@ try {
                                             <?= $fila['NumeroPoliza'] ?>
                                         </a>
                                     </td>
-                                    <td><?= $fila['NombreCorto'] ?></td>
+                                    <td><?= $fila['NombreBeneficiario'] ?></td>
                                     <td><?= $fila['Cuenta'] ?></td>
                                     <td>$<?= $fila['Cargo'] ?></td>
                                     <td>$<?= $fila['Abono'] ?></td>
@@ -132,7 +139,7 @@ try {
                                             <?= $fila2['NumeroPoliza'] ?>
                                         </a>
                                     </td>
-                                    <td><?= $fila2['NombreCorto'] ?></td>
+                                    <td><?= $fila2['NombreBeneficiario'] ?></td>
                                     <td><?= $fila2['Cuenta'] ?></td>
                                     <td>$<?= $fila2['Cargo'] ?></td>
                                     <td>$<?= $fila2['Abono'] ?></td>
