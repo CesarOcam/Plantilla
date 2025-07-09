@@ -172,13 +172,13 @@ $pdf->Cell(42, 3.2, '', 'LRB', 1, 'C');
 
 // -------- Tabla Exportador-------- //
 $pdf->SetXY(12, $startY + 30);
-$pdf->SetFillColor(180, 180, 180); // Gris claro
+$pdf->SetFillColor(180, 180, 180);
 $pdf->SetFont('Arial', 'B', 8);
 $pdf->Cell(188, 4, '', 'LTR', 0, 'L', true);
 $pdf->SetXY($startX + 3, $startY + 3);
 $pdf->Cell(0, 59, 'EXPORTADOR');
 
-$pdf->SetFillColor(255, 255, 255); // Blanco
+$pdf->SetFillColor(255, 255, 255);
 $pdf->SetXY(12, $startY + 34.1);
 $pdf->SetFont('Arial', '', 8);
 $texto = toISO($exportador['razonSocial_exportador'] . "\n" . $exportador['calle_exportador'] . " - " . $exportador['noExt_exportador'] . ' ' . $exportador['colonia_exportador'] . "\nC.P.:" . $exportador['codigoPostal_exportador'] . ' ' . $exportador['localidad_exportador'] . "\n" . $exportador['municipio_exportador'] . ", " . $pais['pais_clave'] . "\n" . $exportador['rfc_exportador']);
@@ -221,7 +221,6 @@ $maxHeight = max($col1Height, $col2Height);
 $pdf->Line(12, $yStart, 12, $yStart + $maxHeight);
 $pdf->Line(12 + 188, $yStart, 12 + 188, $yStart + $maxHeight);
 $pdf->Line(12, $yStart + $maxHeight, 12 + 188, $yStart + $maxHeight);
-
 // -------- Tabla Mercancía -------- //
 
 // -------- Tabla Informacion Logistica-------- //
@@ -275,7 +274,6 @@ $pdf->Line($xStart, $yStart + $tableHeight, $xStart + $tableWidth, $yStart + $ta
 // -------- Tabla Informacion Logistica-------- //
 
 // -------- Tabla Concepto e Importe-------- //
-
 $pdf->SetXY(12, $startY + 100.7);
 $pdf->SetFillColor(180, 180, 180); // Gris claro
 $pdf->SetFont('Arial', 'B', 8);
@@ -285,10 +283,7 @@ $pdf->Cell(0, 144, toISO('CONCEPTO'));
 $pdf->SetXY($startX + 170, $startY + 31.1);
 $pdf->Cell(0, 144, toISO('IMPORTE'));
 
-
-
-
-$stmtPartidas = $con->prepare("SELECT * FROM partidaspolizas WHERE ReferenciaId = :id");
+$stmtPartidas = $con->prepare("SELECT * FROM partidaspolizas WHERE ReferenciaId = :id AND EnKardex != 1");
 $stmtPartidas->bindParam(':id', $id, PDO::PARAM_INT);
 $stmtPartidas->execute();
 $partidas = $stmtPartidas->fetchAll(PDO::FETCH_ASSOC);
@@ -296,22 +291,21 @@ $partidas = $stmtPartidas->fetchAll(PDO::FETCH_ASSOC);
 $polizaId = $partidas[0]['PolizaId'];
 
 // --- Recuadro fijo personalizado ---
-$boxX = 12;     // Posición X
-$boxY = 141; // Posición Y
-$boxW = 188;  // Ancho del recuadro
-$boxH = 100;  // Alto del recuadro
+$boxX = 12;
+$boxY = 141;
+$boxW = 188;
+$boxH = 100;
 
 $pdf->SetFont('Arial', '', 8);
 $pdf->SetFillColor(255, 255, 255);
 $pdf->SetXY($boxX + 2, $boxY + 2);
 
-$lineHeight = 5; // alto por línea
-$maxLines = floor($boxH / $lineHeight); // máximo de líneas que caben
+$lineHeight = 5;
+$maxLines = floor($boxH / $lineHeight);
 $lineCount = 0;
 
-// Dibuja el recuadro (sin importar el contenido que pongas)
-$pdf->Line($boxX, $boxY, $boxX, $boxY + $boxH); // Línea izquierda
-$pdf->Line($boxX + $boxW, $boxY, $boxX + $boxW, $boxY + $boxH);     // Línea derecha
+$pdf->Line($boxX, $boxY, $boxX, $boxY + $boxH); 
+$pdf->Line($boxX + $boxW, $boxY, $boxX + $boxW, $boxY + $boxH);
 $pdf->Line($boxX, $boxY + $boxH, $boxX + $boxW, $boxY + $boxH);
 
 $totalLineas = 0;
@@ -360,6 +354,7 @@ $pdf->SetXY($boxX + 150, $subtotalY + 1);
 $pdf->Cell(36, $lineHeight, '$' . number_format($subtotal, 2), 0, 0, 'R');
 
 // --- Cuentas 214 ---
+
 $totalAnticipos = 0;
 foreach ($partidas as $partida) {
     if ($totalLineas >= $maxLines)
@@ -378,12 +373,12 @@ foreach ($partidas as $partida) {
     $stmtCuenta->execute();
     $cuenta = $stmtCuenta->fetch(PDO::FETCH_ASSOC);
 
-
     $stmtPoliza = $con->prepare("
         SELECT * 
         FROM polizas 
         WHERE Id = :id
     ");
+
     $stmtPoliza->bindParam(':id', $polizaId, PDO::PARAM_INT);
     $stmtPoliza->execute();
     $poliza = $stmtPoliza->fetch(PDO::FETCH_ASSOC);
@@ -392,9 +387,8 @@ foreach ($partidas as $partida) {
 
     if (!empty($poliza['Fecha'])) {
         $fecha = new DateTime($poliza['Fecha']);
-        $fechaFormateada = $fecha->format('(d-m-y)'); // "y" minúscula da el año en 2 dígitos
+        $fechaFormateada = $fecha->format('(d-m-y)');
     }
-
 
     if ($cuenta) {
         $pdf->SetFont('Arial', '', 8);
@@ -414,8 +408,9 @@ foreach ($partidas as $partida) {
 
 }
 $saldo = $subtotal - $totalAnticipos;
+
 // --- Línea SALDOS debajo de los ANTICIPOS ---
-$saldosY = $boxY + 8 + ($totalLineas * $lineHeight) + 1; // Justo después de los ANTICIPOS
+$saldosY = $boxY + 8 + ($totalLineas * $lineHeight) + 1;
 $pdf->Line(170, $saldosY, $boxX + $boxW, $saldosY);
 $pdf->SetFont('Arial', 'B', 8);
 $pdf->SetXY($boxX + 100, $saldosY + 1);

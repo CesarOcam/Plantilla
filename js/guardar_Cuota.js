@@ -39,10 +39,10 @@ document.getElementById('form_Cuota').addEventListener('submit', function (e) {
         method: 'POST',
         body: formData,
     })
-        .then(response => response.text()) // <-- cambiar a .text() para ver el contenido
+        .then(response => response.text()) 
         .then(text => {
-            console.log('Respuesta cruda:', text); // <-- revisar esto en consola
-            const data = JSON.parse(text); // <-- convertir a JSON manualmente
+            console.log('Respuesta cruda:', text); 
+            const data = JSON.parse(text); 
             console.log('Respuesta del servidor:', data);
             if (data.success) {
                 Swal.fire({
@@ -71,7 +71,6 @@ document.getElementById('form_Cuota').addEventListener('submit', function (e) {
             document.getElementById('monto').value = '';
             $('#referencia-select').val(null).trigger('change');
             $('#referencia-select').prop('disabled', true).trigger('change.select2');
-
             // Volver a renderizar para actualizar la interfaz
             renderFilePairs();
         })

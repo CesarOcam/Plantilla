@@ -112,7 +112,6 @@ if (!empty($aduanaId)) {
     $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// NAVIERAS
 $stmt = $con->prepare("SELECT idtransporte, identificacion
                        FROM transporte 
                        WHERE identificacion IS NOT NULL AND identificacion != ''
@@ -311,7 +310,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         value="<?php echo $referencia['PesoBruto']; ?>">
                                 </div>
 
-                                <!-- FILA 3 -->
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="bultos" class="form-label text-muted small">BULTOS:</label>
                                     <input id="bultos" name="bultos" type="text"
@@ -518,11 +516,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['Status_texto']; ?>" readonly>
                                 </div>
-
                             </div>
                         </div>
 
-                        <!-- Dirección -->
                         <div class="tab-pane fade" id="direccion" role="tabpanel">
                             <div class="row ms-2 me-2">
                                 <?php
@@ -626,7 +622,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </div>
                         </div>
 
-                        <!-- Opciones -->
                         <div class="tab-pane fade" id="opciones" role="tabpanel">
                             <div class="row mt-4">
                                 <div class="col-12 mt-5">
@@ -635,7 +630,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         <i class="bi bi-upload me-1"></i> Subir Documentos
                                     </button>
 
-                                    <!-- Tabla de documentos cargados -->
                                     <div class="table-responsive mt-3">
                                         <table
                                             class="table table-sm tabla-partidas-estilo tabla-documentos table-hover align-middle"
@@ -747,20 +741,19 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         </div>
                     </div>
 
-                    <!-- Botones -->
                     <div class="row justify-content-end mt-auto">
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <a href="../../vistas/pdfs/formato-02.php?id=<?= $id2 ?>" target="_blank"
                                 class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-0 shadow-sm"
-                                style="font-size: 0.9rem;" title="Ver Solicitudes">
+                                title="Ver Solicitudes">
                                 <i class="fas fa-file-alt me-2"></i> Carátula
                             </a>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <a href="../../vistas/pdfs/formato-01.php?id=<?= $id2 ?>" target="_blank"
                                 class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-0 shadow-sm"
-                                style="font-size: 0.9rem;" title="Ver Solicitudes">
-                                <i class="fas fa-file-alt me-2"></i> Imprimir
+                                title="Ver Solicitudes">
+                                <i class="fas fa-file-pdf me-2"></i> Imprimir PDF
                             </a>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
@@ -790,7 +783,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     </div>
                 </div>
 
-                <!-- MODAL DE DOCUMENTOS -->
                 <div class="modal fade" id="modalDocumentos" tabindex="-1" aria-labelledby="modalDocumentosLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -820,7 +812,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     </div>
                                 </div>
 
-                                <!-- Botón para seleccionar archivos debajo del recuadro con icono carpeta -->
                                 <div class="text-center mb-3">
                                     <button type="button" class="btn btn-outline-primary" id="btnBuscarArchivos">
                                         <i class="bi bi-folder-fill me-2"></i> Seleccionar desde carpeta
@@ -828,7 +819,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <input type="file" id="documentosInput" name="documentos[]" multiple hidden>
                                 </div>
 
-                                <!-- Botón final -->
                                 <div class="text-end mt-4">
                                     <button type="button" class="btn btn-primary" id="btnAgregarDocs">Agregar a la
                                         tabla</button>
@@ -841,6 +831,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         </div>
     </div>
 </body>
+
 <script>
     const tiposContenedor = <?= json_encode($tiposContenedor) ?>;
 
@@ -1133,7 +1124,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         }
     });
 
-
     const dropZone = document.getElementById('dropZone');
     const input = document.getElementById('documentosInput');
     const previewContainer = document.getElementById('previewContainer');
@@ -1256,11 +1246,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     });
 
 
-
-
-
 </script>
 <script src="../../../js/actualizar/pasar_Conta.js"></script>
+<script src="../../../js/actualizar/afectar_Kardex.js"></script>
 <script src="../../../js/eliminar/eliminar_archivo.js"></script>
 <script src="../../../js/actualizar/actualizar_Referencias.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"

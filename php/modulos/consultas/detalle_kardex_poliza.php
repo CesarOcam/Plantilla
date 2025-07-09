@@ -20,7 +20,7 @@ $stmt = $con->prepare("
         CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS UsuarioAlta,
         p.FechaAlta,
         CASE 
-            WHEN p.Activo = 1 THEN 'EN TRÁFICO'
+            WHEN p.Activo = 1 THEN 'ACTIVA'
             ELSE 'INACTIVA'
         END AS Activo
     FROM polizas p
@@ -81,7 +81,7 @@ $partidas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pólizas</title>
+    <title>Póliza</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -114,46 +114,38 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             <div class="card-header formulario_clientes">
                 <h5 class="mb-0">Póliza: <?php echo $poliza['Numero']; ?></h5>
                 <div class="row">
-                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
-                        <label for="EmpresaId" class="form-label text-muted small">EMPRESA:</label>
-                        <input id="EmpresaId" name="EmpresaId" type="text"
+                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
+                        <label for="Numero" class="form-label text-muted small">NO. PÓLIZA:</label>
+                        <input id="Numero" name="Numero" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['EmpresaNombre'];?>"
-                            readonly>
+                            style="background-color: transparent;" value="<?php echo $poliza['Numero']; ?>" readonly>
                     </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
                         <label for="tipo" class="form-label text-muted small">TIPO:</label>
                         <input id="tipo" name="tipo" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $tipoPoliza;?>" readonly>
+                            style="background-color: transparent;" value="DIARIO" readonly>
                     </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
                         <label for="BeneficiarioId" class="form-label text-muted small">BENEFICIARIO:</label>
                         <input id="BeneficiarioId" name="BeneficiarioId" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['BeneficiarioId'];?>"
-                            readonly>
+                            style="background-color: transparent;" readonly>
                     </div>
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="Fecha" class="form-label text-muted small">FECHA:</label>
                         <input id="Fecha" name="Fecha" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Fecha'];?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $poliza['Fecha']; ?>" readonly>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
-                        <label for="Numero" class="form-label text-muted small">NO. PÓLIZA:</label>
-                        <input id="Numero" name="Numero" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Numero'];?>" readonly>
-                    </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
                         <label for="Concepto" class="form-label text-muted small">CONCEPTO:</label>
                         <input id="Concepto" name="Concepto" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Concepto'];?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $poliza['Concepto']; ?>" readonly>
                     </div>
                 </div>
 
@@ -162,14 +154,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <label for="UsuarioAlta" class="form-label text-muted small">USUARIO ALTA:</label>
                         <input id="UsuarioAlta" name="UsuarioAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['UsuarioAlta'];?>"
+                            style="background-color: transparent;" value="<?php echo $poliza['UsuarioAlta']; ?>"
                             readonly>
                     </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
                         <label for="FechaAlta" class="form-label text-muted small">FECHA ALTA:</label>
                         <input id="FechaAlta" name="FechaAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['FechaAlta'];?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $poliza['FechaAlta']; ?>" readonly>
                     </div>
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="Activo" class="form-label text-muted small">STATUS:</label>
@@ -184,8 +176,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <thead class="table-light">
                                 <tr>
                                     <th>Subcuenta</th>
-                                    <th class="text-center">Cargo</th>
-                                    <th class="text-center">Abono</th>
+                                    <th>Cargo</th>
+                                    <th>Abono</th>
                                     <th>Observaciones</th>
                                     <th>Referencia</th>
                                     <th>Solicitado por</th>
@@ -222,7 +214,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <?php endif; ?>
                             </tbody>
                             <?php if (!empty($partidas)): ?>
-                                 <tfoot style="background-color: #f1f1f1;" class="tfoot-total">
+                                <tfoot style="background-color: #f1f1f1;" class="tfoot-total">
                                     <tr class="fw-bold text-center align-middle" style="height: 45px;">
                                         <td>Total</td>
                                         <td><?= '$ ' . number_format($total_cargo, 2) ?></td>

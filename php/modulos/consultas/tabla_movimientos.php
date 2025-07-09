@@ -24,7 +24,7 @@ try {
     LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
     LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
     WHERE pp.ReferenciaId = :id
-    AND c.Numero IN (123, 114)
+    AND c.Numero IN (123, 114) AND EnKardex != 1
     LIMIT :inicio, :limite
     ");
 
@@ -49,7 +49,7 @@ try {
     LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
     LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
     WHERE pp.ReferenciaId = :id
-    AND c.Numero NOT IN (123, 114)
+    AND c.Numero NOT IN (123, 114) AND EnKardex != 1
     LIMIT :inicio, :limite
     ");
     $stmt2->bindValue(':id', $id, PDO::PARAM_INT);
@@ -62,7 +62,6 @@ try {
 } catch (PDOException $e) {
     echo "Error en la consulta: " . $e->getMessage();
 }
-
 
 
 ?>

@@ -6,14 +6,8 @@ $registrosPorPagina = 20;
 
 // Determinar el número de la página actual
 $paginaActual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
-$inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para la consulta
+$inicio = ($paginaActual - 1) * $registrosPorPagina; 
 
-// Consulta para obtener los clientes (solo 20 registros por página)
-/*$stmt = $con->prepare("SELECT Id, Numero, Concepto, BeneficiarioId, Importe, EmpresaId, Fecha, Activo FROM polizas LIMIT :inicio, :registrosPorPagina");
-$stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindParam(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
-$stmt->execute();
-$poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);*/
 $where = [];
 $params = [];
 
@@ -74,7 +68,6 @@ $stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 $stmt->execute();
 $poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
 // Consulta para contar el total de registros
 $stmtTotal = $con->prepare("SELECT COUNT(*) FROM polizas");
 $stmtTotal->execute();
@@ -122,7 +115,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                             (($poliza['EmpresaId'] == 2) ? 'Amexport Logística' : 'Otro');
                         ?>
                     </td>
-                    <td><?php echo $poliza['FechaAlta']; ?></td>
+                    <td><?php echo $poliza['FechaAlta']; ?></td> 
                     <td>
                         <?php
                         if ($poliza['Activo'] == 1) {
@@ -152,7 +145,6 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
-
         <?php for ($i = $inicioBloque; $i <= $finBloque; $i++): ?>
             <li class="page-item <?php echo ($i == $paginaActual) ? 'active' : ''; ?>">
                 <a class="page-link" href="?pagina=<?php echo $i; ?>"><?php echo $i; ?></a>

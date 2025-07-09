@@ -46,6 +46,10 @@ a.nav-link.dropdown-toggle::after {
   box-shadow: none; /* Elimina la sombra por defecto */
 }
 
+.form-check-input:hover {
+        cursor: pointer;
+    }
+    
 .select2-container--default .select2-selection--multiple {
   background-color: transparent;
   border: none;

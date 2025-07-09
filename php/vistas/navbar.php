@@ -100,21 +100,20 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
                 href="<?php echo url('/php/vistas/consultas/consulta_poliza.php'); ?>">Pólizas</a></li>
             <li><a class="dropdown-item small"
                 href="<?php echo url('/php/vistas/consultas/consulta_referencia.php'); ?>">Referencias</a></li>
-            <li><a class="dropdown-item small" href="seg">Kardex</a></li>
+            <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_kardex.php'); ?>">Kardex</a></li>
           </ul>
         </li>
         <li class="nav-item position-relative">
           <a class="nav-link dropdown-toggle" href="repo" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">Reportes</a>
           <ul class="dropdown-menu border shadow">
-            <li><a class="dropdown-item small" href="repo">Referencias</a></li>
-            <li><a class="dropdown-item small"
-                href="/portal_web/Contabilidad/php/vistas/trafico/solicitud_pago.php">Solicitud de Pago</a></li>
-            <li><a class="dropdown-item small" href="repo">Realizar Pago</a></li>
-            <li><a class="dropdown-item small" href="repo">Solicitud de Anticipo</a></li>
+            <li><a class="dropdown-item small" href="#">Referencias</a></li>
+            <li><a class="dropdown-item small"href="#">Solicitud de Pago</a></li>
+            <li><a class="dropdown-item small" href="#">Realizar Pago</a></li>
+            <li><a class="dropdown-item small" href="#">Solicitud de Anticipo</a></li>
             <hr>
-            <li><a class="dropdown-item small" href="repo">Registro Cuota</a></li>
-            <li><a class="dropdown-item small" href="repo">Registro Facturas</a></li>
+            <li><a class="dropdown-item small" href="#">Registro Cuota</a></li>
+            <li><a class="dropdown-item small" href="#">Registro Facturas</a></li>
             <hr>
             <li><a class="dropdown-item small" href="#">Generar Poliza</a></li>
           </ul>
@@ -123,7 +122,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
           <a class="nav-link dropdown-toggle" href="seg" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">Seguridad</a>
           <ul class="dropdown-menu border shadow">
-            <li><a class="dropdown-item small" href="seg">Usuarios</a></li>
+            <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/seguridad/usuarios.php'); ?>">Usuarios</a></li>
           </ul>
         </li>
       </ul>
