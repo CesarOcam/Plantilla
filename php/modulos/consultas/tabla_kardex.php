@@ -9,7 +9,7 @@ $where = [];
 $params = [];
 
 if (isset($_GET['status']) && $_GET['status'] !== '') {
-    $where[] = "c.Activo = :status";
+    $where[] = "c.Status = :status";
     $params[':status'] = $_GET['status'];
 }
 
@@ -23,9 +23,9 @@ if (!empty($_GET['fecha_hasta'])) {
     $params[':fecha_hasta'] = $_GET['fecha_hasta'];
 }
 
-if (!empty($_GET['referencia'])) {
-    $where[] = "c.Referencia LIKE :referencia";
-    $params[':referencia'] = "%" . $_GET['referencia'] . "%";
+if (!empty($_GET['num'])) {
+    $where[] = "c.NumCg LIKE :num";
+    $params[':num'] = "%" . $_GET['num'] . "%";
 }
 
 $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
@@ -105,8 +105,8 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                 <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_kardex.php?id=<?php echo $kardex['Id']; ?>';}"
                     style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1" type="checkbox" value=""
-                            aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 kardex-checkbox" type="checkbox"
+                            value="<?php echo $kardex['Id']; ?>" aria-label="Checkbox for following text input">
                     </th>
                     <td><?php echo $kardex['Id']; ?></td>
                     <td><?php echo $kardex['NumCg']; ?></td>

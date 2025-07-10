@@ -43,8 +43,8 @@ if (!isset($_SESSION['usuario_id'])) {
                             <select id="statusInput" class="form-select rounded-0 border-0 border-bottom"
                                 style="background-color: transparent;" aria-label="Filtrar por status">
                                 <option value="">TODOS</option>
-                                <option value="1">ACTIVA</option>
-                                <option value="0">INACTIVA</option>
+                                <option value="1">VIGENTE</option>
+                                <option value="2">PAGADA</option>
                             </select>
                         </div>
 
@@ -63,16 +63,9 @@ if (!isset($_SESSION['usuario_id'])) {
                         </div>
 
                         <div class="col-1 d-flex flex-column">
-                            <label for="polizaInput" class="form-label small mb-0">PÓLIZA:</label>
-                            <input type="text" id="polizaInput" class="form-control rounded-0 border-0 border-bottom"
+                            <label for="numInput" class="form-label small mb-0">NÚMERO:</label>
+                            <input type="text" id="numInput" class="form-control rounded-0 border-0 border-bottom"
                                 style="background-color: transparent;" aria-label="Filtrar por póliza">
-                        </div>
-
-                        <div class="col-4 d-flex flex-column">
-                            <label for="beneficiarioInput" class="form-label small mb-0">BENEFICIARIO:</label>
-                            <input type="text" id="beneficiarioInput"
-                                class="form-control rounded-0 border-0 border-bottom"
-                                style="background-color: transparent;" aria-label="Filtrar por beneficiario">
                         </div>
                         <!-- Botones -->
                         <div class="col-3 d-flex align-items-end justify-content-start gap-2">
@@ -86,24 +79,15 @@ if (!isset($_SESSION['usuario_id'])) {
                             </div>
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
                                 <button type="button" class="btn btn-outline-secondary rounded-0"
-                                    id="btn_limpiar">Pagar</button>
+                                    id="btn_pagar">Pagar</button>
                             </div>
-                        </div>
-
-                        <!-- Botón "+" a la derecha -->
-                        <div class="col d-flex align-items-start justify-content-end mt-3 mb-5">
-                            <a href="../formularios/form_polizas.php"
-                                class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
-                                style="width: 36px; height: 36px;" title="Agregar nuevo">
-                                <i class="fas fa-plus"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
 
                 <hr class="mb-5" style="border-top: 2px solid #000;">
 
-                <div id="tabla-polizas-container">
+                <div id="tabla-kardex-container">
                     <?php include('../../modulos/consultas/tabla_kardex.php'); ?>
                 </div>
 
@@ -120,22 +104,20 @@ if (!isset($_SESSION['usuario_id'])) {
             const status = document.getElementById("statusInput").value;
             const fechaDesde = document.getElementById("fechaDesdeInput").value;
             const fechaHasta = document.getElementById("fechaHastaInput").value;
-            const poliza = document.getElementById("polizaInput").value;
-            const beneficiario = document.getElementById("beneficiarioInput").value;
+            const num = document.getElementById("numInput").value;
 
             const params = new URLSearchParams({
                 status,
                 fecha_desde: fechaDesde,
                 fecha_hasta: fechaHasta,
-                poliza,
-                beneficiario
+                num
             });
 
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "../../modulos/consultas/tabla_polizas.php?" + params.toString(), true);
+            xhr.open("GET", "../../modulos/consultas/tabla_kardex.php?" + params.toString(), true);
             xhr.onload = function () {
                 if (this.status === 200) {
-                    document.getElementById("tabla-polizas-container").innerHTML = this.responseText;
+                    document.getElementById("tabla-kardex-container").innerHTML = this.responseText;
                 }
             };
             xhr.send();
@@ -146,12 +128,12 @@ if (!isset($_SESSION['usuario_id'])) {
             document.getElementById("statusInput").value = "";
             document.getElementById("fechaDesdeInput").value = "";
             document.getElementById("fechaHastaInput").value = "";
-            document.getElementById("polizaInput").value = "";
-            document.getElementById("beneficiarioInput").value = "";
+            document.getElementById("numInput").value = "";
 
             document.getElementById("btn_buscar").click(); // recargar con filtros vacíos
         });
     </script>
+    <script src="../../../js/pagar_kardex/pagar_kardex.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
