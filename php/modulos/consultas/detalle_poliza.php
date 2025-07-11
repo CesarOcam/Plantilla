@@ -64,8 +64,10 @@ $stmt = $con->prepare("
         p.Abono,
         p.Observaciones,
         p.FolioArchivo AS Factura,
-        r.Numero AS ReferenciaNumero   -- número de la referencia
+        r.Numero AS ReferenciaNumero,   -- número de la referencia
+        CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS usuarioNombre
     FROM partidaspolizas p
+    LEFT JOIN usuarios u ON p.created_by = u.idusuarios
     LEFT JOIN cuentas c ON p.SubcuentaId = c.Id
     LEFT JOIN referencias r ON p.ReferenciaId = r.Id  -- unión con referencias
     WHERE p.PolizaId = :id
@@ -215,7 +217,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
                                             <td><?= htmlspecialchars($fila['ReferenciaNumero'], 2) ?></td>
                                             <td></td>
-                                            <td></td>
+                                            <td><?= htmlspecialchars($fila['usuarioNombre'], 2) ?></td>
                                             <td><?= htmlspecialchars($fila['Factura']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>

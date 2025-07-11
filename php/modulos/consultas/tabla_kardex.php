@@ -7,6 +7,7 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina;
 
 $where = [];
 $params = [];
+$where[] = "c.Status != 2"; // <--- Esta es la línea agregada
 
 if (isset($_GET['status']) && $_GET['status'] !== '') {
     $where[] = "c.Status = :status";

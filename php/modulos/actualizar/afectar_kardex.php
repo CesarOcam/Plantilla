@@ -184,14 +184,14 @@ try {
         $ultimo_numcg = $stmt_ultimo_cg->fetchColumn();
 
         if ($ultimo_numcg) {
-            $numero_actual = (int) substr($ultimo_numcg, 3);  // Quita el 'CG-' y convierte a int
+            $numero_actual = (int) substr($ultimo_numcg, 3);
             $numero_siguiente = $numero_actual + 1;
         } else {
-            $numero_siguiente = 1;  // Si no hay registros previos
+            $numero_siguiente = 1;
         }
 
         $numero = 'CG-' . str_pad($numero_siguiente, 6, '0', STR_PAD_LEFT);
-        
+
 
         $sql_guardar = "INSERT INTO cuentas_kardex     
         (NumCg, Referencia, Logistico, Exportador, Barco, Booking, SuReferencia, Importe, Anticipos, Saldo, Fecha, Poliza_id, NumPoliza, Status, Created_by)
@@ -239,7 +239,7 @@ try {
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $kardex_info = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         $importe = $kardex_info['Importe'];
         $anticipos = $kardex_info['Anticipos'];
 
@@ -270,32 +270,33 @@ try {
                 break;
         }
 
-        // Determinar el cargo y abono basado en el saldo
         $cargo = 0;
         $abono = 0;
 
         if ($saldo < 0) {
-            $abono = abs($saldo); // Convertimos a positivo para el cargo
+            $abono = abs($saldo);
         } else {
             $cargo = $saldo;
         }
 
-        if($saldo!=0){
+        if ($saldo != 0) {
             // Insertar partida Cliente
             $sql_cuentaCliente = "INSERT INTO partidaspolizas     
                 (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Activo, EnKardex)
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             $stmt_cuentaCli = $con->prepare($sql_cuentaCliente);
-            if (!$stmt_cuentaCli->execute([
-                $polizaId,
-                $subcuentaCliente,
-                $referenciaId,
-                $cargo,
-                $abono,
-                1,
-                1
-            ])) {
+            if (
+                !$stmt_cuentaCli->execute([
+                    $polizaId,
+                    $subcuentaCliente,
+                    $referenciaId,
+                    $cargo,
+                    $abono,
+                    1,
+                    1
+                ])
+            ) {
                 $errorInfo = $stmt_cuentaCli->errorInfo();
                 throw new Exception("Error insertando partida cliente: " . implode(" | ", $errorInfo));
             }
@@ -303,14 +304,11 @@ try {
         }
 
         //actualizar referencia
-        //actualizar referencia
         $sql_statusRef = "UPDATE referencias SET Status = 3 WHERE Id = :referenciaId";
-        $stmt = $con->prepare($sql_statusRef); // Usa $con en lugar de $pdo
+        $stmt = $con->prepare($sql_statusRef);
         $stmt->execute([
             ':referenciaId' => $referenciaId
         ]);
-
-
 
 
         echo json_encode([

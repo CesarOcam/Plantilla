@@ -17,9 +17,11 @@ $('#btn_kardex').on('click', function () {
         type: 'POST',
         data: { id: id },
         dataType: 'json',
-        success: function (data) {
-            Swal.close(); // Oculta el spinner
 
+        success: function (data) {
+            // Sumar saldos de la tabla
+            Swal.close(); // Oculta el spinner
+            
             if (data.success) {
                 console.log('Datos obtenidos:', data.data);
 
@@ -42,6 +44,7 @@ $('#btn_kardex').on('click', function () {
                 console.log('Referencia:', data.data.referencia);
                 console.log('Cuenta1:', data.data.cuenta1);
                 console.log('Cuenta2:', data.data.cuenta2);
+                console.log();
 
             } else {
                 Swal.fire('Error', data.message, 'error');
