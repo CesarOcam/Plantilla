@@ -184,7 +184,7 @@ $filas = [
     ['PUERTO DESCARGA:', $referencia['PuertoDescarga'] ?? '', 'DESTINO FINAL:', $referencia['PuertoDestino'] ?? ''],
     ['CIERRE DOCUMENTOS:', $referencia['CierreDocumentos'] ?? '', 'CIERRE DESPACHO:', $referencia['CierreDespacho'] ?? ''],
     ['FECHA DOCUMENTADO:', $referencia['CierreDocumentado'] ?? '', 'HORA DESPACHO:', $referencia['HoraDespacho'] ?? ''],
-    ['ETA:', $referencia['LlegadaEstimada'] ?? '', '', ''],
+    ['ETA:', $referencia['LlegadaEstimada'] ?? '', 'REFERENCIA EXTERNA:', $referencia['SuReferencia'] ?? ''],
     ['COMENTARIOS:', $referencia['Comentarios'] ?? '', '', ''],
 ];
 

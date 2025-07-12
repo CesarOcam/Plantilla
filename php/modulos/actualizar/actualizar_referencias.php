@@ -42,7 +42,7 @@ if (isset($_POST['id'])) {
     $cierre_desp = parseFecha($_POST['cierre_desp'] ?? null);
     $hora_desp = parseHora($_POST['hora_desp'] ?? null);
     $viaje = $_POST['viaje'] ?? null;
-    $su_referencia = $_POST['su_referencia'] ?? null;
+    $su_referencia = $_POST['SuReferencia'] ?? null;
     $fecha_doc = parseFecha($_POST['fecha_doc'] ?? null);
     $fecha_eta = parseFecha($_POST['fecha_eta'] ?? null);
     $puerto_dec = $_POST['puerto_desc'] ?? null;

@@ -326,7 +326,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <input name="su_referencia" type="text"
                                     class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Su Referencia">
+                                    style="background-color: transparent;" placeholder="Referencia Externa">
                             </div>
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4 position-relative">
                                 <i class="bi bi-calendar-week"

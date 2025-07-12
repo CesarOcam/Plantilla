@@ -448,7 +448,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         value="<?php echo $referencia['Viaje']; ?>">
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
-                                    <label for="SuReferencia" class="form-label text-muted small">SU REFERENCIA:</label>
+                                    <label for="SuReferencia" class="form-label text-muted small">REFERENCIA EXTERNA:</label>
                                     <input id="SuReferencia" name="SuReferencia" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
