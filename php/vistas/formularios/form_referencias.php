@@ -226,12 +226,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                                 <input name="peso" type="text" class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Peso Bruto / Cantidad">
+                                    style="background-color: transparent;" placeholder="Peso Bruto">
                             </div>
                             <!-- FILA 3 -->
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">
                                 <input name="bultos" type="text" class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Bultos">
+                                    style="background-color: transparent;" placeholder="Cantidad y Bultos">
                             </div>
 
                             <div class="col-10 col-sm-3 d-flex align-items-center mt-4">

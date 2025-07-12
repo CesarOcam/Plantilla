@@ -303,7 +303,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     </select>
                                 </div>
                                 <div class="col-2 col-sm-2 d-flex flex-column mt-4">
-                                    <label for="peso" class="form-label text-muted small">PESO BRUTO/CANTIDAD:</label>
+                                    <label for="peso" class="form-label text-muted small">PESO BRUTO:</label>
                                     <input id="peso" name="peso" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
@@ -311,7 +311,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 </div>
 
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
-                                    <label for="bultos" class="form-label text-muted small">BULTOS:</label>
+                                    <label for="bultos" class="form-label text-muted small">CANTIDAD Y BULTOS:</label>
                                     <input id="bultos" name="bultos" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
