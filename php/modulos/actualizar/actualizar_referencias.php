@@ -1,4 +1,13 @@
 <?php
+session_start();
+include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
 include('../conexion.php');
 
 if (isset($_POST['id'])) {
@@ -50,7 +59,7 @@ if (isset($_POST['id'])) {
     $comentarios = $_POST['comentarios'] ?? null;
 
     $fecha_modificacion = obtenerFechaHoraActual();
-    $usuario_modificacion = 1;
+    $usuario_modificacion = $_SESSION['usuario_id'];
     try {
         $con->beginTransaction();
 

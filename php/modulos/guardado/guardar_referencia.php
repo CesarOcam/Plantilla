@@ -67,7 +67,6 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
 
     $fecha_alta = obtenerFechaHoraActual();
     $usuarioAlta = $_SESSION['usuario_id'];
-    $usuarioAlta = 1;
 
     $sqlAduana = "SELECT nombre_corto_aduana FROM 2201aduanas WHERE id2201aduanas = ?";
     $stmtAduana = $con->prepare($sqlAduana);
