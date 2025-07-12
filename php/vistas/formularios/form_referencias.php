@@ -1,4 +1,9 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
@@ -8,14 +13,14 @@ if (!isset($_SESSION['usuario_id'])) {
 include_once('../../modulos/conexion.php');
 
 // Si es petición AJAX para recintos
-if (isset($_GET['aduana_id']) && is_numeric($_GET['aduana_id'])) {
-    $aduana_id = (int) $_GET['aduana_id'];
+if (isset($_GET['aduanaNombre'])) {
+    $aduanaNombre = trim($_GET['aduanaNombre']);
 
-    $stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos 
-                           FROM 2221_recintos 
-                           WHERE aduana_id = :aduana_id
-                           ORDER BY inmueble_recintos");
-    $stmt->execute(['aduana_id' => $aduana_id]);
+    $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado 
+                           FROM 2206_recintos_fiscalizados 
+                           WHERE aduanaFiscalizada LIKE :aduanaNombre
+                           ORDER BY recintoFiscalizado");
+    $stmt->execute(['aduanaNombre' => "%$aduanaNombre%"]);
     $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     header('Content-Type: application/json');
@@ -42,10 +47,10 @@ $stmt->execute();
 $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // RECINTOS
-$stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos
-                       FROM 2221_recintos 
-                       WHERE inmueble_recintos IS NOT NULL AND inmueble_recintos != ''
-                       ORDER BY inmueble_recintos");
+$stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado
+                       FROM 2206_recintos_fiscalizados 
+                       WHERE recintoFiscalizado IS NOT NULL AND recintoFiscalizado != ''
+                       ORDER BY recintoFiscalizado");
 $stmt->execute();
 $recinto = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -675,14 +680,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
         // Evento change aquí, dentro del ready
         $('#aduana-select').on('change', function () {
-            const aduanaId = this.value;
+            const aduanaNombre = this.options[this.selectedIndex].text;
             const recintoSelect = $('#recinto-select');
 
             // Mostrar mensaje de carga dentro del select (opción)
             recintoSelect.prop('disabled', true);
             recintoSelect.empty().append('<option>Cargando recintos...</option>').trigger('change');
 
-            fetch(`form_referencias.php?aduana_id=${aduanaId}`)
+            fetch(`form_referencias.php?aduanaNombre=${encodeURIComponent(aduanaNombre)}`)
                 .then(response => {
                     const contentType = response.headers.get("content-type");
                     if (!contentType || !contentType.includes("application/json")) {
@@ -696,7 +701,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     if (data.length > 0) {
                         recintoSelect.append('<option value="" disabled selected>-- Selecciona un recinto --</option>');
                         data.forEach(recinto => {
-                            recintoSelect.append(`<option value="${recinto.id2221_recintos}">${recinto.inmueble_recintos}</option>`);
+                            recintoSelect.append(`<option value="${recinto.id2206_recintos_fiscalizados}">${recinto.recintoFiscalizado}</option>`);
                         });
                         recintoSelect.prop('disabled', false);
                     } else {
