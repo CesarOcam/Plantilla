@@ -97,7 +97,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <input id="AduanaId" name="AduanaId" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="" readonly>
-                            <input id="ReferenciaFacturaId" name="ReferenciaFacturaId" type="hidden" value="">
+                        <input id="ReferenciaFacturaId" name="ReferenciaFacturaId" type="hidden" value="">
                     </div>
                 </div>
                 <div class="row mt-5">
@@ -179,6 +179,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     });
     flatpickr("#Fecha", {
         dateFormat: "Y-m-d"
+    });
+
+    $(document).on('select2:open', () => {
+        setTimeout(() => {
+            const input = document.querySelector('.select2-container--open .select2-search__field');
+            if (input) input.focus();
+        }, 100);
     });
 
     document.addEventListener('DOMContentLoaded', function () {

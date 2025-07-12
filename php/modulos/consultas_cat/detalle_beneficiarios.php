@@ -214,6 +214,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
             // Refrescar Select2 para que oculte/actualice el dropdown
             $('#subcuenta-select').val(null).trigger('change');
+
+            
         });
     });
 </script>

@@ -152,6 +152,13 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
             width: '100%',
             placeholder: "Seleccione una aduana"
         });
+
+        $(document).on('select2:open', () => {
+        setTimeout(() => {
+            const input = document.querySelector('.select2-container--open .select2-search__field');
+            if (input) input.focus();
+        }, 100);
+    });
     });
 </script>
 </body>

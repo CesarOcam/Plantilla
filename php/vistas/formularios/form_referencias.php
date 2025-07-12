@@ -51,20 +51,22 @@ $recinto = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // NAVIERAS
+$stmt = $con->prepare("SELECT idtransportista, nombre_transportista
+                       FROM transportista 
+                       WHERE nombre_transportista IS NOT NULL AND nombre_transportista != ''
+                       ORDER BY nombre_transportista");
+$stmt->execute();
+$naviera = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// BUQUES
 $stmt = $con->prepare("SELECT idtransporte, identificacion
                        FROM transporte 
                        WHERE identificacion IS NOT NULL AND identificacion != ''
                        ORDER BY identificacion");
 $stmt->execute();
-$naviera = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// BUQUES
-$stmt = $con->prepare("SELECT Id, Nombre
-                       FROM con_buques 
-                       WHERE Nombre IS NOT NULL AND Nombre != ''
-                       ORDER BY Nombre");
-$stmt->execute();
 $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 
 // Consolidadoras
 $stmt = $con->prepare("SELECT id_consolidadora, denominacion_consolidadora
@@ -266,8 +268,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     class="form-control rounded-0 border-0 border-bottom text-muted">
                                     <option value="" selected disabled>Naviera</option>
                                     <?php foreach ($naviera as $item): ?>
-                                        <option value="<?php echo $item['idtransporte']; ?>">
-                                            <?php echo $item['identificacion']; ?>
+                                        <option value="<?php echo $item['idtransportista']; ?>">
+                                            <?php echo $item['nombre_transportista']; ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -292,8 +294,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     class="form-control rounded-0 border-0 border-bottom text-muted">
                                     <option value="" selected disabled>Buque</option>
                                     <?php foreach ($buque as $item): ?>
-                                        <option value="<?php echo $item['Id']; ?>">
-                                            <?php echo $item['Nombre']; ?>
+                                        <option value="<?php echo $item['idtransporte']; ?>">
+                                            <?php echo $item['identificacion']; ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -512,6 +514,15 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#buque-select', 'Buque');
         initSelect2('#consolidadora-select', 'Consolidadora');
         initSelect2('#resultado_mod-select', 'Resultado de Modulación');
+
+        // Coloca automáticamente el cursor en la caja de búsqueda al abrir cualquier select2
+        $(document).on('select2:open', () => {
+            setTimeout(() => {
+                let input = document.querySelector('.select2-container--open .select2-search__field');
+                if (input) input.focus();
+            }, 100); // pequeño delay para asegurar que el input exista
+        });
+
 
         let contador = 1;
 

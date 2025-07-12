@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /portal_web/Contabilidad/login.php'); 
+    header('Location: /portal_web/Contabilidad/login.php');
     exit;
 }
 include_once('../../modulos/conexion.php');
@@ -107,38 +107,45 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 </div>
 
 <script>
-   $(document).ready(function() {
-    // Guardar todas las opciones originales
-    const allOptions = $('#subcuenta-select option').toArray();
+    $(document).ready(function () {
+        // Guardar todas las opciones originales
+        const allOptions = $('#subcuenta-select option').toArray();
 
-    $('#tipo-select').on('change', function () {
-        const tipo = $(this).val();
-        let filtro = '';
+        $('#tipo-select').on('change', function () {
+            const tipo = $(this).val();
+            let filtro = '';
 
-        if (tipo === '1') {
-            filtro = '123-';
-        } else if (tipo === '2') {
-            filtro = '601-';
-        }
+            if (tipo === '1') {
+                filtro = '123-';
+            } else if (tipo === '2') {
+                filtro = '601-';
+            }
 
-        const filteredOptions = allOptions.filter(opt => {
-            const numero = $(opt).data('numero');
-            return numero && numero.startsWith(filtro);
+            const filteredOptions = allOptions.filter(opt => {
+                const numero = $(opt).data('numero');
+                return numero && numero.startsWith(filtro);
+            });
+
+            $('#subcuenta-select').empty();
+
+            filteredOptions.forEach(opt => $('#subcuenta-select').append(opt));
+
+            $('#subcuenta-select').val(null).trigger('change');
         });
 
-        $('#subcuenta-select').empty();
+        $('#subcuenta-select').select2({
+            placeholder: 'Subcuenta (Amexport Logística)*',
+            allowClear: true,
+            width: '100%'
+        });
 
-        filteredOptions.forEach(opt => $('#subcuenta-select').append(opt));
-
-        $('#subcuenta-select').val(null).trigger('change');
+        $(document).on('select2:open', () => {
+            setTimeout(() => {
+                const input = document.querySelector('.select2-container--open .select2-search__field');
+                if (input) input.focus();
+            }, 100);
+        });
     });
-
-    $('#subcuenta-select').select2({
-        placeholder: 'Subcuenta (Amexport Logística)*',
-        allowClear: true,
-        width: '100%'
-    });
-});
 
 </script>
 

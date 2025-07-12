@@ -134,7 +134,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 <script src="../../../js/archivos/xml_Factura.js"></script>
 
 <script>
-
+    $(document).on('select2:open', () => {
+        setTimeout(() => {
+            const input = document.querySelector('.select2-container--open .select2-search__field');
+            if (input) input.focus();
+        }, 100);
+    });
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"

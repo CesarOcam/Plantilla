@@ -45,11 +45,11 @@ $stmt = $con->prepare("
         r.RecintoId,
         rec.inmueble_recintos AS inmueble_recintos,
         r.NavieraId,
-        nav.identificacion AS nombre_naviera,
+        nav.nombre_transportista AS nombre_naviera,
         r.CierreDocumentos,
         r.FechaPago,
         r.BuqueId,
-        bq.Nombre AS nombre_buque,
+        bq.identificacion AS nombre_buque,
         r.Booking,
         r.CierreDespacho,
         r.HoraDespacho,
@@ -70,8 +70,8 @@ $stmt = $con->prepare("
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
     LEFT JOIN consolidadoras cons ON r.ConsolidadoraId = cons.id_consolidadora
     LEFT JOIN 2221_recintos rec ON r.RecintoId = rec.id2221_recintos
-    LEFT JOIN transporte nav ON r.NavieraId = nav.idtransporte
-    LEFT JOIN con_buques bq ON r.BuqueId = bq.Id
+    LEFT JOIN transportista nav ON r.NavieraId = nav.idtransportista
+    LEFT JOIN transporte bq ON r.BuqueId = bq.idtransporte
     LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
     WHERE r.Id = :id
 ");
@@ -112,17 +112,17 @@ if (!empty($aduanaId)) {
     $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+$stmt = $con->prepare("SELECT idtransportista, nombre_transportista
+                       FROM transportista 
+                       WHERE nombre_transportista IS NOT NULL AND nombre_transportista != ''
+                       ORDER BY nombre_transportista");
+$stmt->execute();
+$navieras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 $stmt = $con->prepare("SELECT idtransporte, identificacion
                        FROM transporte 
                        WHERE identificacion IS NOT NULL AND identificacion != ''
                        ORDER BY identificacion");
-$stmt->execute();
-$navieras = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$stmt = $con->prepare("SELECT Id, Nombre
-                       FROM con_buques 
-                       WHERE Nombre IS NOT NULL AND Nombre != ''
-                       ORDER BY Nombre");
 $stmt->execute();
 $buques = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -376,9 +376,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             Naviera *
                                         </option>
                                         <?php foreach ($navieras as $item): ?>
-                                            <option value="<?= $item['idtransporte'] ?>"
-                                                <?= $item['idtransporte'] == $referencia['NavieraId'] ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($item['identificacion']) ?>
+                                            <option value="<?= $item['idtransportista'] ?>"
+                                                <?= $item['idtransportista'] == $referencia['NavieraId'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($item['nombre_transportista']) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -407,9 +407,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         <option value="" disabled <?= empty($referencia['BuqueId']) ? 'selected' : '' ?>>
                                             Seleccione buque *</option>
                                         <?php foreach ($buques as $item): ?>
-                                            <option value="<?= htmlspecialchars($item['Id']) ?>"
-                                                <?= ($item['Id'] == $referencia['BuqueId']) ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($item['Nombre']) ?>
+                                            <option value="<?= htmlspecialchars($item['idtransporte']) ?>"
+                                                <?= ($item['idtransporte'] == $referencia['BuqueId']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($item['identificacion']) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -448,7 +448,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         value="<?php echo $referencia['Viaje']; ?>">
                                 </div>
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
-                                    <label for="SuReferencia" class="form-label text-muted small">REFERENCIA EXTERNA:</label>
+                                    <label for="SuReferencia" class="form-label text-muted small">REFERENCIA
+                                        EXTERNA:</label>
                                     <input id="SuReferencia" name="SuReferencia" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
@@ -855,6 +856,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         initSelect2('#naviera-select', 'Naviera');
         initSelect2('#buque-select', 'Buque');
         initSelect2('.tipo-select', 'Tipo Buque');
+
+        $(document).on('select2:open', () => {
+            setTimeout(() => {
+                const input = document.querySelector('.select2-container--open .select2-search__field');
+                if (input) input.focus();
+            }, 100);
+        });
     });
 
     // Inicializar Calendarios

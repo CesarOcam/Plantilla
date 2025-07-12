@@ -26,7 +26,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <tbody class="small">
         <?php if ($usuarios): ?>
             <?php foreach ($usuarios as $row): ?>
-                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = 'detalle_usuario.php?id=<?php echo $row['idusuarios']; ?>';}" style="cursor: pointer;">
+                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '#';}" style="cursor: pointer;">
                     <th scope="row">
                         <input class="form-check-input mt-1 chkUsuario" type="checkbox" value="<?php echo htmlspecialchars($row['idusuarios']); ?>" aria-label="Checkbox for following text input">
                     </th>

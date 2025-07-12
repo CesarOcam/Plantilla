@@ -361,23 +361,29 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
     $(document).ready(function() {
         $('#pais-select').select2({
             placeholder: "Selecciona un país",
-            allowClear: true,
+            allowClear: false,
             width: '100%'
         });
     });
         $(document).ready(function() {
         $('#estado-select').select2({
             placeholder: "Selecciona un estado",
-            allowClear: true,
+            allowClear: false,
             width: '100%'
         });
     });
     $(document).ready(function() {
         $('#logistico-select').select2({
             placeholder: "Selecciona un logístico",
-            allowClear: true,
+            allowClear: false,
             width: '100%'
         });
+    });
+    $(document).on('select2:open', () => {
+        setTimeout(() => {
+            const input = document.querySelector('.select2-container--open .select2-search__field');
+            if (input) input.focus();
+        }, 100);
     });
 </script>
 </body>

@@ -41,11 +41,11 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -59,29 +59,34 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
                         <input name="nombre_corto_aduana" type="text" maxlength="15"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Nombre Corto*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
+                            placeholder="Nombre Corto*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1"
+                            required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input name="aduana_aduana" type="text" maxlength="3"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Clave Aduana*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
+                            placeholder="Clave Aduana*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1"
+                            required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input name="seccion_aduana" type="text" maxlength="1"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Clave Seccion*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
+                            placeholder="Clave Seccion*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1"
+                            required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input name="denominacion_aduana" type="text"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Denominación*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
+                            placeholder="Denominación*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1"
+                            required>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <input name="prefix_aduana" type="text" maxlength="10"
                             class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Prefijo*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
+                            placeholder="Prefijo*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1"
+                            required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <select id="tipoAduana-select" name="tipoAduana"
@@ -241,6 +246,13 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
             placeholder: 'Subcuenta Cuotas Cargo Exportador',
             allowClear: true,
             width: '100%'
+        });
+
+        $(document).on('select2:open', () => {
+            setTimeout(() => {
+                const input = document.querySelector('.select2-container--open .select2-search__field');
+                if (input) input.focus();
+            }, 100);
         });
     });
 </script>

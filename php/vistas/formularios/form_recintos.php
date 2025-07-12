@@ -44,11 +44,11 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../../css/style2.css">
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -62,29 +62,29 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                                <select id="aduana-select" name="aduana" class="form-control rounded-0 border-0 border-bottom text-muted"
-                                    style="background-color: transparent;" aria-label="Filtrar por fecha"
-                                    aria-describedby="basic-addon1" required>
-                                    <option value="" selected disabled>Aduana</option>
-                                    <?php foreach ($aduana as $aduana): ?>
-                                        <option value="<?php echo $aduana['nombre_corto_aduana']; ?>">
-                                            <?php echo $aduana['nombre_corto_aduana']; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                        <select id="aduana-select" name="aduana"
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
+                            style="background-color: transparent;" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1" required>
+                            <option value="" selected disabled>Aduana</option>
+                            <?php foreach ($aduana as $aduana): ?>
+                                <option value="<?php echo $aduana['nombre_corto_aduana']; ?>">
+                                    <?php echo $aduana['nombre_corto_aduana']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <input name="curp" type="text"
-                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="CURP*" aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
+                        <input name="curp" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="CURP*" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1" required>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
-                        <input name="domicilio" type="text"
-                            class="form-control rounded-0 border-0 border-bottom" style="background-color: transparent;"
-                            placeholder="Domicilio Fiscal*" aria-label="Filtrar por fecha"
-                            aria-describedby="basic-addon1" required>
+                        <input name="domicilio" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="Domicilio Fiscal*"
+                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-4 d-flex align-items-center mt-4">
                         <input id="fechaAcceso_transportista" name="fechaAcceso_transportista" type="datetime-local"
@@ -92,7 +92,7 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             style="background-color: transparent; max-width: 200px;" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1" required>
                         <span class="ms-2" style="font-size: 0.9rem; color: #000; opacity: 0.5;">Fecha Acceso*</span>
-                    </div> 
+                    </div>
                 </div>
                 <div class="row">
                     <div class="row justify-content-end mt-5">
@@ -117,12 +117,19 @@ $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
         document.getElementById('fechaAcceso_transportista').value = localDatetime;
     });
 
-        $(document).ready(function() {
+    $(document).ready(function () {
         // Inicializar Select2
         $('#aduana-select').select2({
             placeholder: 'Aduana*',
             allowClear: true,
             width: '100%'
+        });
+
+        $(document).on('select2:open', () => {
+            setTimeout(() => {
+                const input = document.querySelector('.select2-container--open .select2-search__field');
+                if (input) input.focus();
+            }, 100);
         });
     });
 </script>

@@ -141,6 +141,12 @@ $paisActual = $buque['id2204clave_pais'] ?? '';
     $('.select2').select2({
         width: '100%' // Asegura que se vea bien
     });
+    $(document).on('select2:open', () => {
+        setTimeout(() => {
+            const input = document.querySelector('.select2-container--open .select2-search__field');
+            if (input) input.focus();
+        }, 100);
+    });
 });
 </script>
 </body>

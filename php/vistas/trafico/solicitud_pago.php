@@ -149,9 +149,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="2" class="text-end text-muted">Totales:</td>
+                                    <td colspan="2" class="text-end text-muted">Total:</td>
                                     <td><input type="text" id="total-cargo" class="form-control text-end" readonly></td>
-                                    <td><input type="text" id="total-abono" class="form-control text-end" readonly></td>
                                     <td colspan="3"></td>
                                 </tr>
                             </tfoot>
@@ -192,6 +191,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             placeholder: 'Beneficiario',
             allowClear: false,
             width: '100%'
+        });
+
+        $(document).on('select2:open', () => {
+            setTimeout(() => {
+                const input = document.querySelector('.select2-container--open .select2-search__field');
+                if (input) input.focus();
+            }, 100);
         });
     });
 

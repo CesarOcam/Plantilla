@@ -141,7 +141,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <input id="aduana" name="aduana" type="text"
                                                 class="form-control input-transparent rounded-0"
                                                 style="background-color: transparent;" placeholder="" readonly>
-                                                <input type="hidden" id="aduanaHidden" name="aduanaHidden">
+                                            <input type="hidden" id="aduanaHidden" name="aduanaHidden">
                                         </div>
 
                                         <div class="d-flex flex-column mt-4">
@@ -150,7 +150,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <input id="exportador" name="exportador" type="text"
                                                 class="form-control input-transparent rounded-0"
                                                 style="background-color: transparent;" placeholder="" readonly>
-                                                <input type="hidden" id="exportadorHidden" name="exportadorHidden">
+                                            <input type="hidden" id="exportadorHidden" name="exportadorHidden">
                                         </div>
 
                                         <div class="d-flex flex-column mt-4">
@@ -203,7 +203,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 </div>
 
 <script>
-    
+    $(document).on('select2:open', () => {
+        setTimeout(() => {
+            const input = document.querySelector('.select2-container--open .select2-search__field');
+            if (input) input.focus();
+        }, 100);
+    });
 
 </script>
 <script src="../../../js/archivos/xml_Cuota.js"></script>

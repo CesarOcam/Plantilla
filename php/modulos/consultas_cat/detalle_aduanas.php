@@ -292,7 +292,13 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $('.select2').select2({
       width: 'resolve',
       placeholder: "Selecciona una subcuenta",
-      allowClear: true
+      allowClear: false
+    });
+    $(document).on('select2:open', () => {
+        setTimeout(() => {
+            const input = document.querySelector('.select2-container--open .select2-search__field');
+            if (input) input.focus();
+        }, 100);
     });
   });
 </script>
