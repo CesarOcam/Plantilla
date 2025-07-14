@@ -101,16 +101,28 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // RECINTOS
 $recintos = [];
+
 if (!empty($aduanaId)) {
-    $stmt = $con->prepare("SELECT id2221_recintos, inmueble_recintos
-                           FROM 2221_recintos
-                           WHERE aduana_id = :aduana_id
-                             AND inmueble_recintos IS NOT NULL
-                             AND inmueble_recintos != ''
-                           ORDER BY inmueble_recintos");
-    $stmt->execute(['aduana_id' => $aduanaId]);
-    $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Primero obtenemos el nombre_corto_aduana de 2201aduanas
+    $stmtNombre = $con->prepare("SELECT nombre_corto_aduana FROM 2201aduanas WHERE id2201aduanas = ?");
+    $stmtNombre->execute([$aduanaId]);
+    $nombreCorto = $stmtNombre->fetchColumn();
+
+    if ($nombreCorto) {
+        $nombreCorto = strtoupper(trim($nombreCorto)); // Aseguramos consistencia
+
+        // Ahora buscamos los recintos donde aduanaFiscalizada coincida con nombre_corto_aduana
+        $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado
+                               FROM 2206_recintos_fiscalizados
+                               WHERE UPPER(aduanaFiscalizada) = :nombre
+                                 AND recintoFiscalizado IS NOT NULL
+                                 AND recintoFiscalizado != ''
+                               ORDER BY recintoFiscalizado");
+        $stmt->execute(['nombre' => $nombreCorto]);
+        $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
+
 
 $stmt = $con->prepare("SELECT idtransportista, nombre_transportista
                        FROM transportista 
@@ -360,9 +372,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <option value="" disabled <?= empty($recintoSeleccionado) ? 'selected' : '' ?>>--
                                                 Selecciona un recinto --</option>
                                             <?php foreach ($recintos as $rec): ?>
-                                                <option value="<?= $rec['id2221_recintos'] ?>"
-                                                    <?= $rec['id2221_recintos'] == $recintoSeleccionado ? 'selected' : '' ?>>
-                                                    <?= htmlspecialchars($rec['inmueble_recintos']) ?>
+                                                <option value="<?= $rec['id2206_recintos_fiscalizados'] ?>"
+                                                    <?= $rec['id2206_recintos_fiscalizados'] == $recintoSeleccionado ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($rec['recintoFiscalizado']) ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         <?php endif; ?>

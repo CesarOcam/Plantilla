@@ -81,18 +81,27 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
         exit;
     }
 
-    $letra = strtoupper(substr(trim($nombreCorto), 0, 1));
+    // Convertimos a mayúsculas y limpiamos espacios
+    $nombreCortoLimpio = strtoupper(trim($nombreCorto));
+
+    // EXCEPCIÓN personalizada para AIFA
+    if ($nombreCortoLimpio === 'AIFA') {
+        $letra = 'F'; // Fuerza prefijo 'F' para AIFA
+    } else {
+        $letra = substr($nombreCortoLimpio, 0, 1);
+    }
+
     $anioDigito = date('Y') % 10;
     $prefijo = $letra . $anioDigito;
     $activo = 1;
 
     $sqlUltimoNumero = "
-        SELECT Numero 
-        FROM referencias 
-        WHERE Numero LIKE :prefijo 
-        ORDER BY CAST(SUBSTRING(Numero, 3) AS UNSIGNED) DESC 
-        LIMIT 1
-    ";
+    SELECT Numero 
+    FROM referencias 
+    WHERE Numero LIKE :prefijo 
+    ORDER BY CAST(SUBSTRING(Numero, 3) AS UNSIGNED) DESC 
+    LIMIT 1
+";
     $stmtUltimo = $con->prepare($sqlUltimoNumero);
     $stmtUltimo->execute(['prefijo' => "$prefijo%"]);
     $ultimoNumero = $stmtUltimo->fetchColumn();
