@@ -63,11 +63,18 @@ foreach ($data as $index => $archivo) {
         $tmpXml = $_FILES["xml_$index"]['tmp_name'];
         $nombreXml = basename($_FILES["xml_$index"]['name']);
         $destinoXml = $uploadDir . $nombreXml;
+
         if (!move_uploaded_file($tmpXml, $destinoXml)) {
             $errores[] = "Error al mover archivo XML $nombreXml del índice $index";
-            $destinoXml = null; // No existirá archivo
+            $destinoXml = null;
+
+            // DEBUG adicional
+            error_log("Error move_uploaded_file: XML $nombreXml → $destinoXml");
+            error_log("¿Existe archivo temporal? " . (file_exists($tmpXml) ? "Sí" : "No"));
+            error_log("Permisos de destino (" . $uploadDir . "): " . substr(sprintf('%o', fileperms($uploadDir)), -4));
         }
     }
+
 
     if (isset($_FILES["pdf_$index"]) && $_FILES["pdf_$index"]['error'] === UPLOAD_ERR_OK) {
         $tmpPdf = $_FILES["pdf_$index"]['tmp_name'];
@@ -78,6 +85,8 @@ foreach ($data as $index => $archivo) {
             $destinoPdf = null;
         }
     }
+
+
 
     // Validación UUID duplicado en 505_factura
     $stmtFacturas = $con->prepare("SELECT idCFactura, 505_04_numFactura FROM 505_factura");
