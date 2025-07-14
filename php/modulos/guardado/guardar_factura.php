@@ -45,7 +45,7 @@ foreach ($data as $index => $archivo) {
     $uuid = $archivo['uuid'] ?? null;
 
     // Carpeta con ID de referencia o "sin_referencia"
-    $idReferencia = $archivo['referencia_id'] ?? 'sin_referencia';
+    $idReferencia = $archivo['referencia_id'] ?? 'integradas_sin_referencia';
     $uploadDirBase = '../../../docs/';
     $uploadDir = $uploadDirBase . $idReferencia . '/';
     if (!is_dir($uploadDir)) {

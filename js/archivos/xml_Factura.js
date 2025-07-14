@@ -159,8 +159,11 @@ document.getElementById('btnCargarTodos').addEventListener('click', () => {
                     const timbre = complemento?.getElementsByTagNameNS(TFD_NS, 'TimbreFiscalDigital')[0];
                     const uuid = timbre?.getAttribute('UUID') || 'No encontrado';
 
-                    const serie = comprobante.getAttribute('Serie') || 'No encontrado';
-                    const folio = comprobante.getAttribute('Folio') || 'No encontrado';
+                    let serieRaw = comprobante.getAttribute('Serie');
+                    const serie = (serieRaw && serieRaw.trim() !== '') ? serieRaw : '';
+                    let folioRaw = comprobante.getAttribute('Folio') || 'No encontrado';
+                    const folio = (folioRaw && folioRaw.trim() !== '') ? folioRaw : 'No encontrado';
+
                     const fechaRaw = comprobante.getAttribute('Fecha') || 'No encontrado';
                     const rfcProveedor = emisor?.getAttribute('Rfc') || 'No encontrado';
                     const nombreProveedor = emisor?.getAttribute('Nombre') || 'No encontrado';
@@ -177,16 +180,17 @@ document.getElementById('btnCargarTodos').addEventListener('click', () => {
                         fechaFormateada = `${dia}/${mes}/${anio}`;
                     }
                     resolve({
-                        serie: serie,
-                        folio: folio,
-                        rfcCliente: rfcCliente,
-                        rfcProveedor: rfcProveedor,
+                        serie,
+                        folio,
+                        rfcCliente,
+                        rfcProveedor,
                         proveedor: nombreProveedor,
                         cliente: nombreCliente,
                         fecha: fechaFormateada,
-                        importe: importe,
-                        uuid: uuid
+                        importe,
+                        uuid
                     });
+                    console.log('Objeto a resolver:', { folio });
 
                 } catch (error) {
                     reject(error);

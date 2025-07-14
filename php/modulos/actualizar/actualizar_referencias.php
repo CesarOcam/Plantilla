@@ -158,7 +158,9 @@ if (isset($_POST['id'])) {
         }
 
         // Subida de archivos
-        $uploadDir = '../../../docs/';
+        $uploadBaseDir = '../../../docs/';
+        $uploadDir = $uploadBaseDir . $id . '/';
+
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
