@@ -77,10 +77,7 @@ foreach ($facturas as $factura) {
 
     $facturasConSubcuentas[] = $factura;
 }
-
 // Ahora sigue con tu HTML para imprimir tabla, selects, etc.
-
-
 echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>";
 ?>
 

@@ -77,10 +77,10 @@ if (!isset($_SESSION['usuario_id'])) {
                         <!-- Botones -->
                         <div class="col-3 d-flex align-items-end justify-content-start gap-2">
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                                <button type="button" class="btn btn-secondary rounded-0" id="btn_buscar">Buscar</button>
+                                <button type="button" class="btn btn-secondary rounded-0  w-100" id="btn_buscar">Buscar</button>
                             </div>
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_limpiar">Limpiar</button>
+                                <button type="button" class="btn btn-outline-secondary rounded-0  w-100" id="btn_limpiar">Limpiar</button>
                             </div>
                         </div>
 

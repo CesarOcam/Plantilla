@@ -969,7 +969,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             width: '100%'
         });
 
-
         agregarValidacion(inputId, mensajeId, iconoId);
 
         contador++;
@@ -1242,12 +1241,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     tablaContenedores.addEventListener('click', function (e) {
         if (e.target.closest('.btn-danger')) { // o '#btn-eliminar', según tengas el selector
             const filaEliminada = e.target.closest('tr');
-
             // Capturar el idcontenedor de esa fila
             const inputIdContenedor = filaEliminada.querySelector('input[name="contenedor_id[]"]');
             if (inputIdContenedor) {
                 const idContenedor = inputIdContenedor.value;
-
                 // Crear input hidden para indicar eliminación
                 const inputEliminado = document.createElement('input');
                 inputEliminado.type = 'hidden';
@@ -1257,7 +1254,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 // Agregar al formulario
                 document.querySelector('form').appendChild(inputEliminado);
             }
-
             // Eliminar fila visualmente
             filaEliminada.remove();
 

@@ -19,7 +19,6 @@ if (isset($_GET['status']) && in_array($_GET['status'], ['1', '2', '3', '4'])) {
     $params[':status'] = $_GET['status'];
 }
 
-
 // FECHA DESDE
 if (!empty($_GET['fecha_desde'])) {
     $where[] = "r.FechaAlta >= :fecha_desde";
@@ -33,7 +32,6 @@ if (!empty($_GET['fecha_hasta'])) {
     $params[':fecha_hasta'] = $fechaHasta;
 }
 
-
 // PÓLIZA
 if (!empty($_GET['referencia'])) {
     $where[] = "r.Numero LIKE :referencia";
@@ -45,7 +43,6 @@ if (!empty($_GET['logistico'])) {
     $where[] = "log.razonSocial_exportador LIKE :logistico";
     $params[':logistico'] = "%" . $_GET['logistico'] . "%";
 }
-
 
 
 // WHERE final

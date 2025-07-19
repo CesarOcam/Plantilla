@@ -207,8 +207,6 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
                 }
             }
 
-
-
             $uploadBaseDir = '../../../docs/';
             $uploadDir = $uploadBaseDir . $referencia_id . '/';
 

@@ -1221,6 +1221,83 @@ input:checked + .slider:before {
   text-align: center;
 }
 
+/*---------------------------------------TABLA PP----------------------------------------------------*/
+/* Solo aplicar en cat_Cuentas.php */
+
+
+/* Referencia (Columna 2) */
+.tabla-pp-container thead th:nth-child(2),
+.tabla-pp-container tbody td:nth-child(2) {
+  width: 5%;
+  min-width: 100px;
+  max-width: 110px;
+  text-align: left;
+}
+
+/* Subcuenta (Columna 3) */
+.tabla-pp-container thead th:nth-child(3),
+.tabla-pp-container tbody td:nth-child(3) {
+  width: 20%;
+  min-width: 110px;
+  max-width: 130px;
+  text-align: left;
+}
+
+/* RFC Proveedor (Columna 4) */
+.tabla-pp-container thead th:nth-child(4),
+.tabla-pp-containers tbody td:nth-child(4) {
+  width: 20%;
+  min-width: 130px;
+  max-width: 110px;
+  text-align:left;
+}
+
+/* Proveedor (Columna 5) */
+.tabla-pp-container thead th:nth-child(5),
+.tabla-pp-container tbody td:nth-child(5) {
+  width: 5%;
+  min-width: 110px;
+  max-width: 160px;
+  text-align: left;
+}
+
+/* Cliente (Columna 6) */
+.tabla-pp-container thead th:nth-child(6),
+.tabla-pp-container tbody td:nth-child(6) {
+  width: 20%;
+  min-width: 110px;
+  max-width: 160px;
+  text-align: left;
+}
+
+/* Fecha (Columna 7) */
+.tabla-pp-container thead th:nth-child(7),
+.tabla-pp-containers tbody td:nth-child(7) {
+  width: 5%;
+  min-width: 110px;
+  max-width: 160px;
+  text-align: left;
+}
+
+/* Importe (Columna 8) */
+.tabla-pp-container thead th:nth-child(8),
+.tabla-pp-container tbody td:nth-child(8) { 
+  width: 6%;
+  min-width: 90px;
+  max-width: 45px;
+  text-align: center;
+}
+
+/* Importe (Columna 8) */
+.tabla-pp-container thead th:nth-child(9),
+.tabla-pp-container tbody td:nth-child(9) { 
+  width: 10%;
+  min-width: 90px;
+  max-width: 45px;
+  text-align: center;
+}
+
+
 #uploadAlert {
   display: none;
   background-color: rgba(255, 0, 0, 0.1);

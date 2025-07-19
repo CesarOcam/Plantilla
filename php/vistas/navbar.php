@@ -107,15 +107,11 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
           <a class="nav-link dropdown-toggle" href="repo" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">Reportes</a>
           <ul class="dropdown-menu border shadow">
-            <li><a class="dropdown-item small" href="#">Referencias</a></li>
-            <li><a class="dropdown-item small"href="#">Solicitud de Pago</a></li>
-            <li><a class="dropdown-item small" href="#">Realizar Pago</a></li>
-            <li><a class="dropdown-item small" href="#">Solicitud de Anticipo</a></li>
-            <hr>
-            <li><a class="dropdown-item small" href="#">Registro Cuota</a></li>
-            <li><a class="dropdown-item small" href="#">Registro Facturas</a></li>
-            <hr>
-            <li><a class="dropdown-item small" href="#">Generar Poliza</a></li>
+            <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/reportes/reporte_cuentas.php'); ?>">Reportes de Cuentas</a></li>
+            <li><a class="dropdown-item small"href="#">Reporte a COI</a></li>
+            <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/reportes/facturas_por_pagar.php'); ?>">Reporte a Facturas por Pagar</a></li>
+            <li><a class="dropdown-item small" href="#">Reporte de Estado de Resultados</a></li>
+            <li><a class="dropdown-item small" href="#">Reporte de Estado de Balance General</a></li>
           </ul>
         </li>
         <li class="nav-item position-relative">

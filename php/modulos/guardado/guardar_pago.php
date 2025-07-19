@@ -32,7 +32,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     $stmt->execute();
     $solicitud = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    
+
     //var_dump($solicitud);
     //exit;
 
@@ -96,9 +96,10 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     if ($resultado) {
         $poliza_id = $con->lastInsertId();
 
+        // Obtener las partidas originales
         $sql_partidas = "SELECT * 
-                 FROM partidassolicitudes 
-                 WHERE SolicitudId = :id_solicitud";
+             FROM partidassolicitudes 
+             WHERE SolicitudId = :id_solicitud";
 
         $stmt_partidas = $con->prepare($sql_partidas);
         $stmt_partidas->bindParam(':id_solicitud', $id_solicitud, PDO::PARAM_INT);
@@ -106,7 +107,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
         $partidas = $stmt_partidas->fetchAll(PDO::FETCH_ASSOC);
 
-
+        // Insertar las partidas de la solicitud
         $sql_insertar_partidas = "INSERT INTO partidaspolizas 
         (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, NumeroFactura)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -126,26 +127,41 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
             ]);
         }
 
+        // Insertar la partida de pago
         $cargo = 0;
         $sql_insertar_pago = "INSERT INTO partidaspolizas
-    (PolizaId, SubcuentaId, Cargo, Abono, Observaciones, Activo)
+        (PolizaId, SubcuentaId, Cargo, Abono, Observaciones, Activo)
         VALUES (?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_pago);
-        $pago = $stmt_data->execute([
+        $stmt_data->execute([
             $poliza_id,
             $subcuenta_pago,
             $cargo,
             $importe,
             $observaciones_pago,
             $activo
-
         ]);
 
-    } else {
+        // Verificar si la cuenta de pago empieza con '113'
+        $sql_verificar_cuenta = "SELECT Numero FROM cuentas WHERE Id = ? LIMIT 1";
+        $stmt_verificar = $con->prepare($sql_verificar_cuenta);
+        $stmt_verificar->execute([$subcuenta_pago]);
+        $numeroCuenta = $stmt_verificar->fetchColumn();
 
+        if ($numeroCuenta && strpos($numeroCuenta, '113') === 0) {
+            // Si la cuenta empieza con 113, marcar como pagada
+            $stmt_update_poliza = $con->prepare("UPDATE polizas SET Pagada = 1 WHERE Id = ?");
+            $stmt_update_poliza->execute([$poliza_id]);
+        } else {
+            // Si no empieza con 113, marcar como no pagada
+            $stmt_update_poliza = $con->prepare("UPDATE polizas SET Pagada = 0 WHERE Id = ?");
+            $stmt_update_poliza->execute([$poliza_id]);
+        }
+
+
+    } else {
         echo "Error al guardar la póliza.";
     }
-
     // 1. Obtener todos los Ids de facturas_registradas con esa referencia
     $sql_facturas = "SELECT Id FROM facturas_registradas WHERE referencia_id = :referencia_id";
     $stmt_facturas = $con->prepare($sql_facturas);
