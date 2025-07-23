@@ -72,16 +72,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cargo = 0;
         $observacion = 'Pago de cuenta';
         $enKardex = 0;
+        $Pagada = 1;
 
         $sql_datos_partida = "SELECT PolizaId, SubcuentaId, ReferenciaId, Cargo FROM partidaspolizas WHERE Partida = ?";
         $stmt_datos = $con->prepare($sql_datos_partida);
 
         $sql_insert_partida = "INSERT INTO partidaspolizas 
-    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex, created_by) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, EnKardex, created_by) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_insert = $con->prepare($sql_insert_partida);
 
-        $sql_update_pagada_original = "UPDATE polizas SET Pagada = 1 WHERE Id = ?";
+        $sql_update_pagada_original = "UPDATE partidaspolizas SET Pagada = 1 WHERE Partida = ?";
         $stmt_update_original = $con->prepare($sql_update_pagada_original);
 
         foreach ($id_array as $id_partida) {
@@ -101,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $referenciaId,
                     $cargo,
                     $cargoAbonado,
+                    $Pagada,
                     $observacion,
                     $activo,
                     $enKardex,
@@ -113,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // Actualizamos la póliza original a pagada
-                $okOriginal = $stmt_update_original->execute([$polizaOriginalId]);
+                $okOriginal = $stmt_update_original->execute([$id_partida]);
 
                 if (!$okOriginal) {
                     $error = $stmt_update_original->errorInfo();
@@ -127,8 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // === Insertar la partida de salida bancaria ===
         $sql_insert_banco = "INSERT INTO partidaspolizas 
-    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex, created_by) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, EnKardex, created_by) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_banco = $con->prepare($sql_insert_banco);
 
         $referenciaBanco = null;
@@ -142,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $referenciaBanco,
             $cargoBanco,
             $abonoBanco,
+            $Pagada,
             $observacionBanco,
             $activo,
             $enKardex,

@@ -8,30 +8,30 @@ error_reporting(E_ALL);
 
 // Número de registros por página
 $registrosPorPagina = 20;
-
-// Determinar el número de la página actual
 $paginaActual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina;
 
-$where = [];
-$params = [];
+$wherePrincipal = [];
+$paramsPrincipal = [];
 
-// Siempre sólo pólizas no pagadas
-$where[] = "p.Pagada = 0";
+$whereCount = [];
+$paramsCount = [];
 
-// Filtros de fechas
+// Filtros comunes para ambas consultas (fecha y subcuenta)
 if (!empty($_GET['fecha_desde'])) {
-    $where[] = "p.Fecha >= :fecha_desde";
-    $params[':fecha_desde'] = $_GET['fecha_desde'] . ' 00:00:00';
+    $wherePrincipal[] = "p.Fecha >= :fecha_desde";
+    $whereCount[] = "p.Fecha >= :fecha_desde";
+    $paramsPrincipal[':fecha_desde'] = $_GET['fecha_desde'] . ' 00:00:00';
+    $paramsCount[':fecha_desde'] = $_GET['fecha_desde'] . ' 00:00:00';
 }
 if (!empty($_GET['fecha_hasta'])) {
-    $where[] = "p.Fecha <= :fecha_hasta";
-    $params[':fecha_hasta'] = $_GET['fecha_hasta'] . ' 23:59:59';
+    $wherePrincipal[] = "p.Fecha <= :fecha_hasta";
+    $whereCount[] = "p.Fecha <= :fecha_hasta";
+    $paramsPrincipal[':fecha_hasta'] = $_GET['fecha_hasta'] . ' 23:59:59';
+    $paramsCount[':fecha_hasta'] = $_GET['fecha_hasta'] . ' 23:59:59';
 }
-
-// Filtro por subcuenta en última partida de la póliza
-if (isset($_GET['subcuenta']) && is_numeric($_GET['subcuenta']) && (int) $_GET['subcuenta'] > 0) {
-    $where[] = "p.Id IN (
+if (isset($_GET['subcuenta']) && is_numeric($_GET['subcuenta']) && (int)$_GET['subcuenta'] > 0) {
+    $wherePrincipal[] = "p.Id IN (
         SELECT PolizaId
         FROM partidaspolizas
         WHERE (PolizaId, Partida) IN (
@@ -41,13 +41,25 @@ if (isset($_GET['subcuenta']) && is_numeric($_GET['subcuenta']) && (int) $_GET['
         )
         AND SubcuentaId = :subcuenta
     )";
-    $params[':subcuenta'] = (int) $_GET['subcuenta'];
+    $whereCount[] = "p.Id IN (
+        SELECT PolizaId
+        FROM partidaspolizas
+        WHERE (PolizaId, Partida) IN (
+            SELECT PolizaId, MAX(Partida)
+            FROM partidaspolizas
+            GROUP BY PolizaId
+        )
+        AND SubcuentaId = :subcuenta
+    )";
+    $paramsPrincipal[':subcuenta'] = (int)$_GET['subcuenta'];
+    $paramsCount[':subcuenta'] = (int)$_GET['subcuenta'];
 }
 
-$whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
+// **Filtro que sólo aplica en la consulta principal porque usa alias `pp`**
+$wherePrincipal[] = "pp.Pagada = 0";
 
-$inicio = (int) ($inicio ?? 0);
-$registrosPorPagina = (int) ($registrosPorPagina ?? 20);
+$whereSqlPrincipal = count($wherePrincipal) > 0 ? 'WHERE ' . implode(' AND ', $wherePrincipal) : '';
+$whereSqlCount = count($whereCount) > 0 ? 'WHERE ' . implode(' AND ', $whereCount) : '';
 
 $sql = "
 SELECT
@@ -67,38 +79,36 @@ LEFT JOIN beneficiarios b ON b.Id = p.BeneficiarioId
 LEFT JOIN cuentas cu ON cu.Id = pp.SubcuentaId
 INNER JOIN referencias r ON r.Id = pp.ReferenciaId
 LEFT JOIN 2201aduanas a ON a.id2201aduanas = r.AduanaId
-$whereSql
+$whereSqlPrincipal
 ORDER BY p.Fecha DESC, pp.Partida ASC
 LIMIT $inicio, $registrosPorPagina
 ";
 
-// Preparar y ejecutar
 $stmt = $con->prepare($sql);
-foreach ($params as $key => $value) {
+foreach ($paramsPrincipal as $key => $value) {
     $paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
     $stmt->bindValue($key, $value, $paramType);
 }
 $stmt->execute();
 $poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-
 $sqlCount = "SELECT COUNT(*) 
              FROM polizas p
              LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
-             $whereSql";
-$stmtTotal = $con->prepare($sqlCount);
+             $whereSqlCount";
 
-foreach ($params as $key => $value) {
-    $stmtTotal->bindValue($key, $value);
+$stmtTotal = $con->prepare($sqlCount);
+foreach ($paramsCount as $key => $value) {
+    $paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
+    $stmtTotal->bindValue($key, $value, $paramType);
 }
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
 
-// Calcular total de páginas y bloque de navegación
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 $inicioBloque = floor(($paginaActual - 1) / 10) * 10 + 1;
 $finBloque = min($inicioBloque + 9, $totalPaginas);
+
 ?>
 
 <table id="tabla-pp-container" class="table table-hover tabla-pp-container">

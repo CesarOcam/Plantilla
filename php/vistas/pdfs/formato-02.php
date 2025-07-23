@@ -5,6 +5,7 @@ include_once('../../modulos/conexion.php');
 ob_start();
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
+
 $stmt = $con->prepare("
     SELECT 
         r.AduanaId,
@@ -22,7 +23,6 @@ $stmt = $con->prepare("
         r.PesoBruto,
         r.Cantidad,
         r.Bultos,
-        r.Contenedor,
         r.ConsolidadoraId,
         cons.denominacion_consolidadora AS nombre_consolidadora,
         r.ResultadoModulacion,
@@ -36,13 +36,13 @@ $stmt = $con->prepare("
             ELSE ''
         END AS ResultadoModulacion_texto,
         r.RecintoId,
-        rec.inmueble_recintos AS inmueble_recintos,
+        rec.nombre_conocido_recinto AS inmueble_recintos,
         r.NavieraId,
-        nav.identificacion AS nombre_naviera,
+        nav.nombre_transportista AS nombre_naviera,
         r.CierreDocumentos,
         r.FechaPago,
         r.BuqueId,
-        bq.Nombre AS nombre_buque,
+        bq.identificacion AS nombre_buque,
         r.Booking,
         r.CierreDespacho,
         r.HoraDespacho,
@@ -56,15 +56,16 @@ $stmt = $con->prepare("
         r.FechaAlta,
         r.Status,
         r.UsuarioAlta,
+        r.FechaAlta,
         CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombre_usuario_alta
     FROM referencias r
     LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
     LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
     LEFT JOIN consolidadoras cons ON r.ConsolidadoraId = cons.id_consolidadora
-    LEFT JOIN 2221_recintos rec ON r.RecintoId = rec.id2221_recintos
-    LEFT JOIN transporte nav ON r.NavieraId = nav.idtransporte
-    LEFT JOIN con_buques bq ON r.BuqueId = bq.Id
+    LEFT JOIN 2206_recintos_fiscalizados rec ON r.RecintoId = rec.id2206_recintos_fiscalizados
+    LEFT JOIN transportista nav ON r.NavieraId = nav.idtransportista
+    LEFT JOIN transporte bq ON r.BuqueId = bq.idtransporte
     LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
     LEFT JOIN 2202clavepedimento cp ON r.ClavePedimento = cp.id2202clave_pedimento -- <--- JOIN con clavepedimento
     WHERE r.Id = :id
@@ -98,6 +99,16 @@ $stmtPais->bindParam(':id', $paisId, PDO::PARAM_INT);
 $stmtPais->execute();
 $pais = $stmtPais->fetch(PDO::FETCH_ASSOC);
 
+
+
+
+$sql = "SELECT codigo FROM contenedores WHERE referencia_id = :id";
+$stmt = $con->prepare($sql);
+$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+$stmt->execute();
+
+$contenedores = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$contenedoresStr = implode(', ', $contenedores);
 
 
 
@@ -149,13 +160,13 @@ $pdf->SetXY(38, $startY + -7.4);
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 2, toISO($referencia['nombre_exportador']), 0, 1, 'L');
 
-$pdf->SetXY(10, $startY + 5);
+$pdf->SetXY(10, $startY + 3);
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->Cell(0, 2, toISO('FACTURAR A: '), 0, 1, 'L');
 $startX = $pdf->GetX();
 $startY = $pdf->GetY();
 
-$pdf->SetXY(38, $startY + -2.4);
+$pdf->SetXY(36, $startY + -2.4);
 $pdf->SetFont('Arial', '', 10);
 $pdf->Cell(0, 2, toISO($referencia['nombre_logistico']), 0, 1, 'L');
 
@@ -165,7 +176,7 @@ $col2X = 48;   // Valor 1
 $col3X = 100;  // Etiqueta 2
 $col4X = 140;  // Valor 2
 
-$colY = $startY + 8;  // Altura inicial
+$colY = $startY + 15;  // Altura inicial
 $lineHeight = 8;       // Altura de línea de texto
 $marginAfter = 3;      // Espacio vertical entre filas
 
@@ -173,22 +184,170 @@ $marginAfter = 3;      // Espacio vertical entre filas
 $labelWidth = 40;
 $valueWidth = 60;
 
-// Datos: [Etiqueta1, Valor1, Etiqueta2, Valor2]
-$filas = [
-    ['BOOKING:', $referencia['Booking'] ?? '', 'BUQUE:', $referencia['nombre_buque'] ?? ''],
-    ['VIAJE:', $referencia['Viaje'] ?? '', 'CANTIDAD:', $referencia['Cantidad'] ?? ''],
-    ['CONTENEDOR:', $referencia['Contenedor'] ?? '', 'PESO BRUTO:', $referencia['PesoBruto'] ?? ''],
-    ['MERCANCIAS:', $referencia['Mercancia'] ?? '', 'MARCAS:', $referencia['Marcas'] ?? ''],
-    ['ADUANA:', $referencia['nombre_aduana'] ?? '', 'RECINTO:', $referencia['inmueble_recintos'] ?? ''],
-    ['NAVIERA:', $referencia['nombre_naviera'] ?? '', 'CONSOLIDADORA:', $referencia['nombre_consolidadora'] ?? ''],
-    ['PUERTO DESCARGA:', $referencia['PuertoDescarga'] ?? '', 'DESTINO FINAL:', $referencia['PuertoDestino'] ?? ''],
-    ['CIERRE DOCUMENTOS:', $referencia['CierreDocumentos'] ?? '', 'CIERRE DESPACHO:', $referencia['CierreDespacho'] ?? ''],
-    ['FECHA DOCUMENTADO:', $referencia['CierreDocumentado'] ?? '', 'HORA DESPACHO:', $referencia['HoraDespacho'] ?? ''],
-    ['ETA:', $referencia['LlegadaEstimada'] ?? '', 'REFERENCIA EXTERNA:', $referencia['SuReferencia'] ?? ''],
-    ['COMENTARIOS:', $referencia['Comentarios'] ?? '', '', ''],
-];
+$pdf->SetFont('Arial', 'B', 10);
+
+// Fila 1
+$pdf->SetXY(10, $startY + 8);
+$pdf->Cell(0, 2, toISO('BOOKING:'), 0, 1, 'L');
+$pdf->SetXY(29, $startY + 8);
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->Cell(0, 2, toISO($referencia['Booking'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $startY + 8);
+$pdf->Cell(0, 2, toISO('BUQUE:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->SetXY(117, $startY + 8);
+$pdf->Cell(0, 2, toISO($referencia['nombre_buque'] ?? ''), 0, 1, 'L');
+
+// Fila 2
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY - 2);
+$pdf->Cell(0, 2, toISO('VIAJE:'), 0, 1, 'L');
+$pdf->SetXY(23, $colY - 2);
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->Cell(0, 2, toISO($referencia['Viaje'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY - 2);
+$pdf->Cell(0, 2, toISO('CANTIDAD:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->SetXY(123, $colY - 2);
+$pdf->Cell(0, 2, toISO($referencia['Bultos'] ?? ''), 0, 1, 'L');
+
+// Fila 3
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY + 3);
+$pdf->Cell(0, 2, toISO('CONTENEDOR:'), 0, 1, 'L');
+$pdf->SetXY(37, $colY + 2);
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->MultiCell(60, 4, toISO($contenedoresStr), 0, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY + 3);
+$pdf->Cell(0, 2, toISO('PESO BRUTO:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->SetXY(128, $colY + 3);
+$pdf->Cell(0, 2, toISO($referencia['PesoBruto'] ?? ''), 0, 1, 'L');
+
+// Fila 4
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY  + 8);
+$pdf->Cell(0, 2, toISO('MERCANCIAS:'), 0, 1, 'L');
+$pdf->SetXY(36, $colY  + 8);
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->Cell(0, 2, toISO($referencia['Mercancia'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY  + 8);
+$pdf->Cell(0, 2, toISO('MARCAS:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->SetXY(120, $colY  + 8);
+$pdf->Cell(0, 2, toISO($referencia['Marcas'] ?? ''), 0, 1, 'L');
+
+// Fila 5
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY  + 13);
+$pdf->Cell(0, 2, toISO('ADUANA:'), 0, 1, 'L');
+$pdf->SetXY(28, $colY  + 13);
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->Cell(0, 2, toISO($referencia['nombre_aduana'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY  + 13);
+$pdf->Cell(0, 2, toISO('RECINTO:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->SetXY(120, $colY  + 13);
+$pdf->Cell(0, 2, toISO($referencia['inmueble_recintos'] ?? ''), 0, 1, 'L');
+
+// Fila 6
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY  + 18);
+$pdf->Cell(0, 2, toISO('NAVIERA:'), 0, 1, 'L');
+$pdf->SetXY(28, $colY  + 18);
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->Cell(0, 2, toISO($referencia['nombre_naviera'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY  + 18);
+$pdf->Cell(0, 2, toISO('CONSOLIDADORA:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->SetXY(136, $colY  + 17);
+$pdf->MultiCell(60, 4, toISO($referencia['nombre_consolidadora'] ), 0, 'L');
+
+// Fila 7
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY  + 24);
+$pdf->Cell(0, 2, toISO('PUERTO DESCARGA:'), 0, 1, 'L');
+$pdf->SetXY(48, $colY  + 24);
+$pdf->SetFont('Arial', '',  9.5);
+$pdf->Cell(0, 2, toISO($referencia['PuertoDescarga'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY  + 24);
+$pdf->Cell(0, 2, toISO('DESTINO FINAL:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->SetXY(132, $colY  + 24);
+$pdf->Cell(0, 2, toISO($referencia['PuertoDestino'] ?? ''), 0, 1, 'L');
+
+// Fila 8
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY  + 30);
+$pdf->Cell(0, 2, toISO('CIERRE DOCUMENTOS:'), 0, 1, 'L');
+$pdf->SetXY(52, $colY  + 30);
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->Cell(0, 2, toISO($referencia['CierreDocumentos'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY  + 30);
+$pdf->Cell(0, 2, toISO('CIERRE DESPACHO:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->SetXY(140, $colY  + 30);
+$pdf->Cell(0, 2, toISO($referencia['CierreDespacho'] ?? ''), 0, 1, 'L');
+
+// Fila 9
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY  + 35);
+$pdf->Cell(0, 2, toISO('FECHA DOCUMENTADO:'), 0, 1, 'L');
+$pdf->SetXY(54, $colY  + 35);
+$pdf->SetFont('Arial', '', 9.5);
+$pdf->Cell(0, 2, toISO($referencia['CierreDocumentado'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY  + 35);
+$pdf->Cell(0, 2, toISO('HORA DESPACHO:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', size: 9.5);
+$pdf->SetXY(136, $colY  + 35);
+$pdf->Cell(0, 2, toISO($referencia['HoraDespacho'] ?? ''), 0, 1, 'L');
+
+// Fila 10
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY  + 40);
+$pdf->Cell(0, 2, toISO('ETA:'), 0, 1, 'L');
+$pdf->SetXY(20, $colY  + 40);
+$pdf->SetFont('Arial', '', size: 9.5);
+$pdf->Cell(0, 2, toISO($referencia['LlegadaEstimada'] ?? ''), 0, 1, 'L');
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(102, $colY  + 40);
+$pdf->Cell(0, 2, toISO('REFERENCIA EXTERNA:'), 0, 1, 'L');
+$pdf->SetFont('Arial', '', size: 9.5);
+$pdf->SetXY(145, $colY  + 40);
+$pdf->Cell(0, 2, toISO($referencia['SuReferencia'] ?? ''), 0, 1, 'L');
+
+// Fila 11
+$colY += 6;
+$pdf->SetFont('Arial', 'B', 10);
+$pdf->SetXY(10, $colY  + 45);
+$pdf->Cell(0, 2, toISO('COMENTARIOS:'), 0, 1, 'L');
+$pdf->SetXY(40, $colY  + 45);
+$pdf->SetFont('Arial', '',  10);
+$pdf->Cell(0, 2, toISO($referencia['Comentarios'] ?? ''), 0, 1, 'L');
 
 $pdf->SetFont('Arial', 'B', 10);
+$colY += 70;
+$pdf->SetFont('Arial', '', 10);
+$pdf->SetXY(65, $colY  + 45);
+$pdf->Cell(0, 2, toISO('FECHA Y HORA DE ALTA: ' . $referencia['FechaAlta'] ?? '' ), 0, 1, 'L');
 
 // --- Calcular alturas para las 4 celdas usando MultiCell sin mover el cursor definitivo ---
 

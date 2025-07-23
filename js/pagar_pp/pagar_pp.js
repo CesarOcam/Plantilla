@@ -24,16 +24,19 @@ document.getElementById("formPago").addEventListener("submit", function (e) {
                     console.log('Beneficiario:', respuesta.datos.beneficiario);
                     console.log('Subcuenta:', respuesta.datos.subcuenta);
                 }
+
+                $('#modalPago').modal('hide');
                 Swal.fire({
-                    title: 'Pago exitoso',
-                    html: `
-                        <p><strong>No. Póliza:</strong> ${respuesta.datos.poliza}</p>
-                    `,
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
+                  icon: 'success',
+                    title: 'Pago realizado',
+                    html: `<strong>Número de póliza:</strong> ${respuesta.datos.poliza}`,
+                    confirmButtonText: 'Aceptar',
+                    timer: 5000,
+                    timerProgressBar: true
                 }).then(() => {
-                    location.reload(); // recarga tabla o vista actual
+                    location.reload();
                 });
+
             } else {
                 Swal.fire({
                     title: 'Error al pagar',

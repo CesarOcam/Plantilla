@@ -10,8 +10,8 @@ $("#form_Referencia").on("submit", function (e) {
             method: 'POST',
             data: { numeroReferencia: referenciaDirecta },
             dataType: 'json',
-            success: function(response) {
-                if(response.success && response.id) {
+            success: function (response) {
+                if (response.success && response.id) {
                     window.location.href = `../../modulos/consultas/detalle_referencia.php?id=${response.id}`;
                 } else {
                     Swal.fire({
@@ -19,10 +19,13 @@ $("#form_Referencia").on("submit", function (e) {
                         title: 'Referencia no encontrada',
                         text: 'El número de referencia no existe.',
                         confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        // Opcional: recarga la página solo después de cerrar el modal
+                        location.reload();
                     });
                 }
             },
-            error: function() {
+            error: function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -33,7 +36,7 @@ $("#form_Referencia").on("submit", function (e) {
         });
         return;
     }
-    
+
     var form = this;
     var formData = new FormData(form); // Recoge todos los campos del formulario incluyendo archivos del input
     console.log('Archivos en archivosCargados:', archivosCargados);
@@ -70,6 +73,8 @@ $("#form_Referencia").on("submit", function (e) {
         dataType: 'json',
         success: function (response) {
             console.log('Respuesta del servidor:', response);
+            console.log(document.getElementById('cierre_doc').value);
+
 
             if (response.success) {
                 Swal.fire({

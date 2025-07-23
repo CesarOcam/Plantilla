@@ -28,9 +28,9 @@ if (isset($_POST['nombre'], $_POST['pais'])) {
     $usuarioAlta = $_SESSION['usuario_id'];
 
     // Asegurarse de que todos los campos coincidan con los de la base de datos
-    $sql = "INSERT INTO con_buques 
+    $sql = "INSERT INTO transporte 
     (
-        Nombre, Activo, FechaAlta, UsuarioAlta, Pais
+        identificacion, statusTransporte, fechaCreate_transporte, userCreate_transporte, id2204clave_pais
     )
     VALUES (?, ?, ?, ?, ?)";
 

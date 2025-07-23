@@ -2,9 +2,9 @@
 include('../conexion.php');
 
 // Verificar que los campos obligatorios estén presentes
-if (isset($_POST['idtransporte'], $_POST['identificacion'])) {
-    $idtransporte = (int) $_POST['idtransporte'];
-    $identificacion = $_POST['identificacion'];
+if (isset($_POST['idtransportista'], $_POST['nombre_transportista'])) {
+    $idtransportista = (int) $_POST['idtransportista'];
+    $nombre_transportista = $_POST['nombre_transportista'];
 
     $usuarioModificacion = 1;
     // Fecha de modificación
@@ -14,15 +14,15 @@ if (isset($_POST['idtransporte'], $_POST['identificacion'])) {
     $fecha_modificacion = obtenerFechaHoraActual();
 
     // Consulta UPDATE
-    $sql = "UPDATE transporte SET 
-        identificacion = ?, userModificacion_transporte = ?, fechaModificacion_transporte = ?
-        WHERE idtransporte = ?";
+    $sql = "UPDATE transportista SET 
+        nombre_transportista = ?, userModificacion_transportista = ?, fechaModificacion_transportista = ?
+        WHERE idtransportista = ?";
 
     $params = [
-        $identificacion,
+        $nombre_transportista,
         $usuarioModificacion,
         $fecha_modificacion,
-        $idtransporte
+        $idtransportista
     ];
 
     if (count($params) !== substr_count($sql, '?')) {

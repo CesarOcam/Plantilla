@@ -93,9 +93,11 @@ if (!isset($_SESSION['usuario_id'])) {
     </div>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
 <script>
-    e.preventDefault();
+
     document.addEventListener('DOMContentLoaded', function() {
         const now = new Date();
         const localDatetime = now.toISOString().slice(0,16); // formato para datetime-local
@@ -104,9 +106,6 @@ if (!isset($_SESSION['usuario_id'])) {
 </script>
 
 <script src="../../../js/guardar_Naviera.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-    crossorigin="anonymous"></script>
 
 </body>
 

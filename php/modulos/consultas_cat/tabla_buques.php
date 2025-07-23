@@ -2,19 +2,19 @@
 include_once(__DIR__ . '/../conexion.php');
 
 // Número de registros por página
-$registrosPorPagina = 15;
+$registrosPorPagina = 20;
 
-// Determinar la página actual
+// Página actual
 $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina;
 
 $filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
 $filtroLike = '%' . $filtro . '%';
 
-$sql = "SELECT Id, Nombre FROM con_buques WHERE Activo = 1";
+$sql = "SELECT idtransporte, identificacion FROM transporte WHERE statustransporte = 1";
 
 if ($filtro !== '') {
-    $sql .= " AND Nombre LIKE :filtro";
+    $sql .= " AND identificacion LIKE :filtro";
 }
 
 $sql .= " LIMIT :inicio, :registrosPorPagina";
@@ -29,18 +29,16 @@ $stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
 $stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 
 $stmt->execute();
-$buques = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Total de registros
-$stmtTotal = $con->prepare("SELECT COUNT(*) FROM con_buques");
+$stmtTotal = $con->prepare("SELECT COUNT(*) FROM transporte");
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
-
-// Total de páginas
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
-// Bloque de páginas de 10 en 10
+// Bloques de paginación de 10 en 10
 $inicioBloque = floor(($paginaActual - 1) / 10) * 10 + 1;
 $finBloque = min($inicioBloque + 9, $totalPaginas);
 ?>
@@ -54,14 +52,14 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
         </tr>
     </thead>
     <tbody class="small">
-        <?php if ($buques): ?>
-            <?php foreach ($buques as $buque): ?>
-                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_buques.php?id=<?php echo $buque['Id']; ?>';}" style="cursor: pointer;">
+        <?php if ($buque): ?>
+            <?php foreach ($buque as $row): ?>
+                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_buques.php?id=<?php echo $row['idtransporte']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1 chkBuque" type="checkbox" value="<?php echo $buque['Id']; ?>" aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 chkNaviera" type="checkbox" value="<?php echo $row['idtransporte']; ?>" aria-label="Checkbox for following text input">
                     </th>
-                    <td><?php echo $buque['Id']; ?></td>
-                    <td><?php echo $buque['Nombre']; ?></td>
+                    <td><?php echo $row['idtransporte']; ?></td>
+                    <td><?php echo $row['identificacion']; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
@@ -71,7 +69,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
 </table>
 
 <!-- Paginación -->
-<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+<nav aria-label="Page navigation" class="d-flex justify-content-center">
     <ul class="pagination">
         <li class="page-item <?php echo ($paginaActual == 1) ? 'disabled' : ''; ?>">
             <a class="page-link" href="?pagina=<?php echo $paginaActual - 1; ?>" aria-label="Anterior">

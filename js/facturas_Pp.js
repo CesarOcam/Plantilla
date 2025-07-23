@@ -56,12 +56,8 @@ document.getElementById("btn_limpiar").addEventListener("click", function () {
     document.getElementById("fechaHastaInput").value = "";
 
     const subcuentaSelect = document.getElementById("subcuentaInput");
-    subcuentaSelect.value = ""; // debe coincidir con una opción del select
-
-    // Para forzar que se actualice la UI si hay frameworks o listeners:
+    subcuentaSelect.value = ""; 
     subcuentaSelect.dispatchEvent(new Event('change'));
-
-    // Ejecutar búsqueda con filtros vacíos
     document.getElementById("btn_buscar").click();
 });
 
@@ -99,8 +95,7 @@ function actualizarTotalCargo() {
     const tbody = document.querySelector('table tbody');
     const filaExistente = document.getElementById('filaTotalCargo');
 
-    // Eliminar fila si ya existe
-    if (filaExistente) {
+     if (filaExistente) {
         filaExistente.remove();
     }
 

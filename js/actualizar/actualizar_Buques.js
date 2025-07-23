@@ -12,9 +12,12 @@ $(document).ready(function () {
     // Envío del formulario por AJAX
     $('#form_Buques').on('submit', function (e) {
         e.preventDefault(); // Evita recarga
+        
+        const formData = $(this).serialize();
+        console.log("Datos enviados:", formData); 
 
         $.ajax({
-            url: '../../modulos/actualizar/actualizar_buques.php', // Ajusta esta ruta
+            url: '../../modulos/actualizar/actualizar_buques.php', 
             type: 'POST',
             data: $(this).serialize(),
             success: function (response) {
@@ -23,8 +26,8 @@ $(document).ready(function () {
                         toast: true,
                         position: 'top-end',
                         icon: 'success',
-                        title: 'Actualizado',
-                        html: `Buque actualizado correctamente.`,
+                        title: 'Actualizada',
+                        html: `Buque actualizada correctamente.`,
                         showConfirmButton: false,
                         timer: 3000,
                         timerProgressBar: true

@@ -144,7 +144,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="8">No se encontraron registros</td>
+                <td class="text-center" colspan="9">No se encontraron registros</td>
             </tr>
         <?php endif; ?>
     </tbody>

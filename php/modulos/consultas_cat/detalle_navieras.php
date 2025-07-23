@@ -13,9 +13,9 @@ $stmt = $con->prepare("
     SELECT 
         t.*, 
         CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombreCompletoUsuario
-    FROM transporte t
-    LEFT JOIN usuarios u ON t.UserCreate_transporte = u.idusuarios
-    WHERE t.idtransporte = :id
+    FROM transportista t
+    LEFT JOIN usuarios u ON t.created_at = u.idusuarios
+    WHERE t.idtransportista = :id
 ");
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
@@ -65,16 +65,16 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 <div class="row">
                     <div class="col-10 col-sm-1 mt-4">
                         <label for="id" class="form-label text-muted small">ID :</label>
-                        <input id="id" name="idtransporte" type="text"
+                        <input id="id" name="idtransportista" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['idtransporte']; ?>"
+                            style="background-color: transparent;" value="<?php echo $naviera['idtransportista']; ?>"
                             readonly>
                     </div>
                     <div class="col-10 col-sm-4 mt-4">
                         <label for="nombre" class="form-label text-muted small">NOMBRE :</label>
-                        <input id="nombre" name="identificacion" type="text"
+                        <input id="nombre" name="nombre_transportista" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $naviera['identificacion']; ?>"
+                            style="background-color: transparent;" value="<?php echo $naviera['nombre_transportista']; ?>"
                             >
                     </div>
                 </div>
@@ -91,14 +91,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <input id="fechaAlta" name="fechaAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;"
-                            value="<?php echo $naviera['fechaCreate_transporte']; ?>" readonly>
+                            value="<?php echo $naviera['fechaAcceso_transportista']; ?>" readonly>
                     </div>
                     <div class="col-10 col-sm-2 mt-4">
                         <label for="status" class="form-label text-muted small">STATUS :</label>
-                        <input id="status" name="status" type="text"
+                        <input id="status" name="status_transportista" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php
-                            if ($naviera['statusTransporte'] == 1) {
+                            if ($naviera['status_transportista'] == 1) {
                                 echo 'ACTIVO';
                             } else {
                                 echo 'INACTIVO';

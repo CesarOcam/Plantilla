@@ -43,7 +43,8 @@ if (isset($_POST['id'])) {
     $resultado_mod = $_POST['modulacion'] ?? null;
     $resultado_mod = ($resultado_mod === '' ? null : (int) $resultado_mod);
     $recinto = isset($_POST['recinto']) && $_POST['recinto'] !== '' ? intval($_POST['recinto']) : null;
-    $naviera = isset($_POST['naviera']) && $_POST['naviera'] !== '' ? intval($_POST['naviera']) : null;
+    $naviera_input = $_POST['naviera'] ?? '';
+    $naviera = ($naviera_input === '' || $naviera_input == '0') ? null : intval($naviera_input);
     $cierre_doc = parseFecha($_POST['cierre_doc'] ?? null);
     $fecha_pago = parseFecha($_POST['fecha_pago'] ?? null);
     $buque = isset($_POST['buque']) && $_POST['buque'] !== '' ? intval($_POST['buque']) : null;

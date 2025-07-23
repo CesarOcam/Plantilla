@@ -33,15 +33,13 @@ document.getElementById('form_Pago').addEventListener('submit', function (event)
 
             if (json.success) {
                 Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Pago realizado',
-                        html: `<strong>Número de póliza:</strong> ${json.numero}`,
-                        showConfirmButton: false,
-                        timer: 5000,
-                        timerProgressBar: true
-                    });
+                    icon: 'success',
+                    title: 'Pago realizado',
+                    html: `<strong>Número de póliza:</strong> ${json.numero}`,
+                    confirmButtonText: 'Aceptar',
+                    timer: 5000,
+                    timerProgressBar: true
+                });
 
                 // Limpiar el formulario form_Pago
                 const formPago = document.getElementById('form_Pago');

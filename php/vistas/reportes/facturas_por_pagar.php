@@ -15,7 +15,7 @@ $stmt = $con->prepare("
     AND (
         (SUBSTRING_INDEX(Numero, '-', 1) = '113' AND Numero LIKE '113-%')
     )
-    ORDER BY Nombre
+    ORDER BY Numero ASC
 ");
 
 $stmt->execute();
@@ -24,7 +24,7 @@ $subcuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt = $con->prepare("
     SELECT Id, Nombre 
     FROM beneficiarios
-    ORDER BY Nombre
+    ORDER BY Nombre ASC
 ");
 $stmt->execute();
 $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -80,7 +80,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select id="subcuentaInput" class="form-select select2" style="width: 100%;">
                                     <option value="">Seleccione una subcuenta</option>
                                     <?php
-                                    $stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas WHERE Numero LIKE '216%' ORDER BY Numero ASC");
+                                    $stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas WHERE Numero LIKE '216-%' ORDER BY Numero ASC");
                                     $stmt->execute();
                                     $cuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($cuentas as $cuenta) {
@@ -90,6 +90,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     }
                                     ?>
                                 </select>
+
                             </div>
 
                             <div class="col-md-2 col-sm-6 mb-2 position-relative">
@@ -115,8 +116,8 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     id="btn_buscar">Consultar</button>
                                 <button type="button" class="btn btn-outline-secondary rounded-0 w-100"
                                     id="btn_limpiar">Limpiar</button>
-                                <button type="button" class="btn btn-outline-secondary rounded-0 w-100"
-                                    id="btn_limpiar">Exportar</button>
+                                <!--<button type="button" class="btn btn-outline-secondary rounded-0 w-100"
+                                    id="btn_limpiar">Exportar</button>-->
                                 <button type="button" class="btn btn-outline-secondary rounded-0 w-100" id="btn_pagar"
                                     disabled>Pago de Cuentas</button>
                             </div>
@@ -127,7 +128,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <hr class="mb-5" style="border-top: 2px solid #000;">
 
                     <div id="tabla-pp-container">
-                        <?php include('../../modulos/consultas/tabla_facturas_pp.php'); ?>
+                        <?php include('../../modulos/consultas/tabla_facturas_cuentas.php'); ?>
                     </div>
 
                 </div>

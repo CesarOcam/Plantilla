@@ -109,8 +109,8 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
         // Insertar las partidas de la solicitud
         $sql_insertar_partidas = "INSERT INTO partidaspolizas 
-        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, NumeroFactura)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, NumeroFactura)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_partidas);
 
         $abono = 0;
@@ -121,26 +121,12 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
                 $partida['ReferenciaId'],
                 $partida['Importe'],
                 $abono,
+                1,
                 $partida['Observaciones'],
                 $activo,
                 $partida['NumeroFactura'],
             ]);
         }
-
-        // Insertar la partida de pago
-        $cargo = 0;
-        $sql_insertar_pago = "INSERT INTO partidaspolizas
-        (PolizaId, SubcuentaId, Cargo, Abono, Observaciones, Activo)
-        VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt_data = $con->prepare($sql_insertar_pago);
-        $stmt_data->execute([
-            $poliza_id,
-            $subcuenta_pago,
-            $cargo,
-            $importe,
-            $observaciones_pago,
-            $activo
-        ]);
 
         // Verificar si la cuenta de pago empieza con '113'
         $sql_verificar_cuenta = "SELECT Numero FROM cuentas WHERE Id = ? LIMIT 1";
@@ -148,16 +134,30 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         $stmt_verificar->execute([$subcuenta_pago]);
         $numeroCuenta = $stmt_verificar->fetchColumn();
 
-        if ($numeroCuenta && strpos($numeroCuenta, '113') === 0) {
-            // Si la cuenta empieza con 113, marcar como pagada
-            $stmt_update_poliza = $con->prepare("UPDATE polizas SET Pagada = 1 WHERE Id = ?");
-            $stmt_update_poliza->execute([$poliza_id]);
-        } else {
-            // Si no empieza con 113, marcar como no pagada
-            $stmt_update_poliza = $con->prepare("UPDATE polizas SET Pagada = 0 WHERE Id = ?");
-            $stmt_update_poliza->execute([$poliza_id]);
+        $pagada = 0; // valor por defecto
+        if ($numeroCuenta !== false && strpos($numeroCuenta, '113') === 0) {
+            $pagada = 1;
         }
 
+        // Insertar la partida de pago con la validación de pagada
+        $cargo = 0;
+        $sql_insertar_pago = "INSERT INTO partidaspolizas
+                (PolizaId, SubcuentaId, Cargo, Abono, Pagada, Observaciones, Activo)
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt_data = $con->prepare($sql_insertar_pago);
+        $stmt_data->execute([
+            $poliza_id,
+            $subcuenta_pago,
+            $cargo,
+            $importe,
+            $pagada,          // <-- aquí uso la variable con el valor correcto
+            $observaciones_pago,
+            $activo
+        ]);
+
+        // También actualizamos la póliza según si la cuenta empieza con 113
+        $stmt_update_poliza = $con->prepare("UPDATE polizas SET Pagada = ? WHERE Id = ?");
+        $stmt_update_poliza->execute([$pagada, $poliza_id]);
 
     } else {
         echo "Error al guardar la póliza.";

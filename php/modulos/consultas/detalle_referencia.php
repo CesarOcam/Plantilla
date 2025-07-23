@@ -399,7 +399,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="cierre_doc" class="form-label text-muted small">CIERRE DE
                                         DOCUMENTOS:</label>
-                                    <input id="cierre_doc" name="cierre_docs" type="text"
+                                    <input id="cierre_doc" name="cierre_doc" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['CierreDocumentos']; ?>">

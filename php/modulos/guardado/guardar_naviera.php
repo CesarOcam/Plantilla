@@ -28,7 +28,7 @@ if (isset($_POST['nombre_transportista'], $_POST['rfc_transportista'], $_POST['c
     $usuarioAlta = $_SESSION['usuario_id'];
     $empresa = 2;
 
-    $sql = "INSERT IGNORE INTO transportista 
+    $sql = "INSERT INTO transportista 
     (
         nombre_transportista, rfc_transportista, curp_transportista, domicilio_fiscal_transportista, fechaAcceso_transportista, status_transportista, userCreate_transportista, created_at
     )

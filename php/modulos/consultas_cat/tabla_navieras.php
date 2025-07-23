@@ -11,10 +11,10 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina;
 $filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
 $filtroLike = '%' . $filtro . '%';
 
-$sql = "SELECT idtransporte, identificacion FROM transporte WHERE statustransporte = 1";
+$sql = "SELECT idtransportista, nombre_transportista FROM transportista WHERE status_transportista = 1";
 
 if ($filtro !== '') {
-    $sql .= " AND identificacion LIKE :filtro";
+    $sql .= " AND nombre_transportista LIKE :filtro";
 }
 
 $sql .= " LIMIT :inicio, :registrosPorPagina";
@@ -33,7 +33,7 @@ $navieras = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Total de registros
-$stmtTotal = $con->prepare("SELECT COUNT(*) FROM transporte");
+$stmtTotal = $con->prepare("SELECT COUNT(*) FROM transportista");
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
@@ -54,12 +54,12 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
     <tbody class="small">
         <?php if ($navieras): ?>
             <?php foreach ($navieras as $row): ?>
-                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_navieras.php?id=<?php echo $row['idtransporte']; ?>';}" style="cursor: pointer;">
+                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_navieras.php?id=<?php echo $row['idtransportista']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1 chkNaviera" type="checkbox" value="<?php echo $row['idtransporte']; ?>" aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 chkNaviera" type="checkbox" value="<?php echo $row['idtransportista']; ?>" aria-label="Checkbox for following text input">
                     </th>
-                    <td><?php echo $row['idtransporte']; ?></td>
-                    <td><?php echo $row['identificacion']; ?></td>
+                    <td><?php echo $row['idtransportista']; ?></td>
+                    <td><?php echo $row['nombre_transportista']; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

@@ -2,11 +2,9 @@
 include('../conexion.php');
 
 // Verificar que los campos obligatorios estén presentes
-if (isset($_POST['id_buque'], $_POST['nombre'])) {
-    $id_buque = (int) $_POST['id_buque'];
-    $nombre = trim($_POST['nombre']);
-    $pais = isset($_POST['pais']) ? (int) $_POST['pais'] : null;
-
+if (isset($_POST['idtransporte'], $_POST['identificacion'])) {
+    $idtransporte = (int) $_POST['idtransporte'];
+    $identificacion = $_POST['identificacion'];
 
     $usuarioModificacion = 1;
     // Fecha de modificación
@@ -16,16 +14,15 @@ if (isset($_POST['id_buque'], $_POST['nombre'])) {
     $fecha_modificacion = obtenerFechaHoraActual();
 
     // Consulta UPDATE
-    $sql = "UPDATE con_buques SET 
-        Nombre = ?, Pais = ?, FechaUltimaModificacion = ?, UsuarioUltimaModificacion = ?
-        WHERE Id = ?";
+    $sql = "UPDATE transporte SET 
+        identificacion = ?, userModificacion_transporte = ?, fechaModificacion_transporte = ?
+        WHERE idtransporte = ?";
 
     $params = [
-        $nombre,
-        $pais,
-        $fecha_modificacion,
+        $identificacion,
         $usuarioModificacion,
-        $id_buque
+        $fecha_modificacion,
+        $idtransporte
     ];
 
     if (count($params) !== substr_count($sql, '?')) {
