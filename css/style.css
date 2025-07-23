@@ -76,6 +76,28 @@ a.nav-link.dropdown-toggle::after {
   font-size: 0.85rem;
 }
 
+.email-tag {
+    background-color: rgba(25, 48, 196, 0.205);
+    border: 1px solid rgb(52, 62, 83);
+    color: rgb(52, 62, 83);
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+}
+.email-tag .remove {
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    color: rgb(52, 62, 83);
+}
+#emails_input::placeholder {
+    color: rgba(52, 62, 83, 0.4);
+}
+
+
+
 .select2-container--default .select2-selection--single {
   background-color: transparent;
   border: none;

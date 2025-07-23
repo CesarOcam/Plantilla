@@ -298,13 +298,23 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div class="col-10 col-sm-3 mt-4">
+                            <div class="col-10 col-sm-9 mt-4">
                                 <label for="emails_trafico" class="form-label text-muted small">EMAIL LOGÍSTICO:</label>
-                                <input id="emails_trafico" name="emails_trafico" type="text"
-                                    class="form-control rounded-0"
-                                    style="background-color: transparent;"
-                                    value="<?php echo $cliente['emails_trafico']; ?>" >
+                                <div id="emails-container" class="form-control rounded-0 d-flex flex-wrap gap-1"
+                                    style="background-color: transparent; border-bottom: 2px solid #efefef !important;">
+                                    <!-- Etiquetas de correo aquí -->
+                                    <input type="text" id="emails_input" class="border-0 flex-grow-1" placeholder="Agregar email"
+                                        style="background: transparent; outline: none; min-width: 120px;">
+                                </div>
+                                <!-- Campo oculto donde se guardarán los correos separados por coma -->
+                                <input type="hidden" name="emails_trafico" id="emails_trafico_hidden">
                             </div>
+
+
+
+
+                        </div>
+                        <div class="row">
                             <div class="col-10 col-sm-3 mt-4">
                                 <label for="status_exportador" class="form-label text-muted small">ESTADO:</label>
                                 <select id="status_exportador" name="status_exportador"
@@ -314,9 +324,6 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                                     <option value="0" <?php echo ($cliente['status_exportador'] == 0) ? 'selected' : ''; ?>>INACTIVO</option>
                                 </select>
                             </div>
-
-                        </div>
-                        <div class="row">
                             <div class="col-10 col-sm-3 mt-4">
                                 <label for="nombre_usuario_alta" class="form-label text-muted small">USUARIO ALTA:</label>
                                 <input id="nombre_usuario_alta" name="nombre_usuario_alta" type="text"
@@ -386,6 +393,65 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
             if (input) input.focus();
         }, 100);
     });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('emails_input');
+    const container = document.getElementById('emails-container');
+    const hiddenInput = document.getElementById('emails_trafico_hidden');
+
+    // ← Cargar correos existentes al iniciar
+    const inicial = `<?php echo $cliente['emails_trafico'] ?? ''; ?>`;
+    if (inicial.trim() !== '') {
+        inicial.split(',').map(c => c.trim()).forEach(addTag);
+        updateHiddenField();
+    }
+
+    // Al presionar Enter o coma
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const valor = input.value.trim();
+            if (valor && validarEmail(valor)) {
+                addTag(valor);
+                input.value = '';
+                updateHiddenField();
+            } else if (valor) {
+                alert("Correo no válido: " + valor);
+            }
+        }
+    });
+
+    // Agregar una etiqueta de correo
+    function addTag(email) {
+        // Evitar duplicados
+        const existentes = Array.from(container.querySelectorAll('.email-tag span')).map(el => el.textContent);
+        if (existentes.includes(email)) return;
+
+        const tag = document.createElement('span');
+        tag.className = 'email-tag';
+        tag.innerHTML = `<span>${email}</span><span class="remove">&times;</span>`;
+        container.insertBefore(tag, input);
+
+        // Evento para eliminar correo
+        tag.querySelector('.remove').addEventListener('click', () => {
+            tag.remove();
+            updateHiddenField();
+        });
+    }
+
+    // Actualizar el campo oculto con los correos actuales
+    function updateHiddenField() {
+        const emails = Array.from(container.querySelectorAll('.email-tag span:first-child'))
+            .map(span => span.textContent.trim());
+        hiddenInput.value = emails.join(',');
+    }
+
+    // Validación simple de email
+    function validarEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+});
 </script>
 </body>
 </html>
