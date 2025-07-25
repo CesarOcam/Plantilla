@@ -63,15 +63,18 @@ $stmt = $con->prepare("
         p.Cargo,
         p.Abono,
         p.Observaciones,
-        p.FolioArchivo AS Factura,
-        r.Numero AS ReferenciaNumero,   -- número de la referencia
-        CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS usuarioNombre
+        p.NumeroFactura AS Factura,
+        r.Numero AS ReferenciaNumero,
+        CONCAT(u1.nombreUsuario, ' ', u1.apePatUsuario, ' ', u1.apeMatUsuario) AS usuarioNombre,         -- created_by
+        CONCAT(u2.nombreUsuario, ' ', u2.apePatUsuario, ' ', u2.apeMatUsuario) AS usuarioSolicitudNombre -- UsuarioSolicitud
     FROM partidaspolizas p
-    LEFT JOIN usuarios u ON p.created_by = u.idusuarios
+    LEFT JOIN usuarios u1 ON p.created_by = u1.idusuarios
+    LEFT JOIN usuarios u2 ON p.UsuarioSolicitud = u2.idusuarios
     LEFT JOIN cuentas c ON p.SubcuentaId = c.Id
-    LEFT JOIN referencias r ON p.ReferenciaId = r.Id  -- unión con referencias
+    LEFT JOIN referencias r ON p.ReferenciaId = r.Id
     WHERE p.PolizaId = :id
 ");
+
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $partidas = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -216,7 +219,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <td><?= '$ ' . number_format($fila['Abono'], 2) ?></td>
                                             <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
                                             <td><?= htmlspecialchars($fila['ReferenciaNumero'], 2) ?></td>
-                                            <td></td>
+                                            <td><?= htmlspecialchars($fila['usuarioSolicitudNombre'], 2) ?></td>
                                             <td><?= htmlspecialchars($fila['usuarioNombre'], 2) ?></td>
                                             <td><?= htmlspecialchars($fila['Factura']) ?></td>
                                         </tr>

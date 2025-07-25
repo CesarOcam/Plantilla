@@ -304,7 +304,7 @@ try {
         }
 
         //actualizar referencia
-        $sql_statusRef = "UPDATE referencias SET Status = 3 WHERE Id = :referenciaId";
+        $sql_statusRef = "UPDATE referencias SET Status = 3, FechaKardex = NOW() WHERE Id = :referenciaId";
         $stmt = $con->prepare($sql_statusRef);
         $stmt->execute([
             ':referenciaId' => $referenciaId

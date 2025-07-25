@@ -66,14 +66,6 @@ if (!isset($_SESSION['usuario_id'])) {
         'rgb(107, 122, 156)',
         'Operaciones'
       );
-
-      renderChart('operativosChart', 'bar',
-        ['Operativo 1', 'Operativo 2', 'Operativo 3', 'Operativo 4', 'Operativo 5'],
-        [12, 19, 8, 14, 10],
-        'rgba(255, 159, 64, 0.6)',
-        'rgba(255, 159, 64, 1)',
-        'Tareas Asignadas'
-      );
     });
   </script>
 </head>

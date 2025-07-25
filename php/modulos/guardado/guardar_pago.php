@@ -109,7 +109,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
         // Insertar las partidas de la solicitud
         $sql_insertar_partidas = "INSERT INTO partidaspolizas 
-        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, NumeroFactura)
+        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Activo, NumeroFactura, UsuarioSolicitud)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_partidas);
 
@@ -122,9 +122,9 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
                 $partida['Importe'],
                 $abono,
                 1,
-                $partida['Observaciones'],
                 $activo,
                 $partida['NumeroFactura'],
+                $partida['Created_by']
             ]);
         }
 
@@ -142,17 +142,18 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         // Insertar la partida de pago con la validación de pagada
         $cargo = 0;
         $sql_insertar_pago = "INSERT INTO partidaspolizas
-                (PolizaId, SubcuentaId, Cargo, Abono, Pagada, Observaciones, Activo)
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+                (PolizaId, SubcuentaId, Cargo, Abono, Pagada, Observaciones, Activo, created_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_pago);
         $stmt_data->execute([
             $poliza_id,
             $subcuenta_pago,
             $cargo,
             $importe,
-            $pagada,          // <-- aquí uso la variable con el valor correcto
+            $pagada,         
             $observaciones_pago,
-            $activo
+            $activo,
+            $usuarioAlta
         ]);
 
         // También actualizamos la póliza según si la cuenta empieza con 113

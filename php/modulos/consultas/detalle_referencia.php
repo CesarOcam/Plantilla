@@ -332,7 +332,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <input id="bultos" name="bultos" type="text"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
-                                        value="<?php echo $referencia['Bultos']; ?>">
+                                        value="<?php echo $referencia['Cantidad']; ?>">
                                 </div>
 
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
@@ -505,14 +505,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['PuertoDestino']; ?>">
                                 </div>
-                                <div class="col-2 col-sm-6 d-flex flex-column mt-4">
-                                    <label for="comentarios" class="form-label text-muted small">COMENTARIOS:</label>
-                                    <input id="comentarios" name="comentarios" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['Comentarios']; ?>">
-                                </div>
-
                                 <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                                     <label for="usuario_alta" class="form-label text-muted small">USUARIO ALTA:</label>
                                     <input id="usuario_alta" name="usuario_alta" type="text"
@@ -533,6 +525,15 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['Status_texto']; ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-2 col-sm-6 d-flex flex-column mt-4">
+                                    <label for="comentarios" class="form-label text-muted small">COMENTARIOS:</label>
+                                    <textarea id="comentarios" name="comentarios"
+                                        class="form-control input-transparent border-0 border-bottom rounded-0"
+                                        style="background-color: transparent; resize: none;"
+                                        rows="4"><?php echo htmlspecialchars($referencia['Comentarios']); ?></textarea>
                                 </div>
                             </div>
                         </div>
@@ -601,7 +602,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                                             <option
                                                                                 value="<?= htmlspecialchars($tc['id2210_tipo_contenedor']) ?>"
                                                                                 <?= ($tc['id2210_tipo_contenedor'] == $c['tipo']) ? 'selected' : '' ?>>
-                                                                                <?= htmlspecialchars($tc['descripcion_contenedor']) ?>
+                                                                                <?= htmlspecialchars($tc['id2210_tipo_contenedor'].' - '.$tc['descripcion_contenedor']) ?>
                                                                             </option>
                                                                         <?php endforeach; ?>
                                                                     </select>

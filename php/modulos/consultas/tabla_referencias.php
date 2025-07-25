@@ -50,7 +50,7 @@ $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
 
 // CONSULTA FINAL CON JOIN Y PAGINACIÓN
 $sql = "SELECT 
-    r.Id, r.Numero, r.ClienteLogisticoId, r.ClienteExportadorId, r.Status, r.FechaAlta, r.FechaContabilidad,
+    r.Id, r.Numero, r.ClienteLogisticoId, r.ClienteExportadorId, r.Status, r.FechaAlta, r.FechaContabilidad,r.FechaKardex,
     exp.razonSocial_exportador AS ExportadorNombre,
     log.razonSocial_exportador AS LogisticoNombre 
     FROM referencias r
@@ -139,7 +139,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     </td>
                     <td><?php echo $referencia['FechaAlta']; ?></td>
                     <td><?php echo $referencia['FechaContabilidad']; ?></td>
-                    <td></td>
+                    <td><?php echo $referencia['FechaKardex']; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

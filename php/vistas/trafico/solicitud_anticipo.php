@@ -264,16 +264,26 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     function agregarFila() {
 
         const aduanaSelect = document.getElementById('aduana-select');
-        const selectedOption = aduanaSelect.options[aduanaSelect.selectedIndex]?.text.trim() || '';
-        const letraAduanaSeleccionada = selectedOption.charAt(0).toUpperCase();
+        const selectedOption = aduanaSelect.options[aduanaSelect.selectedIndex];
+        const nombreAduana = selectedOption?.text.trim().toUpperCase() || '';
 
-        if (!letraAduanaSeleccionada) {
+        if (!nombreAduana) {
             alert("Primero selecciona una aduana.");
             return;
         }
 
         // Filtrar referencias por letra de la aduana
-        const referenciasFiltradas = referencias.filter(r => r.Numero.charAt(0).toUpperCase() === letraAduanaSeleccionada);
+        const excepciones = {
+            'AIFA': 'F',
+            // Agrega más excepciones si las tienes
+        };
+
+        const letraFiltro = excepciones[nombreAduana] || nombreAduana.charAt(0);
+
+        const referenciasFiltradas = referencias.filter(r => {
+            return r.Numero.charAt(0).toUpperCase() === letraFiltro;
+        });
+
 
         const tbody = document.querySelector('#tabla-partidas tbody');
         const fila = document.createElement('tr');

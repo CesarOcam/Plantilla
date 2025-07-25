@@ -1,6 +1,14 @@
 <?php
 session_start();
 include('../conexion.php');
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Usuario no autenticado.'
+    ]);
+    exit;
+}
+$usuarioAlta = $_SESSION['usuario_id'];
 
 error_log("===== INICIO guardar_factura_solicitud.php =====");
 
@@ -49,7 +57,7 @@ if (
 
         // 2. Obtener datos para las solicitudes
         $stmtFacturas = $con->prepare("
-            SELECT f.Id AS factura_id, f.status, f.proveedor, f.importe, f.referencia_id, f.fecha_solicitud AS fecha,
+            SELECT f.Id AS factura_id, f.folio, f.status, f.proveedor, f.importe, f.referencia_id, f.fecha_solicitud AS fecha,
                 f.uuid, f.subcuenta_id, b.Id AS beneficiario_id, r.AduanaId AS aduana_id
             FROM facturas_registradas f
             LEFT JOIN (
@@ -76,8 +84,8 @@ if (
 ");
 
         $stmtPartida = $con->prepare("
-        INSERT INTO partidassolicitudes (Partida, SolicitudId, SubcuentaId, ReferenciaId, Importe, UuidArchivoFactura)
-        VALUES (0, ?, ?, ?, ?, ?)
+        INSERT INTO partidassolicitudes (Partida, SolicitudId, SubcuentaId, ReferenciaId, Importe, Observaciones, UuidArchivoFactura, NumeroFactura, Created_by)
+        VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
         $stmtFacturaStatus = $con->prepare("UPDATE facturas_registradas SET status = 2 WHERE Id = ?");
@@ -114,7 +122,11 @@ if (
                     $factura['subcuenta_id'],
                     $factura['referencia_id'],
                     $factura['importe'],
-                    $factura['uuid']
+                    $factura['folio'],
+                    $factura['uuid'],
+                    $factura['folio'],
+                    $usuarioAlta
+                    
                 ]);
 
                 // Guardar par para actualización posterior

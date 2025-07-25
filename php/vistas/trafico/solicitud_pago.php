@@ -203,17 +203,29 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
     function agregarFila() {
         // Leer la letra de la aduana actual cada vez que se agrega una fila
+        // Obtener el nombre de la aduana seleccionada desde el texto del <select>
         const aduanaSelect = document.getElementById('aduana-select');
-        const selectedOption = aduanaSelect.options[aduanaSelect.selectedIndex]?.text.trim() || '';
-        const letraAduanaSeleccionada = selectedOption.charAt(0).toUpperCase();
+        const selectedOption = aduanaSelect.options[aduanaSelect.selectedIndex];
+        const nombreAduana = selectedOption?.text.trim().toUpperCase() || '';
 
-        if (!letraAduanaSeleccionada) {
+        if (!nombreAduana) {
             alert("Primero selecciona una aduana.");
             return;
         }
 
-        // Filtrar referencias por letra de la aduana
-        const referenciasFiltradas = referencias.filter(r => r.Numero.charAt(0).toUpperCase() === letraAduanaSeleccionada);
+        // Lógica de excepciones
+        const excepciones = {
+            'AIFA': 'F',
+            // Puedes agregar más excepciones aquí si las hay
+        };
+
+        // Obtener letra para filtrar referencias
+        const letraFiltro = excepciones[nombreAduana] || nombreAduana.charAt(0);
+
+        // Filtrar referencias
+        const referenciasFiltradas = referencias.filter(r =>
+            r.Numero.charAt(0).toUpperCase() === letraFiltro
+        );
 
         const tbody = document.querySelector('#tabla-partidas tbody');
         const fila = document.createElement('tr');

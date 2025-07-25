@@ -98,8 +98,8 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
     $activo = 1;
     // Preparar inserción de partidas
     $sql_insert_partidas = "INSERT INTO partidaspolizas 
-    (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Observaciones, FolioArchivo, Activo, NumeroFactura)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Observaciones, FolioArchivo, Activo, NumeroFactura, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);
 
     foreach ($subcuentas as $i => $subcuenta_id) {
@@ -125,7 +125,8 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
             $observacion,
             $factura,     // FolioArchivo
             $activo,
-            $factura      // NumeroFactura
+            $factura,
+            $usuarioAlta      // NumeroFactura
         ]);
     }
 

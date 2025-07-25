@@ -74,12 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $enKardex = 0;
         $Pagada = 1;
 
-        $sql_datos_partida = "SELECT PolizaId, SubcuentaId, ReferenciaId, Cargo FROM partidaspolizas WHERE Partida = ?";
+        $sql_datos_partida = "SELECT PolizaId, SubcuentaId, ReferenciaId, Cargo, NumeroFactura, UsuarioSolicitud, created_by FROM partidaspolizas WHERE Partida = ?";
         $stmt_datos = $con->prepare($sql_datos_partida);
 
         $sql_insert_partida = "INSERT INTO partidaspolizas 
-            (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, EnKardex, created_by) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, EnKardex, NumeroFactura, UsuarioSolicitud, created_by) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_insert = $con->prepare($sql_insert_partida);
 
         $sql_update_pagada_original = "UPDATE partidaspolizas SET Pagada = 1 WHERE Partida = ?";
@@ -94,6 +94,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $referenciaId = $datos['ReferenciaId'];
                 $cargoAbonado = $datos['Cargo'];
                 $polizaOriginalId = $datos['PolizaId'];
+                $NumFactura = $datos['NumeroFactura'];
+                $solicitadoPor = $datos['UsuarioSolicitud'];
+                $aprobadoPor = $datos['created_by'];
 
                 // Insertamos la nueva partida relacionada a la nueva póliza
                 $ok = $stmt_insert->execute([
@@ -106,7 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $observacion,
                     $activo,
                     $enKardex,
-                    $usuarioAlta
+                    $NumFactura,
+                    $solicitadoPor,
+                    $aprobadoPor
                 ]);
 
                 if (!$ok) {
@@ -168,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $con->commit();
 
-        //-------------------------------------------------------- ENVÍO DE CORREO ------------------------------------------------------------------
+        /*-------------------------------------------------------- ENVÍO DE CORREO ------------------------------------------------------------------
         
         if ($resultado) {
 
@@ -179,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Envías el correo
             mail($to, $subject, $message, $headers);
-        }
+        }*/
 
 
         echo json_encode([

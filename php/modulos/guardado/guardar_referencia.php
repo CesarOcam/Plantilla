@@ -115,7 +115,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
 
     $sql = "INSERT INTO referencias (
         AduanaId, Numero, ClienteExportadorId, ClienteLogisticoId, Mercancia, Marcas,
-        Pedimentos, ClavePedimento, PesoBruto, Bultos,
+        Pedimentos, ClavePedimento, PesoBruto, Cantidad,
         Contenedor, ConsolidadoraId, ResultadoModulacion, RecintoId,
         NavieraId, CierreDocumentos, FechaPago, BuqueId, Booking, CierreDespacho,
         HoraDespacho, Viaje, SuReferencia, CierreDocumentado, LlegadaEstimada,
@@ -132,7 +132,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
         $pedimento,
         $clave_ped,
         $peso,
-        $bultos,
+        $bultos, //Cantidad
         $contenedor,
         $consolidadora,
         $resultado_mod,

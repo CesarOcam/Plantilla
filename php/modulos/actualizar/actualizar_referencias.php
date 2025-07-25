@@ -37,8 +37,7 @@ if (isset($_POST['id'])) {
     $pedimento = $_POST['pedimento'] ?? null;
     $clave_ped = $_POST['clave'] ?? null;
     $peso = isset($_POST['peso']) && $_POST['peso'] !== '' ? floatval($_POST['peso']) : null;
-    $cantidad = isset($_POST['cantidad']) && $_POST['cantidad'] !== '' ? intval($_POST['cantidad']) : null;
-    $bultos = isset($_POST['bultos']) && $_POST['bultos'] !== '' ? intval($_POST['bultos']) : null;
+    $bultos = isset($_POST['bultos']) && $_POST['bultos'] !== '' ? $_POST['bultos'] : null;
     $consolidadora = isset($_POST['consolidadora']) && $_POST['consolidadora'] !== '' ? intval($_POST['consolidadora']) : null;
     $resultado_mod = $_POST['modulacion'] ?? null;
     $resultado_mod = ($resultado_mod === '' ? null : (int) $resultado_mod);
@@ -66,7 +65,7 @@ if (isset($_POST['id'])) {
 
         $sql = "
             UPDATE referencias SET
-                ClienteExportadorId = ?, ClienteLogisticoId = ?, Mercancia = ?, Marcas = ?, Pedimentos = ?, ClavePedimento = ?, PesoBruto = ?, Cantidad = ?, Bultos = ?,
+                ClienteExportadorId = ?, ClienteLogisticoId = ?, Mercancia = ?, Marcas = ?, Pedimentos = ?, ClavePedimento = ?, PesoBruto = ?, Cantidad = ?,
                 ConsolidadoraId = ?, ResultadoModulacion = ?, RecintoId = ?, NavieraId = ?, CierreDocumentos = ?,
                 FechaPago = ?, BuqueId = ?, Booking = ?, CierreDespacho = ?, HoraDespacho = ?, Viaje = ?, SuReferencia = ?,
                 CierreDocumentado = ?, LlegadaEstimada = ?, PuertoDescarga = ?, PuertoDestino = ?, Comentarios = ?, 
@@ -82,7 +81,6 @@ if (isset($_POST['id'])) {
             $pedimento,
             $clave_ped,
             $peso,
-            $cantidad,
             $bultos,
             $consolidadora,
             $resultado_mod,

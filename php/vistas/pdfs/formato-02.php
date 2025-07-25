@@ -212,7 +212,7 @@ $pdf->SetXY(102, $colY - 2);
 $pdf->Cell(0, 2, toISO('CANTIDAD:'), 0, 1, 'L');
 $pdf->SetFont('Arial', '', 9.5);
 $pdf->SetXY(123, $colY - 2);
-$pdf->Cell(0, 2, toISO($referencia['Bultos'] ?? ''), 0, 1, 'L');
+$pdf->Cell(0, 2, toISO($referencia['Cantidad'] ?? ''), 0, 1, 'L');
 
 // Fila 3
 $colY += 6;
@@ -234,9 +234,10 @@ $colY += 6;
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetXY(10, $colY  + 8);
 $pdf->Cell(0, 2, toISO('MERCANCIAS:'), 0, 1, 'L');
-$pdf->SetXY(36, $colY  + 8);
+$pdf->SetXY(36, $colY  + 7);
 $pdf->SetFont('Arial', '', 9.5);
-$pdf->Cell(0, 2, toISO($referencia['Mercancia'] ?? ''), 0, 1, 'L');
+$pdf->MultiCell(60, 4, toISO($referencia['Mercancia'] ), 0, 'L');
+
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetXY(102, $colY  + 8);
 $pdf->Cell(0, 2, toISO('MARCAS:'), 0, 1, 'L');

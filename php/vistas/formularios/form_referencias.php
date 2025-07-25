@@ -369,11 +369,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" placeholder="Puerto de Destino">
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-10 col-sm-6 d-flex align-items-center mt-4">
-                                <input name="comentarios" type="text"
-                                    class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Comentarios">
+                                <textarea name="comentarios" class="form-control rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent; resize: none;" placeholder="Comentarios"
+                                    rows="4"></textarea>
                             </div>
+
                         </div>
                     </div>
 
@@ -588,7 +591,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 <td class="text-center">
                     <select name="tipo[]" class="form-select tipo-select form-control ps-4 rounded-0 border-0 border-bottom text-center" style="width: 100%;">
                         <option value="">Seleccione un tipo</option>
-                        ${tiposContenedor.map(tc => `<option value="${tc.id2210_tipo_contenedor}">${tc.descripcion_contenedor}</option>`).join('')}
+                        ${tiposContenedor.map(tc => `<option value="${tc.id2210_tipo_contenedor}">${tc.id2210_tipo_contenedor} - ${tc.descripcion_contenedor}</option>`).join('')}
                     </select>
                 </td>
                 <td class="text-center"><input type="text" name="sello[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el sello"></td>
