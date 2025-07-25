@@ -16,10 +16,16 @@ include_once('../../modulos/conexion.php');
 if (isset($_GET['aduanaNombre'])) {
     $aduanaNombre = trim($_GET['aduanaNombre']);
 
-    $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado 
+    if (strtoupper($aduanaNombre) === 'CDMX') {
+        $aduanaNombre = 'AEROPUERTO INTERNACIONAL DE LA CIUDAD DE MÉXICO';
+    }
+
+    $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado, nombre_conocido_recinto 
                            FROM 2206_recintos_fiscalizados 
-                           WHERE aduanaFiscalizada LIKE :aduanaNombre
-                           ORDER BY recintoFiscalizado");
+                           WHERE aduanaFiscalizada IS NOT NULL
+                             AND nombre_conocido_recinto IS NOT NULL
+                             AND aduanaFiscalizada LIKE :aduanaNombre
+                           ORDER BY nombre_conocido_recinto");
     $stmt->execute(['aduanaNombre' => "%$aduanaNombre%"]);
     $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -27,6 +33,8 @@ if (isset($_GET['aduanaNombre'])) {
     echo json_encode($recintos);
     exit;
 }
+
+
 
 
 // Obtener aduanas
@@ -47,10 +55,10 @@ $stmt->execute();
 $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // RECINTOS
-$stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado
+$stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, nombre_conocido_recinto
                        FROM 2206_recintos_fiscalizados 
-                       WHERE recintoFiscalizado IS NOT NULL AND recintoFiscalizado != ''
-                       ORDER BY recintoFiscalizado");
+                       WHERE nombre_conocido_recinto IS NOT NULL AND nombre_conocido_recinto != ''
+                       ORDER BY nombre_conocido_recinto");
 $stmt->execute();
 $recinto = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -701,7 +709,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     if (data.length > 0) {
                         recintoSelect.append('<option value="" disabled selected>-- Selecciona un recinto --</option>');
                         data.forEach(recinto => {
-                            recintoSelect.append(`<option value="${recinto.id2206_recintos_fiscalizados}">${recinto.recintoFiscalizado}</option>`);
+                            recintoSelect.append(`<option value="${recinto.id2206_recintos_fiscalizados}">${recinto.nombre_conocido_recinto}</option>`);
                         });
                         recintoSelect.prop('disabled', false);
                     } else {

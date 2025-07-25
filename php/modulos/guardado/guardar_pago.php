@@ -158,6 +158,18 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         // También actualizamos la póliza según si la cuenta empieza con 113
         $stmt_update_poliza = $con->prepare("UPDATE polizas SET Pagada = ? WHERE Id = ?");
         $stmt_update_poliza->execute([$pagada, $poliza_id]);
+        
+        // Obtener la última partida de esa póliza
+        $sql_ultima_partida = "SELECT Pagada FROM partidaspolizas WHERE PolizaId = ? ORDER BY Partida DESC LIMIT 1";
+        $stmt_ultima = $con->prepare($sql_ultima_partida);
+        $stmt_ultima->execute([$poliza_id]);
+        $ultima_partida = $stmt_ultima->fetch(PDO::FETCH_ASSOC);
+
+        // Si la última partida es no pagada, actualizar todas las partidas de esa póliza a Pagada = 0
+        if ($ultima_partida && $ultima_partida['Pagada'] == 0) {
+            $stmt_actualizar_todas = $con->prepare("UPDATE partidaspolizas SET Pagada = 0 WHERE PolizaId = ?");
+            $stmt_actualizar_todas->execute([$poliza_id]);
+        }
 
     } else {
         echo "Error al guardar la póliza.";

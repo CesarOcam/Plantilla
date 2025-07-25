@@ -47,7 +47,7 @@ SELECT
 FROM cuentas cu
 WHERE cu.CuentaPadreId = 21
   AND cu.Numero LIKE '216-%'
-ORDER BY cu.Numero ASC
+ORDER BY (TotalRelacionado - TotalAbonado) DESC, cu.Numero ASC
 LIMIT :inicio, :registrosPorPagina
 ";
 

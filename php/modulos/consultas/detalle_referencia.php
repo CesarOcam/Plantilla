@@ -111,13 +111,18 @@ if (!empty($aduanaId)) {
     if ($nombreCorto) {
         $nombreCorto = strtoupper(trim($nombreCorto)); // Aseguramos consistencia
 
+        // Reemplazo especial si es CDMX
+        if ($nombreCorto === 'CDMX') {
+            $nombreCorto = 'AEROPUERTO INTERNACIONAL DE LA CIUDAD DE MÉXICO';
+        }
+
         // Ahora buscamos los recintos donde aduanaFiscalizada coincida con nombre_corto_aduana
-        $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado
+        $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado, nombre_conocido_recinto
                                FROM 2206_recintos_fiscalizados
                                WHERE UPPER(aduanaFiscalizada) = :nombre
-                                 AND recintoFiscalizado IS NOT NULL
-                                 AND recintoFiscalizado != ''
-                               ORDER BY recintoFiscalizado");
+                                 AND nombre_conocido_recinto IS NOT NULL
+                                 AND nombre_conocido_recinto != ''
+                               ORDER BY nombre_conocido_recinto");
         $stmt->execute(['nombre' => $nombreCorto]);
         $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -374,7 +379,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <?php foreach ($recintos as $rec): ?>
                                                 <option value="<?= $rec['id2206_recintos_fiscalizados'] ?>"
                                                     <?= $rec['id2206_recintos_fiscalizados'] == $recintoSeleccionado ? 'selected' : '' ?>>
-                                                    <?= htmlspecialchars($rec['recintoFiscalizado']) ?>
+                                                    <?= htmlspecialchars($rec['nombre_conocido_recinto']) ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         <?php endif; ?>

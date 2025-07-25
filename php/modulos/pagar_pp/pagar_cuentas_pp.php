@@ -168,6 +168,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $con->commit();
 
+        //-------------------------------------------------------- ENVÍO DE CORREO ------------------------------------------------------------------
+        
+        if ($resultado) {
+
+            $to = "cesar.amexport@gmail.com";
+            $subject = "Envío de cuenta de gastos";
+            $message = "";
+            $headers = "From: tu-correo@dominio.com";
+
+            // Envías el correo
+            mail($to, $subject, $message, $headers);
+        }
+
 
         echo json_encode([
             'success' => true,
