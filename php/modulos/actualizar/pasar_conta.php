@@ -16,7 +16,7 @@ if (!isset($_POST['id']) || empty($_POST['id'])) {
 
 $id = (int) $_POST['id'];
 
-$sql = "UPDATE referencias SET Status = 2, FechaContabilidad = NOW() WHERE id = ?";
+$sql = "UPDATE conta_referencias SET Status = 2, FechaContabilidad = NOW() WHERE id = ?";
 
 $stmt = $con->prepare($sql);
 if (!$stmt) {

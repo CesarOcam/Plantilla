@@ -53,7 +53,7 @@ $sql = "SELECT
     r.Id, r.Numero, r.ClienteLogisticoId, r.ClienteExportadorId, r.Status, r.FechaAlta, r.FechaContabilidad,r.FechaKardex,
     exp.razonSocial_exportador AS ExportadorNombre,
     log.razonSocial_exportador AS LogisticoNombre 
-    FROM referencias r
+    FROM conta_referencias r
     LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
     $whereSql
@@ -77,7 +77,7 @@ $referencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Consulta para contar el total de registros
-$stmtTotal = $con->prepare("SELECT COUNT(*) FROM polizas");
+$stmtTotal = $con->prepare("SELECT COUNT(*) FROM conta_polizas");
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
 

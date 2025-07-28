@@ -30,7 +30,7 @@ if (file_exists($rutaCompleta)) {
 try {
     include_once(__DIR__ . '/../conexion.php');
 
-    $stmt = $con->prepare("DELETE FROM referencias_archivos WHERE Ruta = :ruta");
+    $stmt = $con->prepare("DELETE FROM conta_referencias_archivos WHERE Ruta = :ruta");
     $stmt->bindParam(':ruta', $ruta);
     $stmt->execute();
 

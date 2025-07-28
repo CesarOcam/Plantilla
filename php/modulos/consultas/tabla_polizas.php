@@ -48,7 +48,7 @@ $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
 $sql = "SELECT 
             p.Id, p.Numero, p.Concepto, p.Importe, p.EmpresaId, p.FechaAlta, p.Activo, 
             b.Nombre AS BeneficiarioNombre 
-        FROM polizas p
+        FROM conta_polizas p
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
         $whereSql
         ORDER BY p.Fecha DESC
@@ -69,7 +69,7 @@ $stmt->execute();
 $poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Consulta para contar el total de registros
-$stmtTotal = $con->prepare("SELECT COUNT(*) FROM polizas");
+$stmtTotal = $con->prepare("SELECT COUNT(*) FROM conta_polizas");
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
 

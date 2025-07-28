@@ -31,7 +31,7 @@ if (
     $prefijo = 'D'; // Siempre prefijo D
     $concepto = 'PAGO DE CUENTA';
 
-    $sql_ultimo = "SELECT Numero FROM polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
+    $sql_ultimo = "SELECT Numero FROM conta_polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
     $stmt_ultimo = $con->prepare($sql_ultimo);
     $stmt_ultimo->execute([$prefijo]);
 
@@ -44,7 +44,7 @@ if (
     $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
 
 
-    $sql_insert_poliza = "INSERT INTO polizas 
+    $sql_insert_poliza = "INSERT INTO conta_polizas 
     (
         BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, Activo, FechaAlta, UsuarioAlta
     )
@@ -76,7 +76,7 @@ if (
     $ids = explode(',', $_POST['ids']);
     $referencias = [];
 
-    $sql = "SELECT Referencia, Saldo FROM cuentas_kardex WHERE Id = ?";
+    $sql = "SELECT Referencia, Saldo FROM conta_cuentas_kardex WHERE Id = ?";
     $stmt = $con->prepare($sql);
 
     foreach ($ids as $id) {
@@ -94,7 +94,7 @@ if (
 
     $referencias_con_aduana = [];
 
-    $sqlRef = "SELECT AduanaId FROM referencias WHERE Id = ?";
+    $sqlRef = "SELECT AduanaId FROM conta_referencias WHERE Id = ?";
     $stmtRef = $con->prepare($sqlRef);
 
     foreach ($referencias as $ref) {
@@ -152,7 +152,7 @@ if (
     }
 
     // Insertar las partidas por cada referencia
-    $sql_insert_partidas = "INSERT INTO partidaspolizas 
+    $sql_insert_partidas = "INSERT INTO conta_partidaspolizas 
     (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Activo, created_by)
     VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);
@@ -182,7 +182,7 @@ if (
         $cargo = $diferencia < 0 ? abs($diferencia) : 0;
         $abono = $diferencia > 0 ? abs($diferencia) : 0;
 
-        $sql_partida_banco = "INSERT INTO partidaspolizas 
+        $sql_partida_banco = "INSERT INTO conta_partidaspolizas 
         (Polizaid, Subcuentaid, Cargo, Abono, Activo)
         VALUES (?, ?, ?, ?, ?)";
         $stmt_partida_banco = $con->prepare($sql_partida_banco);
@@ -196,7 +196,7 @@ if (
         ]);
     }
 
-    $sql_update = "UPDATE cuentas_kardex SET Status = 2 WHERE Id = ?";
+    $sql_update = "UPDATE conta_cuentas_kardex SET Status = 2 WHERE Id = ?";
     $stmt_update = $con->prepare($sql_update);
 
     foreach ($ids as $id) {

@@ -24,9 +24,9 @@ $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Subcuentas asignadas
 $stmtSub = $con->prepare("
-    SELECT subcuenta_id
-    FROM subcuentas_beneficiarios
-    WHERE beneficiario_id = :id
+    SELECT SubcuentaId
+    FROM subcuentasbeneficiarios
+    WHERE Id = :id
 ");
 $stmtSub->bindParam(':id', $id, PDO::PARAM_INT);
 $stmtSub->execute();

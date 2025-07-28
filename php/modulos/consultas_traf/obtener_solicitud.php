@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
 
     $sql = "SELECT s.Id, s.ReferenciaFacturaId, e.Nombre AS EmpresaNombre, b.Nombre AS BeneficiarioNombre, s.Importe, s.Fecha, s.FechaAlta, a.nombre_corto_aduana AS AduanaNombre
-            FROM solicitudes s
+            FROM conta_solicitudes s
             JOIN empresas e ON s.EmpresaId = e.Id
             JOIN beneficiarios b ON s.BeneficiarioId = b.Id
             JOIN 2201aduanas a ON s.Aduana = a.id2201aduanas
@@ -30,9 +30,9 @@ if (isset($_GET['id'])) {
             ps.NumeroFactura,
             r.Numero AS ReferenciaNumero,
             ce.razonSocial_exportador AS RazonSocialExportador
-        FROM partidassolicitudes ps
+        FROM conta_partidassolicitudes ps
         JOIN cuentas c ON ps.SubcuentaId = c.Id
-        LEFT JOIN referencias r ON ps.ReferenciaId = r.Id
+        LEFT JOIN conta_referencias r ON ps.ReferenciaId = r.Id
         LEFT JOIN 01clientes_exportadores ce ON r.ClienteExportadorId = ce.id01clientes_exportadores
         WHERE ps.SolicitudId = :id";
 

@@ -19,8 +19,8 @@ try {
             pp.Cargo AS Cargo,
             pp.Abono AS Abono,
             pp.Observaciones
-        FROM partidaspolizas pp
-        LEFT JOIN polizas p ON pp.PolizaId = p.Id
+        FROM conta_partidaspolizas pp
+        LEFT JOIN conta_polizas p ON pp.PolizaId = p.Id
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
         LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
         WHERE pp.ReferenciaId = :id
@@ -48,8 +48,8 @@ try {
             pp.Cargo AS Cargo,
             pp.Abono AS Abono,
             pp.Observaciones
-        FROM partidaspolizas pp
-        LEFT JOIN polizas p ON pp.PolizaId = p.Id
+        FROM conta_partidaspolizas pp
+        LEFT JOIN conta_polizas p ON pp.PolizaId = p.Id
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
         LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
         WHERE pp.ReferenciaId = :id

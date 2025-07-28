@@ -97,7 +97,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
 
     $sqlUltimoNumero = "
     SELECT Numero 
-    FROM referencias 
+    FROM conta_referencias 
     WHERE Numero LIKE :prefijo 
     ORDER BY CAST(SUBSTRING(Numero, 3) AS UNSIGNED) DESC 
     LIMIT 1
@@ -113,7 +113,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
         $numero = $prefijo . "0000";
     }
 
-    $sql = "INSERT INTO referencias (
+    $sql = "INSERT INTO conta_referencias (
         AduanaId, Numero, ClienteExportadorId, ClienteLogisticoId, Mercancia, Marcas,
         Pedimentos, ClavePedimento, PesoBruto, Cantidad,
         Contenedor, ConsolidadoraId, ResultadoModulacion, RecintoId,
@@ -179,7 +179,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
             $tipos = isset($_POST['tipo']) ? (array) $_POST['tipo'] : [];
             $sellos = isset($_POST['sello']) ? (array) $_POST['sello'] : [];
 
-            $sqlContenedor = "INSERT INTO contenedores (referencia_id, codigo, tipo, sello, status) VALUES (?, ?, ?, ?, 1)";
+            $sqlContenedor = "INSERT INTO conta_contenedores (referencia_id, codigo, tipo, sello, status) VALUES (?, ?, ?, ?, 1)";
             $stmtContenedor = $con->prepare($sqlContenedor);
 
             $total = max(count($contenedores), count($tipos), count($sellos));
@@ -225,7 +225,7 @@ if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
                     $rutaFinal = $uploadDir . $nombreFinal;
 
                     if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
-                        $sqlArchivo = "INSERT INTO referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
+                        $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
                         $stmtArchivo = $con->prepare($sqlArchivo);
                         $stmtArchivo->execute([$referencia_id, $nombreOriginal, $rutaFinal]);
                     }

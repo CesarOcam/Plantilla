@@ -58,7 +58,7 @@ $stmt = $con->prepare("
         r.UsuarioAlta,
         r.FechaAlta,
         CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombre_usuario_alta
-    FROM referencias r
+    FROM conta_referencias r
     LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
     LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
@@ -102,7 +102,7 @@ $pais = $stmtPais->fetch(PDO::FETCH_ASSOC);
 
 
 
-$sql = "SELECT codigo FROM contenedores WHERE referencia_id = :id";
+$sql = "SELECT codigo FROM conta_contenedores WHERE referencia_id = :id";
 $stmt = $con->prepare($sql);
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();

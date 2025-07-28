@@ -33,7 +33,7 @@ $sql = "SELECT
             b.Nombre AS BeneficiarioNombre,
             s.Importe, 
             s.Fecha
-        FROM solicitudes s
+        FROM conta_solicitudes s
         LEFT JOIN empresas e ON s.EmpresaId = e.Id
         LEFT JOIN beneficiarios b ON s.BeneficiarioId = b.Id
         WHERE s.Status = 1
@@ -46,7 +46,7 @@ $stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 $stmt->execute();
 $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$stmtTotal = $con->prepare("SELECT COUNT(*) FROM solicitudes WHERE Status = 1");
+$stmtTotal = $con->prepare("SELECT COUNT(*) FROM conta_solicitudes WHERE Status = 1");
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
 
@@ -139,5 +139,5 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
     const subcuentas = <?php echo json_encode($subcuentas); ?>;
 </script>
 <!--Script para obtener los datos relacionados a la solicitud-->
-<script src="../../../js/consultar_solicitudes_tabla.js"></script>
+<script src="../../../js/consultar_Solicitudes_tabla.js"></script>
 <script src="../../../js/eliminar/eliminar_solicitudes_tabla.js"></script>

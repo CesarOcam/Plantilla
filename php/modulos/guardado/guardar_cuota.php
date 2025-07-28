@@ -73,7 +73,7 @@ $empresa = 2;
 $prefijo = 'D';
 $numero_poliza = '';
 
-$sql_ultimo = "SELECT Numero FROM polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
+$sql_ultimo = "SELECT Numero FROM conta_polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
 $stmt_ultimo = $con->prepare($sql_ultimo);
 $stmt_ultimo->execute([$prefijo]);
 
@@ -86,7 +86,7 @@ $nuevo_numero = $ultimo_numero + 1;
 $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
 
 //---------------------Guardar la Póliza-----------------------------
-$sql_insert_poliza = "INSERT INTO polizas 
+$sql_insert_poliza = "INSERT INTO conta_polizas 
     (EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -149,7 +149,7 @@ switch ((int)$aduana) {
         break;
 }
 
-$sql_insert_partida = "INSERT INTO partidaspolizas 
+$sql_insert_partida = "INSERT INTO conta_partidaspolizas 
     (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -208,7 +208,7 @@ switch ((int)$aduana) {
         break;
 }
 
-$sql_insert_partida2 = "INSERT INTO partidaspolizas 
+$sql_insert_partida2 = "INSERT INTO conta_partidaspolizas 
     (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -248,7 +248,7 @@ try {
 $cargos = 0;
 $subcuenta = 182;
 
-$sql_insert_partida3 = "INSERT INTO partidaspolizas 
+$sql_insert_partida3 = "INSERT INTO conta_partidaspolizas 
     (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -310,7 +310,7 @@ if (is_array($archivos['name'])) {
 
             if (move_uploaded_file($tmpName, $rutaFinal)) {
                 // Registrar en BD
-                $sqlArchivo = "INSERT INTO referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
+                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
                 $stmtArchivo->execute([$referencia, $nombreOriginal, $rutaFinal]);
 

@@ -11,7 +11,7 @@ $stmt = $con->prepare("
     r.ClienteLogisticoId,
     cl.rfc_exportador AS rfc_logistico
 FROM 
-    referencias r
+    conta_referencias r
 INNER JOIN 
     01clientes_exportadores ce 
     ON r.ClienteExportadorId = ce.id01clientes_exportadores
@@ -27,7 +27,7 @@ $stmt->execute();
 $referenciasConRFC = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Paso 2: Obtener facturas
-$stmtFacturas = $con->prepare("SELECT * FROM facturas_registradas WHERE status != 2");
+$stmtFacturas = $con->prepare("SELECT * FROM conta_facturas_registradas WHERE status != 2");
 $stmtFacturas->execute();
 $facturas = $stmtFacturas->fetchAll(PDO::FETCH_ASSOC);
 
@@ -57,7 +57,7 @@ foreach ($facturas as $factura) {
         if ($beneficiario) {
             $beneficiarioId = $beneficiario['Id'];
 
-            $stmt = $con->prepare("SELECT subcuenta_id FROM subcuentas_beneficiarios WHERE beneficiario_id = ?");
+            $stmt = $con->prepare("SELECT SubcuentaId FROM subcuentasbeneficiarios WHERE BeneficiarioId = ?");
             $stmt->execute([$beneficiarioId]);
             $subcuentaIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 

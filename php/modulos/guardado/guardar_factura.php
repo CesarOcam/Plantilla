@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../conexion.php');
+include('../conexion.php'); // Ajusta ruta según tu estructura
 header('Content-Type: application/json');
 
 // Validar sesión de usuario
@@ -8,144 +8,120 @@ if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(['success' => false, 'message' => 'Usuario no autenticado.']);
     exit;
 }
+
 $usuarioAlta = $_SESSION['usuario_id'];
 
+// Verificar que llegan datos JSON
 if (!isset($_POST['datos'])) {
     echo json_encode(['success' => false, 'message' => 'No se recibieron datos JSON.']);
     exit;
 }
 
 $data = json_decode($_POST['datos'], true);
-
 if (!is_array($data)) {
     echo json_encode(['success' => false, 'message' => 'Datos JSON inválidos.']);
     exit;
 }
 
-
+// Verificar que haya archivos
 if (empty($_FILES)) {
     echo json_encode(['success' => false, 'message' => 'No se recibieron archivos.']);
     exit;
 }
 
+// Para debug: muestra qué archivos llegan al servidor
+error_log("Archivos recibidos: " . print_r($_FILES, true));
+
 $errores = [];
 $insertados = 0;
 
-foreach ($data as $index => $archivo) {
-    // Datos básicos de la factura
-    $serie = $archivo['serie'] ?? null;
-    $folio = $archivo['folio'] ?? null;
-    $serieFolio = ($serie ?? '') . ($folio ?? '');
-    $rfc_proveedor = $archivo['rfcProveedor'] ?? null;
-    $proveedor = $archivo['proveedor'] ?? null;
-    $rfc_cliente = $archivo['rfcCliente'] ?? null;
-    $cliente = $archivo['cliente'] ?? null;
-    $fecha = $archivo['fecha'] ?? null;
-    $importe = $archivo['importe'] ?? null;
-    $uuid = $archivo['uuid'] ?? null;
+// Carpeta base para guardar archivos
+$uploadDirBase = '../../../docs/';
 
-    // Carpeta con ID de referencia o "sin_referencia"
-    $idReferencia = $archivo['referencia_id'] ?? 'integradas_sin_referencia';
-    $uploadDirBase = '../../../docs/';
+foreach ($data as $index => $factura) {
+    // Datos básicos
+    $serie = $factura['serie'] ?? '';
+    $folio = $factura['folio'] ?? '';
+    $serieFolio = $serie . $folio;
+    $rfc_proveedor = $factura['rfcProveedor'] ?? '';
+    $proveedor = $factura['proveedor'] ?? '';
+    $rfc_cliente = $factura['rfcCliente'] ?? '';
+    $cliente = $factura['cliente'] ?? '';
+    $fecha = $factura['fecha'] ?? '';
+    $importe = $factura['importe'] ?? 0;
+    $uuid = $factura['uuid'] ?? '';
+
+    $idReferencia = $factura['referencia_id'] ?? 'integradas_sin_referencia';
+
     $uploadDir = $uploadDirBase . $idReferencia . '/';
+
+    // Crear carpeta si no existe
     if (!is_dir($uploadDir)) {
         if (!mkdir($uploadDir, 0777, true)) {
-            $errores[] = "No se pudo crear la carpeta para la referencia $idReferencia.";
-            continue; // saltar este registro porque no hay carpeta
+            $errores[] = "No se pudo crear carpeta para referencia $idReferencia";
+            continue; // saltar esta factura
         }
     }
 
-    // Mover archivos XML y PDF a carpeta específica
+    // Mover archivos XML y PDF
     $destinoXml = null;
     $destinoPdf = null;
 
+    // XML
     if (isset($_FILES["xml_$index"]) && $_FILES["xml_$index"]['error'] === UPLOAD_ERR_OK) {
         $tmpXml = $_FILES["xml_$index"]['tmp_name'];
         $nombreXml = basename($_FILES["xml_$index"]['name']);
         $destinoXml = $uploadDir . $nombreXml;
 
         if (!move_uploaded_file($tmpXml, $destinoXml)) {
-            $errores[] = "Error al mover archivo XML $nombreXml del índice $index";
-            $destinoXml = null;
-
-            // DEBUG adicional
-            error_log("Error move_uploaded_file: XML $nombreXml → $destinoXml");
-            error_log("¿Existe archivo temporal? " . (file_exists($tmpXml) ? "Sí" : "No"));
-            error_log("Permisos de destino (" . $uploadDir . "): " . substr(sprintf('%o', fileperms($uploadDir)), -4));
+            $errores[] = "Error al mover archivo XML $nombreXml índice $index";
+            error_log("Error move_uploaded_file XML índice $index: tmp='$tmpXml', destino='$destinoXml'");
+            error_log("Archivo tmp existe? " . (file_exists($tmpXml) ? "Sí" : "No"));
+            error_log("Permisos carpeta destino: " . substr(sprintf('%o', fileperms($uploadDir)), -4));
+            continue;
         }
     }
 
-
+    // PDF
     if (isset($_FILES["pdf_$index"]) && $_FILES["pdf_$index"]['error'] === UPLOAD_ERR_OK) {
         $tmpPdf = $_FILES["pdf_$index"]['tmp_name'];
         $nombrePdf = basename($_FILES["pdf_$index"]['name']);
         $destinoPdf = $uploadDir . $nombrePdf;
+
         if (!move_uploaded_file($tmpPdf, $destinoPdf)) {
-            $errores[] = "Error al mover archivo PDF $nombrePdf del índice $index";
-            $destinoPdf = null;
+            $errores[] = "Error al mover archivo PDF $nombrePdf índice $index";
+            error_log("Error move_uploaded_file PDF índice $index: tmp='$tmpPdf', destino='$destinoPdf'");
+            continue;
         }
     }
 
-
-
-    // Validación UUID duplicado en 505_factura
-    $stmtFacturas = $con->prepare("SELECT idCFactura, 505_04_numFactura FROM 505_factura");
-    $stmtFacturas->execute();
-    $facturas = $stmtFacturas->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($facturas as $factura) {
-        if ($factura['505_04_numFactura'] === $uuid) {
-            echo json_encode([
-                'success' => false,
-                'duplicado' => true,
-                'uuid' => $uuid,
-                'idRegistro' => $factura['idCFactura'],
-                'tabla' => '505_factura',
-                'mensaje' => "El UUID $uuid ya existe en la tabla 505_factura con el ID {$factura['idCFactura']}."
-            ]);
-            exit;
-        }
-    }
-
-
-    // Validar UUID duplicado en facturas_registradas
-    $stmtFacturasReg = $con->prepare("
-        SELECT fr.id, fr.uuid, fr.referencia_id, r.Numero AS numero_referencia
-        FROM facturas_registradas fr
-        LEFT JOIN referencias r ON fr.referencia_id = r.Id
-        WHERE fr.uuid = :uuid
-    ");
-    $stmtFacturasReg->bindParam(':uuid', $uuid);
-    $stmtFacturasReg->execute();
-    $facturaReg = $stmtFacturasReg->fetch(PDO::FETCH_ASSOC);
-
-    if ($facturaReg) {
-        echo json_encode([
-            'success' => false,
-            'duplicado' => true,
-            'uuid' => $uuid,
-            'idRegistro' => $facturaReg['id'],
-            'referenciaNumero' => $facturaReg['numero_referencia'],
-            'tabla' => 'facturas_registradas',
-            'mensaje' => "El UUID $uuid ya existe en la tabla facturas_registradas con el ID {$facturaReg['id']} y está vinculado a la referencia {$facturaReg['numero_referencia']}."
-        ]);
-        exit;
-    }
-
-    // Validación básica por archivo
+    // Validación básica: datos obligatorios
     if (!$folio || !$rfc_proveedor || !$rfc_cliente || !$proveedor || !$cliente || !$fecha) {
         $errores[] = "Archivo #$index con datos incompletos.";
         continue;
     }
 
+    // Verificar UUID duplicado en base de datos (ejemplo simplificado)
+    $stmtDup = $con->prepare("SELECT id FROM conta_facturas_registradas WHERE uuid = ?");
+    $stmtDup->execute([$uuid]);
+    if ($stmtDup->fetch()) {
+        echo json_encode([
+            'success' => false,
+            'duplicado' => true,
+            'uuid' => $uuid,
+            'mensaje' => "El UUID $uuid ya existe en la base de datos."
+        ]);
+        exit;
+    }
+
     // Insertar factura
-    $sql = "INSERT INTO facturas_registradas 
+    $sql = "INSERT INTO conta_facturas_registradas 
             (folio, rfc_proveedor, proveedor, rfc_cliente, cliente, fecha, importe, uuid, created_by) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     try {
         $stmt = $con->prepare($sql);
-        $resultado = $stmt->execute([
+        $ok = $stmt->execute([
             $serieFolio,
             $rfc_proveedor,
             $proveedor,
@@ -157,33 +133,29 @@ foreach ($data as $index => $archivo) {
             $usuarioAlta
         ]);
 
-        if ($resultado) {
+        if ($ok) {
             $insertados++;
             $facturaId = $con->lastInsertId();
 
-            // Insertar archivos relacionados en referencias_archivos
-            $archivosParaInsertar = [];
-            if ($destinoXml !== null) {
-                $archivosParaInsertar[] = ['nombre' => $nombreXml, 'ruta' => $destinoXml];
-            }
-            if ($destinoPdf !== null) {
-                $archivosParaInsertar[] = ['nombre' => $nombrePdf, 'ruta' => $destinoPdf];
-            }
+            // Insertar archivos relacionados
+            $archivos = [];
+            if ($destinoXml) $archivos[] = ['nombre' => $nombreXml, 'ruta' => $destinoXml];
+            if ($destinoPdf) $archivos[] = ['nombre' => $nombrePdf, 'ruta' => $destinoPdf];
 
-            foreach ($archivosParaInsertar as $archivoInfo) {
-                $sqlArchivos = "INSERT INTO referencias_archivos (Nombre, Ruta, Solicitud_factura_id) VALUES (?, ?, ?)";
-                $stmtArchivo = $con->prepare($sqlArchivos);
+            foreach ($archivos as $archivo) {
+                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Nombre, Ruta, Solicitud_factura_id) VALUES (?, ?, ?)";
+                $stmtArchivo = $con->prepare($sqlArchivo);
                 $stmtArchivo->execute([
-                    $archivoInfo['nombre'],
-                    $archivoInfo['ruta'],
+                    $archivo['nombre'],
+                    $archivo['ruta'],
                     $facturaId
                 ]);
             }
         } else {
-            $errores[] = "Error al insertar el archivo #$index.";
+            $errores[] = "Error al insertar factura #$index";
         }
     } catch (PDOException $e) {
-        $errores[] = "Error en archivo #$index: " . $e->getMessage();
+        $errores[] = "Error en factura #$index: " . $e->getMessage();
     }
 }
 

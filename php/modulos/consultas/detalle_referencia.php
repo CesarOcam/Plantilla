@@ -64,7 +64,7 @@ $stmt = $con->prepare("
         r.Status,
         r.UsuarioAlta,
         CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombre_usuario_alta
-    FROM referencias r
+    FROM conta_referencias r
     LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
     LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
@@ -150,7 +150,7 @@ $stmtCons->execute();
 $consolidadoras = $stmtCons->fetchAll(PDO::FETCH_ASSOC);
 
 $stmtContenedor = $con->prepare("SELECT idcontenedor, codigo, tipo, sello 
-                                 FROM contenedores 
+                                 FROM conta_contenedores 
                                  WHERE referencia_id = :id
                                  ORDER BY idcontenedor ASC");
 $stmtContenedor->execute(['id' => $id]);
@@ -356,7 +356,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         MODULACIÓN:</label>
                                     <select id="modulacion" name="modulacion"
                                         class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;">
+                                        style="background-color: transparent; cursor: pointer;">
                                         <option value="" <?php echo is_null($referencia['ResultadoModulacion']) ? 'selected' : ''; ?>></option>
                                         <option value="1" <?php echo ($referencia['ResultadoModulacion'] === '1' || $referencia['ResultadoModulacion'] === 1) ? 'selected' : ''; ?>>VERDE</option>
                                         <option value="0" <?php echo ($referencia['ResultadoModulacion'] === '0' || $referencia['ResultadoModulacion'] === 0) ? 'selected' : ''; ?>>ROJO</option>
@@ -668,7 +668,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                         Id,
                                                         Nombre,
                                                         Ruta
-                                                    FROM referencias_archivos 
+                                                    FROM conta_referencias_archivos 
                                                     WHERE Referencia_id = :id
                                                 ");
                                                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);

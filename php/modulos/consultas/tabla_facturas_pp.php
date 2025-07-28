@@ -33,20 +33,20 @@ if (!empty($_GET['fecha_hasta'])) {
 if (isset($_GET['subcuenta']) && is_numeric($_GET['subcuenta']) && (int)$_GET['subcuenta'] > 0) {
     $wherePrincipal[] = "p.Id IN (
         SELECT PolizaId
-        FROM partidaspolizas
+        FROM conta_partidaspolizas
         WHERE (PolizaId, Partida) IN (
             SELECT PolizaId, MAX(Partida)
-            FROM partidaspolizas
+            FROM conta_partidaspolizas
             GROUP BY PolizaId
         )
         AND SubcuentaId = :subcuenta
     )";
     $whereCount[] = "p.Id IN (
         SELECT PolizaId
-        FROM partidaspolizas
+        FROM conta_partidaspolizas
         WHERE (PolizaId, Partida) IN (
             SELECT PolizaId, MAX(Partida)
-            FROM partidaspolizas
+            FROM conta_partidaspolizas
             GROUP BY PolizaId
         )
         AND SubcuentaId = :subcuenta
@@ -73,11 +73,11 @@ SELECT
     b.Nombre AS BeneficiarioNombre,
     cu.Numero AS SubcuentaNumero,
     cu.Nombre AS SubcuentaNombre
-FROM partidaspolizas pp
-LEFT JOIN polizas p ON p.Id = pp.PolizaId
+FROM conta_partidaspolizas pp
+LEFT JOIN conta_polizas p ON p.Id = pp.PolizaId
 LEFT JOIN beneficiarios b ON b.Id = p.BeneficiarioId
 LEFT JOIN cuentas cu ON cu.Id = pp.SubcuentaId
-INNER JOIN referencias r ON r.Id = pp.ReferenciaId
+INNER JOIN conta_referencias r ON r.Id = pp.ReferenciaId
 LEFT JOIN 2201aduanas a ON a.id2201aduanas = r.AduanaId
 $whereSqlPrincipal
 ORDER BY p.Fecha DESC, pp.Partida ASC
@@ -93,7 +93,7 @@ $stmt->execute();
 $poliza = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $sqlCount = "SELECT COUNT(*) 
-             FROM polizas p
+             FROM conta_polizas p
              LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
              $whereSqlCount";
 

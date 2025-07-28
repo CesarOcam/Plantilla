@@ -64,7 +64,7 @@ if (isset($_POST['id'])) {
         $con->beginTransaction();
 
         $sql = "
-            UPDATE referencias SET
+            UPDATE conta_referencias SET
                 ClienteExportadorId = ?, ClienteLogisticoId = ?, Mercancia = ?, Marcas = ?, Pedimentos = ?, ClavePedimento = ?, PesoBruto = ?, Cantidad = ?,
                 ConsolidadoraId = ?, ResultadoModulacion = ?, RecintoId = ?, NavieraId = ?, CierreDocumentos = ?,
                 FechaPago = ?, BuqueId = ?, Booking = ?, CierreDespacho = ?, HoraDespacho = ?, Viaje = ?, SuReferencia = ?,
@@ -115,10 +115,10 @@ if (isset($_POST['id'])) {
             $sellos = isset($_POST['sello']) ? (array) $_POST['sello'] : [];
             $contenedor_ids = isset($_POST['contenedor_id']) ? (array) $_POST['contenedor_id'] : [];
 
-            $sqlUpdateContenedor = "UPDATE contenedores SET codigo = ?, tipo = ?, sello = ? WHERE idcontenedor = ? AND referencia_id = ?";
+            $sqlUpdateContenedor = "UPDATE conta_contenedores SET codigo = ?, tipo = ?, sello = ? WHERE idcontenedor = ? AND referencia_id = ?";
             $stmtUpdateContenedor = $con->prepare($sqlUpdateContenedor);
 
-            $sqlInsertContenedor = "INSERT INTO contenedores (referencia_id, codigo, tipo, sello, status) VALUES (?, ?, ?, ?, 1)";
+            $sqlInsertContenedor = "INSERT INTO conta_contenedores (referencia_id, codigo, tipo, sello, status) VALUES (?, ?, ?, ?, 1)";
             $stmtInsertContenedor = $con->prepare($sqlInsertContenedor);
 
             $total = max(count($contenedores), count($tipos), count($sellos), count($contenedor_ids));
@@ -142,7 +142,7 @@ if (isset($_POST['id'])) {
                         $stmtUpdateContenedor->execute([$cont, $tipo, $sello, $idContenedor, $referencia_id]);
                     } else {
                         // Verificar si el contenedor ya existe para esta referencia para evitar duplicados
-                        $sqlCheck = "SELECT COUNT(*) FROM contenedores WHERE referencia_id = ? AND codigo = ?";
+                        $sqlCheck = "SELECT COUNT(*) FROM conta_contenedores WHERE referencia_id = ? AND codigo = ?";
                         $stmtCheck = $con->prepare($sqlCheck);
                         $stmtCheck->execute([$referencia_id, $cont]);
                         $existe = $stmtCheck->fetchColumn();
@@ -178,7 +178,7 @@ if (isset($_POST['id'])) {
                 $rutaFinal = $uploadDir . $nombreFinal;
 
                 if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
-                    $sqlArchivo = "INSERT INTO referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
+                    $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
                     $stmtArchivo = $con->prepare($sqlArchivo);
                     $stmtArchivo->execute([$id, $nombreOriginal, $rutaFinal]);
                 }
@@ -188,7 +188,7 @@ if (isset($_POST['id'])) {
         $contenedores_eliminados = isset($_POST['contenedores_eliminados']) ? (array) $_POST['contenedores_eliminados'] : [];
 
         if (!empty($contenedores_eliminados)) {
-            $sqlDeleteContenedor = "DELETE FROM contenedores WHERE idcontenedor = ? AND referencia_id = ?";
+            $sqlDeleteContenedor = "DELETE FROM conta_contenedores WHERE idcontenedor = ? AND referencia_id = ?";
             $stmtDeleteContenedor = $con->prepare($sqlDeleteContenedor);
 
             foreach ($contenedores_eliminados as $idContenedor) {

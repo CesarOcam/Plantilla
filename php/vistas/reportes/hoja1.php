@@ -34,28 +34,28 @@ SELECT
     a.nombre_corto_aduana AS NombreAduana,
     (
         SELECT SubcuentaId 
-        FROM partidaspolizas pp2 
+        FROM conta_partidaspolizas pp2 
         WHERE pp2.PolizaId = p.Id 
         ORDER BY pp2.Id DESC 
         LIMIT 1
     ) AS UltimoNumSub,
     (
         SELECT Cargo 
-        FROM partidaspolizas pp3 
+        FROM conta_partidaspolizas pp3 
         WHERE pp3.PolizaId = p.Id AND pp3.SubcuentaId = 133 
         LIMIT 1
     ) AS Anticipo,
     (
         SELECT cu.Numero 
-        FROM partidaspolizas pp4 
+        FROM conta_partidaspolizas pp4 
         JOIN cuentas cu ON cu.Id = pp4.SubcuentaId 
         WHERE pp4.PolizaId = p.Id 
         ORDER BY pp4.Id DESC 
         LIMIT 1
     ) AS SubcuentaNumero
-FROM polizas p
-LEFT JOIN partidaspolizas part ON part.PolizaId = p.Id
-LEFT JOIN referencias r ON r.Id = part.ReferenciaId
+FROM conta_polizas p
+LEFT JOIN conta_partidaspolizas part ON part.PolizaId = p.Id
+LEFT JOIN conta_referencias r ON r.Id = part.ReferenciaId
 LEFT JOIN 01clientes_exportadores c ON c.id01clientes_exportadores = r.ClienteLogisticoId
 LEFT JOIN 2201aduanas a ON a.id2201aduanas = r.AduanaId
 WHERE p.Numero LIKE 'D%'

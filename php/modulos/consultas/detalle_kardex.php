@@ -17,7 +17,7 @@ SELECT
     c.NumCg,
     r.Numero AS ReferenciaNumero,
     r.Id AS ReferenciaId,
-    b.Nombre AS BuqueNombre,
+    b.identificacion AS BuqueNombre,
     le.razonSocial_exportador AS LogisticoNombre,
     ee.razonSocial_exportador AS ExportadorNombre,
     c.Fecha,
@@ -34,10 +34,10 @@ SELECT
     END AS Status,
     c.Fecha,
     CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS UsuarioNombreCompleto
-FROM cuentas_kardex c
-LEFT JOIN referencias r ON c.Referencia = r.Id
-LEFT JOIN con_buques b ON c.Barco = b.Id
-LEFT JOIN polizas p ON c.Poliza_id = p.Id
+FROM conta_cuentas_kardex c
+LEFT JOIN conta_referencias r ON c.Referencia = r.Id
+LEFT JOIN conta_transporte b ON c.Barco = b.idtransporte
+LEFT JOIN conta_polizas p ON c.Poliza_id = p.Id
 LEFT JOIN 01clientes_exportadores le ON c.Logistico = le.id01clientes_exportadores
 LEFT JOIN 01clientes_exportadores ee ON c.Exportador = ee.id01clientes_exportadores
 LEFT JOIN usuarios u ON c.Created_by = u.idusuarios

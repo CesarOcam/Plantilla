@@ -37,11 +37,11 @@ $stmt = $con->prepare("
         r.RecintoId,
         rec.inmueble_recintos AS inmueble_recintos,
         r.NavieraId,
-        nav.identificacion AS nombre_naviera,
+        nav.nombre_transportista AS nombre_naviera,
         r.CierreDocumentos,
         r.FechaPago,
         r.BuqueId,
-        bq.Nombre AS nombre_buque,
+        bq.identificacion AS nombre_buque,
         r.Booking,
         r.CierreDespacho,
         r.HoraDespacho,
@@ -56,14 +56,14 @@ $stmt = $con->prepare("
         r.Status,
         r.UsuarioAlta,
         CONCAT_WS(' ', u.nombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS nombre_usuario_alta
-    FROM referencias r
+    FROM conta_referencias r
     LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
     LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
     LEFT JOIN consolidadoras cons ON r.ConsolidadoraId = cons.id_consolidadora
     LEFT JOIN 2221_recintos rec ON r.RecintoId = rec.id2221_recintos
-    LEFT JOIN transporte nav ON r.NavieraId = nav.idtransporte
-    LEFT JOIN con_buques bq ON r.BuqueId = bq.Id
+    LEFT JOIN transportista nav ON r.NavieraId = nav.idtransportista
+    LEFT JOIN transporte bq ON r.BuqueId = bq.idtransporte
     LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
     WHERE r.Id = :id
 ");
@@ -283,7 +283,7 @@ $pdf->Cell(0, 144, toISO('CONCEPTO'));
 $pdf->SetXY($startX + 170, $startY + 31.1);
 $pdf->Cell(0, 144, toISO('IMPORTE'));
 
-$stmtPartidas = $con->prepare("SELECT * FROM partidaspolizas WHERE ReferenciaId = :id AND EnKardex != 1");
+$stmtPartidas = $con->prepare("SELECT * FROM conta_partidaspolizas WHERE ReferenciaId = :id AND EnKardex != 1");
 $stmtPartidas->bindParam(':id', $id, PDO::PARAM_INT);
 $stmtPartidas->execute();
 $partidas = $stmtPartidas->fetchAll(PDO::FETCH_ASSOC);
@@ -375,7 +375,7 @@ foreach ($partidas as $partida) {
 
     $stmtPoliza = $con->prepare("
         SELECT * 
-        FROM polizas 
+        FROM conta_polizas 
         WHERE Id = :id
     ");
 

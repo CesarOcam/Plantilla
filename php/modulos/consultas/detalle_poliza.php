@@ -23,7 +23,7 @@ $stmt = $con->prepare("
             WHEN p.Activo = 1 THEN 'EN TRÁFICO'
             ELSE 'INACTIVA'
         END AS Activo
-    FROM polizas p
+    FROM conta_polizas p
     LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
     LEFT JOIN usuarios u ON p.UsuarioAlta = u.idusuarios
     LEFT JOIN empresas e ON p.EmpresaId = e.Id
@@ -67,11 +67,11 @@ $stmt = $con->prepare("
         r.Numero AS ReferenciaNumero,
         CONCAT(u1.nombreUsuario, ' ', u1.apePatUsuario, ' ', u1.apeMatUsuario) AS usuarioNombre,         -- created_by
         CONCAT(u2.nombreUsuario, ' ', u2.apePatUsuario, ' ', u2.apeMatUsuario) AS usuarioSolicitudNombre -- UsuarioSolicitud
-    FROM partidaspolizas p
+    FROM conta_partidaspolizas p
     LEFT JOIN usuarios u1 ON p.created_by = u1.idusuarios
     LEFT JOIN usuarios u2 ON p.UsuarioSolicitud = u2.idusuarios
     LEFT JOIN cuentas c ON p.SubcuentaId = c.Id
-    LEFT JOIN referencias r ON p.ReferenciaId = r.Id
+    LEFT JOIN conta_referencias r ON p.ReferenciaId = r.Id
     WHERE p.PolizaId = :id
 ");
 
@@ -146,7 +146,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             style="background-color: transparent;" value="<?php echo $poliza['Fecha'];?>" readonly>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="Numero" class="form-label text-muted small">NO. PÓLIZA:</label>
@@ -161,7 +160,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             style="background-color: transparent;" value="<?php echo $poliza['Concepto'];?>" readonly>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="UsuarioAlta" class="form-label text-muted small">USUARIO ALTA:</label>

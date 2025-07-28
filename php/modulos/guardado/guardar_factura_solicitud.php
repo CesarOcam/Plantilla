@@ -36,7 +36,7 @@ if (
 
         // 1. Actualizar facturas
         $stmtUpdate = $con->prepare("
-            UPDATE facturas_registradas 
+            UPDATE conta_facturas_registradas 
             SET referencia_id = ?, subcuenta_id = ?, usuario_update = ?, fecha_solicitud = ?, status = ?
             WHERE Id = ? AND status != 2
         ");
@@ -59,13 +59,13 @@ if (
         $stmtFacturas = $con->prepare("
             SELECT f.Id AS factura_id, f.folio, f.status, f.proveedor, f.importe, f.referencia_id, f.fecha_solicitud AS fecha,
                 f.uuid, f.subcuenta_id, b.Id AS beneficiario_id, r.AduanaId AS aduana_id
-            FROM facturas_registradas f
+            FROM conta_facturas_registradas f
             LEFT JOIN (
                 SELECT MIN(Id) AS Id, Rfc
                 FROM beneficiarios
                 GROUP BY Rfc
             ) b ON b.Rfc = f.rfc_proveedor
-            LEFT JOIN referencias r ON r.Id = f.referencia_id
+            LEFT JOIN conta_referencias r ON r.Id = f.referencia_id
             WHERE f.status = 1
         ");
 
@@ -79,19 +79,19 @@ if (
 
         // Preparar las consultas
         $stmtSolicitud = $con->prepare("
-        INSERT INTO solicitudes (BeneficiarioId, EmpresaId, Importe, Aduana, Fecha, status, FechaAlta, UsuarioAlta)
+        INSERT INTO conta_solicitudes (BeneficiarioId, EmpresaId, Importe, Aduana, Fecha, status, FechaAlta, UsuarioAlta)
         VALUES (?, 2, ?, ?, ?, 1, ?, ?)
 ");
 
         $stmtPartida = $con->prepare("
-        INSERT INTO partidassolicitudes (Partida, SolicitudId, SubcuentaId, ReferenciaId, Importe, Observaciones, UuidArchivoFactura, NumeroFactura, Created_by)
+        INSERT INTO conta_partidassolicitudes (Partida, SolicitudId, SubcuentaId, ReferenciaId, Importe, Observaciones, UuidArchivoFactura, NumeroFactura, Created_by)
         VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
-        $stmtFacturaStatus = $con->prepare("UPDATE facturas_registradas SET status = 2 WHERE Id = ?");
+        $stmtFacturaStatus = $con->prepare("UPDATE conta_facturas_registradas SET status = 2 WHERE Id = ?");
 
         $stmtActualizarSolicitudFacturaId = $con->prepare("
-        UPDATE solicitudes 
+        UPDATE conta_solicitudes 
         SET ReferenciaFacturaId = :referenciaId 
         WHERE Id = :solicitudId
 ");

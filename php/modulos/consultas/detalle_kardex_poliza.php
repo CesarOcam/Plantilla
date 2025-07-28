@@ -23,7 +23,7 @@ $stmt = $con->prepare("
             WHEN p.Activo = 1 THEN 'ACTIVA'
             ELSE 'INACTIVA'
         END AS Activo
-    FROM polizas p
+    FROM conta_polizas p
     LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
     LEFT JOIN usuarios u ON p.UsuarioAlta = u.idusuarios
     LEFT JOIN empresas e ON p.EmpresaId = e.Id
@@ -65,9 +65,9 @@ $stmt = $con->prepare("
         p.Observaciones,
         p.FolioArchivo AS Factura,
         r.Numero AS ReferenciaNumero   -- número de la referencia
-    FROM partidaspolizas p
+    FROM con_partidaspolizas p
     LEFT JOIN cuentas c ON p.SubcuentaId = c.Id
-    LEFT JOIN referencias r ON p.ReferenciaId = r.Id  -- unión con referencias
+    LEFT JOIN conta_referencias r ON p.ReferenciaId = r.Id  -- unión con referencias
     WHERE p.PolizaId = :id
 ");
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);

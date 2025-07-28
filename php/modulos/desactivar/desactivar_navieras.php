@@ -15,7 +15,7 @@ $ids = $input['ids'];
 $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
 // Cambia "statusEcomienda_exportador" o la columna correcta a 0 (desactivado)
-$sql = "UPDATE navieras SET Activo = 0 WHERE Id IN ($placeholders)";
+$sql = "UPDATE transportista SET Activo = 0 WHERE Id IN ($placeholders)";
 $stmt = $con->prepare($sql);
 
 try {

@@ -55,7 +55,7 @@ if (isset($_POST['beneficiario'])) {
             default => 'X',
         };
 
-        $sql_ultimo = "SELECT Numero FROM polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
+        $sql_ultimo = "SELECT Numero FROM conta_polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
         $stmt_ultimo = $con->prepare($sql_ultimo);
         $stmt_ultimo->execute([$prefijo]);
 
@@ -68,7 +68,7 @@ if (isset($_POST['beneficiario'])) {
         $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
     }
 
-    $sql_insert_poliza = "INSERT INTO polizas 
+    $sql_insert_poliza = "INSERT INTO conta_polizas 
     (
         BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta
     )
@@ -98,7 +98,7 @@ if (isset($_POST['beneficiario'])) {
     $poliza_id = $con->lastInsertId();
     $activo = 1;
     // Preparar inserción de partidas
-    $sql_insert_partidas = "INSERT INTO partidaspolizas 
+    $sql_insert_partidas = "INSERT INTO conta_partidaspolizas 
     (Polizaid, Subcuentaid, Cargo, Abono, Observaciones, FolioArchivo, Activo, NumeroFactura)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);

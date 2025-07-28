@@ -9,7 +9,7 @@ include_once('../../modulos/conexion.php');
 
 //Obtener ADUANAS
 $stmt = $con->prepare("SELECT Id, Numero 
-                       FROM referencias 
+                       FROM conta_referencias 
                        WHERE Status = 1");
 $stmt->execute();
 $referencia = $stmt->fetchAll(PDO::FETCH_ASSOC);

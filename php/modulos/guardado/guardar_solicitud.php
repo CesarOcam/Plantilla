@@ -40,7 +40,7 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
     $tipo_poliza = 1;
     $referencia_id = 2;
 
-    $sql_insert_poliza = "INSERT INTO solicitudes 
+    $sql_insert_poliza = "INSERT INTO conta_solicitudes 
         (BeneficiarioId, Aduana, EmpresaId, Importe, Fecha, Status, FechaAlta, UsuarioAlta)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $params = [$beneficiario, $aduana, $empresa, $importe, $fecha, $activo, $fecha_alta, $usuarioAlta];
@@ -55,9 +55,9 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
     $solicitud_id = $con->lastInsertId();
     $partida = 0;
 
-    $sql_insert_partidas = "INSERT INTO partidassolicitudes
-        (Partida, SolicitudId, Subcuentaid, ReferenciaId, Importe, Observaciones)
-        VALUES (?, ?, ?, ?, ?, ?)";
+    $sql_insert_partidas = "INSERT INTO conta_partidassolicitudes
+        (Partida, SolicitudId, Subcuentaid, ReferenciaId, Importe, Observaciones, Created_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);
 
     foreach ($subcuentas as $i => $subcuenta_id) {
@@ -74,6 +74,7 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
             $referencia,
             $cargo,
             $observacion,
+            $usuarioAlta
         ]);
     }
 

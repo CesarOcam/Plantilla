@@ -10,7 +10,7 @@ try {
     if (isset($_POST['numeroReferencia'])) {
         $numero = $_POST['numeroReferencia'];
 
-        $stmt = $con->prepare("SELECT Id FROM referencias WHERE Numero = ?");
+        $stmt = $con->prepare("SELECT Id FROM conta_referencias WHERE Numero = ?");
         $stmt->execute([$numero]);
         $id = $stmt->fetchColumn();
 

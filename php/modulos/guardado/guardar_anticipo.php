@@ -52,7 +52,7 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
     $prefijo = 'I';
     $numero_poliza = '';
 
-    $sql_ultimo = "SELECT Numero FROM polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
+    $sql_ultimo = "SELECT Numero FROM conta_polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
     $stmt_ultimo = $con->prepare($sql_ultimo);
     $stmt_ultimo->execute([$prefijo]);
 
@@ -67,7 +67,7 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
 
 
     // Asegurarse de que todos los campos coincidan con los de la base de datos
-    $sql_insert_poliza = "INSERT INTO polizas 
+    $sql_insert_poliza = "INSERT INTO conta_polizas 
     (
         BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta
     )
@@ -97,7 +97,7 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
     $poliza_id = $con->lastInsertId();
     $activo = 1;
     // Preparar inserción de partidas
-    $sql_insert_partidas = "INSERT INTO partidaspolizas 
+    $sql_insert_partidas = "INSERT INTO conta_partidaspolizas 
     (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Observaciones, FolioArchivo, Activo, NumeroFactura, created_by)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);

@@ -90,7 +90,7 @@ $stmt->execute();
 $consolidadora = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //Obtener referencias para select referencias
-$stm = $con->prepare("SELECT Id, Numero FROM referencias WHERE Status IS NOT NULL AND Status != 0 ORDER BY Numero ASC");
+$stm = $con->prepare("SELECT Id, Numero FROM conta_referencias WHERE Status IS NOT NULL AND Status != 0 ORDER BY Numero ASC");
 $stm->execute();
 $referencias = $stm->fetchAll();
 

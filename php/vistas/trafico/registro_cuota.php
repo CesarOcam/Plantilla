@@ -16,7 +16,7 @@ if (isset($_GET['referencia_id'])) {
             a.nombre_corto_aduana, 
             e.id01clientes_exportadores,
             e.razonSocial_exportador
-        FROM referencias r
+        FROM conta_referencias r
         JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
         JOIN 01clientes_exportadores e ON r.ClienteExportadorId = e.id01clientes_exportadores
         WHERE r.Id = ?
@@ -34,7 +34,7 @@ if (isset($_GET['referencia_id'])) {
 
 
 // Obtener todas las referencias
-$stmt = $con->prepare("SELECT Id, Numero FROM referencias WHERE Numero IS NOT NULL AND Status IN (1, 2)");
+$stmt = $con->prepare("SELECT Id, Numero FROM conta_referencias WHERE Numero IS NOT NULL AND Status IN (1, 2)");
 $stmt->execute();
 $referencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>

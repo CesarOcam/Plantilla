@@ -19,26 +19,26 @@ SELECT
     -- Total abonado a esta cuenta 216-xxx (aún no pagado)
     COALESCE((
         SELECT SUM(pp1.Abono)
-        FROM partidaspolizas pp1
+        FROM conta_partidaspolizas pp1
         WHERE pp1.SubcuentaId = cu.Id AND pp1.Pagada = 1
     ), 0) AS TotalAbonado,
 
     -- Total cargado relacionado con las mismas pólizas o referencias que los abonos a esta cuenta
     COALESCE((
         SELECT SUM(pp2.Cargo)
-        FROM partidaspolizas pp2
+        FROM conta_partidaspolizas pp2
         WHERE pp2.Pagada = 0
           AND pp2.SubcuentaId != cu.Id
           AND (
               pp2.PolizaId IN (
                   SELECT PolizaId
-                  FROM partidaspolizas
+                  FROM conta_partidaspolizas
                   WHERE SubcuentaId = cu.Id AND Pagada = 0
               )
               OR
               pp2.ReferenciaId IN (
                   SELECT ReferenciaId
-                  FROM partidaspolizas
+                  FROM conta_partidaspolizas
                   WHERE SubcuentaId = cu.Id AND Pagada = 0
               )
           )

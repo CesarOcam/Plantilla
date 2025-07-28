@@ -13,7 +13,7 @@ if (!isset($data['id'])) {
 $id = intval($data['id']);
 
 try {
-    $stmt = $con->prepare("UPDATE solicitudes SET Status = 0 WHERE Id = ?");
+    $stmt = $con->prepare("UPDATE conta_solicitudes SET Status = 0 WHERE Id = ?");
     $stmt->execute([$id]);
 
     echo json_encode(['success' => true]);

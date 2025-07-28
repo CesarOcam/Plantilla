@@ -43,8 +43,8 @@ SELECT
     c.Booking,
     c.SuReferencia,
     c.Saldo
-FROM cuentas_kardex c
-LEFT JOIN referencias r ON c.Referencia = r.Id
+FROM conta_cuentas_kardex c
+LEFT JOIN conta_referencias r ON c.Referencia = r.Id
 LEFT JOIN con_buques b ON c.Barco = b.Id
 LEFT JOIN 01clientes_exportadores le ON c.Logistico = le.id01clientes_exportadores
 LEFT JOIN 01clientes_exportadores ee ON c.Exportador = ee.id01clientes_exportadores

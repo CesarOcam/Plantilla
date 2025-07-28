@@ -13,7 +13,7 @@ if (!$facturaId || !is_numeric($facturaId)) {
 }
 
 try {
-    $stmt = $con->prepare("DELETE FROM facturas_registradas WHERE Id = ?");
+    $stmt = $con->prepare("DELETE FROM conta_facturas_registradas WHERE Id = ?");
     $stmt->execute([$facturaId]);
     
     if ($stmt->rowCount() > 0) {

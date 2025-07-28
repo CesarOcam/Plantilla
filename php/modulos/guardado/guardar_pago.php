@@ -20,13 +20,13 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         return date("Y-m-d H:i:s");
     }
     //Se actualiza a 2 : Solicitud aprobada
-    $sql_update_status = "UPDATE solicitudes SET Status = 2 WHERE Id = :id";
+    $sql_update_status = "UPDATE conta_solicitudes SET Status = 2 WHERE Id = :id";
     $stmt = $con->prepare($sql_update_status);
     $stmt->bindParam(':id', $id_solicitud, PDO::PARAM_INT);
     $stmt->execute();
 
     // Obtener todos los datos de la solicitud aprobada
-    $sql_get_solicitud = "SELECT * FROM solicitudes WHERE Id = :id";
+    $sql_get_solicitud = "SELECT * FROM conta_solicitudes WHERE Id = :id";
     $stmt = $con->prepare($sql_get_solicitud);
     $stmt->bindParam(':id', $id_solicitud, PDO::PARAM_INT);
     $stmt->execute();
@@ -56,7 +56,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
     // Generar el numero de poliza, siempre cheque
     $prefijo = 'C'; // Cheques
-    $sql_ultimo = "SELECT Numero FROM polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
+    $sql_ultimo = "SELECT Numero FROM conta_polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
     $stmt_ultimo = $con->prepare($sql_ultimo);
     $stmt_ultimo->execute([$prefijo]);
 
@@ -74,7 +74,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     $usuarioAlta = $_SESSION['usuario_id'];
     $exportadoCoi = 1;
 
-    $sql_insertar_poliza = "INSERT INTO polizas 
+    $sql_insertar_poliza = "INSERT INTO conta_polizas 
         (SolicitudId, BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta, Aduana)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_data = $con->prepare($sql_insertar_poliza);
@@ -98,7 +98,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
         // Obtener las partidas originales
         $sql_partidas = "SELECT * 
-             FROM partidassolicitudes 
+             FROM conta_partidassolicitudes 
              WHERE SolicitudId = :id_solicitud";
 
         $stmt_partidas = $con->prepare($sql_partidas);
@@ -108,7 +108,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         $partidas = $stmt_partidas->fetchAll(PDO::FETCH_ASSOC);
 
         // Insertar las partidas de la solicitud
-        $sql_insertar_partidas = "INSERT INTO partidaspolizas 
+        $sql_insertar_partidas = "INSERT INTO conta_partidaspolizas 
         (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Activo, NumeroFactura, UsuarioSolicitud)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_partidas);
@@ -141,7 +141,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
         // Insertar la partida de pago con la validación de pagada
         $cargo = 0;
-        $sql_insertar_pago = "INSERT INTO partidaspolizas
+        $sql_insertar_pago = "INSERT INTO conta_partidaspolizas
                 (PolizaId, SubcuentaId, Cargo, Abono, Pagada, Observaciones, Activo, created_by)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_pago);
@@ -157,18 +157,18 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         ]);
 
         // También actualizamos la póliza según si la cuenta empieza con 113
-        $stmt_update_poliza = $con->prepare("UPDATE polizas SET Pagada = ? WHERE Id = ?");
+        $stmt_update_poliza = $con->prepare("UPDATE conta_polizas SET Pagada = ? WHERE Id = ?");
         $stmt_update_poliza->execute([$pagada, $poliza_id]);
         
         // Obtener la última partida de esa póliza
-        $sql_ultima_partida = "SELECT Pagada FROM partidaspolizas WHERE PolizaId = ? ORDER BY Partida DESC LIMIT 1";
+        $sql_ultima_partida = "SELECT Pagada FROM conta_partidaspolizas WHERE PolizaId = ? ORDER BY Partida DESC LIMIT 1";
         $stmt_ultima = $con->prepare($sql_ultima_partida);
         $stmt_ultima->execute([$poliza_id]);
         $ultima_partida = $stmt_ultima->fetch(PDO::FETCH_ASSOC);
 
         // Si la última partida es no pagada, actualizar todas las partidas de esa póliza a Pagada = 0
         if ($ultima_partida && $ultima_partida['Pagada'] == 0) {
-            $stmt_actualizar_todas = $con->prepare("UPDATE partidaspolizas SET Pagada = 0 WHERE PolizaId = ?");
+            $stmt_actualizar_todas = $con->prepare("UPDATE conta_partidaspolizas SET Pagada = 0 WHERE PolizaId = ?");
             $stmt_actualizar_todas->execute([$poliza_id]);
         }
 
@@ -176,7 +176,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         echo "Error al guardar la póliza.";
     }
     // 1. Obtener todos los Ids de facturas_registradas con esa referencia
-    $sql_facturas = "SELECT Id FROM facturas_registradas WHERE referencia_id = :referencia_id";
+    $sql_facturas = "SELECT Id FROM conta_facturas_registradas WHERE referencia_id = :referencia_id";
     $stmt_facturas = $con->prepare($sql_facturas);
     $stmt_facturas->execute([':referencia_id' => $referenciaFacturaId]);
 
@@ -188,7 +188,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
         // 2. Actualizar referencias_archivos para todos esos Ids
         $sql_update_ref_archivos = "
-        UPDATE referencias_archivos
+        UPDATE conta_referencias_archivos
         SET Referencia_id = ?
         WHERE Solicitud_factura_id IN ($placeholders)
     ";

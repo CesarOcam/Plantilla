@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $concepto = 'PAGO DE CUENTA';
     $activo = 1;
 
-    $sql_ultimo = "SELECT Numero FROM polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
+    $sql_ultimo = "SELECT Numero FROM conta_polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
     $stmt_ultimo = $con->prepare($sql_ultimo);
     $stmt_ultimo->execute([$prefijo]);
 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
 
     //---------------------------------------GENERAR POLIZA--------------------------------------------------------
-    $sql_insert_poliza = "INSERT INTO polizas 
+    $sql_insert_poliza = "INSERT INTO conta_polizas 
         (
             BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, Activo, FechaAlta, UsuarioAlta
         )
@@ -74,15 +74,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $enKardex = 0;
         $Pagada = 1;
 
-        $sql_datos_partida = "SELECT PolizaId, SubcuentaId, ReferenciaId, Cargo, NumeroFactura, UsuarioSolicitud, created_by FROM partidaspolizas WHERE Partida = ?";
+        $sql_datos_partida = "SELECT PolizaId, SubcuentaId, ReferenciaId, Cargo, NumeroFactura, UsuarioSolicitud, created_by FROM conta_partidaspolizas WHERE Partida = ?";
         $stmt_datos = $con->prepare($sql_datos_partida);
 
-        $sql_insert_partida = "INSERT INTO partidaspolizas 
+        $sql_insert_partida = "INSERT INTO conta_partidaspolizas 
             (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, EnKardex, NumeroFactura, UsuarioSolicitud, created_by) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_insert = $con->prepare($sql_insert_partida);
 
-        $sql_update_pagada_original = "UPDATE partidaspolizas SET Pagada = 1 WHERE Partida = ?";
+        $sql_update_pagada_original = "UPDATE conta_partidaspolizas SET Pagada = 1 WHERE Partida = ?";
         $stmt_update_original = $con->prepare($sql_update_pagada_original);
 
         foreach ($id_array as $id_partida) {
@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // === Insertar la partida de salida bancaria ===
-        $sql_insert_banco = "INSERT INTO partidaspolizas 
+        $sql_insert_banco = "INSERT INTO conta_partidaspolizas 
             (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, EnKardex, created_by) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_banco = $con->prepare($sql_insert_banco);
@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // === Marcar la nueva póliza como pagada ===
-        $sql_update_poliza = "UPDATE polizas SET Pagada = 1 WHERE Id = ?";
+        $sql_update_poliza = "UPDATE conta_polizas SET Pagada = 1 WHERE Id = ?";
         $stmt_update = $con->prepare($sql_update_poliza);
         $okUpdate = $stmt_update->execute([$poliza_id]);
 
@@ -172,20 +172,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $con->commit();
-
-        /*-------------------------------------------------------- ENVÍO DE CORREO ------------------------------------------------------------------
-        
-        if ($resultado) {
-
-            $to = "cesar.amexport@gmail.com";
-            $subject = "Envío de cuenta de gastos";
-            $message = "";
-            $headers = "From: tu-correo@dominio.com";
-
-            // Envías el correo
-            mail($to, $subject, $message, $headers);
-        }*/
-
 
         echo json_encode([
             'success' => true,
