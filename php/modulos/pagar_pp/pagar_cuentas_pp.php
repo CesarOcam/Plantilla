@@ -78,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_datos = $con->prepare($sql_datos_partida);
 
         $sql_insert_partida = "INSERT INTO conta_partidaspolizas 
-            (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, EnKardex, NumeroFactura, UsuarioSolicitud, created_by) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Observaciones, Activo, EnKardex, CuentaCont, NumeroFactura, UsuarioSolicitud, created_by) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)";
         $stmt_insert = $con->prepare($sql_insert_partida);
 
         $sql_update_pagada_original = "UPDATE conta_partidaspolizas SET Pagada = 1 WHERE Partida = ?";

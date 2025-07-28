@@ -283,7 +283,7 @@ $pdf->Cell(0, 144, toISO('CONCEPTO'));
 $pdf->SetXY($startX + 170, $startY + 31.1);
 $pdf->Cell(0, 144, toISO('IMPORTE'));
 
-$stmtPartidas = $con->prepare("SELECT * FROM conta_partidaspolizas WHERE ReferenciaId = :id AND EnKardex != 1");
+$stmtPartidas = $con->prepare("SELECT * FROM conta_partidaspolizas WHERE ReferenciaId = :id AND EnKardex != 1 AND CuentaCont !=1");
 $stmtPartidas->bindParam(':id', $id, PDO::PARAM_INT);
 $stmtPartidas->execute();
 $partidas = $stmtPartidas->fetchAll(PDO::FETCH_ASSOC);
