@@ -131,8 +131,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         <tr class="text-center">
                                             <td><?= htmlspecialchars($fila['SubcuentaNombre']) ?></td>
                                             <td><?= htmlspecialchars($fila['Referencia']) ?></td>
-                                            <td><?= '$ ' . number_format($fila['Cargo'], 2) ?></td>
-                                            <td><?= '$ ' . number_format($fila['Abono'], 2) ?></td>
+                                            <td><?= '$'.number_format($fila['Cargo'], 2, '.', ',') ?></td>
+                                            <td><?= '$'.number_format($fila['Abono'], 2, '.', ',') ?></td>
                                             <td><?= htmlspecialchars($fila['Exportador']) ?></td>
                                             <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
                                         </tr>

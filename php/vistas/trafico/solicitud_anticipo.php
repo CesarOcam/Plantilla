@@ -29,10 +29,13 @@ $stmt->execute();
 $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // ADUANAS
+// Obtener aduanas
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
                        WHERE nombre_corto_aduana IS NOT NULL 
-                       AND TRIM(nombre_corto_aduana) != '' ORDER BY nombre_corto_aduana");
+                         AND TRIM(nombre_corto_aduana) != '' 
+                         AND id2201aduanas IN (25, 74, 81, 91, 119, 124)
+                       ORDER BY nombre_corto_aduana");
 $stmt->execute();
 $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -222,9 +225,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             totalAbono += valor;
         });
 
-        document.getElementById('total-cargo').value = '$ ' + totalCargo.toFixed(2);
-        document.getElementById('total-abono').value = '$ ' + totalAbono.toFixed(2);
-
+        document.getElementById('total-cargo').value = '$ ' + totalCargo.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('total-abono').value = '$ ' + totalAbono.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     document.addEventListener('DOMContentLoaded', function () {

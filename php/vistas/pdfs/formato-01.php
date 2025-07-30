@@ -304,7 +304,7 @@ $lineHeight = 5;
 $maxLines = floor($boxH / $lineHeight);
 $lineCount = 0;
 
-$pdf->Line($boxX, $boxY, $boxX, $boxY + $boxH); 
+$pdf->Line($boxX, $boxY, $boxX, $boxY + $boxH);
 $pdf->Line($boxX + $boxW, $boxY, $boxX + $boxW, $boxY + $boxH);
 $pdf->Line($boxX, $boxY + $boxH, $boxX + $boxW, $boxY + $boxH);
 

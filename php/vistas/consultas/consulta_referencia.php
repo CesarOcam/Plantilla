@@ -101,7 +101,7 @@ if (!isset($_SESSION['usuario_id'])) {
                 <hr class="mb-5" style="border-top: 2px solid #000;">
 
                 <div id="tabla-referencias-container">
-                    <?php include('../../modulos/consultas/tabla_referencias.php'); ?>
+                     <!-- Aqui se encuentra la tabla de referencias -->
                 </div>
 
             </div>

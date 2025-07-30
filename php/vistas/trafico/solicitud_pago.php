@@ -15,10 +15,13 @@ $stmt->execute();
 $referencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //Obtener REFERENCIAS
+// Obtener aduanas
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
                        WHERE nombre_corto_aduana IS NOT NULL 
-                       AND TRIM(nombre_corto_aduana) != '' ORDER BY nombre_corto_aduana");
+                         AND TRIM(nombre_corto_aduana) != '' 
+                         AND id2201aduanas IN (25, 74, 81, 91, 119, 124)
+                       ORDER BY nombre_corto_aduana");
 $stmt->execute();
 $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -298,14 +301,21 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     }
 
     function calcularTotales() {
-        let totalCargo = 0;
-        document.querySelectorAll('.input-cargo').forEach(input => {
-            const valor = parseFloat(input.value) || 0;
-            totalCargo += valor;
-        });
+    let totalCargo = 0;
+    document.querySelectorAll('.input-cargo').forEach(input => {
+        const valor = parseFloat(input.value) || 0;
+        totalCargo += valor;
+    });
 
-        document.getElementById('total-cargo').value = '$' + totalCargo.toFixed(2);
-    }
+    const formato = totalCargo.toLocaleString('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+        minimumFractionDigits: 2
+    });
+
+    document.getElementById('total-cargo').value = formato;
+}
+
 
 </script>
 <script src="../../../js/guardar_Solicitudes.js"></script>

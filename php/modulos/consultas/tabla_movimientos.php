@@ -18,7 +18,8 @@ try {
             pp.PolizaId,
             pp.Cargo AS Cargo,
             pp.Abono AS Abono,
-            pp.Observaciones
+            pp.Observaciones,
+            pp.NumeroFactura
         FROM conta_partidaspolizas pp
         LEFT JOIN conta_polizas p ON pp.PolizaId = p.Id
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
@@ -47,7 +48,8 @@ try {
             pp.PolizaId,
             pp.Cargo AS Cargo,
             pp.Abono AS Abono,
-            pp.Observaciones
+            pp.Observaciones,
+            pp.NumeroFactura
         FROM conta_partidaspolizas pp
         LEFT JOIN conta_polizas p ON pp.PolizaId = p.Id
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
@@ -105,7 +107,7 @@ try {
                                     <td><?= $fila['Cuenta'] ?></td>
                                     <td>$<?= $fila['Cargo'] ?></td>
                                     <td>$<?= $fila['Abono'] ?></td>
-                                    <td><?= $fila['Observaciones'] ?></td>
+                                    <td><?= $fila['Observaciones'] . ' '. $fila['NumeroFactura'] ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -143,7 +145,7 @@ try {
                                     <td><?= $fila2['Cuenta'] ?></td>
                                     <td>$<?= $fila2['Cargo'] ?></td>
                                     <td>$<?= $fila2['Abono'] ?></td>
-                                    <td><?= $fila2['Observaciones'] ?></td>
+                                    <td><?= $fila2['Observaciones'] . ' '. $fila['NumeroFactura']?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>

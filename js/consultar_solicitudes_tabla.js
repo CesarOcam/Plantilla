@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <tr class="text-center" style="background-color: rgba(0, 0, 0, 0.05);">
                                             <td>${p.SubcuentaNombre || ''}</td>
                                             <td>${p.ReferenciaNumero || ''}</td>
-                                            <td>$ ${parseFloat(p.Importe).toFixed(2)}</td>
-                                            <td>$ 0.00</td>
+                                            <td>$${parseFloat(p.Importe).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                            <td>$0.00</td>
                                             <td>${p.RazonSocialExportador || ''}</td>
                                             <td>${p.Observaciones || ''}</td>
                                         </tr>`;
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             </select>
                                         </td>
                                         <td colspan="2"></td>
-                                        <td>$ ${totalCargo.toFixed(2)}</td>
+                                        <td>$${totalCargo.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                         <td></td>
                                         <td>
                                             <input type="text" name="Observaciones_pago" class="form-control form-control-sm text-center" placeholder="Observaciones" />
@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                     const totalRow = `
                                     <tr class="fw-bold text-center align-middle" style="height: 45px; text-align: center;">
                                         <td colspan="2">Total: </td>
-                                        <td>$ ${totalCargo.toFixed(2)}</td>
-                                        <td>$ ${totalCargo.toFixed(2)}</td>
+                                        <td>$${totalCargo.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                        <td>$${totalAbono.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                         <td colspan="2"></td>
                                     </tr>`;
                                     pieTabla.innerHTML = totalRow;

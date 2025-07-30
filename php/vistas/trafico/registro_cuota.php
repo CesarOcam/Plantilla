@@ -161,19 +161,19 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                 style="background-color: transparent;" placeholder="">
                                         </div>
                                     </div>
-
-                                    <!-- Segunda columna -->
                                     <div class="col-md-6">
                                         <div class="d-flex flex-column mt-4">
-                                            <label for="IVA" class="form-label text-muted small">IVA:</label>
-                                            <input id="IVA" name="IVA" type="text"
+                                            <label for="subtotal" class="form-label text-muted small">Subtotal:</label>
+                                            <input id="subtotal" name="subtotal" type="text"
                                                 class="form-control input-transparent rounded-0"
                                                 style="background-color: transparent;" placeholder="" readonly>
                                         </div>
 
+                                        <!-- Segunda columna -->
+
                                         <div class="d-flex flex-column mt-4">
-                                            <label for="subtotal" class="form-label text-muted small">Subtotal:</label>
-                                            <input id="subtotal" name="subtotal" type="text"
+                                            <label for="IVA" class="form-label text-muted small">IVA:</label>
+                                            <input id="IVA" name="IVA" type="text"
                                                 class="form-control input-transparent rounded-0"
                                                 style="background-color: transparent;" placeholder="" readonly>
                                         </div>

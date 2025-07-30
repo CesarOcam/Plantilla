@@ -112,6 +112,7 @@ function renderFilePairs() {
                 document.getElementById('IVA').value = '';
                 document.getElementById('subtotal').value = '';
                 document.getElementById('monto').value = '';
+                document.getElementById('observaciones').value = '';
 
                 // Desactivar y resetear el select2
                 $('#referencia-select').val(null).trigger('change');
@@ -133,13 +134,13 @@ function renderFilePairs() {
                 const montoInput = document.getElementById('monto');
 
                 if (ivaInput && subtotalInput && montoInput) {
-                    ivaInput.value = totalImpuestosTrasladados;
+                    ivaInput.value = Number(totalImpuestosTrasladados).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     ivaInput.dispatchEvent(new Event('input'));
 
-                    subtotalInput.value = subtotal;
+                    subtotalInput.value = Number(subtotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     subtotalInput.dispatchEvent(new Event('input'));
 
-                    montoInput.value = total;
+                    montoInput.value = Number(total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     montoInput.dispatchEvent(new Event('input'));
 
                     // Activar Select2
@@ -210,9 +211,12 @@ function renderFilePairs() {
                         uploadAlert.textContent = `¡ERROR!\nEl RFC es invalido`;
                     }
 
-                    document.getElementById('IVA').value = totalImpuestosTrasladados;
-                    document.getElementById('subtotal').value = subtotal;
-                    document.getElementById('monto').value = total;
+                    document.getElementById('IVA').value = Number(totalImpuestosTrasladados).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    document.getElementById('subtotal').value = Number(subtotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    document.getElementById('monto').value = Number(total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    document.getElementById('observaciones').value = base;
+
+
 
                     setValoresXML(totalImpuestosTrasladados, subtotal, total);
 

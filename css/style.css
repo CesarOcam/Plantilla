@@ -96,7 +96,9 @@ a.nav-link.dropdown-toggle::after {
     color: rgba(52, 62, 83, 0.4);
 }
 
-
+#spinnerOverlay.show {
+    display: flex !important;
+}
 
 .select2-container--default .select2-selection--single {
   background-color: transparent;

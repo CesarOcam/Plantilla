@@ -88,7 +88,9 @@ $recintoSeleccionado = $referencia['RecintoId'];
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
                        WHERE nombre_corto_aduana IS NOT NULL 
-                       AND TRIM(nombre_corto_aduana) != '' ORDER BY nombre_corto_aduana");
+                         AND TRIM(nombre_corto_aduana) != ''
+                         AND id2201aduanas NOT IN (1, 63, 72, 104)
+                       ORDER BY nombre_corto_aduana");
 $stmt->execute();
 $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -117,14 +119,23 @@ if (!empty($aduanaId)) {
         }
 
         // Ahora buscamos los recintos donde aduanaFiscalizada coincida con nombre_corto_aduana
-        $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, recintoFiscalizado, nombre_conocido_recinto
-                               FROM 2206_recintos_fiscalizados
-                               WHERE UPPER(aduanaFiscalizada) = :nombre
-                                 AND nombre_conocido_recinto IS NOT NULL
-                                 AND nombre_conocido_recinto != ''
-                               ORDER BY nombre_conocido_recinto");
+        $stmt = $con->prepare("
+            SELECT r.id2206_recintos_fiscalizados, r.recintoFiscalizado, r.nombre_conocido_recinto
+            FROM 2206_recintos_fiscalizados r
+            INNER JOIN (
+                SELECT MIN(id2206_recintos_fiscalizados) AS id_min
+                FROM 2206_recintos_fiscalizados
+                WHERE UPPER(aduanaFiscalizada) = :nombre
+                AND nombre_conocido_recinto IS NOT NULL
+                AND nombre_conocido_recinto != ''
+                GROUP BY nombre_conocido_recinto
+            ) sub ON r.id2206_recintos_fiscalizados = sub.id_min
+            ORDER BY r.nombre_conocido_recinto
+        ");
+
         $stmt->execute(['nombre' => $nombreCorto]);
         $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     }
 }
 

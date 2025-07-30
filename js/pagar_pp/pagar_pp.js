@@ -1,20 +1,28 @@
-document.getElementById("formPago").addEventListener("submit", function (e) {
-    e.preventDefault(); // Previene el envío tradicional del formulario
+const spinner = document.getElementById('spinnerOverlay');
+
+document.getElementById('formPago').addEventListener('submit', function(e) {
+    e.preventDefault();
 
     const form = e.target;
     const formData = new FormData(form);
+
+    // Mostrar spinner
+    spinner.classList.add('show');
 
     fetch('../../modulos/pagar_pp/pagar_cuentas_pp.php', {
         method: 'POST',
         body: formData
     })
-    .then(resp => resp.text()) // ← obtenemos texto crudo
+    .then(resp => resp.text())
     .then(texto => {
-        console.log('Respuesta cruda del servidor:', texto); // ← te muestra si hay HTML de error
+        // Ocultar spinner
+        spinner.classList.remove('show');
+
+        console.log('Respuesta cruda del servidor:', texto);
 
         let respuesta;
         try {
-            respuesta = JSON.parse(texto); // ← intentamos parsear como JSON
+            respuesta = JSON.parse(texto);
         } catch (e) {
             console.error('La respuesta no es un JSON válido.');
             Swal.fire({
@@ -29,14 +37,9 @@ document.getElementById("formPago").addEventListener("submit", function (e) {
         console.log('Respuesta del servidor:', respuesta);
 
         if (respuesta.success) {
-            // Mostrar los datos adicionales en consola
+            
             if (respuesta.datos) {
-                console.log('Datos del pago:');
-                console.log('IDs:', respuesta.datos.ids);
-                console.log('Total:', respuesta.datos.total);
-                console.log('Fecha:', respuesta.datos.fecha);
-                console.log('Beneficiario:', respuesta.datos.beneficiario);
-                console.log('Subcuenta:', respuesta.datos.subcuenta);
+                console.log('Datos del pago:', respuesta.datos);
             }
 
             $('#modalPago').modal('hide');
@@ -60,6 +63,7 @@ document.getElementById("formPago").addEventListener("submit", function (e) {
         }
     })
     .catch(error => {
+        spinner.classList.remove('show');
         console.error('Error en la petición:', error);
         Swal.fire({
             title: 'Error de conexión',

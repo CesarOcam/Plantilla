@@ -90,9 +90,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     }
                                     ?>
                                 </select>
-
                             </div>
-
                             <div class="col-md-2 col-sm-6 mb-2 position-relative">
                                 <label for="fechaDesdeInput" class="form-label small mb-1">Fecha Desde:</label>
                                 <i class="bi bi-calendar-week position-absolute"
@@ -116,17 +114,14 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     id="btn_buscar">Consultar</button>
                                 <button type="button" class="btn btn-outline-secondary rounded-0 w-100"
                                     id="btn_limpiar">Limpiar</button>
-                                <button type="button" class="btn btn-outline-secondary rounded-0 w-100"
-                                    id="btn_correo">Correo</button>
+                                <!--<button type="button" class="btn btn-outline-secondary rounded-0 w-100"
+                                    id="btn_correo">Correo</button>-->
                                 <button type="button" class="btn btn-outline-secondary rounded-0 w-100" id="btn_pagar"
                                     disabled>Pago de Cuentas</button>
                             </div>
                         </div>
                     </div>
-
-
                     <hr class="mb-5" style="border-top: 2px solid #000;">
-
                     <div id="tabla-pp-container">
                         <?php include('../../modulos/consultas/tabla_facturas_cuentas.php'); ?>
                     </div>
@@ -194,6 +189,21 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
+    <div id="spinnerOverlay" style="
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        font-size: 1.2rem;">
+        <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;"></div>
+        <div style="margin-top: 1rem;">Enviando correo, por favor espere...</div>
+    </div>
 
     <script src="../../../js/facturas_Pp.js"></script>
     <script src="../../../js/pagar_pp/pagar_pp.js"></script>
@@ -220,8 +230,6 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 });
         });
     </script>
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">

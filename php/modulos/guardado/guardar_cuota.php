@@ -23,6 +23,10 @@ $aduana = $_POST['aduanaHidden'] ?? '';
 $observaciones = $_POST['observaciones'] ?? [];
 $archivos = $_FILES['facturas'] ?? [];
 
+// Quitar comas y convertir a float para las variables numéricas
+$iva = is_string($iva) ? (float) str_replace(',', '', $iva) : 0.0;
+$subtotal = is_string($subtotal) ? (float) str_replace(',', '', $subtotal) : 0.0;
+$cargos = is_string($cargos) ? (float) str_replace(',', '', $cargos) : 0.0;
 // Validar referencia
 if (!$referencia) {
     echo json_encode([
@@ -189,19 +193,22 @@ try {
 $cargos = 0;
 switch ((int)$aduana) {
     case 74:
-        $subcuenta = 237;
+        $subcuenta = 237; //VERACRUZ
         break;
     case 25:
-        $subcuenta = 238;
+        $subcuenta = 238; //MANZANILLO
         break;
     case 119:
-        $subcuenta = 239;
+        $subcuenta = 239; //ALTAMIRA
         break;
-    case 126:
-        $subcuenta = 242;
+    case 124: //AIFA
+        $subcuenta = 240; //REYNOSA
         break;
-    case 91:
-        $subcuenta = 443;
+    case 81://CDMX
+        $subcuenta = 241; //CDMX
+        break;
+    case 91://LAZARO
+        $subcuenta = 242; //LAZARO
         break;
     default:
         $subcuenta = 0;
