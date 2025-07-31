@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.log("Contenido recibido:", text);
                             alert("Error inesperado en el servidor.");
                         }
-                    })
+                    }) 
                     .catch(error => {
                         console.error('Error al obtener solicitud:', error);
                     });
