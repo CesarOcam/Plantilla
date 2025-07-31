@@ -97,7 +97,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     style="left: 10px; top: 36px; z-index: 10; color: gray;"></i>
                                 <input id="fechaDesdeInput" name="fechaDesdeInput" type="text"
                                     class="form-control ps-4 rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Fecha Desde">
+                                    style="background-color: transparent;" placeholder="Fecha Desde" required>
                             </div>
 
                             <div class="col-md-2 col-sm-6 mb-2 position-relative">
@@ -106,7 +106,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     style="left: 10px; top: 36px; z-index: 10; color: gray;"></i>
                                 <input id="fechaHastaInput" name="fechaHastaInput" type="text"
                                     class="form-control ps-4 rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" placeholder="Fecha Hasta">
+                                    style="background-color: transparent;" placeholder="Fecha Hasta" required>
                             </div>
 
                             <div class="col-md-4 col-sm-6 mb-2 d-flex gap-2">
