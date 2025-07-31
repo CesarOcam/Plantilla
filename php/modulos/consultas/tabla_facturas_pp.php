@@ -66,6 +66,7 @@ SELECT
     pp.Partida AS Id,
     pp.Cargo,
     pp.Observaciones AS FacturaObservaciones,
+    pp.NumeroFactura AS Factura,
     p.Id AS PolizaId,
     p.Numero AS PolizaNumero,
     p.FechaAlta AS FechaHora,
@@ -146,7 +147,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     <td><?php echo $poliza['SubcuentaNombre']; ?></td>
                     <td><?php echo '$ ' . number_format($poliza['Cargo'], 2); ?></td>
                     <td><?php echo $poliza['FechaHora']; ?></td>
-                    <td><?php echo $poliza['FacturaObservaciones']; ?></td>
+                    <td><?php echo $poliza['Factura']; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

@@ -106,11 +106,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <thead class="table-light">
                                 <tr>
                                     <th>Subcuenta</th>
-                                    <th>Referencia</th>
                                     <th>Cargo</th>
                                     <th>Abono</th>
                                     <th>Exportador</th>
                                     <th>Observaciones</th>
+                                    <th>Referencia</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,11 +130,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         ?>
                                         <tr class="text-center">
                                             <td><?= htmlspecialchars($fila['SubcuentaNombre']) ?></td>
-                                            <td><?= htmlspecialchars($fila['Referencia']) ?></td>
                                             <td><?= '$'.number_format($fila['Cargo'], 2, '.', ',') ?></td>
                                             <td><?= '$'.number_format($fila['Abono'], 2, '.', ',') ?></td>
                                             <td><?= htmlspecialchars($fila['Exportador']) ?></td>
                                             <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
+                                            <td><strong><?= htmlspecialchars($fila['Referencia']) ?></strong></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>

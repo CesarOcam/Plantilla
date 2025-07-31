@@ -53,11 +53,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                         const fila = `
                                         <tr class="text-center" style="background-color: rgba(0, 0, 0, 0.05);">
                                             <td>${p.SubcuentaNombre || ''}</td>
-                                            <td>${p.ReferenciaNumero || ''}</td>
                                             <td>$${parseFloat(p.Importe).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                             <td>$0.00</td>
                                             <td>${p.RazonSocialExportador || ''}</td>
                                             <td>${p.Observaciones || ''}</td>
+                                            <td><strong>${p.ReferenciaNumero || ''}</strong></td>
                                         </tr>`;
                                         cuerpoTabla.insertAdjacentHTML('beforeend', fila);
                                     });
@@ -75,12 +75,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 ${opcionesSubcuenta}
                                             </select>
                                         </td>
-                                        <td colspan="2"></td>
+                                        <td colspan="1">$ 0.00</td>
                                         <td>$${totalCargo.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                        <td></td>
+                                        <td colspan="1"></td>
                                         <td>
                                             <input type="text" name="Observaciones_pago" class="form-control form-control-sm text-center" placeholder="Observaciones" />
                                         </td>
+                                        <td></td>
                                     </tr>`;
                                     cuerpoTabla.insertAdjacentHTML('beforeend', filaEditable);
 
@@ -104,10 +105,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                     const totalRow = `
                                     <tr class="fw-bold text-center align-middle" style="height: 45px; text-align: center;">
-                                        <td colspan="2">Total: </td>
+                                        <td colspan="1">Total: </td>
                                         <td>$${totalCargo.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                        <td>$${totalAbono.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                        <td colspan="2"></td>
+                                        <td>$${totalCargo.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                        <td colspan="3"></td>
                                     </tr>`;
                                     pieTabla.innerHTML = totalRow;
 

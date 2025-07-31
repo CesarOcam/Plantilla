@@ -783,7 +783,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <a href="../../vistas/pdfs/formato-01.php?id=<?= $id2 ?>" target="_blank"
                                 class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-0 shadow-sm"
                                 title="Ver Solicitudes">
-                                <i class="fas fa-file-pdf me-2"></i> Imprimir PDF
+                                <i class="fas fa-file-pdf me-2"></i> Imprimir CG
                             </a>
                         </div>
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">

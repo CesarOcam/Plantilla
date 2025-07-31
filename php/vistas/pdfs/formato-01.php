@@ -18,6 +18,7 @@ $stmt = $con->prepare("
         r.Marcas,
         r.Pedimentos,
         r.ClavePedimento,
+        ped.claveCve AS CvePedimento,
         r.PesoBruto,
         r.Cantidad,
         r.Bultos,
@@ -62,6 +63,7 @@ $stmt = $con->prepare("
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
     LEFT JOIN consolidadoras cons ON r.ConsolidadoraId = cons.id_consolidadora
     LEFT JOIN 2221_recintos rec ON r.RecintoId = rec.id2221_recintos
+    LEFT JOIN 2202clavepedimento ped ON r.ClavePedimento = ped.id2202clave_pedimento
     LEFT JOIN transportista nav ON r.NavieraId = nav.idtransportista
     LEFT JOIN transporte bq ON r.BuqueId = bq.idtransporte
     LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
@@ -199,8 +201,8 @@ $pdf->SetFont('Arial', '', 8);
 // Posición inicial
 $pdf->SetXY(12, $startY + 62);
 // Texto dividido
-$col1 = toISO($referencia['Mercancia'] . "\nMARCAS: " . $referencia['Marcas'] . "\nPESO BRUTO: " . $referencia['PesoBruto'] . "\nCVE. PEDIMENTO: " . $referencia['ClavePedimento']);
-$col2 = toISO("PEDIMENTO: " . $referencia['Pedimentos'] . "\nFECHA PAGO: " . $referencia['FechaPago'] . "\nBULTOS: " . $referencia['Bultos']);
+$col1 = toISO($referencia['Mercancia'] . "\nMARCAS: " . $referencia['Marcas'] . "\nPESO BRUTO: " . $referencia['PesoBruto'] . "\nCLAVE DE PEDIMENTO: " . $referencia['CvePedimento']);
+$col2 = toISO("PEDIMENTO: " . $referencia['Pedimentos'] . "\nFECHA PAGO: " . date('Y-m-d', strtotime($referencia['FechaPago'])) . "\nCANTIDAD Y BULTOS: " . $referencia['Cantidad']);
 // Ancho de cada columna
 $colWidth = 94; // 188 / 2
 $cellHeight = 4.1;
@@ -322,7 +324,7 @@ foreach ($partidas as $partida) {
     $stmtCuenta = $con->prepare("
         SELECT Nombre 
         FROM cuentas 
-        WHERE Numero IN (123, 114) AND Id = :id
+        WHERE (Numero LIKE '123%' OR Numero LIKE '114%') AND Id = :id
     ");
     $stmtCuenta->bindParam(':id', $subcuentaId, PDO::PARAM_INT);
     $stmtCuenta->execute();
@@ -362,16 +364,19 @@ foreach ($partidas as $partida) {
 
     $subcuentaId = $partida['SubcuentaId'];
     $cargo = $partida['Cargo'];
+    $abono = $partida['Abono']; 
+    $observacion = $partida['Observaciones'];
 
     $stmtCuenta = $con->prepare("
-        SELECT Nombre 
+        SELECT Nombre
         FROM cuentas 
-        WHERE Id = :id AND Numero = 214
+        WHERE Id = :id AND Numero LIKE '214%'
 
     ");
     $stmtCuenta->bindParam(':id', $subcuentaId, PDO::PARAM_INT);
     $stmtCuenta->execute();
     $cuenta = $stmtCuenta->fetch(PDO::FETCH_ASSOC);
+
 
     $stmtPoliza = $con->prepare("
         SELECT * 
@@ -392,8 +397,8 @@ foreach ($partidas as $partida) {
 
     if ($cuenta) {
         $pdf->SetFont('Arial', '', 8);
-        $nombreCuenta = toISO($fechaFormateada . ' ANTICIPO .');
-        $importe = '$' . number_format($cargo, 2);
+        $nombreCuenta = toISO('('.$observacion.')' . ' ANTICIPO .');
+        $importe = '$' . number_format($abono, 2);
 
         $lineY = $boxY + 8 + ($totalLineas * $lineHeight);
 
@@ -402,7 +407,7 @@ foreach ($partidas as $partida) {
 
         $pdf->SetXY($boxX + 150, $lineY);
         $pdf->Cell(36, $lineHeight, $importe, 0, 0, 'R');
-        $totalAnticipos += $cargo;
+        $totalAnticipos += $abono;
         $totalLineas++;
     }
 

@@ -25,7 +25,7 @@ try {
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
         LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
         WHERE pp.ReferenciaId = :id
-        AND c.Numero IN (123, 114)
+        AND c.Numero IN (123, 114, 214)
         AND pp.EnKardex != 1
         LIMIT :inicio, :limite
     ");
@@ -55,7 +55,7 @@ try {
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
         LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
         WHERE pp.ReferenciaId = :id
-        AND c.Numero NOT IN (123, 114)
+        AND c.Numero NOT IN (123, 114, 214)
         AND pp.EnKardex != 1
         LIMIT :inicio, :limite
     ");

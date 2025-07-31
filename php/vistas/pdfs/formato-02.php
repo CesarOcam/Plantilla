@@ -340,9 +340,9 @@ $colY += 6;
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetXY(10, $colY  + 45);
 $pdf->Cell(0, 2, toISO('COMENTARIOS:'), 0, 1, 'L');
-$pdf->SetXY(40, $colY  + 45);
+$pdf->SetXY(10, $colY  + 50);
 $pdf->SetFont('Arial', '',  10);
-$pdf->Cell(0, 2, toISO($referencia['Comentarios'] ?? ''), 0, 1, 'L');
+$pdf->MultiCell(0, 5, toISO($referencia['Comentarios'] ?? ''), 0, 'L');
 
 $pdf->SetFont('Arial', 'B', 10);
 $colY += 70;

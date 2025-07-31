@@ -1039,31 +1039,31 @@ input:checked + .slider:before {
 .tabla-partidas-pagar thead th:nth-child(1),
 .tabla-partidas-pagar tbody td:nth-child(1) {
   width: 30%;
-  min-width: 400px;
+  min-width: 200px;
 }
 
 .tabla-partidas-pagar thead th:nth-child(2),
 .tabla-partidas-pagar tbody td:nth-child(2),
 .tabla-partidas-pagar thead th:nth-child(3),
 .tabla-partidas-pagar tbody td:nth-child(3),
-.tabla-partidas-pagar thead th:nth-child(4),
-.tabla-partidas-pagar tbody td:nth-child(4),
 .tabla-partidas-pagar thead th:nth-child(5),
-.tabla-partidas-pagar tbody td:nth-child(5) {
+.tabla-partidas-pagar tbody td:nth-child(5),
+.tabla-partidas-pagar thead th:nth-child(6),
+.tabla-partidas-pagar tbody td:nth-child(6) {
   width: 7%;
   min-width: 70px;
   max-width: 80px;
   text-align: center;
 }
 
-.tabla-partidas-pagar thead th:nth-child(5),
-.tabla-partidas-pagar tbody td:nth-child(5) {
-  width: 15%;
+.tabla-partidas-pagar thead th:nth-child(4),
+.tabla-partidas-pagar tbody td:nth-child(4) {
+  width: 30%;
   min-width: 200px;
 }
-.tabla-partidas-pagar thead td:nth-child(6),
-.tabla-partidas-pagar tbody td:nth-child(6) {
-  width: 30%;
+.tabla-partidas-pagar thead td:nth-child(5),
+.tabla-partidas-pagar tbody td:nth-child(5) {
+  width: 20%;
   min-width: 200px;
 }
 
