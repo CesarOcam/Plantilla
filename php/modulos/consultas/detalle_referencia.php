@@ -276,8 +276,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
-
                                 </div>
+                                
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="logistico" class="form-label text-muted small">LOGÍSTICO:</label>
                                     <select id="logistico-select" name="logistico"

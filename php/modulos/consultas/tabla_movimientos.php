@@ -105,8 +105,8 @@ try {
                                     </td>
                                     <td><?= $fila['NombreBeneficiario'] ?></td>
                                     <td><?= $fila['Cuenta'] ?></td>
-                                    <td>$<?= $fila['Cargo'] ?></td>
-                                    <td>$<?= $fila['Abono'] ?></td>
+                                    <td>$<?= number_format($fila['Cargo'], 2) ?></td>
+                                    <td>$<?= number_format($fila['Abono'], 2) ?></td>
                                     <td><?= $fila['Observaciones'] . ' '. $fila['NumeroFactura'] ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -143,8 +143,8 @@ try {
                                     </td>
                                     <td><?= $fila2['NombreBeneficiario'] ?></td>
                                     <td><?= $fila2['Cuenta'] ?></td>
-                                    <td>$<?= $fila2['Cargo'] ?></td>
-                                    <td>$<?= $fila2['Abono'] ?></td>
+                                    <td>$<?= number_format($fila2['Cargo'], 2) ?></td>
+                                    <td>$<?= number_format($fila2['Abono'], 2) ?></td>
                                     <td><?= $fila2['Observaciones'] . ' '. $fila['NumeroFactura']?></td>
                                 </tr>
                             <?php endforeach; ?>

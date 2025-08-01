@@ -58,8 +58,6 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- SweetAlert2 CDN -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-
         <link rel="stylesheet" href="../../../css/style.css">
         <link rel="stylesheet" href="../../../css/style2.css">
     </head>
@@ -112,8 +110,8 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
 
                             <div class="col-md-4 col-sm-6 mb-2 d-flex gap-2">
-                                <button type="submit" class="btn btn-secondary rounded-0 w-100"
-                                    id="btn_buscar" disabled>Consultar</button>
+                                <button type="submit" class="btn btn-secondary rounded-0 w-100" id="btn_buscar"
+                                    disabled>Consultar</button>
                                 <button type="button" class="btn btn-outline-secondary rounded-0 w-100"
                                     id="btn_limpiar">Limpiar</button>
                                 <!--<button type="button" class="btn btn-outline-secondary rounded-0 w-100"
@@ -136,56 +134,56 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-<script>
-    $(document).ready(function () {
-        $('#subcuentaInput').select2({
-            placeholder: "Seleccione una subcuenta",
-            allowClear: false
-        });
+    <script>
+        $(document).ready(function () {
+            $('#subcuentaInput').select2({
+                placeholder: "Seleccione una subcuenta",
+                allowClear: false
+            });
 
-        $(document).on('select2:open', () => {
-            setTimeout(() => {
-                const input = document.querySelector('.select2-container--open .select2-search__field');
-                if (input) input.focus();
-            }, 100);
-        });
+            $(document).on('select2:open', () => {
+                setTimeout(() => {
+                    const input = document.querySelector('.select2-container--open .select2-search__field');
+                    if (input) input.focus();
+                }, 100);
+            });
 
-        const btn = document.getElementById("btn_buscar");
-        const fechaDesde = document.getElementById("fechaDesdeInput");
-        const fechaHasta = document.getElementById("fechaHastaInput");
-        const subcuenta = document.getElementById("subcuentaInput");
+            const btn = document.getElementById("btn_buscar");
+            const fechaDesde = document.getElementById("fechaDesdeInput");
+            const fechaHasta = document.getElementById("fechaHastaInput");
+            const subcuenta = document.getElementById("subcuentaInput");
 
-        function validarCampos() {
-            console.log("Desde:", fechaDesde.value);
-            console.log("Hasta:", fechaHasta.value);
-            console.log("Subcuenta:", subcuenta.value);
+            function validarCampos() {
+                console.log("Desde:", fechaDesde.value);
+                console.log("Hasta:", fechaHasta.value);
+                console.log("Subcuenta:", subcuenta.value);
 
-            if (fechaDesde.value.trim() !== "" &&
-                fechaHasta.value.trim() !== "" &&
-                subcuenta.value !== "") {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
+                if (fechaDesde.value.trim() !== "" &&
+                    fechaHasta.value.trim() !== "" &&
+                    subcuenta.value !== "") {
+                    btn.disabled = false;
+                } else {
+                    btn.disabled = true;
+                }
             }
-        }
 
-        flatpickr("#fechaDesdeInput", {
-            dateFormat: "Y-m-d",
-            onChange: validarCampos
+            flatpickr("#fechaDesdeInput", {
+                dateFormat: "Y-m-d",
+                onChange: validarCampos
+            });
+
+            flatpickr("#fechaHastaInput", {
+                dateFormat: "Y-m-d",
+                onChange: validarCampos
+            });
+
+            fechaDesde.addEventListener("input", validarCampos);
+            fechaHasta.addEventListener("input", validarCampos);
+            subcuenta.addEventListener("change", validarCampos);
+
+            validarCampos(); // Ejecutar al inicio por si ya hay valores
         });
-
-        flatpickr("#fechaHastaInput", {
-            dateFormat: "Y-m-d",
-            onChange: validarCampos
-        });
-
-        fechaDesde.addEventListener("input", validarCampos);
-        fechaHasta.addEventListener("input", validarCampos);
-        subcuenta.addEventListener("change", validarCampos);
-
-        validarCampos(); // Ejecutar al inicio por si ya hay valores
-    });
-</script>
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
