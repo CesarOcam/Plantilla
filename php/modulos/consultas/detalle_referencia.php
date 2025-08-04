@@ -809,12 +809,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <?php if (isset($referencia['Status']) && $referencia['Status'] == 3): ?>
-                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_correo"
+                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_complementaria"
                                     data-id="<?= $id2 ?>">
                                     Crear Complementaria
                                 </button>
                             <?php endif; ?>
-                            
                         </div>
 
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
@@ -1297,6 +1296,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
 </script>
+<script src="../../../js/guardar_Complementaria.js"></script>
 <script src="../../../js/actualizar/pasar_Conta.js"></script>
 <script src="../../../js/actualizar/afectar_Kardex.js"></script>
 <script src="../../../js/actualizar/envio_cg.js"></script>
