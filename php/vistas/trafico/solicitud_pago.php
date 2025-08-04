@@ -231,6 +231,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         );
 
         const tbody = document.querySelector('#tabla-partidas tbody');
+        // Eliminar fila de "Sin datos disponibles" si existe
+        const filaSinDatos = tbody.querySelector('tr td[colspan="5"].text-muted');
+        if (filaSinDatos) {
+            tbody.innerHTML = ''; // borra el mensaje
+        }
+
         const fila = document.createElement('tr');
 
         // Generar opciones de referencia
@@ -301,20 +307,20 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     }
 
     function calcularTotales() {
-    let totalCargo = 0;
-    document.querySelectorAll('.input-cargo').forEach(input => {
-        const valor = parseFloat(input.value) || 0;
-        totalCargo += valor;
-    });
+        let totalCargo = 0;
+        document.querySelectorAll('.input-cargo').forEach(input => {
+            const valor = parseFloat(input.value) || 0;
+            totalCargo += valor;
+        });
 
-    const formato = totalCargo.toLocaleString('es-MX', {
-        style: 'currency',
-        currency: 'MXN',
-        minimumFractionDigits: 2
-    });
+        const formato = totalCargo.toLocaleString('es-MX', {
+            style: 'currency',
+            currency: 'MXN',
+            minimumFractionDigits: 2
+        });
 
-    document.getElementById('total-cargo').value = formato;
-}
+        document.getElementById('total-cargo').value = formato;
+    }
 
 
 </script>

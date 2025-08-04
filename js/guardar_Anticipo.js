@@ -49,9 +49,27 @@ $(document).ready(function () {
 
                     // Limpiar el formulario
                     $("#form_Anticipos")[0].reset();
-                    $('#beneficiario-select').val(null).trigger('change');
-                    $('#aduana-select').val(null).trigger('change');
-                    $('select.select2').val(null).trigger('change');
+                        $('#beneficiario-select').val(null).trigger('change');
+                        $('#aduana-select').val(null).trigger('change');
+                        $('select.select2').val(null).trigger('change');
+
+                        // Reactivar select de aduana
+                        $('#aduana-select').prop('disabled', false).trigger('change.select2');
+
+                        // Limpiar la tabla
+                        const tablaPago = document.getElementById('tabla-partidas');
+                        if (tablaPago) {
+                            const tbody = tablaPago.querySelector('tbody');
+                            if (tbody) {
+                                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted"></td></tr>`;
+                            }
+
+                            const totalCargo = document.getElementById('total-cargo');
+                            const totalAbono = document.getElementById('total-abono');
+                            if (totalCargo) totalCargo.value = '$ 0.00';
+                            if (totalAbono) totalAbono.value = '$ 0.00';
+                        }
+
                 } else {
                     Swal.fire({
                         icon: 'error',

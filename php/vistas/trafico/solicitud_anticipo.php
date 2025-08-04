@@ -210,24 +210,30 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
     const referencias = <?php echo json_encode($referencias); ?>;
+function calcularTotales() {
+    let totalCargo = 0;
+    let totalAbono = 0;
 
-    function calcularTotales() {
-        let totalCargo = 0;
-        let totalAbono = 0;
+    document.querySelectorAll('.input-cargo').forEach(input => {
+        const valor = parseFloat(input.value) || 0;
+        totalCargo += valor;
+    });
 
-        document.querySelectorAll('.input-cargo').forEach(input => {
-            const valor = parseFloat(input.value) || 0;
-            totalCargo += valor;
-        });
+    document.querySelectorAll('.input-abono').forEach(input => {
+        const valor = parseFloat(input.value) || 0;
+        totalAbono += valor;
+    });
 
-        document.querySelectorAll('.input-abono').forEach(input => {
-            const valor = parseFloat(input.value) || 0;
-            totalAbono += valor;
-        });
+    const inputTotalCargo = document.getElementById('total-cargo');
+    const inputTotalAbono = document.getElementById('total-abono');
 
-        document.getElementById('total-cargo').value = '$ ' + totalCargo.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById('total-abono').value = '$ ' + totalAbono.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (inputTotalCargo) {
+        inputTotalCargo.value = '$ ' + totalCargo.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
+    if (inputTotalAbono) {
+        inputTotalAbono.value = '$ ' + totalAbono.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+}
 
     document.addEventListener('DOMContentLoaded', function () {
         // Inicializar Select2 SOLO UNA VEZ
@@ -288,6 +294,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 
         const tbody = document.querySelector('#tabla-partidas tbody');
+        const filaSinDatos = tbody.querySelector('tr td[colspan="5"].text-muted');
+        if (filaSinDatos) {
+            tbody.innerHTML = ''; // borra el mensaje
+        }
         const fila = document.createElement('tr');
 
         // Generar opciones de referencia
@@ -314,10 +324,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             </select>
         </td>
         <td>
-            <input type="number" name="Cargo[${contadorFilas}]" class="form-control input-cargo text-end" placeholder="0.00" required> </>
+            <input type="number" name="Cargo[${contadorFilas}]" class="form-control input-cargo text-end" placeholder="0.00" step="0.01" required> </>
         </td>
         <td>
-            <input type="number" name="Abono[${contadorFilas}]" class="form-control input-abono text-end" placeholder="0.00" required> </>
+            <input type="number" name="Abono[${contadorFilas}]" class="form-control input-abono text-end" placeholder="0.00" step="0.01" required> </>
         </td>
         <td>
             <input type="text" name="Observaciones[${contadorFilas}]" class="form-control" placeholder="Observaciones (opcional)" />

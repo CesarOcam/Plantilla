@@ -91,11 +91,12 @@ $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
 
 //---------------------Guardar la Póliza-----------------------------
 $sql_insert_poliza = "INSERT INTO conta_polizas 
-    (EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    (EmpresaId, BeneficiarioId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $params = [
     $empresa,
+    505,
     $numero_poliza,
     $importe,
     $fecha,

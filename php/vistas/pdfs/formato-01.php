@@ -320,11 +320,12 @@ foreach ($partidas as $partida) {
 
     $subcuentaId = $partida['SubcuentaId'];
     $cargo = $partida['Cargo'];
+    $obsPartida = $partida['Observaciones'];
 
     $stmtCuenta = $con->prepare("
-        SELECT Nombre 
+        SELECT Nombre
         FROM cuentas 
-        WHERE (Numero LIKE '123%' OR Numero LIKE '114%') AND Id = :id
+        WHERE Numero IN (123, 114) AND Id = :id
     ");
     $stmtCuenta->bindParam(':id', $subcuentaId, PDO::PARAM_INT);
     $stmtCuenta->execute();
@@ -332,10 +333,10 @@ foreach ($partidas as $partida) {
 
     if ($cuenta) {
         $nombreCuenta = toISO($cuenta['Nombre']);
-        $importe = '$' . number_format($cargo, 2);
+        $importe = number_format($cargo, 2);
 
         $pdf->SetXY($boxX + 2, $boxY + 2 + ($totalLineas * $lineHeight));
-        $pdf->Cell(150, $lineHeight, $nombreCuenta, 0, 0, 'L');
+        $pdf->Cell(150, $lineHeight, $nombreCuenta . '(' . $obsPartida . ')', 0, 0, 'L');
 
         $pdf->SetXY($boxX + 150, $boxY + 2 + ($totalLineas * $lineHeight));
         $pdf->Cell(36, $lineHeight, $importe, 0, 0, 'R');
@@ -353,7 +354,7 @@ $pdf->Cell(57, $lineHeight, 'SUBTOTAL $', 0, 0, 'R');
 // Importe del subtotal alineado a la derecha también
 $pdf->SetFont('Arial', '', 8);
 $pdf->SetXY($boxX + 150, $subtotalY + 1);
-$pdf->Cell(36, $lineHeight, '$' . number_format($subtotal, 2), 0, 0, 'R');
+$pdf->Cell(36, $lineHeight, number_format($subtotal, 2), 0, 0, 'R');
 
 // --- Cuentas 214 ---
 
@@ -364,13 +365,13 @@ foreach ($partidas as $partida) {
 
     $subcuentaId = $partida['SubcuentaId'];
     $cargo = $partida['Cargo'];
-    $abono = $partida['Abono']; 
+    $abono = $partida['Abono'];
     $observacion = $partida['Observaciones'];
 
     $stmtCuenta = $con->prepare("
         SELECT Nombre
         FROM cuentas 
-        WHERE Id = :id AND Numero LIKE '214%'
+        WHERE Id = :id AND Numero = 214
 
     ");
     $stmtCuenta->bindParam(':id', $subcuentaId, PDO::PARAM_INT);
@@ -411,18 +412,191 @@ foreach ($partidas as $partida) {
         $totalLineas++;
     }
 
+
 }
 $saldo = $subtotal - $totalAnticipos;
 
 // --- Línea SALDOS debajo de los ANTICIPOS ---
 $saldosY = $boxY + 8 + ($totalLineas * $lineHeight) + 1;
+
 $pdf->Line(170, $saldosY, $boxX + $boxW, $saldosY);
 $pdf->SetFont('Arial', 'B', 8);
 $pdf->SetXY($boxX + 100, $saldosY + 1);
 $pdf->Cell(57, $lineHeight, 'SALDO $', 0, 0, 'R');
 // Valor del saldo alineado a la derecha junto a SALDO $
 $pdf->SetXY($boxX + 150, $saldosY + 1); // ← MISMA Y
-$pdf->Cell(36, $lineHeight, '$' . number_format($saldo, 2), 0, 0, 'R');
+$pdf->Cell(36, $lineHeight, number_format($saldo, 2), 0, 0, 'R');
+
+// --- IMPORTE CON LETRA---
+$pdf->SetFont('Arial', '', 9);
+$pdf->SetXY($boxX + 2, $saldosY + 5);  // un poco abajo del saldo
+$pdf->Cell(0, 5, 'IMPORTE CON LETRA', 0, 1, 'L');  // ancho 0 = todo el ancho útil, texto centrado
+
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetY($saldosY + 15);  // un poco abajo del saldo
+$pdf->Cell(0, 5, '(' . num2letras($saldo) . ')', 0, 1, 'C');  // ancho 0 = todo el ancho útil, texto centrado
+
+
+//FUNCION CANTIDAD DE PESOS A TEXTO
+
+function num2letras($num)
+{
+    $num = number_format($num, 2, '.', '');
+    list($entero, $decimales) = explode('.', $num);
+
+    $unidad = array(
+        '',
+        'UN',
+        'DOS',
+        'TRES',
+        'CUATRO',
+        'CINCO',
+        'SEIS',
+        'SIETE',
+        'OCHO',
+        'NUEVE',
+        'DIEZ',
+        'ONCE',
+        'DOCE',
+        'TRECE',
+        'CATORCE',
+        'QUINCE',
+        'DIECISEIS',
+        'DIECISIETE',
+        'DIECIOCHO',
+        'DIECINUEVE',
+        'VEINTE'
+    );
+    $decena = array('', '', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA');
+    $centena = array(
+        '',
+        'CIENTO',
+        'DOSCIENTOS',
+        'TRESCIENTOS',
+        'CUATROCIENTOS',
+        'QUINIENTOS',
+        'SEISCIENTOS',
+        'SETECIENTOS',
+        'OCHOCIENTOS',
+        'NOVECIENTOS'
+    );
+
+    $convertir_centenas = function ($n) use ($unidad, $decena, $centena) {
+        $resultado = '';
+
+        if ($n == 100) {
+            return "CIEN";
+        }
+        $c = floor($n / 100);
+        $d = floor(($n % 100) / 10);
+        $u = $n % 10;
+
+        if ($c > 0) {
+            $resultado .= $centena[$c] . ' ';
+        }
+
+        $dos_digitos = $n % 100;
+
+        if ($dos_digitos <= 20) {
+            $resultado .= $unidad[$dos_digitos];
+        } else if ($dos_digitos < 30) {
+            $resultado .= "VEINTI" . strtolower($unidad[$u]);
+        } else {
+            $resultado .= $decena[$d];
+            if ($u > 0) {
+                $resultado .= " Y " . $unidad[$u];
+            }
+        }
+
+        return trim($resultado);
+    };
+
+    $convertir_miles = function ($n) use ($convertir_centenas) {
+        $resultado = '';
+        $miles = floor($n / 1000);
+        $resto = $n % 1000;
+
+        if ($miles > 0) {
+            if ($miles == 1) {
+                $resultado .= "MIL ";
+            } else {
+                $resultado .= $convertir_centenas($miles) . " MIL ";
+            }
+        }
+
+        if ($resto > 0) {
+            $resultado .= $convertir_centenas($resto);
+        }
+
+        return trim($resultado);
+    };
+
+    $convertir_millones = function ($n) use ($convertir_miles, $convertir_centenas) {
+        $resultado = '';
+        $millones = floor($n / 1000000);
+        $resto = $n % 1000000;
+
+        if ($millones > 0) {
+            if ($millones == 1) {
+                $resultado .= "UN MILLÓN ";
+            } else {
+                $resultado .= $convertir_miles($millones) . " MILLONES ";
+            }
+        }
+
+        if ($resto > 0) {
+            $resultado .= $convertir_miles($resto);
+        }
+
+        return trim($resultado);
+    };
+
+    $letras = strtoupper($convertir_millones(intval($entero)));
+    return $letras . " PESOS " . $decimales . "/100 M. N.";
+}
+
+// --- SUCURSALES ---
+$pdf->SetY($startY + 215);
+$pdf->SetX(12);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->SetFillColor(180, 180, 180); // Gris claro
+$pdf->Cell(188, 4, toISO('SUCURSALES'), 'LTR', 0, 'L', true);
+$pdf->Ln(4);
+
+// Subtítulos divididos en 3 columnas
+$pdf->SetX(12);
+$pdf->SetFillColor(220, 220, 220); // Gris más claro para encabezado
+$colWidth = 62.67;
+
+$pdf->Cell($colWidth, 5, toISO('MARÍTIMAS'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 5, toISO('AÉREAS'), 1, 0, 'C', true);
+$pdf->Cell($colWidth, 5, toISO('FRONTERA E INTERIOR'), 1, 1, 'C', true);
+
+// Contenidos por columna no mover
+$maritimas = "- Veracruz (Matriz)                                    - Altamira\n- Lázaro Cárdenas                                    - Manzanillo\n- Tuxpan";
+$aereas = " - AICM (Aeropuerto)                            - Guadalajara\n - Monterrey  -Toluca";
+$frontera = "  - Nuevo Laredo                                - Querétaro";
+
+// Guardamos la posición Y
+$yStart = $pdf->GetY();
+$xStart = 12;
+
+// Dibujar caja completa de fondo
+$pdf->SetFillColor(255, 255, 255); // Blanco
+$pdf->Rect($xStart, $yStart, $colWidth * 3, 12, 'D'); // Caja general, altura ajustable (12 aprox.)
+
+// Estilo de fuente para el contenido
+$pdf->SetFont('Arial', '', 7);
+
+// Insertar textos en cada columna (posición manual)
+$pdf->SetXY($xStart, $yStart);
+$pdf->MultiCell($colWidth, 4, toISO($maritimas), 0, 'L');
+
+$pdf->SetXY($xStart + $colWidth, $yStart);
+$pdf->MultiCell($colWidth, 4, toISO($aereas), 0, 'L');
+
+$pdf->SetXY($xStart + 2 * $colWidth, $yStart);
+$pdf->MultiCell($colWidth, 4, toISO($frontera), 0, 'L');
 
 ob_end_clean();
 $pdf->Output();

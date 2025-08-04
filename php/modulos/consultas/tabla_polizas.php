@@ -51,7 +51,7 @@ $sql = "SELECT
         FROM conta_polizas p
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
         $whereSql
-        ORDER BY p.Fecha DESC
+        ORDER BY p.Id DESC
         LIMIT :inicio, :registrosPorPagina";
 
 $stmt = $con->prepare($sql);

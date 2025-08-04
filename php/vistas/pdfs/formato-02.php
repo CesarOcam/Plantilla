@@ -188,25 +188,25 @@ $pdf->SetFont('Arial', 'B', 10);
 
 // Fila 1
 $pdf->SetXY(10, $startY + 8);
-$pdf->Cell(0, 2, toISO('BOOKING:'), 0, 1, 'L');
-$pdf->SetXY(29, $startY + 8);
+$pdf->Cell(0, 2, toISO('BUQUE:'), 0, 1, 'L');
+$pdf->SetXY(25, $startY + 8);
 $pdf->SetFont('Arial', '', 9.5);
-$pdf->Cell(0, 2, toISO($referencia['Booking'] ?? ''), 0, 1, 'L');
+$pdf->Cell(0, 2, toISO($referencia['nombre_buque'] ?? ''), 0, 1, 'L');
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetXY(102, $startY + 8);
-$pdf->Cell(0, 2, toISO('BUQUE:'), 0, 1, 'L');
+$pdf->Cell(0, 2, toISO('VIAJE:'), 0, 1, 'L');
 $pdf->SetFont('Arial', '', 9.5);
-$pdf->SetXY(117, $startY + 8);
-$pdf->Cell(0, 2, toISO($referencia['nombre_buque'] ?? ''), 0, 1, 'L');
+$pdf->SetXY(115, $startY + 8);
+$pdf->Cell(0, 2, toISO($referencia['Viaje'] ?? ''), 0, 1, 'L');
 
 // Fila 2
 $colY += 6;
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetXY(10, $colY - 2);
-$pdf->Cell(0, 2, toISO('VIAJE:'), 0, 1, 'L');
-$pdf->SetXY(23, $colY - 2);
+$pdf->Cell(0, 2, toISO('BOOKING:'), 0, 1, 'L');
+$pdf->SetXY(29, $colY - 2);
 $pdf->SetFont('Arial', '', 9.5);
-$pdf->Cell(0, 2, toISO($referencia['Viaje'] ?? ''), 0, 1, 'L');
+$pdf->Cell(0, 2, toISO($referencia['Booking'] ?? ''), 0, 1, 'L');
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetXY(102, $colY - 2);
 $pdf->Cell(0, 2, toISO('CANTIDAD:'), 0, 1, 'L');

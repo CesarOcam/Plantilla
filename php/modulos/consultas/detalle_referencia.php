@@ -798,7 +798,23 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     data-id="<?= $id2 ?>">
                                     <i class="fas fa-dolly me-2"></i> Afectar Kardex
                                 </button>
+                            <?php elseif (isset($referencia['Status']) && $referencia['Status'] == 3): ?>
+                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_correo"
+                                    data-id="<?= $id2 ?>">
+                                    <i class="fas fa-paper-plane me-2"></i> Enviar CG a Cliente
+                                </button>
                             <?php endif; ?>
+                            
+                        </div>
+
+                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                            <?php if (isset($referencia['Status']) && $referencia['Status'] == 3): ?>
+                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_correo"
+                                    data-id="<?= $id2 ?>">
+                                    Crear Complementaria
+                                </button>
+                            <?php endif; ?>
+                            
                         </div>
 
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
@@ -1283,6 +1299,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 </script>
 <script src="../../../js/actualizar/pasar_Conta.js"></script>
 <script src="../../../js/actualizar/afectar_Kardex.js"></script>
+<script src="../../../js/actualizar/envio_cg.js"></script>
 <script src="../../../js/eliminar/eliminar_archivo.js"></script>
 <script src="../../../js/actualizar/actualizar_Referencias.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"

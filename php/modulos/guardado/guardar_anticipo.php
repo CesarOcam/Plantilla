@@ -69,9 +69,9 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
     // Asegurarse de que todos los campos coincidan con los de la base de datos
     $sql_insert_poliza = "INSERT INTO conta_polizas 
     (
-        BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, FechaAlta, UsuarioAlta
+        BeneficiarioId, EmpresaId, Numero, Importe, Fecha, ExportadoCoi, Activo, Pagada, FechaAlta, UsuarioAlta
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $params = [
         $beneficiario,
@@ -81,6 +81,7 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
         $fecha,
         $exportadoCoi,
         $activo,
+        1,
         $fecha_alta,
         $usuarioAlta
     ];
@@ -98,8 +99,8 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
     $activo = 1;
     // Preparar inserción de partidas
     $sql_insert_partidas = "INSERT INTO conta_partidaspolizas 
-    (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Observaciones, FolioArchivo, Activo, NumeroFactura, created_by)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Pagada, Observaciones, FolioArchivo, Activo, NumeroFactura, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);
 
     foreach ($subcuentas as $i => $subcuenta_id) {
@@ -122,6 +123,7 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
             $referencia,
             $cargo,
             $abono,
+            1,
             $observacion,
             $factura,     // FolioArchivo
             $activo,

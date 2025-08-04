@@ -32,11 +32,6 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     $stmt->execute();
     $solicitud = $stmt->fetch(PDO::FETCH_ASSOC);
 
-
-    //var_dump($solicitud);
-    //exit;
-
-
     if (!$solicitud) {
         die("Solicitud no encontrada.");
     }
@@ -52,7 +47,6 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     $status = $solicitud['Status'];
     $fecha_alta = $solicitud['FechaAlta'];
     $usuario_alta = $solicitud['UsuarioAlta'];
-
 
     // Generar el numero de poliza, siempre cheque
     $prefijo = 'C'; // Cheques
@@ -109,8 +103,8 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
         // Insertar las partidas de la solicitud
         $sql_insertar_partidas = "INSERT INTO conta_partidaspolizas 
-        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Activo, NumeroFactura, UsuarioSolicitud)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Activo, Observaciones, NumeroFactura, UsuarioSolicitud)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_partidas);
 
         $abono = 0;
@@ -123,6 +117,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
                 $abono,
                 1,
                 $activo,
+                $partida['Observaciones'],
                 $partida['NumeroFactura'],
                 $partida['Created_by']
             ]);

@@ -43,6 +43,18 @@ $(document).ready(function () {
                     $('#beneficiario-select').val(null).trigger('change');
                     $('#aduana-select').val(null).trigger('change');
                     $('#form_solicitud_pago').find('select.select2').val(null).trigger('change');
+
+                    const tablaPago = document.getElementById('tabla-partidas');
+                    const tbody = tablaPago.querySelector('tbody');
+                    if (tbody) {
+                        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Sin datos disponibles</td></tr>`;
+                    }
+
+                    const selectAduana = document.getElementById('aduana-select');
+                    if (selectAduana) {
+                        selectAduana.disabled = false;
+                    }
+
                 } else {
                     Swal.fire({
                         icon: 'error',

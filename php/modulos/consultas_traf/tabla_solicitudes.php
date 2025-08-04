@@ -136,7 +136,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
 </nav>
 
 <script>
-    const subcuentas = <?php echo json_encode($subcuentas); ?>;
+    window.subcuentas = <?php echo json_encode($subcuentas); ?>;
 </script>
 <!--Script para obtener los datos relacionados a la solicitud-->
 <script src="../../../js/consultar_Solicitudes_tabla.js"></script>

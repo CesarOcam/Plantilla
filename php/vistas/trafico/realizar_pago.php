@@ -114,30 +114,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $total_cargo = 0;
-                                $total_abono = 0;
-                                ?>
-                                <?php if (empty($partidas)): ?>
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted">Seleccione una solicitud</td>
-                                    </tr>
-                                <?php else: ?>
-                                    <?php foreach ($partidas as $fila): ?>
-                                        <?php
-                                        $total_cargo += $fila['Cargo'];
-                                        $total_abono += $fila['Abono'];
-                                        ?>
-                                        <tr class="text-center">
-                                            <td><?= htmlspecialchars($fila['SubcuentaNombre']) ?></td>
-                                            <td><?= '$'.number_format($fila['Cargo'], 2, '.', ',') ?></td>
-                                            <td><?= '$'.number_format($fila['Abono'], 2, '.', ',') ?></td>
-                                            <td><?= htmlspecialchars($fila['Exportador']) ?></td>
-                                            <td><?= htmlspecialchars($fila['Observaciones']) ?></td>
-                                            <td><strong><?= htmlspecialchars($fila['Referencia']) ?></strong></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+
                             </tbody>
                         </table>
                     </div>
