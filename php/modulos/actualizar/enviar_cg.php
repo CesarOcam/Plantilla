@@ -93,7 +93,7 @@ try {
             $mail->Port = 465;
 
             $mail->setFrom('notificaciones@grupoamexport.com', 'Notificaciones Amexport');
-            //$mail->addAddress('jesus.reyes@grupoamexport.com');
+            $mail->addAddress('jesus.reyes@grupoamexport.com');
             $mail->addAddress('cesar.pulido@grupoamexport.com');
             $mail->AddEmbeddedImage('../../../img/Amexport.jpeg', 'logoimage');
             $mail->AddEmbeddedImage('../../../img/LogoAmex.png', 'logoAmex');
