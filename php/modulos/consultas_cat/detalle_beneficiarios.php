@@ -12,7 +12,7 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 // 1. Consulta principal del beneficiario
 $stmt = $con->prepare("
     SELECT 
-        b.SubcuentaDefaultId, b.Nombre, b.Tipo, b.Rfc, b.Activo, b.FechaAlta, b.UsuarioAlta,
+        b.Nombre, b.Tipo, b.Rfc, b.Activo, b.FechaAlta, b.UsuarioAlta,
         CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS NombreUsuarioAlta
     FROM beneficiarios b
     LEFT JOIN usuarios u ON b.UsuarioAlta = u.idusuarios
@@ -24,9 +24,9 @@ $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Subcuentas asignadas
 $stmtSub = $con->prepare("
-    SELECT SubcuentaId
-    FROM subcuentasbeneficiarios
-    WHERE Id = :id
+    SELECT subcuenta_id
+    FROM conta_subcuentas_beneficiarios
+    WHERE beneficiario_id = :id
 ");
 $stmtSub->bindParam(':id', $id, PDO::PARAM_INT);
 $stmtSub->execute();
