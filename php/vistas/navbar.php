@@ -100,7 +100,8 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
                 href="<?php echo url('/php/vistas/consultas/consulta_poliza.php'); ?>">Pólizas</a></li>
             <li><a class="dropdown-item small"
                 href="<?php echo url('/php/vistas/consultas/consulta_referencia.php'); ?>">Referencias</a></li>
-            <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/consultas/consulta_kardex.php'); ?>">Kardex</a></li>
+            <li><a class="dropdown-item small" 
+                href="<?php echo url('/php/vistas/consultas/consulta_kardex.php'); ?>">Kardex</a></li>
           </ul>
         </li>
         <li class="nav-item position-relative">

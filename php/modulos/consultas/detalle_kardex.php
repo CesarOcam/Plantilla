@@ -36,7 +36,7 @@ SELECT
     CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS UsuarioNombreCompleto
 FROM conta_cuentas_kardex c
 LEFT JOIN conta_referencias r ON c.Referencia = r.Id
-LEFT JOIN conta_transporte b ON c.Barco = b.idtransporte
+LEFT JOIN transporte b ON c.Barco = b.idtransporte
 LEFT JOIN conta_polizas p ON c.Poliza_id = p.Id
 LEFT JOIN 01clientes_exportadores le ON c.Logistico = le.id01clientes_exportadores
 LEFT JOIN 01clientes_exportadores ee ON c.Exportador = ee.id01clientes_exportadores
@@ -88,7 +88,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
-        <form id="form_Buques" method="POST">
+        <form id="form_Kardex" method="POST">
             <div class="card-header formulario_clientes">
                 <h5 class="mb-0">Información <?php echo $kardex['NumCg']; ?></h5> 
                 <div class="row">
@@ -125,41 +125,41 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 </div>
 
                 <div class="row">
-                    <div class="col-4 col-sm-4 d-flex flex-column mt-4">
+                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                         <label for="Numero" class="form-label text-muted small">BUQUE:</label>
                         <input id="Numero" name="Numero" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $kardex['BuqueNombre']; ?>"
                             readonly>
                     </div>
-                    <div class="col-4 col-sm-3 d-flex flex-column mt-4">
+                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                         <label for="Concepto" class="form-label text-muted small">BOOKING:</label>
                         <input id="Concepto" name="Concepto" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $kardex['Booking']; ?>" readonly>
                     </div>
-                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
+                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                         <label for="UsuarioAlta" class="form-label text-muted small">SUREFERENCIA:</label>
                         <input id="UsuarioAlta" name="UsuarioAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $kardex['SuReferencia']; ?>"
                             readonly>
                     </div>
-                    <div class="col-4 col-sm-1 d-flex flex-column mt-4">
+                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                         <label for="FechaAlta" class="form-label text-muted small">IMPORTE:</label>
                         <input id="FechaAlta" name="FechaAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo '$ ' . $kardex['Importe']; ?>"
                             readonly>
                     </div>
-                    <div class="col-4 col-sm-1 d-flex flex-column mt-4">
+                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                         <label for="Activo" class="form-label text-muted small">ANTICIPOS:</label>
                         <input id="Activo" name="Activo" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo '$ ' . $kardex['Anticipos']; ?>"
                             readonly>
                     </div>
-                    <div class="col-4 col-sm-1 d-flex flex-column mt-4">
+                    <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                         <label for="Activo" class="form-label text-muted small">SALDO:</label>
                         <input id="Activo" name="Activo" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"

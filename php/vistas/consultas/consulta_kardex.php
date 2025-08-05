@@ -192,8 +192,6 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-
-
     <!-- Tu script personalizado -->
     <script>
         flatpickr("#Fecha", {

@@ -336,7 +336,7 @@ foreach ($partidas as $partida) {
         $importe = number_format($cargo, 2);
 
         $pdf->SetXY($boxX + 2, $boxY + 2 + ($totalLineas * $lineHeight));
-        $pdf->Cell(150, $lineHeight, $nombreCuenta . '(' . $obsPartida . ')', 0, 0, 'L');
+        $pdf->Cell(150, $lineHeight, $nombreCuenta . ' (' . $obsPartida . ')', 0, 0, 'L');
 
         $pdf->SetXY($boxX + 150, $boxY + 2 + ($totalLineas * $lineHeight));
         $pdf->Cell(36, $lineHeight, $importe, 0, 0, 'R');
@@ -441,6 +441,14 @@ $pdf->Cell(0, 5, '(' . num2letras($saldo) . ')', 0, 1, 'C');  // ancho 0 = todo 
 
 function num2letras($num)
 {
+    $es_negativo = false;
+
+    // Verifica si es negativo
+    if ($num < 0) {
+        $es_negativo = true;
+        $num = abs($num);
+    }
+
     $num = number_format($num, 2, '.', '');
     list($entero, $decimales) = explode('.', $num);
 
@@ -552,9 +560,14 @@ function num2letras($num)
     };
 
     $letras = strtoupper($convertir_millones(intval($entero)));
+
+    if ($es_negativo) {
+        $letras = "MENOS " . $letras;
+    }
+
     return $letras . " PESOS " . $decimales . "/100 M. N.";
 }
-
+    
 // --- SUCURSALES ---
 $pdf->SetY($startY + 215);
 $pdf->SetX(12);

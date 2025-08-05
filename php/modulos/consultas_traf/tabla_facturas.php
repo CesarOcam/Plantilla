@@ -102,7 +102,7 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                     <td><?= htmlspecialchars($factura['folio']) ?></td>
                     <td>
                         <select name="referencia_id[]" class="form-control referencia-select"
-                            <?= empty($factura['referencias_filtradas']) ? 'disabled' : '' ?>>
+                            <?= empty($factura['referencias_filtradas']) || empty($factura['beneficiario_id']) ? 'disabled' : '' ?>>
                             <?php if (!empty($factura['referencias_filtradas'])): ?>
                                 <option value="">Referencia</option>
                                 <?php foreach ($factura['referencias_filtradas'] as $referencia): ?>
@@ -117,10 +117,10 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                         </select>
                     </td>
                     <td class="text-start">
-                        <select name="subcuentas[]" class="form-control subcuenta-select">
+                        <select name="subcuentas[]" class="form-control subcuenta-select"
+                            <?= empty($factura['beneficiario_id']) ? 'disabled' : '' ?>>
                             <option value="">Subcuenta</option>
                             <?php
-                            // Ajustar $factura['subcuentas'] para esta fila (ya que antes usabas $subcuentas global)
                             $subcuentasFila = $factura['subcuentas'] ?? [];
                             $primerId = !empty($subcuentasFila) ? $subcuentasFila[0]['Id'] : null;
                             foreach ($subcuentasFila as $subcuenta): ?>
@@ -138,7 +138,12 @@ echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>
                                 <?= htmlspecialchars($factura['proveedor']) ?>
                             </a>
                         <?php else: ?>
-                            <?= htmlspecialchars($factura['proveedor']) ?>
+                            <span>
+                                <?= htmlspecialchars($factura['proveedor'] . ' ') ?>
+                            </span>
+                            <span style="color: red; text-decoration: none;">
+                                (No Registrado)
+                            </span>
                         <?php endif; ?>
                     </td>
 

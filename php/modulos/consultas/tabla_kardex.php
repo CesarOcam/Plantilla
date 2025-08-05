@@ -36,7 +36,7 @@ SELECT
     c.Id,
     c.NumCg,
     r.Numero AS ReferenciaNumero,
-    b.Nombre AS BuqueNombre,
+    b.identificacion AS BuqueNombre,
     le.razonSocial_exportador AS LogisticoNombre,
     ee.razonSocial_exportador AS ExportadorNombre,
     c.Fecha,
@@ -45,7 +45,7 @@ SELECT
     c.Saldo
 FROM conta_cuentas_kardex c
 LEFT JOIN conta_referencias r ON c.Referencia = r.Id
-LEFT JOIN con_buques b ON c.Barco = b.Id
+LEFT JOIN transporte b ON c.Barco = b.idtransporte
 LEFT JOIN 01clientes_exportadores le ON c.Logistico = le.id01clientes_exportadores
 LEFT JOIN 01clientes_exportadores ee ON c.Exportador = ee.id01clientes_exportadores
 $whereSql
@@ -68,7 +68,7 @@ $stmt->execute();
 $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Obtener total de registros con el mismo filtro
-$sqlTotal = "SELECT COUNT(*) FROM cuentas_kardex c $whereSql";
+$sqlTotal = "SELECT COUNT(*) FROM conta_cuentas_kardex c $whereSql";
 $stmtTotal = $con->prepare($sqlTotal);
 
 foreach ($params as $key => $value) {

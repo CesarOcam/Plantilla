@@ -72,6 +72,29 @@ if (
         $stmtFacturas->execute();
         $facturasInfo = $stmtFacturas->fetchAll(PDO::FETCH_ASSOC);
 
+        $facturasPorProveedor = [];
+
+        foreach ($facturasInfo as $factura) {
+            $proveedorId = $factura['beneficiario_id'];
+            $aduanaId = $factura['aduana_id'];
+
+            if ($proveedorId && $aduanaId) {
+                $clave = $proveedorId . '-' . $aduanaId; // agrupación única por proveedor + aduana
+                if (!isset($facturasPorProveedor[$clave])) {
+                    $facturasPorProveedor[$clave] = [
+                        'beneficiario_id' => $proveedorId,
+                        'aduana_id' => $aduanaId,
+                        'fecha' => $factura['fecha'], // puedes usar la de la primera
+                        'facturas' => []
+                    ];
+                }
+                $facturasPorProveedor[$clave]['facturas'][] = $factura;
+            } else {
+                error_log("Factura ID {$factura['factura_id']} no tiene beneficiario_id o aduana_id válido");
+            }
+        }
+
+
         error_log("Facturas con status=1 encontradas: " . count($facturasInfo));
         foreach ($facturasInfo as $factura) {
             error_log("Factura ID: {$factura['factura_id']}, Status: {$factura['status']}, BeneficiarioId: {$factura['beneficiario_id']}, AduanaId: {$factura['aduana_id']}");
@@ -101,22 +124,28 @@ if (
         // Array temporal para acumular solicitudId y referenciaId
         $actualizaciones = [];
 
-        foreach ($facturasInfo as $factura) {
-            error_log("Procesando factura con ID: {$factura['factura_id']}");
+        foreach ($facturasPorProveedor as $grupo) {
+            $beneficiarioId = $grupo['beneficiario_id'];
+            $aduanaId = $grupo['aduana_id'];
+            $fecha = $grupo['fecha'];
+            $facturas = $grupo['facturas'];
 
-            if ($factura['beneficiario_id'] && $factura['aduana_id']) {
-                // Insertar solicitud
-                $stmtSolicitud->execute([
-                    $factura['beneficiario_id'],
-                    $factura['importe'],
-                    $factura['aduana_id'],
-                    $factura['fecha'],
-                    $fechaUpdate,
-                    $usuarioUpdate
-                ]);
-                $solicitudId = $con->lastInsertId();
+            // Sumar el total de las facturas
+            $importeTotal = array_sum(array_column($facturas, 'importe'));
 
-                // Insertar partida
+            // Crear solicitud por proveedor
+            $stmtSolicitud->execute([
+                $beneficiarioId,
+                $importeTotal,
+                $aduanaId,
+                $fecha,
+                $fechaUpdate,
+                $usuarioUpdate
+            ]);
+            $solicitudId = $con->lastInsertId();
+
+            foreach ($facturas as $factura) {
+                // Insertar partida por cada factura
                 $stmtPartida->execute([
                     $solicitudId,
                     $factura['subcuenta_id'],
@@ -126,22 +155,19 @@ if (
                     $factura['uuid'],
                     $factura['folio'],
                     $usuarioAlta
-                    
                 ]);
-
-                // Guardar par para actualización posterior
-                $actualizaciones[] = [
-                    'solicitudId' => $solicitudId,
-                    'referenciaId' => $factura['referencia_id']
-                ];
 
                 // Actualizar estatus de la factura
                 $stmtFacturaStatus->execute([$factura['factura_id']]);
 
-            } else {
-                error_log("Factura ID {$factura['factura_id']} no tiene beneficiario_id o aduana_id válido");
+                // Guardar para actualizar solicitud
+                $actualizaciones[] = [
+                    'solicitudId' => $solicitudId,
+                    'referenciaId' => $factura['referencia_id']
+                ];
             }
         }
+
 
         // Ejecutar actualizaciones fuera del foreach
         foreach ($actualizaciones as $pair) {

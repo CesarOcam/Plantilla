@@ -58,11 +58,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             aria-describedby="basic-addon1" required>
                     </div>
                     <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                        <input name="nombre_corto" type="text" class="form-control rounded-0 border-0 border-bottom"
-                            style="background-color: transparent;" placeholder="Nombre Corto"
-                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                         <select id="tipo-select" name="tipo"
                             class="form-control rounded-0 border-0 border-bottom text-muted"
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
