@@ -312,7 +312,7 @@ $pdf->Line($boxX, $boxY + $boxH, $boxX + $boxW, $boxY + $boxH);
 
 $totalLineas = 0;
 
-// --- Cuentas 120 y 123 ---
+// --- Cuentas 123 y 1 ---
 $subtotal = 0;
 foreach ($partidas as $partida) {
     if ($totalLineas >= $maxLines)
@@ -371,7 +371,7 @@ foreach ($partidas as $partida) {
     $stmtCuenta = $con->prepare("
         SELECT Nombre
         FROM cuentas 
-        WHERE Id = :id AND Numero = 214
+        WHERE Id = :id AND CuentaPadreId = 19
 
     ");
     $stmtCuenta->bindParam(':id', $subcuentaId, PDO::PARAM_INT);

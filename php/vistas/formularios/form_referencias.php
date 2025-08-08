@@ -507,7 +507,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <!-- Botón final -->
                             <div class="text-end mt-4">
                                 <button type="button" class="btn btn-primary" id="btnAgregarDocs">Agregar a la
-                                    tabla</button>
+                                    referencia</button>
                             </div>
                         </div>
                     </div>

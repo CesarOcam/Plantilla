@@ -40,6 +40,7 @@ try {
                 r.PuertoDescarga,
                 r.PuertoDestino,
                 r.UsuarioAlta,
+                r.FechaAlta,
                 CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombre_usuario_alta
             FROM conta_referencias r
             LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
@@ -53,12 +54,13 @@ try {
     $stmt->execute();
     $referencia = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $stmt = $con->prepare("SELECT nombre FROM beneficiarios WHERE id = :id");
-    $stmt->bindParam(':id', $beneficiario, PDO::PARAM_INT);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmtCg = $con->prepare("SELECT NumCg FROM conta_cuentas_kardex WHERE  Referencia = :id");
+    $stmtCg->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmtCg->execute();
+    $Cg = $stmtCg->fetch(PDO::FETCH_ASSOC);
+    $numCg = $Cg['NumCg'] ?? '';
 
-    $nombreBeneficiario = $row ? $row['nombre'] : 'Desconocido';
+    $fecha = $referencia['FechaAlta'];
     $fechaFormateada = date('d/m/Y', strtotime($fecha));
 
     $aduana = $referencia['nombre_aduana'];
@@ -93,7 +95,7 @@ try {
             $mail->Port = 465;
 
             $mail->setFrom('notificaciones@grupoamexport.com', 'Notificaciones Amexport');
-            $mail->addAddress('jesus.reyes@grupoamexport.com');
+            //$mail->addAddress('jesus.reyes@grupoamexport.com');
             $mail->addAddress('cesar.pulido@grupoamexport.com');
             $mail->AddEmbeddedImage('../../../img/Amexport.jpeg', 'logoimage');
             $mail->AddEmbeddedImage('../../../img/LogoAmex.png', 'logoAmex');
@@ -269,7 +271,7 @@ try {
                                 </div>
                                 <div class='right'>
                                     <p><strong>COMPROBACIÓN DE GASTOS</strong></p>
-                                    <p>Numero CG-000</p>
+                                    <p>Numero {$Cg ['NumCg']}</p>
                                 </div>
                             </div>
 

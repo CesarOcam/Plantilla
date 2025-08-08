@@ -20,20 +20,18 @@ try {
 
     $id = $_POST['id'];
     $referenciaId = $id;
-    $usuarioAlta = $_SESSION['usuario_id'];
 
-    $stmtPartidas = $con->prepare("
-        SELECT p.*
-        FROM conta_partidaspolizas p
-        JOIN cuentas c ON p.SubcuentaId = c.Id
-        WHERE p.ReferenciaId = :id
-        AND (
-            c.Numero LIKE '123%' OR
-            c.Numero LIKE '114%' OR
-            c.Numero LIKE '214%'
-        )
-    ");
+    //---------------------------------------------OBTENER LA REFERENCIA-------------------------------------------------------------------
+    $sql_referencia = "SELECT * FROM conta_referencias WHERE Id = :id";
+    $stmt = $con->prepare($sql_referencia);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $referencia = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
+
+    //----------------------------------------------------BLOQUE PARTIDAS----------------------------------------------------------------------------------------
+    $stmtPartidas = $con->prepare("SELECT * FROM conta_partidaspolizas WHERE ReferenciaId = :id");
     $stmtPartidas->bindParam(':id', $id, PDO::PARAM_INT);
     $stmtPartidas->execute();
     $partidas = $stmtPartidas->fetchAll(PDO::FETCH_ASSOC);
@@ -43,93 +41,80 @@ try {
         exit;
     }
 
-    $polizaId = $partidas[0]['PolizaId'];
-    $resultados = [];
-    $subcuentas_agregadas = [];
-    $partidas_a_insertar = [];
-    $subtotal = 0;
-    $totalAnticipos = 0;
-
-    $subcuentasValidas = [123, 114, 214];
-
-    foreach ($partidas as $partida) {
-        $subcuentaId = $partida['SubcuentaId'];
-
-        // Validar si ya se insertó esta subcuenta (evita duplicados)
-        if (in_array($subcuentaId, $subcuentas_agregadas)) {
-            continue;
-        }
-
-        // Verificar si la subcuenta pertenece a una cuenta válida (123, 114, 214)
-        $stmtCuenta = $con->prepare("
-        SELECT Numero, Nombre 
-        FROM cuentas 
-        WHERE Id = :id
+    //Se obtienen las cuentas 123 y 114
+    $stmtPartidas = $con->prepare("
+        SELECT 
+            c.Id AS CuentaId,
+            c.Numero,
+            c.Nombre,
+            p.Cargo,
+            p.Abono,
+            p.Observaciones
+        FROM conta_partidaspolizas p
+        INNER JOIN cuentas c ON p.SubcuentaId = c.Id
+        WHERE p.ReferenciaId = :id
+        AND c.CuentaPadreId IN (5, 14)
     ");
-        $stmtCuenta->bindParam(':id', $subcuentaId, PDO::PARAM_INT);
-        $stmtCuenta->execute();
-        $cuenta = $stmtCuenta->fetch(PDO::FETCH_ASSOC);
+    $stmtPartidas->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmtPartidas->execute();
+    $resultados1 = $stmtPartidas->fetchAll(PDO::FETCH_ASSOC);
 
-        if (!$cuenta) {
-            continue; // o maneja el error según el caso
-        }
-
-        $numeroCuenta = $cuenta['Numero'];
-        $prefijoValido = false;
-
-        foreach ($subcuentasValidas as $valida) {
-            if (strpos($numeroCuenta, (string) $valida) === 0) {
-                $prefijoValido = true;
-                break;
-            }
-        }
-
-        if (!$prefijoValido) {
-            continue; // Si no empieza con 123, 114 o 214, saltar
-        }
-        // Obtener datos originales
-        $cargo_original = $partida['Cargo'];
-        $abono_original = $partida['Abono'];
-        $observaciones = $partida['Observaciones'];
-        $factura = $partida['NumeroFactura'];
-        $usuarioSoli = $partida['UsuarioSolicitud'];
-
-        // Invertir cargo y abono (contrapartida)
-        $cargo_nuevo = $abono_original;
-        $abono_nuevo = $cargo_original;
-
-        // Sumar a totales
-        $subtotal += $cargo_nuevo;
-        $totalAnticipos += $abono_nuevo;
-
-        $partidas_a_insertar[] = [
-            'PolizaId' => $polizaId,
-            'SubcuentaId' => $subcuentaId,
-            'ReferenciaId' => $id,
-            'Cargo' => $cargo_nuevo,
-            'Abono' => $abono_nuevo,
-            'Observaciones' => $observaciones,
-            'NumeroFactura' => $factura,
-            'UsuaruiSolicitud' => $usuarioSoli,
-            'created_by' => $usuarioAlta,
-            'Activo' => 1
+    // Formar el arreglo asociativo
+    $subcuentas1 = [];
+    foreach ($resultados1 as $fila1) {
+        $subcuentas1[] = [
+            $fila1['CuentaId'],
+            $fila1['Numero'],
+            $fila1['Nombre'],
+            $fila1['Cargo'],
+            $fila1['Abono'],
+            $fila1['Observaciones']
         ];
-
-        // Marcar esta subcuenta como ya insertada
-        $subcuentas_agregadas[] = $subcuentaId;
+    }
+    //Se suman todos los abonos
+    $subtotal = 0;
+    foreach ($subcuentas1 as $subcuenta) {
+        $subtotal += floatval($subcuenta[4]); // Índice 3 = Abono
     }
 
-    // Calcular el saldo final
-    $saldo = $subtotal - $totalAnticipos;
+    //Se obtienen las cuentas 214
+    $stmtPartidas = $con->prepare("
+            SELECT 
+                c.Id AS CuentaId,
+                c.Numero,
+                c.Nombre,
+                p.Cargo,
+                p.Abono,
+                p.Observaciones
+            FROM conta_partidaspolizas p
+            INNER JOIN cuentas c ON p.SubcuentaId = c.Id
+            WHERE p.ReferenciaId = :id
+            AND c.CuentaPadreId = 19
+        ");
+    $stmtPartidas->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmtPartidas->execute();
+    $resultados2 = $stmtPartidas->fetchAll(PDO::FETCH_ASSOC);
 
-    //-------------------------------------------------------------------------------------------------------------------------------
-    // --- POLIZA y KARDEX ---
-    $sql_referencia = "SELECT * FROM conta_referencias WHERE Id = :id";
-    $stmt = $con->prepare($sql_referencia);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    $referencia = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Formar el arreglo asociativo
+    $subcuentas2 = [];
+    foreach ($resultados2 as $fila2) {
+        $subcuentas2[] = [
+            $fila2['CuentaId'],
+            $fila2['Numero'],
+            $fila2['Nombre'],
+            $fila2['Cargo'],
+            $fila2['Abono'],
+            $fila2['Observaciones']
+        ];
+    }
+    //Se suman todos los cargos
+    $totalAnticipos = 0;
+    foreach ($subcuentas2 as $subcuenta) {
+        $totalAnticipos += floatval($subcuenta[3]); // Índice 3 = Cargo
+    }
+    $saldo = $subtotal - $totalAnticipos; //Gastos 123 y 114, Anticipos 214
 
+    //---------------------------------------------OBTENER EL ÚLTIMO NumPoliza  
     $prefijo = 'D';
     $sql_ultimo = "SELECT Numero FROM conta_polizas WHERE LEFT(Numero, 1) = ? ORDER BY CAST(SUBSTRING(Numero, 2) AS UNSIGNED) DESC LIMIT 1";
     $stmt_ultimo = $con->prepare($sql_ultimo);
@@ -145,11 +130,12 @@ try {
         $activo = 1;
         $importe = $subtotal;
         $fechaActual = date('Y-m-d H:i:s');
-        $usuarioAlta;
+        $usuarioAlta = $_SESSION['usuario_id'];
 
         $nuevo_numero = $ultimo_numero + 1;
         $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
 
+        //---------------------------------------------SE CREA LA POLIZA
         $sql_poliza = "INSERT INTO conta_polizas
         (EmpresaId, Numero, Importe, Fecha, FechaAlta, UsuarioAlta, Activo)
         VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -165,6 +151,9 @@ try {
         ]);
 
         $polizaId = $con->lastInsertId();
+
+        // ---------------------------------------------------------------OBTENER EL ÚLTIMO NumCg---------------------------------------------------------------------
+        $referenciaId = $id;
         $numero = $referencia['Numero'];
         $logistico = $referencia['ClienteLogisticoId'];
         $exportador = $referencia['ClienteExportadorId'];
@@ -174,7 +163,6 @@ try {
         $aduanaId = $referencia['AduanaId'];
         $status = 1;
 
-        // OBTENER EL ÚLTIMO NumCg
         $sql_ultimo_cg = "SELECT NumCg FROM conta_cuentas_kardex WHERE NumCg LIKE 'CG-%' ORDER BY CAST(SUBSTRING(NumCg, 4) AS UNSIGNED) DESC LIMIT 1";
         $stmt_ultimo_cg = $con->prepare($sql_ultimo_cg);
         $stmt_ultimo_cg->execute();
@@ -189,14 +177,14 @@ try {
 
         $numero = 'CG-' . str_pad($numero_siguiente, 6, '0', STR_PAD_LEFT);
 
-
+        //---------------------------------------------------------------INSERTAR EN CUENTAS KARDEX--------------------------------------------------------------------
         $sql_guardar = "INSERT INTO conta_cuentas_kardex     
         (NumCg, Referencia, Logistico, Exportador, Barco, Booking, SuReferencia, Importe, Anticipos, Saldo, Fecha, Poliza_id, NumPoliza, Status, Created_by)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_guardar = $con->prepare($sql_guardar);
         $stmt_guardar->execute([
             $numero,
-            $id,
+            $referenciaId,
             $logistico,
             $exportador,
             $barco,
@@ -212,35 +200,63 @@ try {
             $usuarioAlta
         ]);
 
-        // Insertar partidas
+        //----------------------------------------------------INSERCIÓN DE PARTIDAS----------------------------------------------------------------------------------------
+
         $sql_partida = "INSERT INTO conta_partidaspolizas     
-        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex, NumeroFactura, UsuarioSolicitud, created_by, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_partida = $con->prepare($sql_partida);
 
-        foreach ($partidas_a_insertar as $p) {
+        // Insertar partidas de subcuentas1
+        foreach ($subcuentas1 as $fila1) {
+            $subcuentaId = $fila1[0];
+            $nuevoCargo = $fila1[4];       // Abono → Cargo
+            $nuevoAbono = $fila1[3];       // Cargo → Abono
+            $observaciones = $fila1[5];
+            $activo = 1;
+            $enKardex = 1;
+
             $stmt_partida->execute([
                 $polizaId,
-                $p['SubcuentaId'],
-                $p['ReferenciaId'],
-                $p['Cargo'],
-                $p['Abono'],
-                $p['Observaciones'],
-                $p['Activo'],
-                1,
-                $factura,
-                $usuarioSoli,
-                $usuarioAlta,
-                $fechaActual
+                $subcuentaId,
+                $referenciaId,
+                $nuevoCargo,
+                $nuevoAbono,
+                $observaciones,
+                $activo,
+                $enKardex
             ]);
         }
-        $sql_kardex = "SELECT Saldo FROM conta_cuentas_kardex WHERE Referencia = :id";
+
+        // Insertar partidas de subcuentas2
+        foreach ($subcuentas2 as $fila2) {
+            $subcuentaId = $fila2[0];
+            $nuevoCargo = $fila2[4];      // Abono → Cargo
+            $nuevoAbono = $fila2[3];      // Cargo → Abono
+            $observaciones = $fila2[5];
+            $activo = 1;
+            $enKardex = 1;
+
+            $stmt_partida->execute([
+                $polizaId,
+                $subcuentaId,
+                $referenciaId,
+                $nuevoCargo,
+                $nuevoAbono,
+                $observaciones,
+                $activo,
+                $enKardex
+            ]);
+        }
+
+        //----------------------------------------------------PARTIDA DEL CLIENTE--------------------------------------------------------------------------------
+        $sql_kardex = "SELECT NumCg, Saldo FROM conta_cuentas_kardex WHERE Referencia = :id";
         $stmt = $con->prepare($sql_kardex);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $kardex_info = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $saldoKardex = $kardex_info['Saldo'];
+        $saldo = $kardex_info['Saldo'];
 
         // Insertar partida del Cliente
         switch ((int) $aduanaId) {
@@ -267,17 +283,14 @@ try {
                 break;
         }
 
-        $cargoF = 0;
-        $abonoF = 0;
+        $cargoKardex = 0;
+        $abonoKardex = 0;
 
         if ($saldo < 0) {
-            $cargoF = -$saldo; // si es -1486, se vuelve 1486
-            $abonoF = 0;
+            $abonoKardex = abs($saldo);
         } else {
-            $abonoF = $saldo;  // si es 1486, se queda así
-            $cargoF = 0;
+            $cargoKardex = $saldo;
         }
-
 
         if ($saldo != 0) {
             // Insertar partida Cliente
@@ -291,8 +304,8 @@ try {
                     $polizaId,
                     $subcuentaCliente,
                     $referenciaId,
-                    $cargoF,
-                    $abonoF,
+                    $cargoKardex,
+                    $abonoKardex,
                     1,
                     1
                 ])
@@ -300,10 +313,11 @@ try {
                 $errorInfo = $stmt_cuentaCli->errorInfo();
                 throw new Exception("Error insertando partida cliente: " . implode(" | ", $errorInfo));
             }
-
         }
 
-        //actualizar referencia
+
+        //----------------------------------------------------BLOQUE FINAL----------------------------------------------------------------------------------------
+        //SE ACTUALIZA LA REFERENCIA
         $sql_statusRef = "UPDATE conta_referencias SET Status = 3, FechaKardex = NOW() WHERE Id = :referenciaId";
         $stmt = $con->prepare($sql_statusRef);
         $stmt->execute([

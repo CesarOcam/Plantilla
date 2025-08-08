@@ -57,6 +57,7 @@ function generarPDFCuentaGastos($id)
         r.FechaAlta,
         r.Status,
         r.UsuarioAlta,
+        cp.claveCve,
         CONCAT_WS(' ', u.nombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS nombre_usuario_alta
     FROM conta_referencias r
     LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
@@ -66,6 +67,7 @@ function generarPDFCuentaGastos($id)
     LEFT JOIN 2221_recintos rec ON r.RecintoId = rec.id2221_recintos
     LEFT JOIN transportista nav ON r.NavieraId = nav.idtransportista
     LEFT JOIN transporte bq ON r.BuqueId = bq.idtransporte
+    LEFT JOIN 2202clavepedimento cp ON r.ClavePedimento = cp.id2202clave_pedimento
     LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
     WHERE r.Id = :id
 ");
@@ -100,6 +102,12 @@ function generarPDFCuentaGastos($id)
     $stmtPais->bindParam(':id', $paisId, PDO::PARAM_INT);
     $stmtPais->execute();
     $pais = $stmtPais->fetch(PDO::FETCH_ASSOC);
+
+    $stmtCg = $con->prepare("SELECT NumCg FROM conta_cuentas_kardex WHERE  Referencia = :id");
+    $stmtCg->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmtCg->execute();
+    $Cg = $stmtCg->fetch(PDO::FETCH_ASSOC);
+
 
     function toISO($str)
     {
@@ -155,21 +163,23 @@ function generarPDFCuentaGastos($id)
     $pdf->SetXY(158, $startY + 6);
 
     // Estilo normal
-    $pdf->SetFont('Arial', '', 8);
-
-    $pdf->Cell(42, 3.2, '', 'LR', 1, 'C');
-    $pdf->SetXY(158, $startY + 9.3);
-    $pdf->Cell(42, 3.2, 'FECHA', 'LR', 1, 'C');
-    $pdf->SetXY(158, $startY + 12.6);
-    $pdf->Cell(42, 3.7, '02/JUN/2025 12:58', 'LR', 1, 'C');
-    $pdf->SetXY(158, $startY + 16.5);
     $pdf->SetFont('Arial', 'B', 8);
-    $pdf->Cell(42, 3.3, 'REF:' . $referencia['Numero'], 'LR', 1, 'C');
-    $pdf->SetXY(158, $startY + 19.9);
+    $pdf->SetXY(158, $startY + 6.3);
+    $pdf->Cell(42, 4, $Cg['NumCg'] ?? '', 'LR', 1, 'C');
     $pdf->SetFont('Arial', '', 8);
-    $pdf->Cell(42, 3.3, 'VERACRUZ', 'LR', 1, 'C');
-    $pdf->SetXY(158, $startY + 23.4);
-    $pdf->Cell(42, 3.2, '', 'LRB', 1, 'C');
+    $pdf->Cell(42, 3.2, '', '', 1, 'C');
+    $pdf->SetXY(158, $startY + 10.5);
+    $pdf->Cell(42, 3.2, 'FECHA', 'LR', 1, 'C');
+    $pdf->SetXY(158, $startY + 13.8);
+    $pdf->Cell(42, 4, '02/JUN/2025 12:58', 'LR', 1, 'C');
+    $pdf->SetXY(158, $startY + 18);
+    $pdf->SetFont('Arial', 'B', 8);
+    $pdf->Cell(42, 2.8, 'REF:' . $referencia['Numero'], 'LR', 1, 'C');
+    $pdf->SetXY(158, $startY + 21);
+    $pdf->SetFont('Arial', '', 8);
+    $pdf->Cell(42, 3.8, 'VERACRUZ', 'LR', 1, 'C');
+    $pdf->SetXY(158, $startY + 25);
+    $pdf->Cell(42, 1.5, '', 'LRB', 1, 'C');
     // -------- Tabla Comprobacion de Gastos -------- //
 
     // -------- Tabla Exportador-------- //
@@ -201,8 +211,8 @@ function generarPDFCuentaGastos($id)
     // Posición inicial
     $pdf->SetXY(12, $startY + 62);
     // Texto dividido
-    $col1 = toISO($referencia['Mercancia'] . "\nMARCAS: " . $referencia['Marcas'] . "\nPESO BRUTO: " . $referencia['PesoBruto'] . "\nCVE. PEDIMENTO: " . $referencia['ClavePedimento']);
-    $col2 = toISO("PEDIMENTO: " . $referencia['Pedimentos'] . "\nFECHA PAGO: " . $referencia['FechaPago'] . "\nBULTOS: " . $referencia['Bultos']);
+    $col1 = toISO($referencia['Mercancia'] . "\nMARCAS: " . $referencia['Marcas'] . "\nPESO BRUTO: " . $referencia['PesoBruto'] . "\nCLAVE PEDIMENTO: " . $referencia['claveCve']);
+    $col2 = toISO("PEDIMENTO: " . $referencia['Pedimentos'] . "\nFECHA PAGO: " . $referencia['FechaPago'] . "\nCABTUDAD Y BULTOS: " . $referencia['Cantidad']);
     // Ancho de cada columna
     $colWidth = 94; // 188 / 2
     $cellHeight = 4.1;
@@ -320,9 +330,10 @@ function generarPDFCuentaGastos($id)
 
         $subcuentaId = $partida['SubcuentaId'];
         $cargo = $partida['Cargo'];
+        $obsCuenta = $partida['Observaciones'];
 
         $stmtCuenta = $con->prepare("
-        SELECT Nombre, Observaciones
+        SELECT Nombre
         FROM cuentas 
         WHERE Numero IN (123, 114) AND Id = :id
     ");
@@ -332,11 +343,10 @@ function generarPDFCuentaGastos($id)
 
         if ($cuenta) {
             $nombreCuenta = toISO($cuenta['Nombre']);
-            $obsCuenta = toISO($cuenta['Observacion']);
             $importe = number_format($cargo, 2);
 
             $pdf->SetXY($boxX + 2, $boxY + 2 + ($totalLineas * $lineHeight));
-            $pdf->Cell(150, $lineHeight, $nombreCuenta . '('.$obsCuenta.')', 0, 0, 'L');
+            $pdf->Cell(150, $lineHeight, $nombreCuenta . '(' . $obsCuenta . ')', 0, 0, 'L');
 
             $pdf->SetXY($boxX + 150, $boxY + 2 + ($totalLineas * $lineHeight));
             $pdf->Cell(36, $lineHeight, $importe, 0, 0, 'R');
@@ -364,7 +374,7 @@ function generarPDFCuentaGastos($id)
             break;
 
         $subcuentaId = $partida['SubcuentaId'];
-        $cargo = $partida['Cargo'];
+        $Abono = $partida['Abono'];
 
         $stmtCuenta = $con->prepare("
         SELECT Nombre
@@ -396,7 +406,7 @@ function generarPDFCuentaGastos($id)
         if ($cuenta) {
             $pdf->SetFont('Arial', '', 8);
             $nombreCuenta = toISO($fechaFormateada . ' ANTICIPO .');
-            $importe = number_format($cargo, 2);
+            $importe = number_format($Abono, 2);
 
             $lineY = $boxY + 8 + ($totalLineas * $lineHeight);
 
@@ -405,7 +415,7 @@ function generarPDFCuentaGastos($id)
 
             $pdf->SetXY($boxX + 150, $lineY);
             $pdf->Cell(36, $lineHeight, $importe, 0, 0, 'R');
-            $totalAnticipos += $cargo;
+            $totalAnticipos += $Abono;
             $totalLineas++;
         }
 
