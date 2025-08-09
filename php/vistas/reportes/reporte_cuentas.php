@@ -114,10 +114,6 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     disabled>Consultar</button>
                                 <button type="button" class="btn btn-outline-secondary rounded-0 w-100"
                                     id="btn_limpiar">Limpiar</button>
-                                <!--<button type="button" class="btn btn-outline-secondary rounded-0 w-100"
-                                    id="btn_correo">Correo</button>-->
-                                <button type="button" class="btn btn-outline-secondary rounded-0 w-100" id="btn_pagar"
-                                    disabled>Pago de Cuentas</button>
                             </div>
                         </div>
                     </div>

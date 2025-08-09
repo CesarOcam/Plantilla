@@ -1336,4 +1336,85 @@ input:checked + .slider:before {
 
 
 
-/* BOTONES.............................................................*/
+/* REPORTES.............................................................*/
+
+#tablaPolizas {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse; /* para que bordes no se dupliquen */
+  word-wrap: break-word;
+}
+
+#tablaPolizas th,
+#tablaPolizas td {
+  padding: 8px 12px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  border-right: 1px solid #ccc; /* línea vertical entre columnas */
+}
+
+/* Quitar borde derecho en la última columna */
+#tablaPolizas th:last-child,
+#tablaPolizas td:last-child {
+  border-right: none;
+}
+
+/* Mantén tus anchos personalizados */
+#tablaPolizas th:nth-child(1), /* Fecha */
+#tablaPolizas td:nth-child(1) {
+  width: 2%;
+}
+
+#tablaPolizas th:nth-child(2), /* Póliza */
+#tablaPolizas td:nth-child(2) {
+  width: 2%;
+}
+
+#tablaPolizas th:nth-child(3), /* Beneficiario */
+#tablaPolizas td:nth-child(3) {
+  width: 20%;
+  white-space: nowrap;        /* evitar que el texto haga salto de línea */
+  overflow: hidden;           /* esconder el texto que desborda */
+  text-overflow: ellipsis;    /* mostrar ... al final */
+}
+
+#tablaPolizas th:nth-child(4), /* Subcuenta */
+#tablaPolizas td:nth-child(4) {
+  text-align: right;
+  width: 2%;
+}
+
+#tablaPolizas th:nth-child(5), /* Nombre */
+#tablaPolizas td:nth-child(5) {
+  width: 3%;
+
+}
+
+#tablaPolizas th:nth-child(6), /* Cargo */
+#tablaPolizas td:nth-child(6) {
+  width: 2%;
+  text-align: right;
+}
+
+#tablaPolizas th:nth-child(7), /* Abono */
+#tablaPolizas td:nth-child(7) {
+  width: 2%;
+  text-align: right;
+}
+
+#tablaPolizas th:nth-child(8), /* Observaciones */
+#tablaPolizas td:nth-child(8) {
+  width: 3%;
+}
+
+  #v-meses-tab .nav-link {
+    font-size: 1rem; /* tamaño normal */
+  }
+
+  @media (max-width: 575.98px) {
+    #v-meses-tab .nav-link {
+      font-size: 0.65rem; /* tamaño más pequeño en sm y menor */
+      padding: 0.25rem 0.5rem;
+    }
+  }

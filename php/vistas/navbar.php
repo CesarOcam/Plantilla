@@ -109,7 +109,7 @@ include_once __DIR__ . '/../../config.php'; // Ajusta la ruta si el navbar está
             aria-expanded="false">Reportes</a>
           <ul class="dropdown-menu border shadow">
             <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/reportes/reporte_cuentas.php'); ?>">Reportes de Cuentas</a></li>
-            <!--<li><a class="dropdown-item small"href="#">Reporte a COI</a></li>-->
+            <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/reportes/reporte_cuentas_mensual.php'); ?>">Estado de Cuentas Mensual</a></li>
             <li><a class="dropdown-item small" href="<?php echo url('/php/vistas/reportes/facturas_por_pagar.php'); ?>">Reporte a Facturas por Pagar</a></li>
             <!--<li><a class="dropdown-item small" href="#">Reporte de Estado de Resultados</a></li>-->
             <!--<li><a class="dropdown-item small" href="#">Reporte de Estado de Balance General</a></li>-->

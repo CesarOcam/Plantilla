@@ -4,7 +4,6 @@ $("#form_Referencia").on("submit", function (e) {
     const referenciaDirecta = $('#input-referencia').val().trim();
     console.log(referenciaDirecta);
     if (referenciaDirecta !== '') {
-        // Consulta para obtener el Id asociado a la referencia
         $.ajax({
             url: '../../modulos/consultas/obtener_referencia.php',
             method: 'POST',
@@ -20,7 +19,6 @@ $("#form_Referencia").on("submit", function (e) {
                         text: 'El número de referencia no existe.',
                         confirmButtonText: 'Aceptar'
                     }).then(() => {
-                        // Opcional: recarga la página solo después de cerrar el modal
                         location.reload();
                     });
                 }
@@ -38,28 +36,21 @@ $("#form_Referencia").on("submit", function (e) {
     }
 
     var form = this;
-    var formData = new FormData(form); // Recoge todos los campos del formulario incluyendo archivos del input
+    var formData = new FormData(form);
     console.log('Archivos en archivosCargados:', archivosCargados);
-    // Ahora agregamos manualmente los archivos que tienes en tu array archivosCargados
     console.log('Archivos en archivosCargados:', archivosCargados);
-
-    // Limpiar si acaso ya hay archivos documentos[] en formData para evitar duplicados
-    // No hay método para limpiar formData, así que solo creamos uno nuevo
     var formData2 = new FormData();
 
-    // Agregar todos los campos del formulario excepto archivos (los agregamos luego)
     for (var pair of formData.entries()) {
         if (pair[0] !== 'documentos[]') {
             formData2.append(pair[0], pair[1]);
         }
     }
 
-    // Agregar los archivos manualmente
     archivosCargados.forEach(file => {
         formData2.append('documentos[]', file);
     });
 
-    // Ver qué se está enviando
     for (var pair of formData2.entries()) {
         console.log(pair[0] + ': ' + (pair[1].name || pair[1]));
     }
@@ -68,8 +59,8 @@ $("#form_Referencia").on("submit", function (e) {
         url: '../../modulos/guardado/guardar_referencia.php',
         type: 'POST',
         data: formData2,
-        processData: false, // Muy importante para FormData
-        contentType: false, // Muy importante para FormData
+        processData: false,
+        contentType: false,
         dataType: 'json',
         success: function (response) {
             console.log('Respuesta del servidor:', response);

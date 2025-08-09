@@ -28,6 +28,19 @@ $stmt = $con->prepare("
 ");
 $stmt->execute();
 $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt = $con->prepare("
+    SELECT id2201aduanas, nombre_corto_aduana 
+    FROM 2201aduanas 
+    WHERE nombre_corto_aduana IS NOT NULL
+    AND TRIM(nombre_corto_aduana) <> ''
+    AND nombre_corto_aduana NOT IN ('ACAPULCO', 'CHIHUAHUA', 'CIUDAD HIDALGO', 'TUXPAN')
+
+    ORDER BY nombre_corto_aduana
+");
+$stmt->execute();
+$aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -76,48 +89,91 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="card-header">
                 <div class="d-flex flex-column mb-3">
                     <div class="row m-3 mb-0">
-                        <div class="col-1 d-flex flex-column">
-                            <label for="statusInput" class="form-label small mb-0">STATUS:</label>
-                            <select id="statusInput" class="form-select rounded-0 border-0 border-bottom"
-                                style="background-color: transparent;" aria-label="Filtrar por status">
-                                <option value="">TODOS</option>
-                                <option value="1">VIGENTE</option>
-                                <option value="2">PAGADA</option>
-                            </select>
-                        </div>
-
-                        <div class="col-1 d-flex flex-column">
-                            <label for="fechaDesdeInput" class="form-label small mb-0">FECHA DESDE:</label>
-                            <input type="date" id="fechaDesdeInput"
-                                class="form-control rounded-0 border-0 border-bottom"
-                                style="background-color: transparent;" aria-label="Filtrar por fecha desde">
-                        </div>
-
-                        <div class="col-1 d-flex flex-column">
-                            <label for="fechaHastaInput" class="form-label small mb-0">FECHA HASTA:</label>
-                            <input type="date" id="fechaHastaInput"
-                                class="form-control rounded-0 border-0 border-bottom"
-                                style="background-color: transparent;" aria-label="Filtrar por fecha hasta">
-                        </div>
-
-                        <div class="col-1 d-flex flex-column">
-                            <label for="numInput" class="form-label small mb-0">NÚMERO:</label>
-                            <input type="text" id="numInput" class="form-control rounded-0 border-0 border-bottom"
-                                style="background-color: transparent;" aria-label="Filtrar por póliza">
-                        </div>
-                        <!-- Botones -->
-                        <div class="col-3 d-flex align-items-end justify-content-start gap-2">
-                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                                <button type="button" class="btn btn-secondary rounded-0"
-                                    id="btn_buscar">Buscar</button>
+                        <div class="row mb-0">
+                            <div class="col-2 d-flex flex-column">
+                                <label for="aduanaInput" class="form-label small mb-0">ADUANA:</label>
+                                <select id="aduanaInput" class="form-select rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent; cursor:pointer;">
+                                    <option value="" selected>TODOS</option>
+                                    <?php foreach ($aduanas as $aduana): ?>
+                                        <option value="<?php echo $aduana['id2201aduanas']; ?>">
+                                            <?php echo $aduana['nombre_corto_aduana']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
-                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                                <button type="button" class="btn btn-outline-secondary rounded-0"
-                                    id="btn_limpiar">Limpiar</button>
+                            <div class="col-2 d-flex flex-column">
+                                <label for="statusInput" class="form-label small mb-0">STATUS:</label>
+                                <select id="statusInput" class="form-select rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent; cursor:pointer;"
+                                    aria-label="Filtrar por status">
+                                    <option value="">TODOS</option>
+                                    <option value="1">VIGENTE</option>
+                                    <option value="2">PAGADA</option>
+                                </select>
                             </div>
-                            <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                                <button type="button" class="btn btn-outline-secondary rounded-0"
-                                    id="btn_pagar">Pagar</button>
+
+                            <div class="col-2 d-flex flex-column">
+                                <label for="fechaDesdeInput" class="form-label small mb-0">FECHA DESDE:</label>
+                                <input type="date" id="fechaDesdeInput"
+                                    class="form-control rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent;" aria-label="Filtrar por fecha desde">
+                            </div>
+
+                            <div class="col-2 d-flex flex-column">
+                                <label for="fechaHastaInput" class="form-label small mb-0">FECHA HASTA:</label>
+                                <input type="date" id="fechaHastaInput"
+                                    class="form-control rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent;" aria-label="Filtrar por fecha hasta">
+                            </div>
+
+                            <div class="col-3 d-flex align-items-end justify-content-start gap-2">
+                                <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                    <button type="button" class="btn btn-secondary rounded-0"
+                                        id="btn_buscar">Buscar</button>
+                                </div>
+                                <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                    <button type="button" class="btn btn-outline-secondary rounded-0"
+                                        id="btn_limpiar">Limpiar</button>
+                                </div>
+                                <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                    <button type="button" class="btn btn-outline-secondary rounded-0"
+                                        id="btn_pagar">Pagar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-0 pt-0">
+                            <div class="col-1 d-flex flex-column">
+                                <label for="numInput" class="form-label small mb-0">NÚMERO:</label>
+                                <input type="text" id="numInput" class="form-control rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent;" aria-label="Filtrar por póliza">
+                            </div>
+                            <div class="col-1 d-flex flex-column">
+                                <label for="referenciaInput" class="form-label small mb-0">REFERENCIA:</label>
+                                <input type="text" id="referenciaInput"
+                                    class="form-control rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent;" aria-label="Filtrar por póliza">
+                            </div>
+                            <div class="col-1 d-flex flex-column">
+                                <label for="comprobacionInput" class="form-label small mb-0">COMPROBACION:</label>
+                                <input type="text" id="conprobacionInput"
+                                    class="form-control rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent;" aria-label="Filtrar por póliza">
+                            </div>
+                            <div class="col-3 d-flex flex-column">
+                                <label for="logisticoInput" class="form-label small mb-0">LOGÍSTICO:</label>
+                                <input type="text" id="logisticoInput"
+                                    class="form-control rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent;" aria-label="Filtrar por póliza">
+                            </div>
+                            <div class="col-1 d-flex flex-column">
+                                <label for="tipoInput" class="form-label small mb-0">TIPO DE CONSULTA:</label>
+                                <select id="tipoInput" class="form-select rounded-0 border-0 border-bottom"
+                                    style="background-color: transparent; cursor:pointer;"
+                                    aria-label="Filtrar por status">
+                                    <option value="1">DETALLADA</option>
+                                    <option value="2">POR LOGÍSTICO</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -198,7 +254,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
             enableTime: true,
             time_24hr: true,
             enableSeconds: true,
-            dateFormat: "Y-m-d H:i:s", 
+            dateFormat: "Y-m-d H:i:s",
             defaultDate: new Date()
         });
 
