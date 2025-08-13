@@ -25,7 +25,7 @@ $clienteLogisticoId = $refData['ClienteLogisticoId'];
 // Paso 2: Obtener datos de clientes exportadores (logísticos) asociados
 $sqlLogisticos = "
     SELECT idcorreos_01clientes_exportadores, correo FROM correos_01clientes_exportadores
-    WHERE id01clientes_exportadores = ?
+    WHERE tipo_correo = 3 AND id01clientes_exportadores = ?
 ";
 
 $stmtLogisticos = $con->prepare($sqlLogisticos);
@@ -39,10 +39,7 @@ $stmtArchivos = $con->prepare(query: $sqlArchivos);
 $stmtArchivos->execute([$id]);
 $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
 
-if (empty($logisticos)) {
-    echo "<p>No se encontraron datos logísticos para esta referencia.</p>";
-    exit;
-}
+
 
 ?>
 
@@ -115,7 +112,7 @@ if (empty($logisticos)) {
                             value=""
                             class="form-check-input big-checkbox" style="cursor:pointer;">
                     </td>
-                    <td><?= htmlspecialchars($logistico['emails_contabilidad'] ?? 'Sin email') ?></td>
+                    <td><?= htmlspecialchars($logistico['emails_contabilidad'] ?? '') ?></td>
                 </tr>
             </tbody>
         </table>

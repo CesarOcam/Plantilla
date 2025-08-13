@@ -799,13 +799,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <i class="fas fa-dolly me-2"></i> Afectar Kardex
                                 </button>
                             <?php elseif (isset($referencia['Status']) && $referencia['Status'] == 3): ?>
-                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_correo"
+                                <!--<button type="button" class="btn btn-outline-secondary rounded-0" id="btn_correo"
                                     data-id="<?= $id2 ?>">
                                     <i class="fas fa-paper-plane me-2"></i> Enviar CG a Cliente
-                                </button>
+                                </button>-->
                                 <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_EnvioCG"
                                     data-id="<?= $id2 ?>" data-bs-toggle="modal" data-bs-target="#modalComplementaria">
-                                    <i class="fas fa-paper-plane me-2"></i> Enviar CG al cliente2
+                                    <i class="fas fa-paper-plane me-2"></i> Enviar CG al cliente
                                 </button>
                             <?php endif; ?>
                         </div>
