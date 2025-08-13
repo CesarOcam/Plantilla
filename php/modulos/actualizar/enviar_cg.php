@@ -45,7 +45,7 @@ try {
             FROM conta_referencias r
             LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
             LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
-            LEFT JOIN 01clientes_exportadores exp2 ON r.ClienteExportadorId = exp.id01clientes_exportadores
+            LEFT JOIN 01clientes_exportadores exp2 ON r.ClienteLogisticoId = exp2.id01clientes_exportadores
             LEFT JOIN transporte bq ON r.BuqueId = bq.idtransporte
             LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
             WHERE r.Id = :id
@@ -95,9 +95,9 @@ try {
             $mail->Port = 465;
 
             $mail->setFrom('notificaciones@grupoamexport.com', 'Notificaciones Amexport');
-            $mail->addAddress('jesus.reyes@grupoamexport.com');
+            //$mail->addAddress('jesus.reyes@grupoamexport.com');
             $mail->addAddress('cesar.pulido@grupoamexport.com');
-            $mail->AddEmbeddedImage('../../../img/Amexport.jpeg', 'logoimage');
+            $mail->addCC('cesar.amexport@gmail.com');
             $mail->AddEmbeddedImage('../../../img/LogoAmex.png', 'logoAmex');
             //$mail->addStringAttachment($pdfContent, "cuenta_gastos_$referenciaId.pdf");
 
@@ -141,181 +141,104 @@ try {
             $mail->CharSet = 'UTF-8';
             $mail->Subject = 'Envío de cuenta de gastos';
 
-            $mail->Body = "
-                    <html>
-                    <head>
-                        <meta charset='UTF-8'>
-                        <title>Envío de cuenta de gastos</title>
-                                            <style>
-                            body {
-                            font-family: Arial, sans-serif;
-                            background-color: #f4f4f4;
-                            margin: 0;
-                            padding: 40px 0;
-                            display: flex;
-                            justify-content: center;
-                            }
-
-                            .card {
-                            background-color: white;
-                            width: 90%;
-                            max-width: 800px;
-                            padding: 40px;
-                            border-radius: 10px;
-                            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-                            }
-
-                            .header {
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            position: relative;
-                            margin-bottom: 20px;
-                            }
-
-                            .header img {
-                            position: absolute;
-                            left: 0;
-                            top: 0;
-                            max-width: 80px;
-                            }
-
-                            .header-content {
-                            text-align: center;
-                            width: 100%;
-                            }
-
-                            .header-content p {
-                            margin: 0;
-                            }
-
-                            .title{
-                                margin-bottom: 3%;
-                            }
-
-                            hr {
-                            margin: 20px 0;
-                            }
-
-                            .row {
-                            display: flex;
-                            justify-content: space-between;
-                            margin-bottom: 10px;
-                            }
-
-                            .left, .right {
-                            width: 48%;
-                            }
-
-                            .left {
-                            text-align: left;
-                            }
-
-                            .right {
-                            text-align: right;
-                            }
-
-                            .logistics {
-                            margin-top: 20px;
-                            }
-
-                            .logistics-title {
-                            font-weight: bold;
-                            margin-bottom: 10px;
-                            }
-
-                            .logistics-table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 20px;
-                            }
-
-                            .logistics-table th,
-                            .logistics-table td {
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                            text-align: center;
-                            font-size: 14px;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div style='text-align: left;'>
-                            <img src='cid:logoimage' alt='Encabezado' style='max-width: 400px; margin-bottom: 20px;'>
+            $mail->Body = '
+                <html>
+                <head>
+                <meta charset="UTF-8">
+                <title>Envío de cuenta de gastos</title>
+                <style>
+                a:link, a:visited, a:hover, a:active {
+                    color: #000000 !important; /* color negro forzado */
+                    text-decoration: none !important;
+                }
+                </style>
+                </head>
+                <body style="margin:0; padding:40px 0; background:#f4f4f4; font-family: Arial, sans-serif;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" style="max-width:800px; margin:auto; background:#fff; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); padding:40px;">
+                    <tr>
+                    <td style="position:relative; text-align:center; padding-bottom:20px;">
+                        <img src="cid:logoAmex" alt="Logo" style="position:absolute; left:0; top:0; max-width:80px;">
+                        <div style="margin:0 auto; width: 100%; max-width:600px;">
+                        <div style="margin-bottom:12px;">
+                            <p style="margin:0; font-weight:bold; font-size:18px;">NOTIFICACIÓN</p>
+                            <p style="margin:0; font-weight:bold; font-size:18px;">CUENTA DE GASTOS</p>
                         </div>
-                        <p>Estimado cliente,</p>
-                        <p>Adjunto encontrará la cuenta de gastos correspondiente a su operación.</p>
-                        <p>Para cualquier duda o aclaración, no dude en contactarnos.</p>
-                        <br>
-                        <div class='card'>
-                            <div class='header'>
-                                <img src='cid:logoAmex' alt='Logo'>
-                                <div class='header-content'>
-                                    <div class='title'>
-                                        <p><strong>NOTIFICACIÓN</strong></p>
-                                        <p><strong>CUENTA DE GASTOS</strong></p>
-                                    </div>
-                                    <div>
-                                        <p><strong>Aduana:</strong> {$aduana}</p> 
-                                        <p><strong>Referencia AMEX:</strong> {$numero}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr />
-
-                            <div class='row'>
-                                <div class='left'>
-                                    <p><strong>FACTURADO A</strong></p>
-                                    <p>{$nombreLimpio2}</p>
-                                </div>
-                                <div class='right'>
-                                    <p><strong>COMPROBACIÓN DE GASTOS</strong></p>
-                                    <p>Numero {$Cg ['NumCg']}</p>
-                                </div>
-                            </div>
-
-                            <div class='row'>
-                                <div class='left'>
-                                    <p><strong>EXPORTADOR:</strong></p>
-                                    <p>{$nombreExportador}</p>
-                                </div>
-                                <div class='right'>
-                                    <p><strong>FECHA:</strong></p>
-                                    <p>{$fechaFormateada}</p>
-                                </div>
-                            </div>
-
-                            <div class='logistics'>
-                                <p class='logistics-title'>INFORMACIÓN LOGÍSTICA</p>
-                                <table class='logistics-table' border='1' cellpadding='5' cellspacing='0'>
-                                    <thead>
-                                        <tr>
-                                            <th>BOOKING</th>
-                                            <th>BUQUE</th>
-                                            <th>PTO. DESCARGA</th>
-                                            <th>PTO. DESTINO</th>
-                                            <th>SU REFERENCIA</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{$booking}</td>
-                                            <td>{$nombreBuque}</td>
-                                            <td>{$puertoDescarga}</td>
-                                            <td>{$puertoDestino}</td>
-                                            <td>{$suReferencia}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <hr />
-                            <p>Atentamente,</p>
-                            <p>{$usuarioAltaRef}</p>
+                        <div>
+                            <p style="margin:0;"><strong>Aduana:</strong> '.$aduana.'</p>
+                            <p style="margin:0;"><strong>Referencia AMEX:</strong> '.$numero.'</p>
                         </div>
-                    </body>
-                    </html>
-                    ";
+                        </div>
+                    </td>
+                    </tr>
+
+                    <tr>
+                    <td>
+                        <hr style="border:none; border-top:1px solid #ddd; margin:20px 0;">
+                    </td>
+                    </tr>
+
+                    <tr>
+                    <td>
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+                        <tr>
+                            <td width="48%" style="text-align:left; vertical-align:top;">
+                            <p style="margin:0 0 6px 0; font-weight:bold;">FACTURADO A</p>
+                            <p style="margin:0;">'.$nombreLimpio2.'</p>
+                            </td>
+                            <td width="48%" style="text-align:right; vertical-align:top;">
+                            <p style="margin:0 0 6px 0; font-weight:bold;">COMPROBACIÓN DE GASTOS</p>
+                            <p style="margin:0;">Número '.$Cg['NumCg'].'</p>
+                            </td>
+                        </tr>
+                        </table>
+
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+                        <tr>
+                            <td width="48%" style="text-align:left; vertical-align:top;">
+                            <p style="margin:0 0 6px 0; font-weight:bold;">EXPORTADOR:</p>
+                            <p style="margin:0;">'.$nombreExportador.'</p>
+                            </td>
+                            <td width="48%" style="text-align:right; vertical-align:top;">
+                            <p style="margin:0 0 6px 0; font-weight:bold;">FECHA:</p>
+                            <p style="margin:0;">'.$fechaFormateada.'</p>
+                            </td>
+                        </tr>
+                        </table>
+
+                        <div style="margin-top:20px;">
+                        <p style="font-weight:bold; margin-bottom:10px;">INFORMACIÓN LOGÍSTICA</p>
+                        <table width="100%" cellpadding="5" cellspacing="0" border="1" style="border-collapse:collapse; font-size:14px; text-align:center; border-color:#ccc; margin-bottom:20px;">
+                            <thead>
+                            <tr style="background:#eee;">
+                                <th>BOOKING</th>
+                                <th>BUQUE</th>
+                                <th>PTO. DESCARGA</th>
+                                <th>PTO. DESTINO</th>
+                                <th>SU REFERENCIA</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>'.$booking.'</td>
+                                <td>'.$nombreBuque.'</td>
+                                <td>'.$puertoDescarga.'</td>
+                                <td>'.$puertoDestino.'</td>
+                                <td>'.$suReferencia.'</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </div>
+
+                        <hr style="border:none; border-top:1px solid #ddd; margin:20px 0;">
+
+                        <p style="margin:0 0 5px 0;">Atentamente,</p>
+                        <p style="margin:0;">'.$usuarioAltaRef.'</p>
+                    </td>
+                    </tr>
+                </table>
+                </body>
+                </html>
+                ';
             $mail->send();
  
             unlink($zipFile);

@@ -46,9 +46,9 @@ if (
 
     $sql_insert_poliza = "INSERT INTO conta_polizas 
     (
-        BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, Activo, FechaAlta, UsuarioAlta
+        BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, Activo, FechaAlta, Pagada, UsuarioAlta
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $params = [
         $beneficiario,
@@ -59,6 +59,7 @@ if (
         $fecha,
         $activo,
         $fecha,
+        1,
         $usuarioAlta
     ];
 

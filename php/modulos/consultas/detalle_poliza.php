@@ -123,27 +123,27 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <label for="EmpresaId" class="form-label text-muted small">EMPRESA:</label>
                         <input id="EmpresaId" name="EmpresaId" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['EmpresaNombre'];?>"
+                            style="background-color: transparent;" value="<?php echo $poliza['EmpresaNombre']; ?>"
                             readonly>
                     </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
                         <label for="tipo" class="form-label text-muted small">TIPO:</label>
                         <input id="tipo" name="tipo" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $tipoPoliza;?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $tipoPoliza; ?>" readonly>
                     </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
                         <label for="BeneficiarioId" class="form-label text-muted small">BENEFICIARIO:</label>
                         <input id="BeneficiarioId" name="BeneficiarioId" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['BeneficiarioId'];?>"
+                            style="background-color: transparent;" value="<?php echo $poliza['BeneficiarioId']; ?>"
                             readonly>
                     </div>
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="Fecha" class="form-label text-muted small">FECHA:</label>
                         <input id="Fecha" name="Fecha" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Fecha'];?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $poliza['Fecha']; ?>" readonly>
                     </div>
                 </div>
                 <div class="row">
@@ -151,13 +151,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <label for="Numero" class="form-label text-muted small">NO. PÓLIZA:</label>
                         <input id="Numero" name="Numero" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Numero'];?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $poliza['Numero']; ?>" readonly>
                     </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
                         <label for="Concepto" class="form-label text-muted small">CONCEPTO:</label>
                         <input id="Concepto" name="Concepto" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Concepto'];?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $poliza['Concepto']; ?>" readonly>
                     </div>
                 </div>
                 <div class="row">
@@ -165,14 +165,14 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <label for="UsuarioAlta" class="form-label text-muted small">USUARIO ALTA:</label>
                         <input id="UsuarioAlta" name="UsuarioAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['UsuarioAlta'];?>"
+                            style="background-color: transparent;" value="<?php echo $poliza['UsuarioAlta']; ?>"
                             readonly>
                     </div>
                     <div class="col-4 col-sm-4 d-flex flex-column mt-4">
                         <label for="FechaAlta" class="form-label text-muted small">FECHA ALTA:</label>
                         <input id="FechaAlta" name="FechaAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['FechaAlta'];?>" readonly>
+                            style="background-color: transparent;" value="<?php echo $poliza['FechaAlta']; ?>" readonly>
                     </div>
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="Activo" class="form-label text-muted small">STATUS:</label>
@@ -225,7 +225,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <?php endif; ?>
                             </tbody>
                             <?php if (!empty($partidas)): ?>
-                                 <tfoot style="background-color: #f1f1f1;" class="tfoot-total">
+                                <tfoot style="background-color: #f1f1f1;" class="tfoot-total">
                                     <tr class="fw-bold text-center align-middle" style="height: 45px;">
                                         <td>Total</td>
                                         <td><?= '$ ' . number_format($total_cargo, 2) ?></td>
@@ -239,6 +239,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 </div>
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
+
+                        <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_cancelar_poliza"
+                            data-id="<?= $id ?>">
+                            Cancelar Póliza
+                        </button>
+                    </div>
+                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="button" class="btn btn-outline-danger rounded-0"
                             onclick="window.location.href='../../vistas/consultas/consulta_poliza.php'">Salir</button>
                     </div>
@@ -248,6 +255,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     </div>
 </div>
 
+<script src="../../../js/actualizar/cancelar_Poliza.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>

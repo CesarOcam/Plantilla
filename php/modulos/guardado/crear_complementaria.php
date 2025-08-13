@@ -104,7 +104,7 @@ if (isset($_POST['id'])) {
             $referencia['PuertoDestino'],
             $referencia['Comentarios'],
             $referencia['FechaAlta'],
-            $referencia['Status'],
+            1,
             $referencia['UsuarioAlta']
         ];
 

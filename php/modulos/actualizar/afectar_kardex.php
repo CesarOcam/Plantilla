@@ -20,7 +20,6 @@ try {
 
     $id = $_POST['id'];
     $referenciaId = $id;
-    $usuarioAlta = $_SESSION['usuario_id'];
 
     $stmtPartidas = $con->prepare("
         SELECT p.*
@@ -32,6 +31,7 @@ try {
             c.Numero LIKE '114%' OR
             c.Numero LIKE '214%'
         )
+        AND p.Activo = 1
     ");
 
     $stmtPartidas->bindParam(':id', $id, PDO::PARAM_INT);
@@ -49,16 +49,11 @@ try {
     $partidas_a_insertar = [];
     $subtotal = 0;
     $totalAnticipos = 0;
-
+    $saldo = 0;
     $subcuentasValidas = [123, 114, 214];
 
     foreach ($partidas as $partida) {
         $subcuentaId = $partida['SubcuentaId'];
-
-        // Validar si ya se insertó esta subcuenta (evita duplicados)
-        if (in_array($subcuentaId, $subcuentas_agregadas)) {
-            continue;
-        }
 
         // Verificar si la subcuenta pertenece a una cuenta válida (123, 114, 214)
         $stmtCuenta = $con->prepare("
@@ -90,9 +85,6 @@ try {
         // Obtener datos originales
         $cargo_original = $partida['Cargo'];
         $abono_original = $partida['Abono'];
-        $observaciones = $partida['Observaciones'];
-        $factura = $partida['NumeroFactura'];
-        $usuarioSoli = $partida['UsuarioSolicitud'];
 
         // Invertir cargo y abono (contrapartida)
         $cargo_nuevo = $abono_original;
@@ -102,6 +94,8 @@ try {
         $subtotal += $cargo_nuevo;
         $totalAnticipos += $abono_nuevo;
 
+        $observaciones = 'Contrapartida automática';
+
         $partidas_a_insertar[] = [
             'PolizaId' => $polizaId,
             'SubcuentaId' => $subcuentaId,
@@ -109,9 +103,6 @@ try {
             'Cargo' => $cargo_nuevo,
             'Abono' => $abono_nuevo,
             'Observaciones' => $observaciones,
-            'NumeroFactura' => $factura,
-            'UsuaruiSolicitud' => $usuarioSoli,
-            'created_by' => $usuarioAlta,
             'Activo' => 1
         ];
 
@@ -119,7 +110,6 @@ try {
         $subcuentas_agregadas[] = $subcuentaId;
     }
 
-    // Calcular el saldo final
     $saldo = $subtotal - $totalAnticipos;
 
     //-------------------------------------------------------------------------------------------------------------------------------
@@ -145,7 +135,7 @@ try {
         $activo = 1;
         $importe = $subtotal;
         $fechaActual = date('Y-m-d H:i:s');
-        $usuarioAlta;
+        $usuarioAlta = $_SESSION['usuario_id'];
 
         $nuevo_numero = $ultimo_numero + 1;
         $numero_poliza = $prefijo . str_pad($nuevo_numero, 7, '0', STR_PAD_LEFT);
@@ -214,8 +204,8 @@ try {
 
         // Insertar partidas
         $sql_partida = "INSERT INTO conta_partidaspolizas     
-        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex, NumeroFactura, UsuarioSolicitud, created_by, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_partida = $con->prepare($sql_partida);
 
         foreach ($partidas_a_insertar as $p) {
@@ -227,13 +217,10 @@ try {
                 $p['Abono'],
                 $p['Observaciones'],
                 $p['Activo'],
-                1,
-                $factura,
-                $usuarioSoli,
-                $usuarioAlta,
-                $fechaActual
+                1
             ]);
         }
+
         $sql_kardex = "SELECT Saldo FROM conta_cuentas_kardex WHERE Referencia = :id";
         $stmt = $con->prepare($sql_kardex);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -313,7 +300,12 @@ try {
 
         echo json_encode([
             'success' => true,
-            'data' => $resultados
+            'data' => $resultados,
+            'id' => $id,
+            // puedes agregar más datos si quieres, ej:
+            //'referencia' => $referencia,
+            //'cuenta1' => $cuenta1,
+            //'cuenta2' => $cuenta2,
         ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'No se encontró la referencia']);

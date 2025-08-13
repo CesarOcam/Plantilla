@@ -15,7 +15,7 @@ $stmt = $con->prepare("
         ce.nombreCorto_exportador, ce.calle_exportador, ce.noExt_exportador, ce.noInt_exportador, ce.codigoPostal_exportador,
         ce.colonia_exportador, ce.localidad_exportador, ce.municipio_exportador,
         ce.idcat11_estado, est.estado, ce.id2204clave_pais, pais.pais_clave,
-        ce.contacto_cliente, ce.telefono_cliente, ce.emails_trafico, ce.pagaCon_cliente,
+        ce.contacto_cliente, ce.telefono_cliente, ce.pagaCon_cliente,
         ce.status_exportador, ce.fechaAlta_exportador, ce.usuarioAlta_exportador, ce.usuarioModificar_exportador, ce.fecha_ultimaActualizacionClientes,
         logi.razonSocial_exportador AS razonSocial_logistico,
         CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS nombre_usuario_alta,
@@ -32,6 +32,15 @@ $stmt = $con->prepare("
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Consulta para obtener los EMAILS
+$stmt = $con->prepare("SELECT correo 
+                        FROM `correos_01clientes_exportadores` 
+                        WHERE tipo_correo = 3 AND id01clientes_exportadores = :id
+                        ORDER BY correo");
+$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+$stmt->execute();
+$mails = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Consulta para obtener los países
 $stmt = $con->prepare("SELECT id2204clave_pais, CONCAT(clave_SAAI_M3, ' - ', pais_clave) AS nombre_pais 
@@ -296,7 +305,7 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                                     </select>
                                 </div>
                                 <div class="col-10 col-sm-9 mt-4">
-                                    <label for="emails_trafico" class="form-label text-muted small">EMAIL LOGÍSTICO:</label>
+                                    <label for="emails_contabilidad" class="form-label text-muted small">EMAIL LOGÍSTICO:</label>
                                     <div id="emails-container" class="form-control rounded-0 d-flex flex-wrap gap-1"
                                         style="background-color: transparent; border-bottom: 2px solid #efefef !important;">
                                         <!-- Etiquetas de correo aquí -->
@@ -304,7 +313,7 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                                             style="background: transparent; outline: none; min-width: 120px;">
                                     </div>
                                     <!-- Campo oculto donde se guardarán los correos separados por coma -->
-                                    <input type="hidden" name="emails_trafico" id="emails_trafico_hidden">
+                                    <input type="hidden" name="emails_contabilidad" id="emails_contabilidad_hidden">
                                 </div>
                             </div>
                             <div class="row">
@@ -390,12 +399,12 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
             document.addEventListener('DOMContentLoaded', function () {
             const input = document.getElementById('emails_input');
             const container = document.getElementById('emails-container');
-            const hiddenInput = document.getElementById('emails_trafico_hidden');
+            const hiddenInput = document.getElementById('emails_contabilidad_hidden');
 
             // ← Cargar correos existentes al iniciar
-            const inicial = `<?php echo $cliente['emails_trafico'] ?? ''; ?>`;
-            if (inicial.trim() !== '') {
-                inicial.split(',').map(c => c.trim()).forEach(addTag);
+            const inicial = <?= json_encode(array_column($mails, 'correo')) ?>;
+            if (inicial.length > 0) {
+                inicial.forEach(email => addTag(email.trim()));
                 updateHiddenField();
             }
 

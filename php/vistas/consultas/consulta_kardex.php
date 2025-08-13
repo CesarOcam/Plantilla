@@ -24,7 +24,7 @@ $subcuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt = $con->prepare("
     SELECT Id, Nombre 
     FROM beneficiarios
-    ORDER BY Nombre
+    ORDER BY Nombre ASC
 ");
 $stmt->execute();
 $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -46,41 +46,28 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kardex</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/style2.css">
+</head>
+
 <body class="cat-clientes">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Kardex</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
-        <!-- jQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <!-- SweetAlert -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-        <!-- Select2 -->
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.min.css">
-
-        <!-- Fechas -->
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-        <link rel="stylesheet" href="../../../css/style.css">
-        <link rel="stylesheet" href="../../../css/style2.css">
-
-    </head>
-
     <?php
     include_once __DIR__ . '/../../../config.php';
-
     include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
     ?>
 
@@ -91,7 +78,7 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="row m-3 mb-0">
                         <div class="row mb-0">
                             <div class="col-2 d-flex flex-column">
-                                <label for="aduanaInput" class="form-label small mb-0">ADUANA:</label>
+                                <label for="aduanaInput" name="aduana" class="form-label small mb-0">ADUANA:</label>
                                 <select id="aduanaInput" class="form-select rounded-0 border-0 border-bottom"
                                     style="background-color: transparent; cursor:pointer;">
                                     <option value="" selected>TODOS</option>
@@ -149,14 +136,15 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     style="background-color: transparent;" aria-label="Filtrar por póliza">
                             </div>
                             <div class="col-1 d-flex flex-column">
-                                <label for="referenciaInput" class="form-label small mb-0">REFERENCIA:</label>
+                                <label for="referenciaInput" name='referencia'
+                                    class="form-label small mb-0">REFERENCIA:</label>
                                 <input type="text" id="referenciaInput"
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" aria-label="Filtrar por póliza">
                             </div>
                             <div class="col-1 d-flex flex-column">
                                 <label for="comprobacionInput" class="form-label small mb-0">COMPROBACION:</label>
-                                <input type="text" id="conprobacionInput"
+                                <input type="text" id="comprobacionInput"
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" aria-label="Filtrar por póliza">
                             </div>
@@ -166,7 +154,7 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" aria-label="Filtrar por póliza">
                             </div>
-                            <div class="col-1 d-flex flex-column">
+                            <div class="col-2 d-flex flex-column">
                                 <label for="tipoInput" class="form-label small mb-0">TIPO DE CONSULTA:</label>
                                 <select id="tipoInput" class="form-select rounded-0 border-0 border-bottom"
                                     style="background-color: transparent; cursor:pointer;"
@@ -250,82 +238,111 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Tu script personalizado -->
     <script>
-        flatpickr("#Fecha", {
-            enableTime: true,
-            time_24hr: true,
-            enableSeconds: true,
-            dateFormat: "Y-m-d H:i:s",
-            defaultDate: new Date()
-        });
-
-        document.getElementById('Fecha').value = document.getElementById('Fecha')._flatpickr.input.value;
-
         document.addEventListener('DOMContentLoaded', function () {
-            const selectBeneficiario = document.getElementById("selectBeneficiario");
-            const selectCuenta = document.getElementById("selectCuentaContable");
-            if (selectCuenta) {
-                $('#selectBeneficiario').select2({
-                    width: '100%',
-                    placeholder: "Selecciona una beneficiario",
-                    allowClear: false,
-                    dropdownParent: $('#modalPago')
-                });
-            }
-            if (selectCuenta) {
-                $('#selectCuentaContable').select2({
-                    width: '100%',
-                    placeholder: "Selecciona una cuenta",
-                    allowClear: false,
-                    dropdownParent: $('#modalPago')
-                });
-            }
+            // Inicializar fecha con flatpickr
+            flatpickr("#Fecha", {
+                enableTime: true,
+                time_24hr: true,
+                enableSeconds: true,
+                dateFormat: "Y-m-d H:i:s",
+                defaultDate: new Date()
+            });
 
+            // Inicializar Select2
+            $('#selectBeneficiario').select2({
+                width: '100%',
+                placeholder: "Selecciona un beneficiario",
+                allowClear: false,
+                dropdownParent: $('#modalPago')
+            });
+
+            $('#selectCuentaContable').select2({
+                width: '100%',
+                placeholder: "Selecciona una cuenta",
+                allowClear: false,
+                dropdownParent: $('#modalPago')
+            });
+
+
+            const tipoInput = document.getElementById("tipoInput");
+
+            tipoInput.addEventListener("change", () => {
+                const isLogistico = tipoInput.value === "2";
+
+                // Lista de inputs que quieres bloquear/desbloquear
+                const inputsParaBloquear = [
+                    "statusInput",
+                    "fechaDesdeInput",
+                    "fechaHastaInput",
+                    "numInput",
+                    "aduanaInput",
+                    "referenciaInput",
+                    "comprobacionInput",
+                    "logisticoInput",
+                ];
+
+                inputsParaBloquear.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.disabled = isLogistico;  // bloquear si tipo=2, desbloquear si no
+                        if (isLogistico) input.value = ''; // Opcional: limpia el valor al bloquear
+                    }
+                });
+
+                // Opcional: si quieres limpiar también el contenido de la tabla al cambiar
+                filtrarKardex();
+            });
+
+            // Función para cargar tabla filtrada
+            function filtrarKardex() {
+                const tipo = document.getElementById("tipoInput").value;
+                const params = new URLSearchParams({
+                    status: document.getElementById("statusInput").value || '',
+                    fecha_desde: document.getElementById("fechaDesdeInput").value || '',
+                    fecha_hasta: document.getElementById("fechaHastaInput").value || '',
+                    num: document.getElementById("numInput").value || '',
+                    aduana: document.getElementById("aduanaInput").value || '',
+                    referencia: document.getElementById("referenciaInput").value || '',
+                    logistico: document.getElementById("logisticoInput").value || '',
+                    comprobacion: document.getElementById("comprobacionInput").value || '',
+                    tipo: tipo,
+                });
+
+                const url = tipo === "2"
+                    ? "../../modulos/consultas/tabla_kardex_log.php?" + params.toString()
+                    : "../../modulos/consultas/tabla_kardex.php?" + params.toString();
+
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById("tabla-kardex-container").innerHTML = html;
+                        inicializarEventosTabla();
+                    })
+                    .catch(err => console.error("Error al cargar la tabla:", err));
+            }
+            // Botón buscar
             const btnBuscar = document.getElementById("btn_buscar");
             if (btnBuscar) {
-                btnBuscar.addEventListener("click", function () {
-                    const status = document.getElementById("statusInput").value;
-                    const fechaDesde = document.getElementById("fechaDesdeInput").value;
-                    const fechaHasta = document.getElementById("fechaHastaInput").value;
-                    const num = document.getElementById("numInput").value;
-
-                    const params = new URLSearchParams({
-                        status,
-                        fecha_desde: fechaDesde,
-                        fecha_hasta: fechaHasta,
-                        num
-                    });
-
-                    const xhr = new XMLHttpRequest();
-                    xhr.open("GET", "../../modulos/consultas/tabla_kardex.php?" + params.toString(), true);
-                    xhr.onload = function () {
-                        if (this.status === 200) {
-                            document.getElementById("tabla-kardex-container").innerHTML = this.responseText;
-                        }
-                    };
-                    xhr.send();
-                });
+                btnBuscar.addEventListener("click", filtrarKardex);
             }
 
+            // Botón limpiar
             const btnLimpiar = document.getElementById("btn_limpiar");
             if (btnLimpiar) {
                 btnLimpiar.addEventListener("click", function () {
-                    document.getElementById("statusInput").value = "";
-                    document.getElementById("fechaDesdeInput").value = "";
-                    document.getElementById("fechaHastaInput").value = "";
-                    document.getElementById("numInput").value = "";
-
-                    if (btnBuscar) btnBuscar.click(); // recargar con filtros vacíos
+                    document.getElementById("statusInput").value = '';
+                    document.getElementById("fechaDesdeInput").value = '';
+                    document.getElementById("fechaHastaInput").value = '';
+                    document.getElementById("numInput").value = '';
+                    document.getElementById("aduanaInput").value = '';
+                    document.getElementById("referenciaInput").value = '';
+                    document.getElementById("logisticoInput").value = '';
+                    filtrarKardex();
                 });
             }
         });
     </script>
-
     <script src="../../../js/pagar_kardex/pagar_kardex.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
-        </script>
-
 </body>
 
 </html>

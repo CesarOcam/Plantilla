@@ -291,6 +291,11 @@ body.consulta-referencias .table td:nth-child(8) {
   width: 10% !important; /* Solo en esa página */
 }
 
+/*----------------Modal Referencia Correos -----------------*/
+table.tabla-correos th:nth-child(1),
+table.tabla-correos td:nth-child(1) {
+  width: 0.2% !important;
+}
 /*----------------TABLA MOVIMIENTOS 1 -----------------*/
 /* Encabezado tabla 1 - gris claro */
 

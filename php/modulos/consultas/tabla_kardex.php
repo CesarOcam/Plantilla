@@ -7,35 +7,71 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina;
 
 $where = [];
 $params = [];
-$where[] = "c.Status != 2"; // <--- Esta es la línea agregada
 
+// Filtro base
+$where[] = "c.Status != 2"; 
+
+// Status
 if (isset($_GET['status']) && $_GET['status'] !== '') {
     $where[] = "c.Status = :status";
     $params[':status'] = $_GET['status'];
 }
 
+// Fechas
 if (!empty($_GET['fecha_desde'])) {
     $where[] = "c.Fecha >= :fecha_desde";
     $params[':fecha_desde'] = $_GET['fecha_desde'];
 }
-
 if (!empty($_GET['fecha_hasta'])) {
     $where[] = "c.Fecha <= :fecha_hasta";
     $params[':fecha_hasta'] = $_GET['fecha_hasta'];
 }
 
+// Número
 if (!empty($_GET['num'])) {
     $where[] = "c.NumCg LIKE :num";
     $params[':num'] = "%" . $_GET['num'] . "%";
 }
 
+// Aduana
+if (!empty($_GET['aduana'])) {
+    $where[] = "r.AduanaId = :aduana";
+    $params[':aduana'] = (int)$_GET['aduana'];  // cast a int
+}
+
+// Referencia
+if (!empty($_GET['referencia'])) {
+    $where[] = "r.Numero LIKE :referencia";
+    $params[':referencia'] = "%" . $_GET['referencia'] . "%";
+}
+
+/*Comprobación
+if (!empty($_GET['comprobacion'])) {
+    $where[] = "c.Comprobacion LIKE :comprobacion";
+    $params[':comprobacion'] = "%" . $_GET['comprobacion'] . "%";
+}*/
+
+// Logístico
+if (!empty($_GET['logistico'])) {
+    $where[] = "le.razonSocial_exportador LIKE :logistico";
+    $params[':logistico'] = "%" . $_GET['logistico'] . "%";
+}
+
+/*Tipo de consulta (lo dejaremos preparado, aunque no se use ahora)
+if (!empty($_GET['tipo'])) {
+    $where[] = "c.TipoConsulta = :tipo";
+    $params[':tipo'] = $_GET['tipo'];
+}*/
+
 $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
 
+// Consulta principal
 $sql = "
 SELECT 
     c.Id,
     c.NumCg,
     r.Numero AS ReferenciaNumero,
+    r.AduanaId,
     b.identificacion AS BuqueNombre,
     le.razonSocial_exportador AS LogisticoNombre,
     ee.razonSocial_exportador AS ExportadorNombre,
@@ -44,39 +80,47 @@ SELECT
     c.SuReferencia,
     c.Saldo
 FROM conta_cuentas_kardex c
-LEFT JOIN conta_referencias r ON c.Referencia = r.Id
-LEFT JOIN transporte b ON c.Barco = b.idtransporte
-LEFT JOIN 01clientes_exportadores le ON c.Logistico = le.id01clientes_exportadores
-LEFT JOIN 01clientes_exportadores ee ON c.Exportador = ee.id01clientes_exportadores
+LEFT JOIN conta_referencias r 
+    ON c.Referencia = r.Id
+LEFT JOIN transporte b 
+    ON c.Barco = b.idtransporte
+LEFT JOIN 01clientes_exportadores le 
+    ON c.Logistico = le.id01clientes_exportadores
+LEFT JOIN 01clientes_exportadores ee 
+    ON c.Exportador = ee.id01clientes_exportadores
+LEFT JOIN 2201aduanas a 
+    ON r.AduanaId = a.id2201aduanas
 $whereSql
 ORDER BY c.Fecha DESC
-LIMIT :inicio, :registrosPorPagina
+LIMIT :inicio, :registrosPorPagina;
 ";
 
-
-
 $stmt = $con->prepare($sql);
-
 foreach ($params as $key => $value) {
     $stmt->bindValue($key, $value);
 }
-
 $stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
 $stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 
 $stmt->execute();
 $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Obtener total de registros con el mismo filtro
-$sqlTotal = "SELECT COUNT(*) FROM conta_cuentas_kardex c $whereSql";
-$stmtTotal = $con->prepare($sqlTotal);
+// Total de registros
+$sqlTotal = "SELECT COUNT(*) 
+FROM conta_cuentas_kardex c
+LEFT JOIN conta_referencias r ON c.Referencia = r.Id
+LEFT JOIN transporte b ON c.Barco = b.idtransporte
+LEFT JOIN 01clientes_exportadores le ON c.Logistico = le.id01clientes_exportadores
+LEFT JOIN 01clientes_exportadores ee ON c.Exportador = ee.id01clientes_exportadores
+$whereSql";
 
+$stmtTotal = $con->prepare($sqlTotal);
 foreach ($params as $key => $value) {
     $stmtTotal->bindValue($key, $value);
 }
-
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
+
 
 // Calcular total de páginas y bloque de paginación
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);

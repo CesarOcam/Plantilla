@@ -803,8 +803,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     data-id="<?= $id2 ?>">
                                     <i class="fas fa-paper-plane me-2"></i> Enviar CG a Cliente
                                 </button>
+                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_EnvioCG"
+                                    data-id="<?= $id2 ?>" data-bs-toggle="modal" data-bs-target="#modalComplementaria">
+                                    <i class="fas fa-paper-plane me-2"></i> Enviar CG al cliente2
+                                </button>
                             <?php endif; ?>
-                            
                         </div>
 
                         <div class="col-auto d-flex align-items-center mt-3 mb-5">
@@ -873,437 +876,454 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         </div>
                     </div>
                 </div>
+                <!-- MODAL ENVIO CG -->
+                <div class="modal fade" id="modalEnvioCG" tabindex="-1" aria-labelledby="modalEnvioCGLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEnvioCGLabel">Enviar Cuenta de Gastos a Cliente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Aquí se cargan las tablas desde tablas_complementaria.php -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger rounded-0" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-outline-secondary rounded-0" id="guardarEnvioCg">Enviar</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
             </form>
         </div>
     </div>
-</body>
 
-<script>
-    const tiposContenedor = <?= json_encode($tiposContenedor) ?>;
+        <script>
+            const tiposContenedor = <?= json_encode($tiposContenedor) ?>;
 
-    const botonGuardar = document.getElementById('btn_guardar');
-    $(document).ready(function () {
-        function initSelect2(id, placeholder) {
-            $(id).select2({
-                placeholder: placeholder,
-                allowClear: false,
-                width: '100%'
-            });
-        }
-
-        initSelect2('#aduana-select', 'Aduana');
-        initSelect2('#exportador-select', 'Exportador *');
-        initSelect2('#logistico-select', 'Logístico *');
-        initSelect2('#recinto-select', 'Recinto');
-        initSelect2('#clave-select', 'Clave Pedimento');
-        initSelect2('#consolidadora-select', 'Consolidadora');
-        initSelect2('#naviera-select', 'Naviera');
-        initSelect2('#buque-select', 'Buque');
-        initSelect2('.tipo-select', 'Tipo Buque');
-
-        $(document).on('select2:open', () => {
-            setTimeout(() => {
-                const input = document.querySelector('.select2-container--open .select2-search__field');
-                if (input) input.focus();
-            }, 100);
-        });
-    });
-
-    // Inicializar Calendarios
-    flatpickr("#cierre_doc", {
-        dateFormat: "Y-m-d"
-    });
-    flatpickr("#cierre_desp", {
-        dateFormat: "Y-m-d"
-    });
-    flatpickr("#fecha_pago", {
-        dateFormat: "Y-m-d"
-    });
-    flatpickr("#hora_desp", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        time_24hr: true,
-        allowInput: true
-    });
-    flatpickr("#fecha_doc", {
-        dateFormat: "Y-m-d"
-    });
-    flatpickr("#fecha_eta", {
-        dateFormat: "Y-m-d"
-    });
-
-    let contador = 1;
-
-    const tablaContenedores = document.getElementById("tabla-contenedores").querySelector("tbody");
-
-    function verificarCodificacion(contenedor) {
-        const tabla = {
-            'A': 10, 'B': 12, 'C': 13, 'D': 14, 'E': 15,
-            'F': 16, 'G': 17, 'H': 18, 'I': 19, 'J': 20,
-            'K': 21, 'L': 23, 'M': 24, 'N': 25, 'O': 26,
-            'P': 27, 'Q': 28, 'R': 29, 'S': 30, 'T': 31,
-            'U': 32, 'V': 34, 'W': 35, 'X': 36, 'Y': 37,
-            'Z': 38
-        };
-
-        if (!/^[A-Z]{4}\d{7}$/.test(contenedor)) return false;
-
-        let suma = 0;
-        for (let i = 0; i < 10; i++) {
-            const char = contenedor[i];
-            let valor = isNaN(char) ? tabla[char] : parseInt(char);
-            if (valor === undefined || isNaN(valor)) return false;
-            suma += valor * Math.pow(2, i);
-        }
-
-        const checkDigit = suma % 11;
-        const digitoCalculado = checkDigit === 10 ? 0 : checkDigit;
-        const digitoIngresado = parseInt(contenedor[10]);
-
-        return digitoCalculado === digitoIngresado;
-    }
-
-    document.getElementById('btn-nuevo-contenedor').addEventListener('click', function () {
-        const rowId = `fila-${contador}`;
-        const inputId = `input-contenedor-${contador}`;
-        const mensajeId = `mensajeContenedor-${contador}`;
-        const iconoId = `iconoValidacion-${contador}`;
-
-        const fila = `
-            <tr id="${rowId}" class="text-center">
-                <td class="text-center align-middle"><i class="bi bi-box-fill fs-4 me-2"></i></td>
-                <td>
-                    <div class="position-relative">
-                        <input type="text" id="${inputId}" name="contenedor[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el código" maxlength="11">
-                        <i id="${iconoId}" class="bi position-absolute top-50 end-0 translate-middle-y me-2"></i>
-                        <small id="${mensajeId}" class="form-text ms-1 mt-1"></small>
-                    </div>
-                </td>
-                <td class="text-center">
-                    <select name="tipo[]" class="form-select tipo-select form-control ps-4 rounded-0 border-0 border-bottom text-center" style="width: 100%;">
-                        <option value="">Seleccione un tipo</option>
-                        ${tiposContenedor.map(tc => `<option value="${tc.id2210_tipo_contenedor}">${tc.id2210_tipo_contenedor} - ${tc.descripcion_contenedor}</option>`).join('')}
-                    </select>
-                </td>
-                <td class="text-center"><input type="text" name="sello[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el sello"></td>
-                <td class="text-center align-middle">
-                    <button type="button" id="btn-eliminar" class="btn btn-md btn-danger rounded-0">Eliminar</button>
-                </td>
-            </tr>`;
-
-        tablaContenedores.insertAdjacentHTML('beforeend', fila);
-
-        // Inicializa select2 solo en el nuevo select agregado
-        $('.tipo-select').last().select2({
-            placeholder: 'Seleccione un tipo',
-            allowClear: false,
-            width: '100%'
-        });
-
-        agregarValidacion(inputId, mensajeId, iconoId);
-
-        contador++;
-    });
-
-    function agregarValidacion(inputId, mensajeId, iconoId) {
-        const inputContenedor = document.getElementById(inputId);
-        const mensajeContenedor = document.getElementById(mensajeId);
-        const icono = document.getElementById(iconoId);
-
-        // Busca ícono que puede ser box-fill o box-seam en la primera celda
-        const fila = inputContenedor.closest("tr");
-        const iconoContenedor = fila.querySelector(".bi-box-fill, .bi-box-fill");
-
-        inputContenedor.addEventListener('input', function () {
-            const valor = this.value.toUpperCase();
-            this.value = valor;
-
-            inputContenedor.classList.remove('border-success', 'border-danger', 'border-secondary');
-            mensajeContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
-            icono.className = ''; // limpiar icono
-            iconoContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
-
-            if (valor.length === 0) {
-                botonGuardar.disabled = false;
-                mensajeContenedor.textContent = "";
-                iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger', 'text-muted');
-                iconoContenedor.classList.add('bi-box-fill');
-            } else if (valor.length === 11) {
-                if (verificarCodificacion(valor)) {
-
-                    mensajeContenedor.textContent = ""; // sin texto
-                    inputContenedor.classList.add('border-success');
-                    iconoContenedor.classList.remove('bi-box-fill', 'text-danger', 'text-muted');
-                    iconoContenedor.classList.add('bi-box-fill', 'text-success');
-                    botonGuardar.disabled = false;
-                } else {
-
-                    mensajeContenedor.textContent = "Contenedor inválido";
-                    mensajeContenedor.classList.add('text-danger');
-                    inputContenedor.classList.add('border-danger');
-                    icono.className = ''; // limpiar icono validación al lado del input
-                    icono.classList.add('bi', 'bi-x-circle-fill', 'text-danger');
-
-                    iconoContenedor.classList.remove('bi-box-fill', 'text-success');
-                    iconoContenedor.classList.add('bi-box-fill', 'text-danger');
-
-                    botonGuardar.disabled = true;
+            const botonGuardar = document.getElementById('btn_guardar');
+            $(document).ready(function () {
+                function initSelect2(id, placeholder) {
+                    $(id).select2({
+                        placeholder: placeholder,
+                        allowClear: false,
+                        width: '100%'
+                    });
                 }
-            } else {
 
-                mensajeContenedor.textContent = "Debe tener 11 caracteres";
-                mensajeContenedor.classList.add('text-muted');
-                inputContenedor.classList.add('border-secondary');
-                icono.className = '';
-                icono.classList.add('bi', 'bi-exclamation-circle', 'text-muted');
+                initSelect2('#aduana-select', 'Aduana');
+                initSelect2('#exportador-select', 'Exportador *');
+                initSelect2('#logistico-select', 'Logístico *');
+                initSelect2('#recinto-select', 'Recinto');
+                initSelect2('#clave-select', 'Clave Pedimento');
+                initSelect2('#consolidadora-select', 'Consolidadora');
+                initSelect2('#naviera-select', 'Naviera');
+                initSelect2('#buque-select', 'Buque');
+                initSelect2('.tipo-select', 'Tipo Buque');
 
-                iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger');
-                iconoContenedor.classList.add('bi-box-fill', 'text-muted');
-
-                botonGuardar.disabled = true;
-            }
-        });
-    }
-
-    function actualizarNumeracion() {
-        const filas = tablaContenedores.querySelectorAll("tr");
-        filas.forEach((fila, index) => {
-            const celdaNumero = fila.querySelector(".numero-fila");
-            if (celdaNumero) {
-                celdaNumero.textContent = index + 1;
-            }
-            fila.id = `fila-${index}`;
-            const input = fila.querySelector('input[name="contenedor[]"]');
-            const tipo = fila.querySelector('input[name="tipo[]"]');
-            const sello = fila.querySelector('input[name="sello[]"]');
-            const icono = fila.querySelector('i.bi');
-            const mensaje = fila.querySelector('fill.form-text');
-
-            if (input) input.id = `input-contenedor-${index}`;
-            if (icono) icono.id = `iconoValidacion-${index}`;
-            if (mensaje) mensaje.id = `mensajeContenedor-${index}`;
-
-            if (input && icono && mensaje) {
-                agregarValidacion(input.id, mensaje.id, icono.id);
-            }
-        });
-
-        contador = filas.length;
-    }
-
-    tablaContenedores.addEventListener('click', function (e) {
-        if (e.target.classList.contains('btn-danger')) {
-            const filaEliminada = e.target.closest('tr');
-            filaEliminada.remove();
-            actualizarNumeracion(); // si quieres renumerar IDs
-
-            // Revalidar inputs en filas restantes para refrescar iconos
-            const filas = tablaContenedores.querySelectorAll('tr');
-            filas.forEach(fila => {
-                const input = fila.querySelector('input[name="contenedor[]"]');
-                if (input) {
-                    // Forzar evento input para actualizar iconos
-                    input.dispatchEvent(new Event('input'));
-                }
+                $(document).on('select2:open', () => {
+                    setTimeout(() => {
+                        const input = document.querySelector('.select2-container--open .select2-search__field');
+                        if (input) input.focus();
+                    }, 100);
+                });
             });
-        }
-    });
 
-    //lÓGICA DEL MODAL
-    function obtenerIconoPorExtension(nombreArchivo) {
-        const extension = nombreArchivo.split('.').pop().toLowerCase();
+            // Inicializar Calendarios
+            flatpickr("#cierre_doc", {
+                dateFormat: "Y-m-d"
+            });
+            flatpickr("#cierre_desp", {
+                dateFormat: "Y-m-d"
+            });
+            flatpickr("#fecha_pago", {
+                dateFormat: "Y-m-d"
+            });
+            flatpickr("#hora_desp", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                allowInput: true
+            });
+            flatpickr("#fecha_doc", {
+                dateFormat: "Y-m-d"
+            });
+            flatpickr("#fecha_eta", {
+                dateFormat: "Y-m-d"
+            });
 
-        switch (extension) {
-            case 'pdf':
-                return '<i class="bi bi-file-earmark-pdf text-danger"></i>';
-            case 'doc':
-            case 'docx':
-                return '<i class="bi bi-file-earmark-word text-primary"></i>';
-            case 'xls':
-            case 'xlsx':
-                return '<i class="bi bi-file-earmark-excel text-success"></i>';
-            case 'csv':
-                return '<i class="bi bi-filetype-csv text-success"></i>';
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'gif':
-                return '<i class="bi bi-file-earmark-image text-info"></i>';
-            case 'zip':
-            case 'rar':
-                return '<i class="bi bi-file-earmark-zip text-warning"></i>';
-            case 'txt':
-                return '<i class="bi bi-file-earmark-text text-muted"></i>';
-            case 'php':
-                return '<i class="bi bi-filetype-php text-purple"></i>';
-            default:
-                return '<i class="bi bi-file-earmark text-secondary"></i>';
-        }
-    }
+            let contador = 1;
 
-    document.getElementById('btnAgregarDocs').addEventListener('click', function () {
-        const tableBody = document.querySelector('#tabla-archivos tbody');
+            const tablaContenedores = document.getElementById("tabla-contenedores").querySelector("tbody");
 
-        archivosCargados.forEach(file => {
-            const icono = obtenerIconoPorExtension(file.name);
-            const row = document.createElement('tr');
-            row.innerHTML = `
-            <td>${icono} ${file.name}</td>
-            <td>${file.type || 'Desconocido'}</td>
-            <td>${(file.size / 1024).toFixed(2)} KB</td>
-            <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-danger" data-eliminar="true">Eliminar</button>
-            </td>
-        `;
-            tableBody.appendChild(row);
-        });
-
-        previewContainer.innerHTML = '';
-        previewContainer.classList.add('d-none');
-        dropZoneDefault.classList.remove('d-none');
-        input.value = '';
-
-        // Cerrar modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('modalDocumentos'));
-        modal.hide();
-    });
-
-    // Delegación para eliminar fila de la tabla
-    document.getElementById('tabla-documentos-body').addEventListener('click', (e) => {
-        if (e.target.dataset.eliminar) {
-            e.target.closest('tr').remove();
-        }
-    });
-
-    const dropZone = document.getElementById('dropZone');
-    const input = document.getElementById('documentosInput');
-    const previewContainer = document.getElementById('previewContainer');
-    const dropZoneDefault = document.getElementById('dropZoneDefault');
-    const btnBuscarArchivos = document.getElementById('btnBuscarArchivos');
-
-    let archivosCargados = [];
-
-    btnBuscarArchivos.addEventListener('click', () => input.click());
-    dropZone.addEventListener('click', () => input.click());
-
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('bg-primary-subtle');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('bg-primary-subtle');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('bg-primary-subtle');
-        handleFiles(e.dataTransfer.files);
-    });
-
-    input.addEventListener('change', () => handleFiles(input.files));
-
-    function handleFiles(files) {
-        console.log('handleFiles recibidos:', files);
-        Array.from(files).forEach(file => {
-            console.log('Archivo agregado:', file.name);
-            archivosCargados.push(file);
-
-            // Mostrar previsualización
-            const preview = document.createElement('div');
-            preview.classList.add('col');
-
-            if (file.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                img.className = 'img-fluid rounded border';
-                img.style.maxHeight = '150px';
-                preview.appendChild(img);
-
-            } else if (file.type === 'application/pdf') {
-                preview.innerHTML = `
-        <div class="border p-3 text-center rounded bg-white">
-          <i class="bi bi-file-earmark-pdf-fill fs-1 text-danger"></i>
-          <p class="small mt-2">${file.name}</p>
-          <iframe src="${URL.createObjectURL(file)}" style="width: 100%; height: 150px;" frameborder="0"></iframe>
-        </div>`;
-
-            } else if (
-                file.type ===
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-                file.type === 'application/vnd.ms-excel'
-            ) {
-                preview.innerHTML = `
-        <div class="border p-3 text-center rounded bg-white">
-          <i class="bi bi-file-earmark-excel-fill fs-1 text-success"></i>
-          <p class="small mt-2">${file.name}</p>
-          <p class="small text-muted">Previsualización no disponible</p>
-        </div>`;
-
-            } else if (file.type.startsWith('text/')) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    preview.innerHTML = `
-          <div class="border p-3 rounded bg-white text-start" style="max-height: 150px; overflow-y: auto;">
-            <p class="small fw-bold">${file.name}</p>
-            <pre class="small mb-0">${reader.result.substring(0, 200)}...</pre>
-          </div>`;
+            function verificarCodificacion(contenedor) {
+                const tabla = {
+                    'A': 10, 'B': 12, 'C': 13, 'D': 14, 'E': 15,
+                    'F': 16, 'G': 17, 'H': 18, 'I': 19, 'J': 20,
+                    'K': 21, 'L': 23, 'M': 24, 'N': 25, 'O': 26,
+                    'P': 27, 'Q': 28, 'R': 29, 'S': 30, 'T': 31,
+                    'U': 32, 'V': 34, 'W': 35, 'X': 36, 'Y': 37,
+                    'Z': 38
                 };
-                reader.readAsText(file);
 
-            } else {
-                preview.innerHTML = `
-        <div class="border p-3 text-center rounded bg-white">
-          <i class="bi bi-file-earmark-fill fs-1 text-secondary"></i>
-          <p class="small mt-2">${file.name}</p>
-          <p class="small text-muted">Previsualización no disponible</p>
-        </div>`;
+                if (!/^[A-Z]{4}\d{7}$/.test(contenedor)) return false;
+
+                let suma = 0;
+                for (let i = 0; i < 10; i++) {
+                    const char = contenedor[i];
+                    let valor = isNaN(char) ? tabla[char] : parseInt(char);
+                    if (valor === undefined || isNaN(valor)) return false;
+                    suma += valor * Math.pow(2, i);
+                }
+
+                const checkDigit = suma % 11;
+                const digitoCalculado = checkDigit === 10 ? 0 : checkDigit;
+                const digitoIngresado = parseInt(contenedor[10]);
+
+                return digitoCalculado === digitoIngresado;
             }
 
-            previewContainer.appendChild(preview);
-        });
+            document.getElementById('btn-nuevo-contenedor').addEventListener('click', function () {
+                const rowId = `fila-${contador}`;
+                const inputId = `input-contenedor-${contador}`;
+                const mensajeId = `mensajeContenedor-${contador}`;
+                const iconoId = `iconoValidacion-${contador}`;
 
-        // Mostrar previsualización y ocultar el contenido por defecto
-        previewContainer.classList.remove('d-none');
-        dropZoneDefault.classList.add('d-none');
-    }
+                const fila = `
+                    <tr id="${rowId}" class="text-center">
+                        <td class="text-center align-middle"><i class="bi bi-box-fill fs-4 me-2"></i></td>
+                        <td>
+                            <div class="position-relative">
+                                <input type="text" id="${inputId}" name="contenedor[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el código" maxlength="11">
+                                <i id="${iconoId}" class="bi position-absolute top-50 end-0 translate-middle-y me-2"></i>
+                                <small id="${mensajeId}" class="form-text ms-1 mt-1"></small>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <select name="tipo[]" class="form-select tipo-select form-control ps-4 rounded-0 border-0 border-bottom text-center" style="width: 100%;">
+                                <option value="">Seleccione un tipo</option>
+                                ${tiposContenedor.map(tc => `<option value="${tc.id2210_tipo_contenedor}">${tc.id2210_tipo_contenedor} - ${tc.descripcion_contenedor}</option>`).join('')}
+                            </select>
+                        </td>
+                        <td class="text-center"><input type="text" name="sello[]" class="form-control ps-4 rounded-0 border-0 border-bottom text-center" placeholder="Ingrese el sello"></td>
+                        <td class="text-center align-middle">
+                            <button type="button" id="btn-eliminar" class="btn btn-md btn-danger rounded-0">Eliminar</button>
+                        </td>
+                    </tr>`;
 
+                tablaContenedores.insertAdjacentHTML('beforeend', fila);
 
-    tablaContenedores.addEventListener('click', function (e) {
-        if (e.target.closest('.btn-danger')) { // o '#btn-eliminar', según tengas el selector
-            const filaEliminada = e.target.closest('tr');
-            // Capturar el idcontenedor de esa fila
-            const inputIdContenedor = filaEliminada.querySelector('input[name="contenedor_id[]"]');
-            if (inputIdContenedor) {
-                const idContenedor = inputIdContenedor.value;
-                // Crear input hidden para indicar eliminación
-                const inputEliminado = document.createElement('input');
-                inputEliminado.type = 'hidden';
-                inputEliminado.name = 'contenedores_eliminados[]';
-                inputEliminado.value = idContenedor;
+                // Inicializa select2 solo en el nuevo select agregado
+                $('.tipo-select').last().select2({
+                    placeholder: 'Seleccione un tipo',
+                    allowClear: false,
+                    width: '100%'
+                });
 
-                // Agregar al formulario
-                document.querySelector('form').appendChild(inputEliminado);
+                agregarValidacion(inputId, mensajeId, iconoId);
+
+                contador++;
+            });
+
+            function agregarValidacion(inputId, mensajeId, iconoId) {
+                const inputContenedor = document.getElementById(inputId);
+                const mensajeContenedor = document.getElementById(mensajeId);
+                const icono = document.getElementById(iconoId);
+
+                // Busca ícono que puede ser box-fill o box-seam en la primera celda
+                const fila = inputContenedor.closest("tr");
+                const iconoContenedor = fila.querySelector(".bi-box-fill, .bi-box-fill");
+
+                inputContenedor.addEventListener('input', function () {
+                    const valor = this.value.toUpperCase();
+                    this.value = valor;
+
+                    inputContenedor.classList.remove('border-success', 'border-danger', 'border-secondary');
+                    mensajeContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+                    icono.className = ''; // limpiar icono
+                    iconoContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+
+                    if (valor.length === 0) {
+                        botonGuardar.disabled = false;
+                        mensajeContenedor.textContent = "";
+                        iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger', 'text-muted');
+                        iconoContenedor.classList.add('bi-box-fill');
+                    } else if (valor.length === 11) {
+                        if (verificarCodificacion(valor)) {
+
+                            mensajeContenedor.textContent = ""; // sin texto
+                            inputContenedor.classList.add('border-success');
+                            iconoContenedor.classList.remove('bi-box-fill', 'text-danger', 'text-muted');
+                            iconoContenedor.classList.add('bi-box-fill', 'text-success');
+                            botonGuardar.disabled = false;
+                        } else {
+
+                            mensajeContenedor.textContent = "Contenedor inválido";
+                            mensajeContenedor.classList.add('text-danger');
+                            inputContenedor.classList.add('border-danger');
+                            icono.className = ''; // limpiar icono validación al lado del input
+                            icono.classList.add('bi', 'bi-x-circle-fill', 'text-danger');
+
+                            iconoContenedor.classList.remove('bi-box-fill', 'text-success');
+                            iconoContenedor.classList.add('bi-box-fill', 'text-danger');
+
+                            botonGuardar.disabled = true;
+                        }
+                    } else {
+
+                        mensajeContenedor.textContent = "Debe tener 11 caracteres";
+                        mensajeContenedor.classList.add('text-muted');
+                        inputContenedor.classList.add('border-secondary');
+                        icono.className = '';
+                        icono.classList.add('bi', 'bi-exclamation-circle', 'text-muted');
+
+                        iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger');
+                        iconoContenedor.classList.add('bi-box-fill', 'text-muted');
+
+                        botonGuardar.disabled = true;
+                    }
+                });
             }
-            // Eliminar fila visualmente
-            filaEliminada.remove();
 
-            // Si tienes función para renumerar IDs
-            if (typeof actualizarNumeracion === 'function') actualizarNumeracion();
-        }
-    });
+            function actualizarNumeracion() {
+                const filas = tablaContenedores.querySelectorAll("tr");
+                filas.forEach((fila, index) => {
+                    const celdaNumero = fila.querySelector(".numero-fila");
+                    if (celdaNumero) {
+                        celdaNumero.textContent = index + 1;
+                    }
+                    fila.id = `fila-${index}`;
+                    const input = fila.querySelector('input[name="contenedor[]"]');
+                    const tipo = fila.querySelector('input[name="tipo[]"]');
+                    const sello = fila.querySelector('input[name="sello[]"]');
+                    const icono = fila.querySelector('i.bi');
+                    const mensaje = fila.querySelector('fill.form-text');
+
+                    if (input) input.id = `input-contenedor-${index}`;
+                    if (icono) icono.id = `iconoValidacion-${index}`;
+                    if (mensaje) mensaje.id = `mensajeContenedor-${index}`;
+
+                    if (input && icono && mensaje) {
+                        agregarValidacion(input.id, mensaje.id, icono.id);
+                    }
+                });
+
+                contador = filas.length;
+            }
+
+            tablaContenedores.addEventListener('click', function (e) {
+                if (e.target.classList.contains('btn-danger')) {
+                    const filaEliminada = e.target.closest('tr');
+                    filaEliminada.remove();
+                    actualizarNumeracion(); // si quieres renumerar IDs
+
+                    // Revalidar inputs en filas restantes para refrescar iconos
+                    const filas = tablaContenedores.querySelectorAll('tr');
+                    filas.forEach(fila => {
+                        const input = fila.querySelector('input[name="contenedor[]"]');
+                        if (input) {
+                            // Forzar evento input para actualizar iconos
+                            input.dispatchEvent(new Event('input'));
+                        }
+                    });
+                }
+            });
+
+            //lÓGICA DEL MODAL
+            function obtenerIconoPorExtension(nombreArchivo) {
+                const extension = nombreArchivo.split('.').pop().toLowerCase();
+
+                switch (extension) {
+                    case 'pdf':
+                        return '<i class="bi bi-file-earmark-pdf text-danger"></i>';
+                    case 'doc':
+                    case 'docx':
+                        return '<i class="bi bi-file-earmark-word text-primary"></i>';
+                    case 'xls':
+                    case 'xlsx':
+                        return '<i class="bi bi-file-earmark-excel text-success"></i>';
+                    case 'csv':
+                        return '<i class="bi bi-filetype-csv text-success"></i>';
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'png':
+                    case 'gif':
+                        return '<i class="bi bi-file-earmark-image text-info"></i>';
+                    case 'zip':
+                    case 'rar':
+                        return '<i class="bi bi-file-earmark-zip text-warning"></i>';
+                    case 'txt':
+                        return '<i class="bi bi-file-earmark-text text-muted"></i>';
+                    case 'php':
+                        return '<i class="bi bi-filetype-php text-purple"></i>';
+                    default:
+                        return '<i class="bi bi-file-earmark text-secondary"></i>';
+                }
+            }
+
+            document.getElementById('btnAgregarDocs').addEventListener('click', function () {
+                const tableBody = document.querySelector('#tabla-archivos tbody');
+
+                archivosCargados.forEach(file => {
+                    const icono = obtenerIconoPorExtension(file.name);
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${icono} ${file.name}</td>
+                    <td>${file.type || 'Desconocido'}</td>
+                    <td>${(file.size / 1024).toFixed(2)} KB</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-eliminar="true">Eliminar</button>
+                    </td>
+                `;
+                    tableBody.appendChild(row);
+                });
+
+                previewContainer.innerHTML = '';
+                previewContainer.classList.add('d-none');
+                dropZoneDefault.classList.remove('d-none');
+                input.value = '';
+
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalDocumentos'));
+                modal.hide();
+            });
+
+            // Delegación para eliminar fila de la tabla
+            document.getElementById('tabla-documentos-body').addEventListener('click', (e) => {
+                if (e.target.dataset.eliminar) {
+                    e.target.closest('tr').remove();
+                }
+            });
+
+            const dropZone = document.getElementById('dropZone');
+            const input = document.getElementById('documentosInput');
+            const previewContainer = document.getElementById('previewContainer');
+            const dropZoneDefault = document.getElementById('dropZoneDefault');
+            const btnBuscarArchivos = document.getElementById('btnBuscarArchivos');
+
+            let archivosCargados = [];
+
+            btnBuscarArchivos.addEventListener('click', () => input.click());
+            dropZone.addEventListener('click', () => input.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('bg-primary-subtle');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('bg-primary-subtle');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('bg-primary-subtle');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            input.addEventListener('change', () => handleFiles(input.files));
+
+            function handleFiles(files) {
+                console.log('handleFiles recibidos:', files);
+                Array.from(files).forEach(file => {
+                    console.log('Archivo agregado:', file.name);
+                    archivosCargados.push(file);
+
+                    // Mostrar previsualización
+                    const preview = document.createElement('div');
+                    preview.classList.add('col');
+
+                    if (file.type.startsWith('image/')) {
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.className = 'img-fluid rounded border';
+                        img.style.maxHeight = '150px';
+                        preview.appendChild(img);
+
+                    } else if (file.type === 'application/pdf') {
+                        preview.innerHTML = `
+                <div class="border p-3 text-center rounded bg-white">
+                <i class="bi bi-file-earmark-pdf-fill fs-1 text-danger"></i>
+                <p class="small mt-2">${file.name}</p>
+                <iframe src="${URL.createObjectURL(file)}" style="width: 100%; height: 150px;" frameborder="0"></iframe>
+                </div>`;
+
+                    } else if (
+                        file.type ===
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                        file.type === 'application/vnd.ms-excel'
+                    ) {
+                        preview.innerHTML = `
+                <div class="border p-3 text-center rounded bg-white">
+                <i class="bi bi-file-earmark-excel-fill fs-1 text-success"></i>
+                <p class="small mt-2">${file.name}</p>
+                <p class="small text-muted">Previsualización no disponible</p>
+                </div>`;
+
+                    } else if (file.type.startsWith('text/')) {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            preview.innerHTML = `
+                <div class="border p-3 rounded bg-white text-start" style="max-height: 150px; overflow-y: auto;">
+                    <p class="small fw-bold">${file.name}</p>
+                    <pre class="small mb-0">${reader.result.substring(0, 200)}...</pre>
+                </div>`;
+                        };
+                        reader.readAsText(file);
+
+                    } else {
+                        preview.innerHTML = `
+                <div class="border p-3 text-center rounded bg-white">
+                <i class="bi bi-file-earmark-fill fs-1 text-secondary"></i>
+                <p class="small mt-2">${file.name}</p>
+                <p class="small text-muted">Previsualización no disponible</p>
+                </div>`;
+                    }
+
+                    previewContainer.appendChild(preview);
+                });
+
+                // Mostrar previsualización y ocultar el contenido por defecto
+                previewContainer.classList.remove('d-none');
+                dropZoneDefault.classList.add('d-none');
+            }
 
 
-</script>
-<script src="../../../js/guardar_Complementaria.js"></script>
-<script src="../../../js/actualizar/pasar_Conta.js"></script>
-<script src="../../../js/actualizar/afectar_Kardex.js"></script>
-<script src="../../../js/actualizar/envio_cg.js"></script>
-<script src="../../../js/eliminar/eliminar_archivo.js"></script>
-<script src="../../../js/actualizar/actualizar_Referencias.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
-    </script>
+            tablaContenedores.addEventListener('click', function (e) {
+                if (e.target.closest('.btn-danger')) { // o '#btn-eliminar', según tengas el selector
+                    const filaEliminada = e.target.closest('tr');
+                    // Capturar el idcontenedor de esa fila
+                    const inputIdContenedor = filaEliminada.querySelector('input[name="contenedor_id[]"]');
+                    if (inputIdContenedor) {
+                        const idContenedor = inputIdContenedor.value;
+                        // Crear input hidden para indicar eliminación
+                        const inputEliminado = document.createElement('input');
+                        inputEliminado.type = 'hidden';
+                        inputEliminado.name = 'contenedores_eliminados[]';
+                        inputEliminado.value = idContenedor;
 
+                        // Agregar al formulario
+                        document.querySelector('form').appendChild(inputEliminado);
+                    }
+                    // Eliminar fila visualmente
+                    filaEliminada.remove();
+
+                    // Si tienes función para renumerar IDs
+                    if (typeof actualizarNumeracion === 'function') actualizarNumeracion();
+                }
+            });
+
+        </script>
+        <script src="../../../js/consultar_Correos_Modal.js"></script>
+        <script src="../../../js/guardar_Complementaria.js"></script>
+        <script src="../../../js/actualizar/pasar_Conta.js"></script>
+        <script src="../../../js/actualizar/afectar_Kardex.js"></script>
+        <script src="../../../js/actualizar/envio_cg.js"></script>
+        <script src="../../../js/eliminar/eliminar_archivo.js"></script>
+        <script src="../../../js/actualizar/actualizar_Referencias.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
+            </script>
+    </body>
 </html>

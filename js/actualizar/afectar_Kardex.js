@@ -23,8 +23,6 @@ $('#btn_kardex').on('click', function () {
             Swal.close(); // Oculta el spinner
             
             if (data.success) {
-                console.log('Datos obtenidos:', data.data);
-
                 // Ejemplo: construir un texto con los datos
                 let html = '<ul>';
                 for (const key in data.data) {
@@ -79,6 +77,7 @@ $('#btn_kardex').on('click', function () {
         error: function (xhr, status, error) {
             Swal.close();
             console.error('Error en la petición:', error);
+            console.error('Respuesta del servidor:', xhr.responseText);
             Swal.fire('Error', 'Error de conexión', 'error');
         }
     });
