@@ -110,7 +110,8 @@ try {
         $subcuentas_agregadas[] = $subcuentaId;
     }
 
-    $saldo = $subtotal - $totalAnticipos;
+    //$saldo = $subtotal - $totalAnticipos;
+    $saldo = $totalAnticipos - $subtotal;
 
     //-------------------------------------------------------------------------------------------------------------------------------
     // --- POLIZA y KARDEX ---

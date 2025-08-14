@@ -101,6 +101,14 @@ $stmtPais->bindParam(':id', $paisId, PDO::PARAM_INT);
 $stmtPais->execute();
 $pais = $stmtPais->fetch(PDO::FETCH_ASSOC);
 
+$fechaPago = $referencia['FechaPago'];
+
+if (!empty($fechaPago)) {
+    $fechaPagoFormateada = date('Y-m-d', strtotime($fechaPago));
+} else {
+    $fechaPagoFormateada = '';
+}
+
 function toISO($str)
 {
     return mb_convert_encoding($str, 'ISO-8859-1', 'UTF-8');
@@ -202,7 +210,7 @@ $pdf->SetFont('Arial', '', 8);
 $pdf->SetXY(12, $startY + 62);
 // Texto dividido
 $col1 = toISO($referencia['Mercancia'] . "\nMARCAS: " . $referencia['Marcas'] . "\nPESO BRUTO: " . $referencia['PesoBruto'] . "\nCLAVE DE PEDIMENTO: " . $referencia['CvePedimento']);
-$col2 = toISO("PEDIMENTO: " . $referencia['Pedimentos'] . "\nFECHA PAGO: " . date('Y-m-d', strtotime($referencia['FechaPago'])) . "\nCANTIDAD Y BULTOS: " . $referencia['Cantidad']);
+$col2 = toISO("PEDIMENTO: " . $referencia['Pedimentos'] . "\nFECHA PAGO: " . $fechaPagoFormateada . "\nCANTIDAD Y BULTOS: " . $referencia['Cantidad']);
 // Ancho de cada columna
 $colWidth = 94; // 188 / 2
 $cellHeight = 4.1;

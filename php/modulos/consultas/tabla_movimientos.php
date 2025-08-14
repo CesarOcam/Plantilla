@@ -107,7 +107,7 @@ try {
                                     <td><?= $fila['Cuenta'] ?></td>
                                     <td>$<?= number_format($fila['Cargo'], 2) ?></td>
                                     <td>$<?= number_format($fila['Abono'], 2) ?></td>
-                                    <td><?= $fila['Observaciones'] . ' '. $fila['NumeroFactura'] ?></td>
+                                    <td><?= $fila['Observaciones'] /*. ' '. $fila['NumeroFactura']*/ ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
