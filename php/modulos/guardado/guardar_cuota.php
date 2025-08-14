@@ -60,15 +60,9 @@ if (abs($total_abono - $total_cargos) > 0.01) {
     exit;
 }
 
-
-// Función para obtener la fecha y hora actual
-function obtenerFechaHoraActual() {
-    return date("Y-m-d H:i:s");
-}
-
 // Datos estáticos
-$fecha = obtenerFechaHoraActual();
-$fecha_alta = obtenerFechaHoraActual();
+$fecha = $fecha = (new DateTime())->format('Y-m-d H:i:s');
+$fecha_alta = $fecha = (new DateTime())->format('Y-m-d H:i:s');
 $activo = 1;
 $exportadoCoi = 1;
 $empresa = 2;
@@ -155,8 +149,8 @@ switch ((int)$aduana) {
 }
 
 $sql_insert_partida = "INSERT INTO conta_partidaspolizas 
-    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $params = [
     $poliza_id,
@@ -166,7 +160,8 @@ $params = [
     $abono,
     $observaciones,
     $activo,
-    $fecha_alta
+    $fecha_alta,
+    $usuarioAlta
 ];
 
 try {
@@ -217,8 +212,8 @@ switch ((int)$aduana) {
 }
 
 $sql_insert_partida2 = "INSERT INTO conta_partidaspolizas 
-    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $params = [
     $poliza_id,
@@ -228,7 +223,8 @@ $params = [
     $subtotal,
     $observaciones,
     $activo,
-    $fecha_alta
+    $fecha_alta,
+    $usuarioAlta
 ];
 
 try {
@@ -257,8 +253,8 @@ $cargos = 0;
 $subcuenta = 182;
 
 $sql_insert_partida3 = "INSERT INTO conta_partidaspolizas 
-    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $params = [
     $poliza_id,
@@ -268,7 +264,8 @@ $params = [
     $iva,
     $observaciones,
     $activo,
-    $fecha_alta
+    $fecha_alta,
+    $usuarioAlta
 ];
 
 try {

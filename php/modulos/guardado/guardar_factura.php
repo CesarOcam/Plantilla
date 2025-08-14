@@ -101,18 +101,32 @@ foreach ($data as $index => $factura) {
         continue;
     }
 
-    // Verificar UUID duplicado en base de datos (ejemplo simplificado)
-    $stmtDup = $con->prepare("SELECT id FROM conta_facturas_registradas WHERE uuid = ?");
+    // Verificar UUID duplicado en base de datos y obtener Número de referencia
+    $stmtDup = $con->prepare("
+    SELECT f.id, f.folio, f.referencia_id, r.Numero 
+    FROM conta_facturas_registradas f
+    LEFT JOIN conta_referencias r ON f.referencia_id = r.Id
+    WHERE f.uuid = ?
+");
     $stmtDup->execute([$uuid]);
-    if ($stmtDup->fetch()) {
+    $duplicado = $stmtDup->fetch(PDO::FETCH_ASSOC);
+
+    if ($duplicado) {
+        // Si Numero es null, usamos folio
+        $referenciaOfolio = $duplicado['Numero'] ?? $duplicado['folio'];
+        $tipo = $duplicado['Numero'] ? 'referencia' : 'folio';
+
         echo json_encode([
             'success' => false,
             'duplicado' => true,
             'uuid' => $uuid,
-            'mensaje' => "El UUID $uuid ya existe en la base de datos."
+            'referencia_numero' => $referenciaOfolio, // para JS
+            'tipo' => $tipo, // 'referencia' o 'folio'
+            'mensaje' => "El UUID $uuid ya existe en la base de datos, asociado a $tipo $referenciaOfolio."
         ]);
         exit;
     }
+
 
     // Insertar factura
     $sql = "INSERT INTO conta_facturas_registradas 
@@ -139,8 +153,10 @@ foreach ($data as $index => $factura) {
 
             // Insertar archivos relacionados
             $archivos = [];
-            if ($destinoXml) $archivos[] = ['nombre' => $nombreXml, 'ruta' => $destinoXml];
-            if ($destinoPdf) $archivos[] = ['nombre' => $nombrePdf, 'ruta' => $destinoPdf];
+            if ($destinoXml)
+                $archivos[] = ['nombre' => $nombreXml, 'ruta' => $destinoXml];
+            if ($destinoPdf)
+                $archivos[] = ['nombre' => $nombrePdf, 'ruta' => $destinoPdf];
 
             foreach ($archivos as $archivo) {
                 $sqlArchivo = "INSERT INTO conta_referencias_archivos (Nombre, Ruta, Solicitud_factura_id) VALUES (?, ?, ?)";

@@ -22,7 +22,7 @@ if (!$refData || empty($refData['ClienteLogisticoId'])) {
 
 $clienteLogisticoId = $refData['ClienteLogisticoId'];
 
-// Paso 2: Obtener datos de clientes exportadores (logísticos) asociados
+//CORREOS LOGÍSTICOS
 $sqlLogisticos = "
     SELECT idcorreos_01clientes_exportadores, correo FROM correos_01clientes_exportadores
     WHERE tipo_correo = 3 AND id01clientes_exportadores = ?
@@ -33,14 +33,22 @@ $stmtLogisticos->execute([$clienteLogisticoId]);
 $logisticos = $stmtLogisticos->fetchAll(PDO::FETCH_ASSOC);
 
 
-// Obtener archivos asociados a la referencia
+$sqlUsuarios = "
+    SELECT login, email 
+    FROM sec_users
+    WHERE idDepartamento = 3
+";
+
+$stmtUsuarios = $con->prepare($sqlUsuarios);
+$stmtUsuarios->execute();
+$usuarios = $stmtUsuarios->fetchAll(PDO::FETCH_ASSOC);
+
+
+// ARCHIVOS
 $sqlArchivos = "SELECT Nombre FROM conta_referencias_archivos WHERE Referencia_id = ?";
 $stmtArchivos = $con->prepare(query: $sqlArchivos);
 $stmtArchivos->execute([$id]);
 $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
-
-
-
 ?>
 
 <div class="row">
@@ -79,7 +87,7 @@ $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <td>
                             <input type="checkbox" name="mails_logistico[]"
-                                value="<?= htmlspecialchars($logistico['idcorreos_01clientes_exportadores']) ?>"
+                                value="<?= htmlspecialchars($logistico['correo']) ?>"
                                 class="form-check-input big-checkbox check-correo" style="cursor:pointer;">
                         </td>
                         <td><?= htmlspecialchars($logistico['correo'] ?? 'Sin email') ?></td>
@@ -100,21 +108,23 @@ $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
             <tbody>
                 <tr>
                     <td>
-                        <input type="checkbox" name="mails_logistico[]"
-                            value=""
+                        <input type="checkbox" name="mail_main" value="jesus.reyes@grupomexport.com"
                             class="form-check-input big-checkbox check-correo" style="cursor:pointer;" checked disabled>
                     </td>
                     <td>jesus.reyes@grupomexport.com</td>
                 </tr>
-                <tr>
-                    <td>
-                        <input type="checkbox" name="mails_logistico[]"
-                            value=""
-                            class="form-check-input big-checkbox" style="cursor:pointer;">
-                    </td>
-                    <td><?= htmlspecialchars($logistico['emails_contabilidad'] ?? '') ?></td>
-                </tr>
+                <?php foreach ($usuarios as $usuario): ?>
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="mails_amex[]"
+                                value="<?php echo htmlspecialchars($usuario['email']); ?>"
+                                class="form-check-input big-checkbox check-correo" style="cursor:pointer;">
+                        </td>
+                        <td><?php echo htmlspecialchars($usuario['email']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
+
     </div>
 </div>

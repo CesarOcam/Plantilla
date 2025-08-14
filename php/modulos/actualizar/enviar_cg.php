@@ -1,6 +1,6 @@
 <?php
 session_start();
-ob_start(); 
+ob_start();
 include('../conexion.php');
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -16,13 +16,20 @@ try {
         exit;
     }
 
-    if (!isset($_POST['id']) || empty($_POST['id'])) {
-        echo json_encode(['success' => false, 'message' => 'ID no proporcionado']);
+    $input = json_decode(file_get_contents('php://input'), true);
+    $id = $input['id'] ?? null;
+    $referenciaId = $id;
+
+    $mailsLogistico = $input['mails_logistico'] ?? [];
+    $mailsAmex = $input['mails_amex'] ?? [];
+    $response = ['success' => false, 'message' => '', 'debug' => ''];
+
+
+    if (!$id) {  // <-- usa $id, no $_POST
+        echo json_encode(['success' => false, 'message' => 'ID de la referencia no proporcionado']);
         exit;
     }
 
-    $id = $_POST['id'];
-    $referenciaId = $id;
 
     $stmt = $con->prepare("
             SELECT 
@@ -41,13 +48,13 @@ try {
                 r.PuertoDestino,
                 r.UsuarioAlta,
                 r.FechaAlta,
-                CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombre_usuario_alta
+               u.name AS nombre_usuario_alta
             FROM conta_referencias r
             LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
             LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
             LEFT JOIN 01clientes_exportadores exp2 ON r.ClienteLogisticoId = exp2.id01clientes_exportadores
             LEFT JOIN transporte bq ON r.BuqueId = bq.idtransporte
-            LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
+            LEFT JOIN sec_users u ON r.UsuarioAlta = u.login
             WHERE r.Id = :id
         ");
     $stmt->bindParam(':id', $referenciaId, PDO::PARAM_INT);
@@ -82,6 +89,15 @@ try {
     $resultado = true;
 
     if ($resultado) {
+
+        if (empty($mailsLogistico) && empty($mailsAmex)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No se seleccionaron correos para enviar'
+            ]);
+            exit;
+        }
+
         try {
             $mail = new PHPMailer(true);
 
@@ -95,11 +111,15 @@ try {
             $mail->Port = 465;
 
             $mail->setFrom('notificaciones@grupoamexport.com', 'Notificaciones Amexport');
-            //$mail->addAddress('jesus.reyes@grupoamexport.com');
-            $mail->addAddress('cesar.pulido@grupoamexport.com');
-            $mail->addCC('cesar.amexport@gmail.com');
             $mail->AddEmbeddedImage('../../../img/LogoAmex.png', 'logoAmex');
-            //$mail->addStringAttachment($pdfContent, "cuenta_gastos_$referenciaId.pdf");
+
+            foreach ($mailsLogistico as $correo) {
+                $mail->addAddress($correo);
+            }
+            foreach ($mailsAmex as $correo) {
+                $mail->addCC($correo);
+            }
+            $mail->addCC('cesar.pulido@grupoamexport.com');
 
             // Crear archivo ZIP temporal
             $zipFile = tempnam(sys_get_temp_dir(), "$suReferencia . $referenciaId . $nombreExportador") . '.zip';
@@ -164,8 +184,8 @@ try {
                             <p style="margin:0; font-weight:bold; font-size:18px;">CUENTA DE GASTOS</p>
                         </div>
                         <div>
-                            <p style="margin:0;"><strong>Aduana:</strong> '.$aduana.'</p>
-                            <p style="margin:0;"><strong>Referencia AMEX:</strong> '.$numero.'</p>
+                            <p style="margin:0;"><strong>Aduana:</strong> ' . $aduana . '</p>
+                            <p style="margin:0;"><strong>Referencia AMEX:</strong> ' . $numero . '</p>
                         </div>
                         </div>
                     </td>
@@ -183,11 +203,11 @@ try {
                         <tr>
                             <td width="48%" style="text-align:left; vertical-align:top;">
                             <p style="margin:0 0 6px 0; font-weight:bold;">FACTURADO A</p>
-                            <p style="margin:0;">'.$nombreLimpio2.'</p>
+                            <p style="margin:0;">' . $nombreLimpio2 . '</p>
                             </td>
                             <td width="48%" style="text-align:right; vertical-align:top;">
                             <p style="margin:0 0 6px 0; font-weight:bold;">COMPROBACIÓN DE GASTOS</p>
-                            <p style="margin:0;">Número '.$Cg['NumCg'].'</p>
+                            <p style="margin:0;">Número ' . $Cg['NumCg'] . '</p>
                             </td>
                         </tr>
                         </table>
@@ -196,11 +216,11 @@ try {
                         <tr>
                             <td width="48%" style="text-align:left; vertical-align:top;">
                             <p style="margin:0 0 6px 0; font-weight:bold;">EXPORTADOR:</p>
-                            <p style="margin:0;">'.$nombreExportador.'</p>
+                            <p style="margin:0;">' . $nombreExportador . '</p>
                             </td>
                             <td width="48%" style="text-align:right; vertical-align:top;">
                             <p style="margin:0 0 6px 0; font-weight:bold;">FECHA:</p>
-                            <p style="margin:0;">'.$fechaFormateada.'</p>
+                            <p style="margin:0;">' . $fechaFormateada . '</p>
                             </td>
                         </tr>
                         </table>
@@ -219,11 +239,11 @@ try {
                             </thead>
                             <tbody>
                             <tr>
-                                <td>'.$booking.'</td>
-                                <td>'.$nombreBuque.'</td>
-                                <td>'.$puertoDescarga.'</td>
-                                <td>'.$puertoDestino.'</td>
-                                <td>'.$suReferencia.'</td>
+                                <td>' . $booking . '</td>
+                                <td>' . $nombreBuque . '</td>
+                                <td>' . $puertoDescarga . '</td>
+                                <td>' . $puertoDestino . '</td>
+                                <td>' . $suReferencia . '</td>
                             </tr>
                             </tbody>
                         </table>
@@ -232,7 +252,7 @@ try {
                         <hr style="border:none; border-top:1px solid #ddd; margin:20px 0;">
 
                         <p style="margin:0 0 5px 0;">Atentamente,</p>
-                        <p style="margin:0;">'.$usuarioAltaRef.'</p>
+                        <p style="margin:0;">' . $usuarioAltaRef . '</p>
                     </td>
                     </tr>
                 </table>
@@ -240,14 +260,20 @@ try {
                 </html>
                 ';
             $mail->send();
- 
-            unlink($zipFile);
 
+            unlink($zipFile);
             $response['success'] = true;
             $response['message'] = 'Correo enviado correctamente.';
         } catch (Exception $mailError) {
+            $output = ob_get_clean(); // Captura cualquier salida previa
             $response['success'] = false;
-            $response['message'] = 'Error al enviar el correo en: ' . $mailError->getMessage();
+            $response['message'] = 'Error al enviar el correo: ' . $mailError->getMessage();
+            $response['debug'] = $output; // Esto mostrará warnings/notices antes del JSON
+        } catch (Throwable $e) { // Captura cualquier otro error
+            $output = ob_get_clean();
+            $response['success'] = false;
+            $response['message'] = 'Error general: ' . $e->getMessage();
+            $response['debug'] = $output;
         }
     } else {
         throw new Exception('Error al registrar pago.');
@@ -258,11 +284,10 @@ try {
     $response['message'] = 'Error: ' . $e->getMessage();
 }
 
-// Limpia buffers antes de enviar JSON
+// Si quedó algún buffer no capturado
 if (ob_get_length()) {
-    ob_end_clean();
+    $response['debug'] .= ob_get_clean();
 }
-
 echo json_encode($response);
 exit;
 ?>

@@ -63,7 +63,7 @@ $stmt = $con->prepare("
         r.FechaAlta,
         r.Status,
         r.UsuarioAlta,
-        CONCAT(u.nombreUsuario, ' ', u.apePatUsuario, ' ', u.apeMatUsuario) AS nombre_usuario_alta
+        u.name AS nombre_usuario_alta
     FROM conta_referencias r
     LEFT JOIN 2201aduanas a ON r.AduanaId = a.id2201aduanas
     LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
@@ -72,7 +72,7 @@ $stmt = $con->prepare("
     LEFT JOIN 2221_recintos rec ON r.RecintoId = rec.id2221_recintos
     LEFT JOIN transportista nav ON r.NavieraId = nav.idtransportista
     LEFT JOIN transporte bq ON r.BuqueId = bq.idtransporte
-    LEFT JOIN usuarios u ON r.UsuarioAlta = u.idusuarios
+    LEFT JOIN sec_users u ON r.UsuarioAlta = u.login
     WHERE r.Id = :id
 ");
 
@@ -878,21 +878,21 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 </div>
                 <!-- MODAL ENVIO CG -->
                 <div class="modal fade" id="modalEnvioCG" tabindex="-1" aria-labelledby="modalEnvioCGLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl modal-dialog-centered">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalEnvioCGLabel">Enviar Cuenta de Gastos a Cliente</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalEnvioCGLabel">Enviar Cuenta de Gastos a Cliente</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Aquí se cargan las tablas desde tablas_complementaria.php -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger rounded-0" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_enviarCG" data-referencia-id="<?= $id2 ?>">Enviar CG</button>
+                        </div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <!-- Aquí se cargan las tablas desde tablas_complementaria.php -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-danger rounded-0" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-outline-secondary rounded-0" id="guardarEnvioCg">Enviar</button>
-                    </div>
-                    </div>
-                </div>
                 </div>
             </form>
         </div>
@@ -1289,7 +1289,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 dropZoneDefault.classList.add('d-none');
             }
 
-
             tablaContenedores.addEventListener('click', function (e) {
                 if (e.target.closest('.btn-danger')) { // o '#btn-eliminar', según tengas el selector
                     const filaEliminada = e.target.closest('tr');
@@ -1315,6 +1314,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             });
 
         </script>
+        <script src="../../../js/actualizar/enviar_cg.js"></script>
         <script src="../../../js/consultar_Correos_Modal.js"></script>
         <script src="../../../js/guardar_Complementaria.js"></script>
         <script src="../../../js/actualizar/pasar_Conta.js"></script>

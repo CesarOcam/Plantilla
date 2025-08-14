@@ -203,80 +203,80 @@ document.getElementById('btnCargarTodos').addEventListener('click', () => {
     });
 
     // Esperamos a que todos los archivos se procesen
-Promise.all(readXmlPromises)
-    .then(results => {
-        const formData = new FormData();
+    Promise.all(readXmlPromises)
+        .then(results => {
+            const formData = new FormData();
 
-        pairs.forEach((pair, index) => {
-            formData.append(`xml_${index}`, pair.xml);
-            formData.append(`pdf_${index}`, pair.pdf);
-        });
+            pairs.forEach((pair, index) => {
+                formData.append(`xml_${index}`, pair.xml);
+                formData.append(`pdf_${index}`, pair.pdf);
+            });
 
-        formData.append('datos', JSON.stringify(results));
-        console.log('Todos los datos a enviar:', results);
+            formData.append('datos', JSON.stringify(results));
+            console.log('Todos los datos a enviar:', results);
 
-        for (let [key, value] of formData.entries()) {
-            if (value instanceof File) {
-                console.log(`Archivo -> ${key}:`, value.name);
-            } else {
-                console.log(`Campo -> ${key}:`, value);
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`Archivo -> ${key}:`, value.name);
+                } else {
+                    console.log(`Campo -> ${key}:`, value);
+                }
             }
-        }
 
-        return fetch('../../modulos/guardado/guardar_factura.php', {
-            method: 'POST',
-            body: formData
-        });
-    })
-    .then(async response => {
-        // Si status no es 2xx, lanzar error para ir al catch
-        if (!response.ok) {
+            return fetch('../../modulos/guardado/guardar_factura.php', {
+                method: 'POST',
+                body: formData
+            });
+        })
+        .then(async response => {
+            // Si status no es 2xx, lanzar error para ir al catch
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(`Error HTTP ${response.status}: ${text}`);
+            }
+            // Intentar parsear JSON, si falla mostrar el texto para debug
             const text = await response.text();
-            throw new Error(`Error HTTP ${response.status}: ${text}`);
-        }
-        // Intentar parsear JSON, si falla mostrar el texto para debug
-        const text = await response.text();
-        try {
-            return JSON.parse(text);
-        } catch (e) {
-            throw new Error(`Respuesta no JSON válida:\n${text}`);
-        }
-    })
-    .then(data => {
-        if (data.duplicado) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'UUID duplicado',
-                html: `El UUID <strong>${data.uuid}</strong> ya existe en la referencia: <strong>${data.referenciaNumero}</strong>. O está cargado en la tabla`,
-                confirmButtonText: 'Aceptar'
-            });
-            return;
-        }
-        console.log('Respuesta del servidor:', data);
-
-        allFiles.length = 0;
-        pairs.length = 0;
-        renderFilePairs();
-
-        fetch('../../modulos/consultas_traf/tabla_facturas.php')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('tabla-aduanas-container').innerHTML = html;
-                $('#tabla-aduanas-container select').select2({
-                    placeholder: 'Seleccionar',
-                    allowClear: false,
-                    width: '100%'
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Respuesta no JSON válida:\n${text}`);
+            }
+        })
+        .then(data => {
+            if (data.duplicado) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'UUID duplicado',
+                    html: `El UUID <strong>${data.uuid}</strong> ya existe en la ${data.tipo}: <strong>${data.referencia_numero}</strong>. O está cargado en la tabla`,
+                    confirmButtonText: 'Aceptar'
                 });
-            })
-            .catch(err => {
-                console.error('Error al recargar la tabla:', err);
-                alert('No se pudo recargar la tabla de facturas.');
-            });
-    })
-    .catch(error => {
-        console.error('Error al procesar o enviar los archivos:', error);
-        alert(`Error al procesar los archivos: ${error.message}`);
-    });
+                return;
+            }
+            console.log('Respuesta del servidor:', data);
+
+            allFiles.length = 0;
+            pairs.length = 0;
+            renderFilePairs();
+
+            fetch('../../modulos/consultas_traf/tabla_facturas.php')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('tabla-aduanas-container').innerHTML = html;
+                    $('#tabla-aduanas-container select').select2({
+                        placeholder: 'Seleccionar',
+                        allowClear: false,
+                        width: '100%'
+                    });
+                })
+                .catch(err => {
+                    console.error('Error al recargar la tabla:', err);
+                    alert('No se pudo recargar la tabla de facturas.');
+                });
+        })
+        .catch(error => {
+            console.error('Error al procesar o enviar los archivos:', error);
+            alert(`Error al procesar los archivos: ${error.message}`);
+        });
 
 });
 

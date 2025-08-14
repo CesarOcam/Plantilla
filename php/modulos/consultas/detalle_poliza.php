@@ -17,7 +17,7 @@ $stmt = $con->prepare("
         p.Fecha,
         p.Numero,
         p.Concepto,
-        CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS UsuarioAlta,
+        u.name AS UsuarioAlta,
         p.FechaAlta,
         CASE 
             WHEN p.Activo = 1 THEN 'EN TRÁFICO'
@@ -25,7 +25,7 @@ $stmt = $con->prepare("
         END AS Activo
     FROM conta_polizas p
     LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
-    LEFT JOIN usuarios u ON p.UsuarioAlta = u.idusuarios
+    LEFT JOIN sec_users u ON p.UsuarioAlta = u.login
     LEFT JOIN empresas e ON p.EmpresaId = e.Id
     WHERE p.Id = :id
 ");
@@ -65,11 +65,11 @@ $stmt = $con->prepare("
         p.Observaciones,
         p.NumeroFactura AS Factura,
         r.Numero AS ReferenciaNumero,
-        CONCAT(u1.nombreUsuario, ' ', u1.apePatUsuario, ' ', u1.apeMatUsuario) AS usuarioNombre,         -- created_by
-        CONCAT(u2.nombreUsuario, ' ', u2.apePatUsuario, ' ', u2.apeMatUsuario) AS usuarioSolicitudNombre -- UsuarioSolicitud
+        u1.name AS usuarioNombre,         -- created_by
+        u2.name AS usuarioSolicitudNombre -- UsuarioSolicitud
     FROM conta_partidaspolizas p
-    LEFT JOIN usuarios u1 ON p.created_by = u1.idusuarios
-    LEFT JOIN usuarios u2 ON p.UsuarioSolicitud = u2.idusuarios
+    LEFT JOIN sec_users u1 ON p.created_by = u1.login
+    LEFT JOIN sec_users u2 ON p.UsuarioSolicitud = u2.login
     LEFT JOIN cuentas c ON p.SubcuentaId = c.Id
     LEFT JOIN conta_referencias r ON p.ReferenciaId = r.Id
     WHERE p.PolizaId = :id
