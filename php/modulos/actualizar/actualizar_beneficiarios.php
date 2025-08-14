@@ -6,7 +6,6 @@ if (isset($_POST['id_beneficiario'], $_POST['nombre'])) {
     $id_beneficiario = (int) $_POST['id_beneficiario'];
     $subcuentas = $_POST['subcuentas'] ?? [];
     $nombre = $_POST['nombre'];
-    $nombreCorto = $_POST['nombre_corto'];
     $tipo = $_POST['tipo'];
     $rfc = $_POST['rfc'];
 
@@ -20,12 +19,11 @@ if (isset($_POST['id_beneficiario'], $_POST['nombre'])) {
 
     // Consulta UPDATE
     $sql = "UPDATE beneficiarios SET 
-        Nombre = ?, NombreCorto = ?, Tipo = ?, Rfc = ?,  FechaUltimaModificacion = ?, UsuarioUltimaModificacion = ?
+        Nombre = ?, Tipo = ?, Rfc = ?, FechaUltimaModificacion = ?, UsuarioUltimaModificacion = ?
         WHERE Id = ?";
 
     $params = [
         $nombre,
-        $nombreCorto,
         $tipo,
         $rfc,
         $fecha_modificacion,
@@ -40,13 +38,13 @@ if (isset($_POST['id_beneficiario'], $_POST['nombre'])) {
         if ($stmt) {
             $resultado = $stmt->execute($params);
 
-            $stmtDelete = $con->prepare("DELETE FROM subcuentas_beneficiarios WHERE beneficiario_id = ?");
+            $stmtDelete = $con->prepare("DELETE FROM subcuentasbeneficiarios WHERE BeneficiarioId = ?");
             $stmtDelete->execute([$id_beneficiario]);
 
 
             // Insertar las subcuentas restantes en subcuentasbeneficiarios
             if (count($subcuentas) > 0) {
-                $sqlSubcuentas = "INSERT INTO subcuentas_beneficiarios (beneficiario_id, subcuenta_id) VALUES (?, ?)";
+                $sqlSubcuentas = "INSERT INTO subcuentasbeneficiarios (BeneficiarioId, SubcuentaId) VALUES (?, ?)";
                 $stmtSub = $con->prepare($sqlSubcuentas);
 
                 foreach ($subcuentas as $idSubcuenta) {

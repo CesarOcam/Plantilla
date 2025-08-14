@@ -13,9 +13,9 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : 1;
 $stmt = $con->prepare("
     SELECT 
         b.Nombre, b.Tipo, b.Rfc, b.Activo, b.FechaAlta, b.UsuarioAlta,
-        CONCAT_WS(' ', u.NombreUsuario, u.apePatUsuario, u.apeMatUsuario) AS NombreUsuarioAlta
+        u.name AS NombreUsuarioAlta
     FROM beneficiarios b
-    LEFT JOIN usuarios u ON b.UsuarioAlta = u.idusuarios
+    LEFT JOIN sec_users u ON b.UsuarioAlta = u.login
     WHERE b.Id = :id
 ");
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -24,16 +24,16 @@ $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Subcuentas asignadas
 $stmtSub = $con->prepare("
-    SELECT subcuenta_id
-    FROM conta_subcuentas_beneficiarios
-    WHERE beneficiario_id = :id
+    SELECT SubcuentaId
+    FROM subcuentasbeneficiarios
+    WHERE BeneficiarioId = :id
 ");
 $stmtSub->bindParam(':id', $id, PDO::PARAM_INT);
 $stmtSub->execute();
 $subcuentaIds = $stmtSub->fetchAll(PDO::FETCH_COLUMN); // array plano con los IDs seleccionados
 
 // Obtener subcuentas en select
-$stmt = $con->prepare("SELECT Id, Numero, Nombre FROM cuentas WHERE CuentaPadreId IS NOT NULL");
+$stmt = $con->prepare(query: "SELECT Id, Numero, Nombre FROM cuentas WHERE CuentaPadreId IS NOT NULL");
 $stmt->execute();
 $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
