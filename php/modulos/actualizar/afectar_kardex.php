@@ -181,7 +181,7 @@ try {
         $numero = 'CG-' . str_pad($numero_siguiente, 6, '0', STR_PAD_LEFT);
 
 
-        $sql_guardar = "INSERT INTO conta_cuentas_kardex     
+        $sql_guardar = "INSERT INTO conta_cuentas_kardex
         (NumCg, Referencia, Logistico, Exportador, Barco, Booking, SuReferencia, Importe, Anticipos, Saldo, Fecha, Poliza_id, NumPoliza, Status, Created_by)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_guardar = $con->prepare($sql_guardar);
@@ -258,11 +258,11 @@ try {
         $cargoF = 0;
         $abonoF = 0;
 
-        if ($saldo < 0) {
-            $cargoF = -$saldo; // si es -1486, se vuelve 1486
+        if ($saldo > 0) {
+            $cargoF = $saldo;  // si es 1486, se queda así
             $abonoF = 0;
         } else {
-            $abonoF = $saldo;  // si es 1486, se queda así
+            $abonoF = -$saldo; // si es -1486, se vuelve 1486
             $cargoF = 0;
         }
 
