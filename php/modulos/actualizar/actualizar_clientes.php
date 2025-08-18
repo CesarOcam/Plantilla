@@ -6,6 +6,8 @@ if (isset($_POST['id_cliente'], $_POST['nombre'], $_POST['rfc'], $_POST['tipo'])
     $nombre = trim($_POST['nombre']);
     $curp = trim($_POST['curp'] ?? '');
     $rfc = trim($_POST['rfc']);
+    $nombre_factura = trim($_POST['nombre_factura'] ?? '');
+    $rfc_factura = trim($_POST['rfc_factura']);
     $tipo_persona = $_POST['tipo'];
     $tipo_cliente = $_POST['tipo_cliente'] ?? null;
     $nombre_conocido = trim($_POST['nombre_corto'] ?? '');
@@ -32,7 +34,7 @@ if (isset($_POST['id_cliente'], $_POST['nombre'], $_POST['rfc'], $_POST['tipo'])
         nombreCorto_exportador = ?, calle_exportador = ?, noExt_exportador = ?, noInt_exportador = ?, codigoPostal_exportador = ?,
         pagaCon_cliente = ?, colonia_exportador = ?, localidad_exportador = ?, municipio_exportador = ?,
         idcat11_estado = ?, id2204clave_pais = ?, contacto_cliente = ?, telefono_cliente = ?, logistico_asociado = ?,
-        status_exportador = ?, fecha_ultimaActualizacionClientes = ?, usuarioModificar_exportador = ?
+        status_exportador = ?, fecha_ultimaActualizacionClientes = ?, usuarioModificar_exportador = ?, nombre_factura = ?, rfc_factura = ?
         WHERE id01clientes_exportadores = ?";
 
     $paramsUpdate = [
@@ -58,7 +60,9 @@ if (isset($_POST['id_cliente'], $_POST['nombre'], $_POST['rfc'], $_POST['tipo'])
         $status,
         $fecha_modificacion,
         $usuarioModificacion,
-        $id_cliente
+        $id_cliente,
+        $nombre_factura,
+        $rfc_factura
     ];
 
     // Procesar correos recibidos

@@ -33,6 +33,8 @@ if (!empty($faltantes)) {
 $nombre = trim($_POST['nombre']);
 $curp = trim($_POST['curp'] ?? '');
 $rfc = trim($_POST['rfc']);
+$nombre_factura = trim($_POST['nombre_factura']);
+$rfc_factura = trim($_POST['rfc_factura']);
 $tipo_persona = $_POST['persona'];
 $tipo_cliente = $_POST['tipo'];
 $nombre_conocido = !empty(trim($_POST['nombre_corto'] ?? '')) ? trim($_POST['nombre_corto']) : null;
@@ -69,9 +71,9 @@ $sql = "INSERT INTO 01clientes_exportadores
     nombreCorto_exportador, calle_exportador, noExt_exportador, noInt_exportador, codigoPostal_exportador,
     pagaCon_cliente, colonia_exportador, localidad_exportador, municipio_exportador,
     idcat11_estado, id2204clave_pais, contacto_cliente, telefono_cliente, emails_trafico, logistico_asociado,
-    status_exportador, fechaAlta_exportador, usuarioAlta_exportador
+    status_exportador, nombre_factura, rfc_factura, fechaAlta_exportador, usuarioAlta_exportador
 )
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $params = [
     $nombre,
@@ -95,8 +97,10 @@ $params = [
     $email_trafico,
     $logistico,
     $status,
+    $nombre_factura,
+    $rfc_factura,
     $fecha_alta,
-    $usuarioAlta
+    $usuarioAlta,
 ];
 
 if (count($params) !== substr_count($sql, '?')) {

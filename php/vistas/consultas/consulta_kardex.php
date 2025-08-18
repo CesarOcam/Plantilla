@@ -41,6 +41,12 @@ $stmt = $con->prepare("
 $stmt->execute();
 $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador
+                       FROM 01clientes_exportadores 
+                       ORDER BY razonSocial_exportador");
+$stmt->execute();
+$exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -127,6 +133,10 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <button type="button" class="btn btn-outline-secondary rounded-0"
                                         id="btn_pagar">Pagar</button>
                                 </div>
+                                <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                                    <button type="button" class="btn btn-outline-secondary rounded-0"
+                                        id="btn_exportar">Exportar</button>
+                                </div>
                             </div>
                         </div>
                         <div class="row mt-0 pt-0">
@@ -149,10 +159,16 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     style="background-color: transparent;" aria-label="Filtrar por póliza">
                             </div>
                             <div class="col-3 d-flex flex-column">
-                                <label for="logisticoInput" class="form-label small mb-0">LOGÍSTICO:</label>
-                                <input type="text" id="logisticoInput"
-                                    class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" aria-label="Filtrar por póliza">
+                                <label for="comprobacionInput" class="form-label small mb-0">LOGÍSTICO:</label>
+                                <select id="logistico-select" name="logistico"
+                                    class="form-control rounded-0 border-0 border-bottom text-muted">
+                                    <option value="" selected disabled>Logístico *</option>
+                                    <?php foreach ($exp as $item): ?>
+                                        <option value="<?php echo $item['razonSocial_exportador']; ?>">
+                                            <?php echo $item['razonSocial_exportador']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div class="col-2 d-flex flex-column">
                                 <label for="tipoInput" class="form-label small mb-0">TIPO DE CONSULTA:</label>
@@ -264,6 +280,7 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
 
 
+
             const tipoInput = document.getElementById("tipoInput");
 
             tipoInput.addEventListener("change", () => {
@@ -293,9 +310,28 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 filtrarKardex();
             });
 
+
+            function initSelect2(id, placeholder) {
+                $(id).select2({
+                    placeholder: placeholder,
+                    allowClear: false,
+                    width: '100%'
+                });
+            }
+            initSelect2('#logistico-select', 'Logístico *');
+            $(document).on('select2:open', () => {
+                setTimeout(() => {
+                    let input = document.querySelector('.select2-container--open .select2-search__field');
+                    if (input) input.focus();
+                }, 100); // pequeño delay para asegurar que el input exista
+            });
+
+            // Función para cargar tabla filtrada
             // Función para cargar tabla filtrada
             function filtrarKardex() {
                 const tipo = document.getElementById("tipoInput").value;
+                const logistico = document.getElementById("logistico-select").value || '';
+
                 const params = new URLSearchParams({
                     status: document.getElementById("statusInput").value || '',
                     fecha_desde: document.getElementById("fechaDesdeInput").value || '',
@@ -303,7 +339,7 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     num: document.getElementById("numInput").value || '',
                     aduana: document.getElementById("aduanaInput").value || '',
                     referencia: document.getElementById("referenciaInput").value || '',
-                    logistico: document.getElementById("logisticoInput").value || '',
+                    logistico: logistico,
                     comprobacion: document.getElementById("comprobacionInput").value || '',
                     tipo: tipo,
                 });
@@ -317,14 +353,28 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     .then(html => {
                         document.getElementById("tabla-kardex-container").innerHTML = html;
                         inicializarEventosTabla();
+
+                        // 🔹 Habilitar el botón Exportar
+                        const btnExportar = document.getElementById("btn_exportar");
+                        if (logistico !== '') {
+                            btnExportar.disabled = false;
+                            btnExportar.onclick = () => {
+                                 window.location.href = "../../vistas/reportes/estado_cuentas_kardex.php?logistico=" + encodeURIComponent(logistico);
+                            };
+                        } else {
+                            btnExportar.disabled = true;
+                            btnExportar.onclick = null;
+                        }
                     })
                     .catch(err => console.error("Error al cargar la tabla:", err));
             }
+
             // Botón buscar
             const btnBuscar = document.getElementById("btn_buscar");
             if (btnBuscar) {
                 btnBuscar.addEventListener("click", filtrarKardex);
             }
+
 
             // Botón limpiar
             const btnLimpiar = document.getElementById("btn_limpiar");
@@ -336,7 +386,7 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     document.getElementById("numInput").value = '';
                     document.getElementById("aduanaInput").value = '';
                     document.getElementById("referenciaInput").value = '';
-                    document.getElementById("logisticoInput").value = '';
+                    document.getElementById("logistico-select").value = '';
                     filtrarKardex();
                 });
             }

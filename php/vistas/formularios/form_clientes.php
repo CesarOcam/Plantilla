@@ -197,6 +197,21 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     </div>
                 </div>
                 <div class="row">
+                    <label class="col-form-label col-sm-12 text-muted mt-3 ms-3" style="background-color: transparent;">
+                        Clientes Registrados Para Factura:
+                    </label>
+                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
+                        <input name="nombre_factura" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            style="background-color: transparent;" placeholder="NOMBRE"
+                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
+                        <input name="rfc_factura" type="text" class="form-control rounded-0 border-0 border-bottom"
+                            maxlength="13" style="background-color: transparent;" placeholder="RFC*"
+                            aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-2 col-sm-6 d-flex align-items-center mt-4 mb-3 ms-3">
                         <div class="row w-100 mt-2 mb-3">
                             <label class="col-form-label col-sm-12 text-muted" style="background-color: transparent;">
@@ -261,7 +276,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     </div>
                 </div>
 
-
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="button" class="btn btn-outline-danger rounded-0"
@@ -271,9 +285,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>
                     </div>
                 </div>
-
             </div>
-    </div>
+        </div>
     </form>
 </div>
 </div>
@@ -303,6 +316,27 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 const input = document.querySelector('.select2-container--open .select2-search__field');
                 if (input) input.focus();
             }, 100);
+        });
+    });
+
+    $(document).ready(function () {
+        // Seleccionar los inputs que quieres habilitar/deshabilitar
+        var $inputsFactura = $('input[name="rfc_factura"], input[name="nombre_factura"]');
+
+        // Deshabilitar por defecto al cargar la página
+        $inputsFactura.prop('disabled', true);
+
+        // Detectar cambio en el select
+        $('#tipo-select').on('change', function () {
+            var valor = $(this).val();
+
+            if (valor === '2' || valor === '3') {
+                // Habilitar los inputs
+                $inputsFactura.prop('disabled', false);
+            } else {
+                // Deshabilitar los inputs
+                $inputsFactura.prop('disabled', true);
+            }
         });
     });
 </script>

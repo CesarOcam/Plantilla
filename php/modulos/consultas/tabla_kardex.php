@@ -57,11 +57,6 @@ if (!empty($_GET['logistico'])) {
     $params[':logistico'] = "%" . $_GET['logistico'] . "%";
 }
 
-/*Tipo de consulta (lo dejaremos preparado, aunque no se use ahora)
-if (!empty($_GET['tipo'])) {
-    $where[] = "c.TipoConsulta = :tipo";
-    $params[':tipo'] = $_GET['tipo'];
-}*/
 
 $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
 

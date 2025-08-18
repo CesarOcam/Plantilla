@@ -51,6 +51,7 @@ try {
     $totalAnticipos = 0;
     $saldo = 0;
     $subcuentasValidas = [123, 114, 214];
+    $UsuarioSolicitud = '';
 
     foreach ($partidas as $partida) {
         $subcuentaId = $partida['SubcuentaId'];
@@ -95,6 +96,7 @@ try {
         $totalAnticipos += $abono_nuevo;
 
         $observaciones = 'Contrapartida automática';
+        $UsuarioSolicitud = $partida['UsuarioSolicitud'];
 
         $partidas_a_insertar[] = [
             'PolizaId' => $polizaId,
@@ -103,7 +105,8 @@ try {
             'Cargo' => $cargo_nuevo,
             'Abono' => $abono_nuevo,
             'Observaciones' => $observaciones,
-            'Activo' => 1
+            'Activo' => 1,
+            'UsuarioSolicitud' => $UsuarioSolicitud,
         ];
 
         // Marcar esta subcuenta como ya insertada
@@ -205,8 +208,8 @@ try {
 
         // Insertar partidas
         $sql_partida = "INSERT INTO conta_partidaspolizas     
-        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex, UsuarioSolicitud, created_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_partida = $con->prepare($sql_partida);
 
         foreach ($partidas_a_insertar as $p) {
@@ -218,7 +221,9 @@ try {
                 $p['Abono'],
                 $p['Observaciones'],
                 $p['Activo'],
-                1
+                1,
+                $p['UsuarioSolicitud'],
+                $usuarioAlta
             ]);
         }
 
@@ -270,8 +275,8 @@ try {
         if ($saldo != 0) {
             // Insertar partida Cliente
             $sql_cuentaCliente = "INSERT INTO conta_partidaspolizas     
-                (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Activo, EnKardex)
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+                (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Activo, EnKardex, UsuarioSolicitud, created_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt_cuentaCli = $con->prepare($sql_cuentaCliente);
             if (
@@ -282,7 +287,9 @@ try {
                     $cargoF,
                     $abonoF,
                     1,
-                    1
+                    1,
+                    $UsuarioSolicitud,
+                    $usuarioAlta
                 ])
             ) {
                 $errorInfo = $stmt_cuentaCli->errorInfo();
