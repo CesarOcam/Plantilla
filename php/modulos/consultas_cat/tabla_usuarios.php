@@ -32,25 +32,24 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </thead>
     <tbody class="small">
         <?php if ($usuarios): ?>
+            <?php $contador = 1; ?>
             <?php foreach ($usuarios as $row): ?>
                 <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '#';}" style="cursor: pointer;">
-                    <td></td>
+                    <td><?php echo $contador++; ?></td>
                     <td><?php echo htmlspecialchars($row['login']); ?></td>
                     <td><?php echo htmlspecialchars($row['name']); ?></td>
                     <td><?php echo htmlspecialchars($row['email']); ?></td>
                     <td><?php echo htmlspecialchars($row['departamento']); ?></td>
                     <td>
-                        <?php
-                        echo ($row['active'] === 'Y') ? 'Activo' : 'Inactivo';
-                        ?>
+                        <?php echo ($row['active'] === 'Y') ? 'Activo' : 'Inactivo'; ?>
                     </td>
-
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="5">No se encontraron registros</td>
+                <td colspan="6">No se encontraron registros</td>
             </tr>
         <?php endif; ?>
     </tbody>
+
 </table>
