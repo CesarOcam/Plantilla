@@ -3,10 +3,7 @@ session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: /portal_web/Contabilidad/login.php');  // Ruta desde la raíz del servidor web
-    exit;
-
-    include_once __DIR__ . '/../../../config.php';
-}
+    exit;}
 ?>
 <!DOCTYPE html>
 <html lang="en">
