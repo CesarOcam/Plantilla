@@ -20,6 +20,13 @@ $stmt = $con->prepare("
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $buque = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Consulta para obtener los países
+$stmt = $con->prepare("SELECT id2204clave_pais, CONCAT(id2204clave_pais, ' - ', clave_SAAI_M3, ' - ', pais_clave) AS nombre_pais 
+                       FROM 2204claves_paises 
+                       ORDER BY id2204clave_pais, clave_SAAI_M3, pais_clave");
+$stmt->execute();
+$paises = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -76,6 +83,20 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             class="form-control input-transparent border-0 border-bottom rounded-0"
                             style="background-color: transparent;" value="<?php echo $buque['identificacion']; ?>"
                             >
+                    </div>
+                     <div class="col-10 col-sm-4 mt-4">
+                        <label for="nombre" class="form-label text-muted small">NOMBRE :</label>
+                        <select id="pais-select" name="pais"
+                            class="form-control rounded-0 border-0 border-bottom text-muted"
+                            style="background-color: transparent;" aria-label="Filtrar por fecha"
+                            aria-describedby="basic-addon1">
+                            <option value="" selected disabled>Pais</option>
+                            <?php foreach ($paises as $pais): ?>
+                                <option value="<?php echo $pais['id2204clave_pais']; ?>">
+                                    <?php echo $pais['nombre_pais']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="row">

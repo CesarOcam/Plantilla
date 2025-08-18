@@ -65,7 +65,7 @@ if (isset($_POST['nombre'], $_POST['tipo'])) {
 
     // Insertar las subcuentas restantes en subcuentasbeneficiarios
     if (count($subcuentas) > 0) {
-        $sqlSubcuentas = "INSERT INTO conta_subcuentas_beneficiarios (beneficiario_id, subcuenta_id) VALUES (?, ?)";
+        $sqlSubcuentas = "INSERT INTO subcuentasbeneficiarios (BeneficiarioId, SubcuentaId) VALUES (?, ?)";
         $stmtSub = $con->prepare($sqlSubcuentas);
 
         foreach ($subcuentas as $idSubcuenta) {

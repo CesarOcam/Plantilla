@@ -100,7 +100,6 @@ if (!isset($_SESSION['usuario_id'])) {
         });
     </script>
     <script src="../../../js/desactivar_Usuarios.js"></script>
-
 </body>
 
 </html>

@@ -121,7 +121,7 @@ try {
     exit;
 }
 
-//--------------------Guardar subcuentas 1-------------------------------
+//--------------------Guardar subcuentas 1-----------------------------
 $poliza_id = $con->lastInsertId();
 $abono = 0;
 switch ((int)$aduana) {
