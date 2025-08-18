@@ -23,11 +23,11 @@ if (!isset($_SESSION['usuario_id'])) {
     <link rel="stylesheet" href="../../../css/style.css">
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -52,11 +52,12 @@ if (!isset($_SESSION['usuario_id'])) {
                             <i class="fas fa-ban"></i>
                         </button>
 
-                        <a href="../formularios/form_buques.php"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar nuevo"
-                            style="text-decoration: none; color: black; font-size: 1.3rem;">
-                            <i class="fas fa-plus mt-2"></i>
-                        </a>
+                        <?php if (isset($_SESSION['departamento']) && $_SESSION['departamento'] == 1): ?>
+                            <a href="../formularios/form_buques.php" data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="Agregar nuevo" style="text-decoration: none; color: black; font-size: 1.3rem;">
+                                <i class="fas fa-plus mt-2"></i>
+                            </a>
+                        <?php endif; ?>
                         <span class="mx-2">
                             <h5>|</h5>
                         </span>

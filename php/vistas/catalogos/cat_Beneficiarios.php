@@ -52,11 +52,12 @@ if (!isset($_SESSION['usuario_id'])) {
                             <i class="fas fa-ban"></i>
                         </button>
 
-                        <a href="../formularios/form_beneficiarios.php"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar nuevo"
-                            style="text-decoration: none; color: black; font-size: 1.3rem;">
-                            <i class="fas fa-plus mt-2"></i>
-                        </a>
+                        <?php if (isset($_SESSION['departamento']) && $_SESSION['departamento'] == 1): ?>
+                            <a href="../formularios/form_beneficiarios.php" data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="Agregar nuevo" style="text-decoration: none; color: black; font-size: 1.3rem;">
+                                <i class="fas fa-plus mt-2"></i>
+                            </a>
+                        <?php endif; ?>
 
                         <span class="mx-2">
                             <h5>|</h5>

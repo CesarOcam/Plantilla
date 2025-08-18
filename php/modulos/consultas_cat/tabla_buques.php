@@ -56,7 +56,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <?php foreach ($buque as $row): ?>
                 <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_buques.php?id=<?php echo $row['idtransporte']; ?>';}" style="cursor: pointer;">
                     <th scope="row">
-                        <input class="form-check-input mt-1 chkNaviera" type="checkbox" value="<?php echo $row['idtransporte']; ?>" aria-label="Checkbox for following text input">
+                        <input class="form-check-input mt-1 chkBuque" type="checkbox" value="<?php echo $row['idtransporte']; ?>" aria-label="Checkbox for following text input">
                     </th>
                     <td><?php echo $row['idtransporte']; ?></td>
                     <td><?php echo $row['identificacion']; ?></td>
