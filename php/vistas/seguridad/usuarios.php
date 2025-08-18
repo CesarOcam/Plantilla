@@ -46,33 +46,7 @@ if (!isset($_SESSION['usuario_id'])) {
                                 style="background-color: transparent;" placeholder="Filtrar aduana por nombre"
                                 aria-label="Filtrar por fecha" aria-describedby="basic-addon1">
                         </div>
-                        <div
-                            class="col-12 col-sm-2 d-flex align-items-center justify-content-start justify-content-sm-end mt-2 mt-sm-0">
-                            <!-- Botón solo icono sin borde ni fondo, más a la izquierda -->
-                            <button id="btnDesactivar" type="button" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Desactivar"
-                                style="border: none; background: transparent; padding: 0; font-size: 1.5rem; color:rgba(161, 155, 155, 0.62); cursor: pointer; display: none;"
-                                class="me-5 mt-2">
-                                <i class="fas fa-ban"></i>
-                            </button>
-                            <a href="../formularios/form_aduanas.php"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar nuevo"
-                                style="text-decoration: none; color: black; font-size: 1.3rem;">
-                                <i class="fas fa-plus mt-2"></i>
-                            </a>
-
-                            <span class="mx-2">
-                                <h5>|</h5>
-                            </span>
-
-                            <!-- Interruptor de modo oscuro / claro -->
-                            <label class="switch mt-2">
-                                <input type="checkbox" id="modeToggle">
-                                <span class="slider"></span>
-                            </label>
-
-                            <p class="mb-0 ms-2 mt-2">Mostrar inactivos</p>
-                        </div>
+                        
                     </div>
                 </div>
 
