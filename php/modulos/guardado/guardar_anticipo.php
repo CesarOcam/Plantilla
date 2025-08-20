@@ -1,5 +1,5 @@
 <?php
-session_start(); 
+session_start();
 include('../conexion.php');
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode([
@@ -129,6 +129,14 @@ if (isset($_POST['aduana'], $_POST['beneficiario'], $_POST['Subcuenta'], $_POST[
             $activo,
             $factura,
             $usuarioAlta      // NumeroFactura
+        ]);
+        // --- Actualizar saldo de la subcuenta ---
+        $sql_actualizar_saldo = "UPDATE cuentas SET Saldo = Saldo + :cargo - :abono WHERE Id = :subcuentaId";
+        $stmt_saldo = $con->prepare($sql_actualizar_saldo);
+        $stmt_saldo->execute([
+            ':cargo' => $cargo,
+            ':abono' => $abono,
+            ':subcuentaId' => $subcuenta_id
         ]);
     }
 

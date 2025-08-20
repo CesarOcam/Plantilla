@@ -124,7 +124,7 @@ try {
 //--------------------Guardar subcuentas 1-----------------------------
 $poliza_id = $con->lastInsertId();
 $abono = 0;
-switch ((int)$aduana) {
+switch ((int) $aduana) {
     case 74:
         $subcuenta = 35;
         break;
@@ -164,6 +164,15 @@ $params = [
     $usuarioAlta
 ];
 
+// --- Actualizar saldo de la subcuenta ---
+$sql_actualizar_saldo = "UPDATE cuentas SET Saldo = Saldo + :cargo - :abono WHERE Id = :subcuentaId";
+$stmt_saldo = $con->prepare($sql_actualizar_saldo);
+$stmt_saldo->execute([
+    ':cargo' => $cargos,
+    ':abono' => $abono,
+    ':subcuentaId' => $subcuenta
+]);
+
 try {
     $stmt_partida = $con->prepare($sql_insert_partida);
     $resultado = $stmt_partida->execute($params);
@@ -187,7 +196,7 @@ try {
 
 //--------------------Guardar subcuentas 2-------------------------------
 $cargos = 0;
-switch ((int)$aduana) {
+switch ((int) $aduana) {
     case 74:
         $subcuenta = 237; //VERACRUZ
         break;
@@ -212,8 +221,8 @@ switch ((int)$aduana) {
 }
 
 $sql_insert_partida2 = "INSERT INTO conta_partidaspolizas 
-    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at, created_by)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, created_at, created_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $params = [
     $poliza_id,
@@ -226,6 +235,15 @@ $params = [
     $fecha_alta,
     $usuarioAlta
 ];
+
+// --- Actualizar saldo de la subcuenta ---
+$sql_actualizar_saldo = "UPDATE cuentas SET Saldo = Saldo + :cargo - :abono WHERE Id = :subcuentaId";
+$stmt_saldo = $con->prepare($sql_actualizar_saldo);
+$stmt_saldo->execute([
+    ':cargo' => $cargos,
+    ':abono' => $subtotal,
+    ':subcuentaId' => $subcuenta
+]);
 
 try {
     $stmt_partida2 = $con->prepare($sql_insert_partida2);
@@ -267,6 +285,15 @@ $params = [
     $fecha_alta,
     $usuarioAlta
 ];
+
+// --- Actualizar saldo de la subcuenta ---
+$sql_actualizar_saldo = "UPDATE cuentas SET Saldo = Saldo + :cargo - :abono WHERE Id = :subcuentaId";
+$stmt_saldo = $con->prepare($sql_actualizar_saldo);
+$stmt_saldo->execute([
+    ':cargo' => $cargos,
+    ':abono' => $iva,
+    ':subcuentaId' => $subcuenta
+]);
 
 try {
     $stmt_partida3 = $con->prepare($sql_insert_partida3);

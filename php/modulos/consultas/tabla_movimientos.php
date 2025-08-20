@@ -47,6 +47,7 @@ try {
             b.Nombre AS NombreBeneficiario,
             CONCAT(c.Numero, ' - ', c.Nombre) AS Cuenta,
             pp.PolizaId,
+            pp.Partida AS IdPartida,
             pp.Cargo AS Cargo,
             pp.Abono AS Abono,
             pp.Observaciones,
@@ -116,7 +117,6 @@ try {
                                     <td><?= $fila['Cuenta'] ?></td>
                                     <td>$<?= number_format($fila['Cargo'], 2) ?></td>
                                     <td>$<?= number_format($fila['Abono'], 2) ?></td>
-
                                     <!-- OBSERVACIONES -->
                                     <td>
                                         <button type="button" class="btn btn-link p-0 text-start obs-edit"
@@ -124,12 +124,16 @@ try {
                                             data-partida-id="<?= $partidaId ?>"
                                             data-observaciones="<?= htmlspecialchars($fila['Observaciones'] ?? '', ENT_QUOTES) ?>"
                                             title="Editar observaciones">
+
                                             <span class="observaciones-text">
-                                                <?= htmlspecialchars($fila['Observaciones'] ?? '—') ?>
+                                                <?= !empty($fila['Observaciones']) ? htmlspecialchars($fila['Observaciones']) : '' ?>
                                             </span>
+                                            <?php if (empty($fila['Observaciones'])): ?>
+                                                <i class="bi bi-pencil-square ms-1 text-secondary" style="font-size: 1.2rem;"></i>
+                                            <?php endif; ?>
+
                                         </button>
                                     </td>
-
                                     <!-- ARCHIVO -->
                                     <td class="text-center">
                                         <?php
@@ -186,6 +190,13 @@ try {
                     <tbody>
                         <?php if ($datos2): ?>
                             <?php foreach ($datos2 as $fila2): ?>
+                                <?php
+                                $partidaId = (int) $fila2['IdPartida'];
+                                // Verificar si ya hay archivo(s) para esta partida
+                                $sqlCheck = "SELECT COUNT(*) as total FROM conta_referencias_archivos WHERE Partida_id = $partidaId";
+                                $resCheck = $con->query($sqlCheck)->fetch(PDO::FETCH_ASSOC);
+                                $yaTieneArchivo = $resCheck['total'] > 0;
+                                ?>
                                 <tr class="small" data-partida-id="<?= $partidaId ?>">
                                     <td>
                                         <a href="detalle_poliza.php?id=<?= $fila2['PolizaId'] ?>">
@@ -197,27 +208,49 @@ try {
                                     <td>$<?= number_format($fila2['Cargo'], 2) ?></td>
                                     <td>$<?= number_format($fila2['Abono'], 2) ?></td>
 
-                                    <!-- OBSERVACIONES clickeable: abre modal -->
+                                    <!-- OBSERVACIONES -->
                                     <td>
                                         <button type="button" class="btn btn-link p-0 text-start obs-edit"
                                             data-bs-toggle="modal" data-bs-target="#modalObservaciones"
-                                            data-poliza-id="<?= (int) $fila2['PolizaId'] ?>"
+                                            data-partida-id="<?= $partidaId ?>"
                                             data-observaciones="<?= htmlspecialchars($fila2['Observaciones'] ?? '', ENT_QUOTES) ?>"
                                             title="Editar observaciones">
+
                                             <span class="observaciones-text">
-                                                <?= htmlspecialchars($fila2['Observaciones'] ?? '—') ?>
+                                                <?= !empty($fila2['Observaciones']) ? htmlspecialchars($fila2['Observaciones']) : '' ?>
                                             </span>
+                                            <?php if (empty($fila2['Observaciones'])): ?>
+                                                <i class="bi bi-pencil-square ms-1 text-secondary" style="font-size: 1.2rem;"></i>
+                                            <?php endif; ?>
+
                                         </button>
                                     </td>
 
-                                    <!-- BOTÓN para subir archivo: abre modal -->
+                                    <!-- ARCHIVO -->
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-outline-success btn-sm upload-file"
-                                            data-bs-toggle="modal" data-bs-target="#modalUploadArchivo"
-                                            data-poliza-id="<?= (int) $fila['PolizaId'] ?>" title="Subir archivo">
-                                            <i class="bi bi-cloud-upload"></i>
-                                        </button>
-
+                                        <?php
+                                        if ($yaTieneArchivo) {
+                                            // Obtener el primer archivo para esta partida
+                                            $sqlArchivo = "SELECT Nombre FROM conta_referencias_archivos WHERE Partida_id = $partidaId LIMIT 1";
+                                            $resArchivo = $con->query($sqlArchivo)->fetch(PDO::FETCH_ASSOC);
+                                            $nombreArchivo = htmlspecialchars($resArchivo['Nombre'] ?? 'Archivo');
+                                            ?>
+                                            <i class="bi bi-check-circle-fill text-success fs-5 me-1" style="cursor: pointer;"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Archivo subido: <?= $nombreArchivo ?>">
+                                            </i>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <button type="button" class="btn btn-outline-success btn-sm upload-file"
+                                                data-bs-toggle="modal" data-bs-target="#modalUploadArchivo"
+                                                data-poliza-id="<?= (int) $fila2['PolizaId'] ?>" data-partida-id="<?= $partidaId ?>"
+                                                title="Subir archivo">
+                                                <i class="bi bi-cloud-upload"></i>
+                                            </button>
+                                            <?php
+                                        }
+                                        ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -227,6 +260,7 @@ try {
                             </tr>
                         <?php endif; ?>
                     </tbody>
+
                 </table>
             </div>
 

@@ -103,11 +103,12 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
         // Insertar las partidas de la solicitud
         $sql_insertar_partidas = "INSERT INTO conta_partidaspolizas 
-        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Activo, Observaciones, NumeroFactura, UsuarioSolicitud)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Pagada, Activo, Observaciones, NumeroFactura, UsuarioSolicitud)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_partidas);
 
         $abono = 0;
+
         foreach ($partidas as $partida) {
             $stmt_data->execute([
                 $poliza_id,
@@ -120,6 +121,15 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
                 $partida['Observaciones'],
                 $partida['NumeroFactura'],
                 $partida['Created_by']
+            ]);
+
+            // --- Actualizar saldo de la subcuenta ---
+            $sql_actualizar_saldo = "UPDATE cuentas SET Saldo = Saldo + :cargo - :abono WHERE Id = :subcuentaId";
+            $stmt_saldo = $con->prepare($sql_actualizar_saldo);
+            $stmt_saldo->execute([
+                ':cargo' => $partida['Importe'],
+                ':abono' => $abono,
+                ':subcuentaId' => $partida['SubcuentaId']
             ]);
         }
 
@@ -137,24 +147,32 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
         // Insertar la partida de pago con la validación de pagada
         $cargo = 0;
         $sql_insertar_pago = "INSERT INTO conta_partidaspolizas
-                (PolizaId, SubcuentaId, Cargo, Abono, Pagada, Observaciones, Activo, created_by)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    (PolizaId, SubcuentaId, Cargo, Abono, Pagada, Observaciones, Activo, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_data = $con->prepare($sql_insertar_pago);
         $stmt_data->execute([
             $poliza_id,
             $subcuenta_pago,
             $cargo,
             $importe,
-            $pagada,         
+            $pagada,
             $observaciones_pago,
             $activo,
             $usuarioAlta
         ]);
 
+        // --- Actualizar saldo de la subcuenta de pago ---
+        $sql_actualizar_saldo_pago = "UPDATE cuentas SET Saldo = Saldo + :cargo - :abono WHERE Id = :subcuentaId";
+        $stmt_saldo_pago = $con->prepare($sql_actualizar_saldo_pago);
+        $stmt_saldo_pago->execute([
+            ':cargo' => $cargo,
+            ':abono' => $importe,
+            ':subcuentaId' => $subcuenta_pago
+        ]);
         // También actualizamos la póliza según si la cuenta empieza con 113
         $stmt_update_poliza = $con->prepare("UPDATE conta_polizas SET Pagada = ? WHERE Id = ?");
         $stmt_update_poliza->execute([$pagada, $poliza_id]);
-        
+
         // Obtener la última partida de esa póliza
         $sql_ultima_partida = "SELECT Pagada FROM conta_partidaspolizas WHERE PolizaId = ? ORDER BY Partida DESC LIMIT 1";
         $stmt_ultima = $con->prepare($sql_ultima_partida);

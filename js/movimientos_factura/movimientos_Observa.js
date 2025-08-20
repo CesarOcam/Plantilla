@@ -1,4 +1,3 @@
-// --- Abrir modal Observaciones con datos de la fila ---
 document.addEventListener('click', function (e) {
     const btn = e.target.closest('.obs-edit');
     if (!btn) return;
@@ -16,8 +15,6 @@ document.getElementById('btnGuardarObs').addEventListener('click', function (e) 
     var partidaId = $('#obsPartidaId').val();
     var observaciones = $('#obsTexto').val();
 
-    console.log('Datos a enviar al servidor:', { partidaId, observaciones });
-
     $.ajax({
         url: '../../modulos/actualizar/actualizar_subcuentaObs.php',
         type: 'POST',
@@ -26,8 +23,24 @@ document.getElementById('btnGuardarObs').addEventListener('click', function (e) 
             Observaciones: observaciones
         },
         success: function (res) {
-            console.log('Respuesta del servidor:', res);
             if (res.status === 'ok') {
+                $('#modalObservaciones').modal('hide');
+
+                const $btn = $('button.obs-edit[data-partida-id="' + partidaId + '"]');
+                $btn.attr('data-observaciones', observaciones);
+
+                const $span = $btn.find('.observaciones-text');
+
+                if (observaciones.trim() === '') {
+                    $span.text('');
+                    if ($btn.find('i.bi-pencil-square').length === 0) {
+                        $btn.append('<i class="bi bi-pencil-square ms-1 text-secondary" style="font-size: 1.2rem;"></i>');
+                    }
+                } else {
+                    $span.text(observaciones);
+                    $btn.find('i.bi-pencil-square').remove();
+                }
+
                 Swal.fire({
                     icon: 'success',
                     title: '¡Listo!',
@@ -35,12 +48,6 @@ document.getElementById('btnGuardarObs').addEventListener('click', function (e) 
                     timer: 2000,
                     showConfirmButton: false
                 });
-                $('#modalObservaciones').modal('hide');
-
-                $('button[data-partida-id="' + partidaId + '"]')
-                    .attr('data-observaciones', observaciones)
-                    .find('.observaciones-text')
-                    .text(observaciones);
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: res.message });
             }
@@ -51,4 +58,3 @@ document.getElementById('btnGuardarObs').addEventListener('click', function (e) 
         }
     });
 });
-

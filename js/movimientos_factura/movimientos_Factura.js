@@ -3,7 +3,8 @@ document.addEventListener('click', function (e) {
   if (!btn) return;
 
   const polizaId = btn.getAttribute('data-poliza-id');
-  const partidaId = btn.closest('tr').querySelector('.obs-edit').getAttribute('data-partida-id');
+  const partidaId = btn.getAttribute('data-partida-id') ||
+    btn.closest('tr').querySelector('.obs-edit').getAttribute('data-partida-id');
 
   document.getElementById('uploadPolizaId').value = polizaId;
   document.getElementById('uploadPartidaId').value = partidaId;
@@ -19,15 +20,12 @@ const form = document.getElementById('formUploadArchivo');
 const typeHint = form.querySelector('.form-text');
 const btnSubir = document.getElementById('btnSubirArchivo');
 
-// Clic en área drag abre input
 dropArea.addEventListener('click', () => fileInput.click());
 
-// Evitar comportamiento por defecto
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
   dropArea.addEventListener(eventName, e => e.preventDefault());
 });
 
-// Efectos visuales
 ['dragenter', 'dragover'].forEach(eventName => {
   dropArea.addEventListener(eventName, () => dropArea.classList.add('bg-light'));
 });
@@ -35,7 +33,6 @@ dropArea.addEventListener('click', () => fileInput.click());
   dropArea.addEventListener(eventName, () => dropArea.classList.remove('bg-light'));
 });
 
-// Manejar archivo arrastrado
 dropArea.addEventListener('drop', (e) => {
   const files = e.dataTransfer.files;
   if (files.length > 0) {
@@ -44,12 +41,10 @@ dropArea.addEventListener('drop', (e) => {
   }
 });
 
-// Cambiar texto cuando se selecciona un archivo manualmente
 fileInput.addEventListener('change', () => {
   updateDropText(fileInput.files);
 });
 
-// Función para mostrar archivos seleccionados y validar nombres
 function updateDropText(files) {
   if (files.length === 0) {
     dropText.textContent = 'Arrastra tu archivo aquí';
@@ -60,7 +55,6 @@ function updateDropText(files) {
 
   dropText.textContent = Array.from(files).map(f => f.name).join(', ');
 
-  // Validar cantidad de archivos
   if (files.length > 2) {
     typeHint.textContent = 'Solo se permiten 2 archivos: PDF y XML';
     typeHint.style.color = 'red';
@@ -68,7 +62,6 @@ function updateDropText(files) {
     return;
   }
 
-  // Validar PDF y XML
   const pdf = Array.from(files).find(f => f.name.toLowerCase().endsWith('.pdf'));
   const xml = Array.from(files).find(f => f.name.toLowerCase().endsWith('.xml'));
 
@@ -92,7 +85,6 @@ function updateDropText(files) {
       typeHint.style.color = 'red';
       btnSubir.disabled = true;
     } else {
-      // Todo correcto: mostrar palomita verde y resetear color
       typeHint.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Archivos correctos, listos para enviar';
       typeHint.style.color = '';
       btnSubir.disabled = false;
@@ -104,7 +96,42 @@ btnSubir.addEventListener('click', async () => {
   const files = fileInput.files;
   if (files.length !== 2) return;
 
+  // Obtener el XML
+  const xmlFile = Array.from(files).find(f => f.name.toLowerCase().endsWith('.xml'));
+  if (!xmlFile) return alert('No se encontró el archivo XML');
+
+  // Leer el XML y extraer UUID
+  const uuid = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const xmlText = e.target.result;
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
+        const CFDI_NS = "http://www.sat.gob.mx/cfd/4";
+        const TFD_NS = "http://www.sat.gob.mx/TimbreFiscalDigital";
+
+        const complemento = xmlDoc.getElementsByTagNameNS(CFDI_NS, 'Complemento')[0];
+        const timbre = complemento?.getElementsByTagNameNS(TFD_NS, 'TimbreFiscalDigital')[0];
+        const uuid = timbre?.getAttribute('UUID');
+
+        if (!uuid) reject(new Error('No se pudo extraer el UUID del XML'));
+        else resolve(uuid);
+      } catch (err) {
+        reject(err);
+      }
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(xmlFile);
+  }).catch(err => {
+    alert(err.message);
+    throw err;
+  });
+
+  // Preparar FormData y enviar al backend
   const formData = new FormData(form);
+  formData.append('UUID', uuid);
 
   try {
     const resp = await fetch('../../modulos/actualizar/subir_fact_movimientos.php', {
@@ -116,15 +143,25 @@ btnSubir.addEventListener('click', async () => {
     const json = JSON.parse(text);
 
     if (!json.ok) {
-      alert('Error al subir archivos: ' + (json.msg || ''));
+      // Verificar si es un UUID duplicado
+      if (json.uuid) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'UUID duplicado',
+          html: `El UUID <strong>${json.uuid}</strong> ya existe en la base de datos.`,
+          confirmButtonText: 'Aceptar'
+        });
+      } else {
+        // Otro tipo de error
+        alert('Error al subir archivos: ' + (json.msg || ''));
+      }
       return;
     }
 
-    // --- Cerrar modal ---
+    // Todo correcto: cerrar modal y actualizar interfaz
     const modalEl = document.getElementById('modalUploadArchivo');
     bootstrap.Modal.getInstance(modalEl).hide();
 
-    // --- Actualizar fila correspondiente ---
     const partidaId = document.getElementById('uploadPartidaId').value;
     const fila = document.querySelector(`tr[data-partida-id="${partidaId}"]`);
     if (fila) {
@@ -133,13 +170,6 @@ btnSubir.addEventListener('click', async () => {
       new bootstrap.Tooltip(tdArchivo.querySelector('i'));
     }
 
-    // --- Guardar tab activo antes de recargar ---
-    const activeTabEl = document.querySelector('button[data-bs-toggle="tab"].active');
-    if (activeTabEl) {
-      localStorage.setItem('activeTab', activeTabEl.getAttribute('data-bs-target'));
-    }
-
-    // --- Toast y recarga ---
     Swal.fire({
       toast: true,
       position: 'top-end',
@@ -150,7 +180,6 @@ btnSubir.addEventListener('click', async () => {
       timerProgressBar: true
     }).then(() => location.reload());
 
-    // Resetear formulario y drag area
     form.reset();
     updateDropText([]);
 
@@ -160,9 +189,9 @@ btnSubir.addEventListener('click', async () => {
   }
 });
 
-// --- Restaurar tab activo al cargar la página ---
+
 document.addEventListener('DOMContentLoaded', () => {
-  const refId = new URLSearchParams(window.location.search).get('id'); // obtiene ?id=123
+  const refId = new URLSearchParams(window.location.search).get('id');
   const activeTab = localStorage.getItem('activeTab-' + refId);
 
   if (activeTab) {
@@ -172,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Guardar cada vez que se cambia de tab
   document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(btn => {
     btn.addEventListener('shown.bs.tab', e => {
       localStorage.setItem('activeTab-' + refId, e.target.getAttribute('data-bs-target'));

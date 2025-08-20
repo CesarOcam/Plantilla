@@ -4,6 +4,12 @@ header('Content-Type: application/json; charset=utf-8');
 
 $referencia_id = $_POST['ReferenciaId'] ?? null;
 $partida_id = $_POST['PartidaId'] ?? null;
+$uuid = $_POST['UUID'] ?? null;
+if (!$uuid) {
+    echo json_encode(['ok' => false, 'msg' => 'No se recibió UUID']);
+    exit;
+}
+
 
 if (!$referencia_id || !$partida_id) {
     echo json_encode(['ok' => false, 'msg' => 'Faltan IDs necesarios']);
@@ -61,6 +67,14 @@ try {
                 $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Partida_id, Nombre, Ruta) VALUES (?, ?, ?, ?)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
                 $stmtArchivo->execute([$referencia_id, $partida_id, $nombreOriginal, $rutaFinal]);
+
+            // --- Actualizar la partida correspondiente ---
+                $nombreSinExtension = pathinfo($nombreOriginal, PATHINFO_FILENAME);
+                $sqlActualizarPartida = "UPDATE conta_partidaspolizas 
+                                         SET Observaciones = ? 
+                                         WHERE Partida = ?";
+                $stmtActualizar = $con->prepare($sqlActualizarPartida);
+                $stmtActualizar->execute([$nombreSinExtension, $partida_id]);
             }
         }
     }
