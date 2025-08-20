@@ -109,7 +109,8 @@ try {
             $mail->Password = 'AMEXPORT.2024';
             $mail->SMTPSecure = 'ssl';
             $mail->Port = 465;
-
+            // Construir asunto dinámico
+            $asunto = "$suReferencia / $numCg / $numero / $nombreExportador";
             $mail->setFrom('notificaciones@grupoamexport.com', 'Notificaciones Amexport');
             $mail->AddEmbeddedImage('../../../img/LogoAmex.png', 'logoAmex');
 
@@ -120,6 +121,7 @@ try {
                 $mail->addCC($correo);
             }
             $mail->addCC('jesus.reyes@grupoamexport.com');
+            //$mail->addCC('ceesar.pulido@grupoamexport.com');
 
             // Crear archivo ZIP temporal
             $zipFile = tempnam(sys_get_temp_dir(), "$suReferencia . $referenciaId . $nombreExportador") . '.zip';
@@ -159,7 +161,7 @@ try {
 
             $mail->isHTML(true);
             $mail->CharSet = 'UTF-8';
-            $mail->Subject = 'Envío de cuenta de gastos';
+            $mail->Subject = $asunto;
 
             $mail->Body = '
                 <html>
