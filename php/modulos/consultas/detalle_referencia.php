@@ -135,7 +135,6 @@ if (!empty($aduanaId)) {
 
         $stmt->execute(['nombre' => $nombreCorto]);
         $recintos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     }
 }
 
@@ -277,7 +276,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                
+
                                 <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="logistico" class="form-label text-muted small">LOGÍSTICO:</label>
                                     <select id="logistico-select" name="logistico"
@@ -613,7 +612,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                                             <option
                                                                                 value="<?= htmlspecialchars($tc['id2210_tipo_contenedor']) ?>"
                                                                                 <?= ($tc['id2210_tipo_contenedor'] == $c['tipo']) ? 'selected' : '' ?>>
-                                                                                <?= htmlspecialchars($tc['id2210_tipo_contenedor'].' - '.$tc['descripcion_contenedor']) ?>
+                                                                                <?= htmlspecialchars($tc['id2210_tipo_contenedor'] . ' - ' . $tc['descripcion_contenedor']) ?>
                                                                             </option>
                                                                         <?php endforeach; ?>
                                                                     </select>
@@ -632,7 +631,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
 
                                                         <!-- Aplicar validación a cada input generado -->
                                                         <script>
-                                                            document.addEventListener("DOMContentLoaded", function () {
+                                                            document.addEventListener("DOMContentLoaded", function() {
                                                                 <?php foreach ($contenedores as $index => $c): ?>
                                                                     agregarValidacion("<?= "input-contenedor-{$index}" ?>", "<?= "mensajeContenedor-{$index}" ?>", "<?= "iconoValidacion-{$index}" ?>");
                                                                 <?php endforeach; ?>
@@ -675,13 +674,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <tbody id="tabla-documentos-body">
                                                 <?php
                                                 $stmt = $con->prepare("
-                                                    SELECT 
-                                                        Id,
-                                                        Nombre,
-                                                        Ruta
-                                                    FROM conta_referencias_archivos 
-                                                    WHERE Referencia_id = :id
-                                                ");
+    SELECT Id, Nombre, Ruta
+    FROM conta_referencias_archivos 
+    WHERE Referencia_id = :id
+");
                                                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                                                 $stmt->execute();
                                                 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -692,6 +688,8 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                     switch ($extension) {
                                                         case 'pdf':
                                                             return '<i class="bi bi-file-earmark-pdf text-danger me-1"></i>';
+                                                        case 'xml':
+                                                            return '<i class="bi bi-file-earmark-code text-primary me-1"></i>';
                                                         case 'doc':
                                                         case 'docx':
                                                             return '<i class="bi bi-file-earmark-word text-primary me-1"></i>';
@@ -710,60 +708,86 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                                             return '<i class="bi bi-file-earmark-zip text-warning me-1"></i>';
                                                         case 'txt':
                                                             return '<i class="bi bi-file-earmark-text text-muted me-1"></i>';
-                                                        case 'php':
-                                                            return '<i class="bi bi-filetype-php text-purple me-1"></i>';
                                                         default:
                                                             return '<i class="bi bi-file-earmark text-secondary me-1"></i>';
                                                     }
                                                 }
 
-                                                if (empty($documentos)): ?>
+                                                // Agrupar archivos por nombre base
+                                                $agrupados = [];
+                                                foreach ($documentos as $doc) {
+                                                    $base = pathinfo($doc['Nombre'], PATHINFO_FILENAME);
+                                                    $agrupados[$base][] = $doc;
+                                                }
+
+                                                // Función para imprimir fila
+                                                function imprimirFila($doc)
+                                                {
+                                                    $id = $doc['Id'];
+                                                    $nombre = htmlspecialchars($doc['Nombre']);
+                                                    $ruta = $doc['Ruta'];
+                                                    $tamano = file_exists($ruta) ? filesize($ruta) : 0;
+                                                    $tamanoLegible = ($tamano >= 1048576)
+                                                        ? round($tamano / 1048576, 2) . ' MB'
+                                                        : round($tamano / 1024, 2) . ' KB';
+                                                    $extension = pathinfo($ruta, PATHINFO_EXTENSION);
+                                                    $icono = obtenerIconoPorExtension($extension);
+                                                ?>
                                                     <tr>
-                                                        <td colspan="4" class="text-center text-muted">Sin archivos adjuntos
+                                                        <td><?= $icono . $nombre ?></td>
+                                                        <td class="text-center text-uppercase"><?= strtoupper($extension) ?></td>
+                                                        <td class="text-center"><?= $tamanoLegible ?></td>
+                                                        <td class="text-center">
+                                                            <a href="<?= htmlspecialchars($ruta) ?>"
+                                                                class="btn btn-sm btn-outline-success me-2 rounded-0"
+                                                                download title="Descargar">
+                                                                <i class="bi bi-download"></i> Descargar
+                                                            </a>
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-outline-danger rounded-0"
+                                                                data-eliminar="true" data-id="<?= $id ?>"
+                                                                data-nombre="<?= $nombre ?>"
+                                                                data-ruta="<?= htmlspecialchars($ruta) ?>" title="Eliminar">
+                                                                Eliminar
+                                                            </button>
                                                         </td>
                                                     </tr>
-                                                <?php else: ?>
-                                                    <?php foreach ($documentos as $doc):
-                                                        $id = $doc['Id'];
-                                                        $nombre = htmlspecialchars($doc['Nombre']);
-                                                        $ruta = $doc['Ruta'];
+                                                <?php
+                                                }
 
-                                                        if (empty($ruta)) {
-                                                            echo "<tr><td colspan='4' class='text-danger'>Archivo sin ruta: $nombre</td></tr>";
-                                                            continue;
-                                                        }
+                                                // Primero imprimir archivos que tengan PDF y XML juntos
+                                                $imprimidos = [];
+                                                foreach ($agrupados as $base => $archivos) {
+                                                    $pdf = $xml = null;
+                                                    foreach ($archivos as $doc) {
+                                                        $ext = strtolower(pathinfo($doc['Nombre'], PATHINFO_EXTENSION));
+                                                        if ($ext === 'pdf') $pdf = $doc;
+                                                        if ($ext === 'xml') $xml = $doc;
+                                                    }
+                                                    if ($pdf) {
+                                                        imprimirFila($pdf);
+                                                        $imprimidos[] = $pdf['Id'];
+                                                    }
+                                                    if ($xml) {
+                                                        imprimirFila($xml);
+                                                        $imprimidos[] = $xml['Id'];
+                                                    }
+                                                }
 
-                                                        $tamano = file_exists($ruta) ? filesize($ruta) : 0;
-                                                        $tamanoLegible = ($tamano >= 1048576)
-                                                            ? round($tamano / 1048576, 2) . ' MB'
-                                                            : round($tamano / 1024, 2) . ' KB';
+                                                // Luego los que quedaron solos (ni PDF ni XML emparejados)
+                                                foreach ($documentos as $doc) {
+                                                    if (!in_array($doc['Id'], $imprimidos)) {
+                                                        imprimirFila($doc);
+                                                    }
+                                                }
 
-                                                        $extension = pathinfo($ruta, PATHINFO_EXTENSION);
-                                                        $icono = obtenerIconoPorExtension($extension);
-                                                        ?>
-                                                        <tr>
-                                                            <td><?= $icono . $nombre ?></td>
-                                                            <td class="text-center text-uppercase"><?= strtoupper($extension) ?>
-                                                            </td>
-                                                            <td class="text-center"><?= $tamanoLegible ?></td>
-                                                            <td class="text-center">
-                                                                <a href="<?= htmlspecialchars($ruta) ?>"
-                                                                    class="btn btn-sm btn-outline-success me-2 rounded-0"
-                                                                    download title="Descargar">
-                                                                    <i class="bi bi-download"></i> Descargar
-                                                                </a>
-                                                                <button type="button"
-                                                                    class="btn btn-sm btn-outline-danger rounded-0"
-                                                                    data-eliminar="true" data-id="<?= $id ?>"
-                                                                    data-nombre="<?= $nombre ?>"
-                                                                    data-ruta="<?= htmlspecialchars($ruta) ?>" title="Eliminar">
-                                                                    Eliminar
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
+                                                // Si no hay documentos
+                                                if (empty($documentos)) {
+                                                    echo '<tr><td colspan="4" class="text-center text-muted">Sin archivos adjuntos</td></tr>';
+                                                }
+                                                ?>
                                             </tbody>
+
                                         </table>
                                     </div>
                                 </div>
@@ -880,17 +904,17 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 <div class="modal fade" id="modalEnvioCG" tabindex="-1" aria-labelledby="modalEnvioCGLabel" aria-hidden="true">
                     <div class="modal-dialog modal-xl modal-dialog-centered">
                         <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalEnvioCGLabel">Enviar Cuenta de Gastos a Cliente</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Aquí se cargan las tablas desde tablas_complementaria.php -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-danger rounded-0" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_enviarCG" data-referencia-id="<?= $id2 ?>">Enviar CG</button>
-                        </div>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalEnvioCGLabel">Enviar Cuenta de Gastos a Cliente</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Aquí se cargan las tablas desde tablas_complementaria.php -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-danger rounded-0" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_enviarCG" data-referencia-id="<?= $id2 ?>">Enviar CG</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -898,99 +922,119 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         </div>
     </div>
 
-        <script>
-            const tiposContenedor = <?= json_encode($tiposContenedor) ?>;
+    <script>
+        const tiposContenedor = <?= json_encode($tiposContenedor) ?>;
 
-            const botonGuardar = document.getElementById('btn_guardar');
-            $(document).ready(function () {
-                function initSelect2(id, placeholder) {
-                    $(id).select2({
-                        placeholder: placeholder,
-                        allowClear: false,
-                        width: '100%'
-                    });
-                }
-
-                initSelect2('#aduana-select', 'Aduana');
-                initSelect2('#exportador-select', 'Exportador *');
-                initSelect2('#logistico-select', 'Logístico *');
-                initSelect2('#recinto-select', 'Recinto');
-                initSelect2('#clave-select', 'Clave Pedimento');
-                initSelect2('#consolidadora-select', 'Consolidadora');
-                initSelect2('#naviera-select', 'Naviera');
-                initSelect2('#buque-select', 'Buque');
-                initSelect2('.tipo-select', 'Tipo Buque');
-
-                $(document).on('select2:open', () => {
-                    setTimeout(() => {
-                        const input = document.querySelector('.select2-container--open .select2-search__field');
-                        if (input) input.focus();
-                    }, 100);
+        const botonGuardar = document.getElementById('btn_guardar');
+        $(document).ready(function() {
+            function initSelect2(id, placeholder) {
+                $(id).select2({
+                    placeholder: placeholder,
+                    allowClear: false,
+                    width: '100%'
                 });
-            });
-
-            // Inicializar Calendarios
-            flatpickr("#cierre_doc", {
-                dateFormat: "Y-m-d"
-            });
-            flatpickr("#cierre_desp", {
-                dateFormat: "Y-m-d"
-            });
-            flatpickr("#fecha_pago", {
-                dateFormat: "Y-m-d"
-            });
-            flatpickr("#hora_desp", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true,
-                allowInput: true
-            });
-            flatpickr("#fecha_doc", {
-                dateFormat: "Y-m-d"
-            });
-            flatpickr("#fecha_eta", {
-                dateFormat: "Y-m-d"
-            });
-
-            let contador = 1;
-
-            const tablaContenedores = document.getElementById("tabla-contenedores").querySelector("tbody");
-
-            function verificarCodificacion(contenedor) {
-                const tabla = {
-                    'A': 10, 'B': 12, 'C': 13, 'D': 14, 'E': 15,
-                    'F': 16, 'G': 17, 'H': 18, 'I': 19, 'J': 20,
-                    'K': 21, 'L': 23, 'M': 24, 'N': 25, 'O': 26,
-                    'P': 27, 'Q': 28, 'R': 29, 'S': 30, 'T': 31,
-                    'U': 32, 'V': 34, 'W': 35, 'X': 36, 'Y': 37,
-                    'Z': 38
-                };
-
-                if (!/^[A-Z]{4}\d{7}$/.test(contenedor)) return false;
-
-                let suma = 0;
-                for (let i = 0; i < 10; i++) {
-                    const char = contenedor[i];
-                    let valor = isNaN(char) ? tabla[char] : parseInt(char);
-                    if (valor === undefined || isNaN(valor)) return false;
-                    suma += valor * Math.pow(2, i);
-                }
-
-                const checkDigit = suma % 11;
-                const digitoCalculado = checkDigit === 10 ? 0 : checkDigit;
-                const digitoIngresado = parseInt(contenedor[10]);
-
-                return digitoCalculado === digitoIngresado;
             }
 
-            document.getElementById('btn-nuevo-contenedor').addEventListener('click', function () {
-                const rowId = `fila-${contador}`;
-                const inputId = `input-contenedor-${contador}`;
-                const mensajeId = `mensajeContenedor-${contador}`;
-                const iconoId = `iconoValidacion-${contador}`;
+            initSelect2('#aduana-select', 'Aduana');
+            initSelect2('#exportador-select', 'Exportador *');
+            initSelect2('#logistico-select', 'Logístico *');
+            initSelect2('#recinto-select', 'Recinto');
+            initSelect2('#clave-select', 'Clave Pedimento');
+            initSelect2('#consolidadora-select', 'Consolidadora');
+            initSelect2('#naviera-select', 'Naviera');
+            initSelect2('#buque-select', 'Buque');
+            initSelect2('.tipo-select', 'Tipo Buque');
 
-                const fila = `
+            $(document).on('select2:open', () => {
+                setTimeout(() => {
+                    const input = document.querySelector('.select2-container--open .select2-search__field');
+                    if (input) input.focus();
+                }, 100);
+            });
+        });
+
+        // Inicializar Calendarios
+        flatpickr("#cierre_doc", {
+            dateFormat: "Y-m-d"
+        });
+        flatpickr("#cierre_desp", {
+            dateFormat: "Y-m-d"
+        });
+        flatpickr("#fecha_pago", {
+            dateFormat: "Y-m-d"
+        });
+        flatpickr("#hora_desp", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            allowInput: true
+        });
+        flatpickr("#fecha_doc", {
+            dateFormat: "Y-m-d"
+        });
+        flatpickr("#fecha_eta", {
+            dateFormat: "Y-m-d"
+        });
+
+        let contador = 1;
+
+        const tablaContenedores = document.getElementById("tabla-contenedores").querySelector("tbody");
+
+        function verificarCodificacion(contenedor) {
+            const tabla = {
+                'A': 10,
+                'B': 12,
+                'C': 13,
+                'D': 14,
+                'E': 15,
+                'F': 16,
+                'G': 17,
+                'H': 18,
+                'I': 19,
+                'J': 20,
+                'K': 21,
+                'L': 23,
+                'M': 24,
+                'N': 25,
+                'O': 26,
+                'P': 27,
+                'Q': 28,
+                'R': 29,
+                'S': 30,
+                'T': 31,
+                'U': 32,
+                'V': 34,
+                'W': 35,
+                'X': 36,
+                'Y': 37,
+                'Z': 38
+            };
+
+            if (!/^[A-Z]{4}\d{7}$/.test(contenedor)) return false;
+
+            let suma = 0;
+            for (let i = 0; i < 10; i++) {
+                const char = contenedor[i];
+                let valor = isNaN(char) ? tabla[char] : parseInt(char);
+                if (valor === undefined || isNaN(valor)) return false;
+                suma += valor * Math.pow(2, i);
+            }
+
+            const checkDigit = suma % 11;
+            const digitoCalculado = checkDigit === 10 ? 0 : checkDigit;
+            const digitoIngresado = parseInt(contenedor[10]);
+
+            return digitoCalculado === digitoIngresado;
+        }
+
+        document.getElementById('btn-nuevo-contenedor').addEventListener('click', function() {
+            const rowId = `fila-${contador}`;
+            const inputId = `input-contenedor-${contador}`;
+            const mensajeId = `mensajeContenedor-${contador}`;
+            const iconoId = `iconoValidacion-${contador}`;
+
+            const fila = `
                     <tr id="${rowId}" class="text-center">
                         <td class="text-center align-middle"><i class="bi bi-box-fill fs-4 me-2"></i></td>
                         <td>
@@ -1012,163 +1056,163 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         </td>
                     </tr>`;
 
-                tablaContenedores.insertAdjacentHTML('beforeend', fila);
+            tablaContenedores.insertAdjacentHTML('beforeend', fila);
 
-                // Inicializa select2 solo en el nuevo select agregado
-                $('.tipo-select').last().select2({
-                    placeholder: 'Seleccione un tipo',
-                    allowClear: false,
-                    width: '100%'
-                });
-
-                agregarValidacion(inputId, mensajeId, iconoId);
-
-                contador++;
+            // Inicializa select2 solo en el nuevo select agregado
+            $('.tipo-select').last().select2({
+                placeholder: 'Seleccione un tipo',
+                allowClear: false,
+                width: '100%'
             });
 
-            function agregarValidacion(inputId, mensajeId, iconoId) {
-                const inputContenedor = document.getElementById(inputId);
-                const mensajeContenedor = document.getElementById(mensajeId);
-                const icono = document.getElementById(iconoId);
+            agregarValidacion(inputId, mensajeId, iconoId);
 
-                // Busca ícono que puede ser box-fill o box-seam en la primera celda
-                const fila = inputContenedor.closest("tr");
-                const iconoContenedor = fila.querySelector(".bi-box-fill, .bi-box-fill");
+            contador++;
+        });
 
-                inputContenedor.addEventListener('input', function () {
-                    const valor = this.value.toUpperCase();
-                    this.value = valor;
+        function agregarValidacion(inputId, mensajeId, iconoId) {
+            const inputContenedor = document.getElementById(inputId);
+            const mensajeContenedor = document.getElementById(mensajeId);
+            const icono = document.getElementById(iconoId);
 
-                    inputContenedor.classList.remove('border-success', 'border-danger', 'border-secondary');
-                    mensajeContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
-                    icono.className = ''; // limpiar icono
-                    iconoContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+            // Busca ícono que puede ser box-fill o box-seam en la primera celda
+            const fila = inputContenedor.closest("tr");
+            const iconoContenedor = fila.querySelector(".bi-box-fill, .bi-box-fill");
 
-                    if (valor.length === 0) {
+            inputContenedor.addEventListener('input', function() {
+                const valor = this.value.toUpperCase();
+                this.value = valor;
+
+                inputContenedor.classList.remove('border-success', 'border-danger', 'border-secondary');
+                mensajeContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+                icono.className = ''; // limpiar icono
+                iconoContenedor.classList.remove('text-success', 'text-danger', 'text-muted');
+
+                if (valor.length === 0) {
+                    botonGuardar.disabled = false;
+                    mensajeContenedor.textContent = "";
+                    iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger', 'text-muted');
+                    iconoContenedor.classList.add('bi-box-fill');
+                } else if (valor.length === 11) {
+                    if (verificarCodificacion(valor)) {
+
+                        mensajeContenedor.textContent = ""; // sin texto
+                        inputContenedor.classList.add('border-success');
+                        iconoContenedor.classList.remove('bi-box-fill', 'text-danger', 'text-muted');
+                        iconoContenedor.classList.add('bi-box-fill', 'text-success');
                         botonGuardar.disabled = false;
-                        mensajeContenedor.textContent = "";
-                        iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger', 'text-muted');
-                        iconoContenedor.classList.add('bi-box-fill');
-                    } else if (valor.length === 11) {
-                        if (verificarCodificacion(valor)) {
-
-                            mensajeContenedor.textContent = ""; // sin texto
-                            inputContenedor.classList.add('border-success');
-                            iconoContenedor.classList.remove('bi-box-fill', 'text-danger', 'text-muted');
-                            iconoContenedor.classList.add('bi-box-fill', 'text-success');
-                            botonGuardar.disabled = false;
-                        } else {
-
-                            mensajeContenedor.textContent = "Contenedor inválido";
-                            mensajeContenedor.classList.add('text-danger');
-                            inputContenedor.classList.add('border-danger');
-                            icono.className = ''; // limpiar icono validación al lado del input
-                            icono.classList.add('bi', 'bi-x-circle-fill', 'text-danger');
-
-                            iconoContenedor.classList.remove('bi-box-fill', 'text-success');
-                            iconoContenedor.classList.add('bi-box-fill', 'text-danger');
-
-                            botonGuardar.disabled = true;
-                        }
                     } else {
 
-                        mensajeContenedor.textContent = "Debe tener 11 caracteres";
-                        mensajeContenedor.classList.add('text-muted');
-                        inputContenedor.classList.add('border-secondary');
-                        icono.className = '';
-                        icono.classList.add('bi', 'bi-exclamation-circle', 'text-muted');
+                        mensajeContenedor.textContent = "Contenedor inválido";
+                        mensajeContenedor.classList.add('text-danger');
+                        inputContenedor.classList.add('border-danger');
+                        icono.className = ''; // limpiar icono validación al lado del input
+                        icono.classList.add('bi', 'bi-x-circle-fill', 'text-danger');
 
-                        iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger');
-                        iconoContenedor.classList.add('bi-box-fill', 'text-muted');
+                        iconoContenedor.classList.remove('bi-box-fill', 'text-success');
+                        iconoContenedor.classList.add('bi-box-fill', 'text-danger');
 
                         botonGuardar.disabled = true;
                     }
-                });
-            }
+                } else {
 
-            function actualizarNumeracion() {
-                const filas = tablaContenedores.querySelectorAll("tr");
-                filas.forEach((fila, index) => {
-                    const celdaNumero = fila.querySelector(".numero-fila");
-                    if (celdaNumero) {
-                        celdaNumero.textContent = index + 1;
-                    }
-                    fila.id = `fila-${index}`;
-                    const input = fila.querySelector('input[name="contenedor[]"]');
-                    const tipo = fila.querySelector('input[name="tipo[]"]');
-                    const sello = fila.querySelector('input[name="sello[]"]');
-                    const icono = fila.querySelector('i.bi');
-                    const mensaje = fila.querySelector('fill.form-text');
+                    mensajeContenedor.textContent = "Debe tener 11 caracteres";
+                    mensajeContenedor.classList.add('text-muted');
+                    inputContenedor.classList.add('border-secondary');
+                    icono.className = '';
+                    icono.classList.add('bi', 'bi-exclamation-circle', 'text-muted');
 
-                    if (input) input.id = `input-contenedor-${index}`;
-                    if (icono) icono.id = `iconoValidacion-${index}`;
-                    if (mensaje) mensaje.id = `mensajeContenedor-${index}`;
+                    iconoContenedor.classList.remove('bi-box-fill', 'text-success', 'text-danger');
+                    iconoContenedor.classList.add('bi-box-fill', 'text-muted');
 
-                    if (input && icono && mensaje) {
-                        agregarValidacion(input.id, mensaje.id, icono.id);
-                    }
-                });
+                    botonGuardar.disabled = true;
+                }
+            });
+        }
 
-                contador = filas.length;
-            }
+        function actualizarNumeracion() {
+            const filas = tablaContenedores.querySelectorAll("tr");
+            filas.forEach((fila, index) => {
+                const celdaNumero = fila.querySelector(".numero-fila");
+                if (celdaNumero) {
+                    celdaNumero.textContent = index + 1;
+                }
+                fila.id = `fila-${index}`;
+                const input = fila.querySelector('input[name="contenedor[]"]');
+                const tipo = fila.querySelector('input[name="tipo[]"]');
+                const sello = fila.querySelector('input[name="sello[]"]');
+                const icono = fila.querySelector('i.bi');
+                const mensaje = fila.querySelector('fill.form-text');
 
-            tablaContenedores.addEventListener('click', function (e) {
-                if (e.target.classList.contains('btn-danger')) {
-                    const filaEliminada = e.target.closest('tr');
-                    filaEliminada.remove();
-                    actualizarNumeracion(); // si quieres renumerar IDs
+                if (input) input.id = `input-contenedor-${index}`;
+                if (icono) icono.id = `iconoValidacion-${index}`;
+                if (mensaje) mensaje.id = `mensajeContenedor-${index}`;
 
-                    // Revalidar inputs en filas restantes para refrescar iconos
-                    const filas = tablaContenedores.querySelectorAll('tr');
-                    filas.forEach(fila => {
-                        const input = fila.querySelector('input[name="contenedor[]"]');
-                        if (input) {
-                            // Forzar evento input para actualizar iconos
-                            input.dispatchEvent(new Event('input'));
-                        }
-                    });
+                if (input && icono && mensaje) {
+                    agregarValidacion(input.id, mensaje.id, icono.id);
                 }
             });
 
-            //lÓGICA DEL MODAL
-            function obtenerIconoPorExtension(nombreArchivo) {
-                const extension = nombreArchivo.split('.').pop().toLowerCase();
+            contador = filas.length;
+        }
 
-                switch (extension) {
-                    case 'pdf':
-                        return '<i class="bi bi-file-earmark-pdf text-danger"></i>';
-                    case 'doc':
-                    case 'docx':
-                        return '<i class="bi bi-file-earmark-word text-primary"></i>';
-                    case 'xls':
-                    case 'xlsx':
-                        return '<i class="bi bi-file-earmark-excel text-success"></i>';
-                    case 'csv':
-                        return '<i class="bi bi-filetype-csv text-success"></i>';
-                    case 'jpg':
-                    case 'jpeg':
-                    case 'png':
-                    case 'gif':
-                        return '<i class="bi bi-file-earmark-image text-info"></i>';
-                    case 'zip':
-                    case 'rar':
-                        return '<i class="bi bi-file-earmark-zip text-warning"></i>';
-                    case 'txt':
-                        return '<i class="bi bi-file-earmark-text text-muted"></i>';
-                    case 'php':
-                        return '<i class="bi bi-filetype-php text-purple"></i>';
-                    default:
-                        return '<i class="bi bi-file-earmark text-secondary"></i>';
-                }
+        tablaContenedores.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-danger')) {
+                const filaEliminada = e.target.closest('tr');
+                filaEliminada.remove();
+                actualizarNumeracion(); // si quieres renumerar IDs
+
+                // Revalidar inputs en filas restantes para refrescar iconos
+                const filas = tablaContenedores.querySelectorAll('tr');
+                filas.forEach(fila => {
+                    const input = fila.querySelector('input[name="contenedor[]"]');
+                    if (input) {
+                        // Forzar evento input para actualizar iconos
+                        input.dispatchEvent(new Event('input'));
+                    }
+                });
             }
+        });
 
-            document.getElementById('btnAgregarDocs').addEventListener('click', function () {
-                const tableBody = document.querySelector('#tabla-archivos tbody');
+        //lÓGICA DEL MODAL
+        function obtenerIconoPorExtension(nombreArchivo) {
+            const extension = nombreArchivo.split('.').pop().toLowerCase();
 
-                archivosCargados.forEach(file => {
-                    const icono = obtenerIconoPorExtension(file.name);
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
+            switch (extension) {
+                case 'pdf':
+                    return '<i class="bi bi-file-earmark-pdf text-danger"></i>';
+                case 'doc':
+                case 'docx':
+                    return '<i class="bi bi-file-earmark-word text-primary"></i>';
+                case 'xls':
+                case 'xlsx':
+                    return '<i class="bi bi-file-earmark-excel text-success"></i>';
+                case 'csv':
+                    return '<i class="bi bi-filetype-csv text-success"></i>';
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                case 'gif':
+                    return '<i class="bi bi-file-earmark-image text-info"></i>';
+                case 'zip':
+                case 'rar':
+                    return '<i class="bi bi-file-earmark-zip text-warning"></i>';
+                case 'txt':
+                    return '<i class="bi bi-file-earmark-text text-muted"></i>';
+                case 'php':
+                    return '<i class="bi bi-filetype-php text-purple"></i>';
+                default:
+                    return '<i class="bi bi-file-earmark text-secondary"></i>';
+            }
+        }
+
+        document.getElementById('btnAgregarDocs').addEventListener('click', function() {
+            const tableBody = document.querySelector('#tabla-archivos tbody');
+
+            archivosCargados.forEach(file => {
+                const icono = obtenerIconoPorExtension(file.name);
+                const row = document.createElement('tr');
+                row.innerHTML = `
                     <td>${icono} ${file.name}</td>
                     <td>${file.type || 'Desconocido'}</td>
                     <td>${(file.size / 1024).toFixed(2)} KB</td>
@@ -1176,154 +1220,154 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <button type="button" class="btn btn-sm btn-outline-danger" data-eliminar="true">Eliminar</button>
                     </td>
                 `;
-                    tableBody.appendChild(row);
-                });
-
-                previewContainer.innerHTML = '';
-                previewContainer.classList.add('d-none');
-                dropZoneDefault.classList.remove('d-none');
-                input.value = '';
-
-                // Cerrar modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalDocumentos'));
-                modal.hide();
+                tableBody.appendChild(row);
             });
 
-            // Delegación para eliminar fila de la tabla
-            document.getElementById('tabla-documentos-body').addEventListener('click', (e) => {
-                if (e.target.dataset.eliminar) {
-                    e.target.closest('tr').remove();
-                }
-            });
+            previewContainer.innerHTML = '';
+            previewContainer.classList.add('d-none');
+            dropZoneDefault.classList.remove('d-none');
+            input.value = '';
 
-            const dropZone = document.getElementById('dropZone');
-            const input = document.getElementById('documentosInput');
-            const previewContainer = document.getElementById('previewContainer');
-            const dropZoneDefault = document.getElementById('dropZoneDefault');
-            const btnBuscarArchivos = document.getElementById('btnBuscarArchivos');
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalDocumentos'));
+            modal.hide();
+        });
 
-            let archivosCargados = [];
+        // Delegación para eliminar fila de la tabla
+        document.getElementById('tabla-documentos-body').addEventListener('click', (e) => {
+            if (e.target.dataset.eliminar) {
+                e.target.closest('tr').remove();
+            }
+        });
 
-            btnBuscarArchivos.addEventListener('click', () => input.click());
-            dropZone.addEventListener('click', () => input.click());
+        const dropZone = document.getElementById('dropZone');
+        const input = document.getElementById('documentosInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const dropZoneDefault = document.getElementById('dropZoneDefault');
+        const btnBuscarArchivos = document.getElementById('btnBuscarArchivos');
 
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('bg-primary-subtle');
-            });
+        let archivosCargados = [];
 
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('bg-primary-subtle');
-            });
+        btnBuscarArchivos.addEventListener('click', () => input.click());
+        dropZone.addEventListener('click', () => input.click());
 
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('bg-primary-subtle');
-                handleFiles(e.dataTransfer.files);
-            });
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('bg-primary-subtle');
+        });
 
-            input.addEventListener('change', () => handleFiles(input.files));
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('bg-primary-subtle');
+        });
 
-            function handleFiles(files) {
-                console.log('handleFiles recibidos:', files);
-                Array.from(files).forEach(file => {
-                    console.log('Archivo agregado:', file.name);
-                    archivosCargados.push(file);
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('bg-primary-subtle');
+            handleFiles(e.dataTransfer.files);
+        });
 
-                    // Mostrar previsualización
-                    const preview = document.createElement('div');
-                    preview.classList.add('col');
+        input.addEventListener('change', () => handleFiles(input.files));
 
-                    if (file.type.startsWith('image/')) {
-                        const img = document.createElement('img');
-                        img.src = URL.createObjectURL(file);
-                        img.className = 'img-fluid rounded border';
-                        img.style.maxHeight = '150px';
-                        preview.appendChild(img);
+        function handleFiles(files) {
+            console.log('handleFiles recibidos:', files);
+            Array.from(files).forEach(file => {
+                console.log('Archivo agregado:', file.name);
+                archivosCargados.push(file);
 
-                    } else if (file.type === 'application/pdf') {
-                        preview.innerHTML = `
+                // Mostrar previsualización
+                const preview = document.createElement('div');
+                preview.classList.add('col');
+
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.className = 'img-fluid rounded border';
+                    img.style.maxHeight = '150px';
+                    preview.appendChild(img);
+
+                } else if (file.type === 'application/pdf') {
+                    preview.innerHTML = `
                 <div class="border p-3 text-center rounded bg-white">
                 <i class="bi bi-file-earmark-pdf-fill fs-1 text-danger"></i>
                 <p class="small mt-2">${file.name}</p>
                 <iframe src="${URL.createObjectURL(file)}" style="width: 100%; height: 150px;" frameborder="0"></iframe>
                 </div>`;
 
-                    } else if (
-                        file.type ===
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-                        file.type === 'application/vnd.ms-excel'
-                    ) {
-                        preview.innerHTML = `
+                } else if (
+                    file.type ===
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                    file.type === 'application/vnd.ms-excel'
+                ) {
+                    preview.innerHTML = `
                 <div class="border p-3 text-center rounded bg-white">
                 <i class="bi bi-file-earmark-excel-fill fs-1 text-success"></i>
                 <p class="small mt-2">${file.name}</p>
                 <p class="small text-muted">Previsualización no disponible</p>
                 </div>`;
 
-                    } else if (file.type.startsWith('text/')) {
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                            preview.innerHTML = `
+                } else if (file.type.startsWith('text/')) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        preview.innerHTML = `
                 <div class="border p-3 rounded bg-white text-start" style="max-height: 150px; overflow-y: auto;">
                     <p class="small fw-bold">${file.name}</p>
                     <pre class="small mb-0">${reader.result.substring(0, 200)}...</pre>
                 </div>`;
-                        };
-                        reader.readAsText(file);
+                    };
+                    reader.readAsText(file);
 
-                    } else {
-                        preview.innerHTML = `
+                } else {
+                    preview.innerHTML = `
                 <div class="border p-3 text-center rounded bg-white">
                 <i class="bi bi-file-earmark-fill fs-1 text-secondary"></i>
                 <p class="small mt-2">${file.name}</p>
                 <p class="small text-muted">Previsualización no disponible</p>
                 </div>`;
-                    }
-
-                    previewContainer.appendChild(preview);
-                });
-
-                // Mostrar previsualización y ocultar el contenido por defecto
-                previewContainer.classList.remove('d-none');
-                dropZoneDefault.classList.add('d-none');
-            }
-
-            tablaContenedores.addEventListener('click', function (e) {
-                if (e.target.closest('.btn-danger')) { // o '#btn-eliminar', según tengas el selector
-                    const filaEliminada = e.target.closest('tr');
-                    // Capturar el idcontenedor de esa fila
-                    const inputIdContenedor = filaEliminada.querySelector('input[name="contenedor_id[]"]');
-                    if (inputIdContenedor) {
-                        const idContenedor = inputIdContenedor.value;
-                        // Crear input hidden para indicar eliminación
-                        const inputEliminado = document.createElement('input');
-                        inputEliminado.type = 'hidden';
-                        inputEliminado.name = 'contenedores_eliminados[]';
-                        inputEliminado.value = idContenedor;
-
-                        // Agregar al formulario
-                        document.querySelector('form').appendChild(inputEliminado);
-                    }
-                    // Eliminar fila visualmente
-                    filaEliminada.remove();
-
-                    // Si tienes función para renumerar IDs
-                    if (typeof actualizarNumeracion === 'function') actualizarNumeracion();
                 }
+
+                previewContainer.appendChild(preview);
             });
 
-        </script>
-        <script src="../../../js/actualizar/enviar_cg.js"></script>
-        <script src="../../../js/consultar_Correos_Modal.js"></script>
-        <script src="../../../js/guardar_Complementaria.js"></script>
-        <script src="../../../js/actualizar/pasar_Conta.js"></script>
-        <script src="../../../js/actualizar/afectar_Kardex.js"></script>
-        <script src="../../../js/actualizar/envio_cg.js"></script>
-        <script src="../../../js/eliminar/eliminar_archivo.js"></script>
-        <script src="../../../js/actualizar/actualizar_Referencias.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
-            </script>
-    </body>
+            // Mostrar previsualización y ocultar el contenido por defecto
+            previewContainer.classList.remove('d-none');
+            dropZoneDefault.classList.add('d-none');
+        }
+
+        tablaContenedores.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-danger')) { // o '#btn-eliminar', según tengas el selector
+                const filaEliminada = e.target.closest('tr');
+                // Capturar el idcontenedor de esa fila
+                const inputIdContenedor = filaEliminada.querySelector('input[name="contenedor_id[]"]');
+                if (inputIdContenedor) {
+                    const idContenedor = inputIdContenedor.value;
+                    // Crear input hidden para indicar eliminación
+                    const inputEliminado = document.createElement('input');
+                    inputEliminado.type = 'hidden';
+                    inputEliminado.name = 'contenedores_eliminados[]';
+                    inputEliminado.value = idContenedor;
+
+                    // Agregar al formulario
+                    document.querySelector('form').appendChild(inputEliminado);
+                }
+                // Eliminar fila visualmente
+                filaEliminada.remove();
+
+                // Si tienes función para renumerar IDs
+                if (typeof actualizarNumeracion === 'function') actualizarNumeracion();
+            }
+        });
+    </script>
+    <script src="../../../js/actualizar/enviar_cg.js"></script>
+    <script src="../../../js/consultar_Correos_Modal.js"></script>
+    <script src="../../../js/guardar_Complementaria.js"></script>
+    <script src="../../../js/actualizar/pasar_Conta.js"></script>
+    <script src="../../../js/actualizar/afectar_Kardex.js"></script>
+    <script src="../../../js/actualizar/envio_cg.js"></script>
+    <script src="../../../js/eliminar/eliminar_archivo.js"></script>
+    <script src="../../../js/actualizar/actualizar_Referencias.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
+    </script>
+</body>
+
 </html>
