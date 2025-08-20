@@ -77,9 +77,23 @@ $referencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Consulta para contar el total de registros
-$stmtTotal = $con->prepare("SELECT COUNT(*) FROM conta_polizas");
+// Consulta para contar el total de registros con los mismos filtros
+$sqlTotal = "SELECT COUNT(*) 
+    FROM conta_referencias r
+    LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
+    LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
+    $whereSql";
+
+$stmtTotal = $con->prepare($sqlTotal);
+
+// Vincular los mismos parámetros
+foreach ($params as $key => $value) {
+    $stmtTotal->bindValue($key, $value);
+}
+
 $stmtTotal->execute();
 $totalRegistros = $stmtTotal->fetchColumn();
+
 
 // Calcular el total de páginas
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);

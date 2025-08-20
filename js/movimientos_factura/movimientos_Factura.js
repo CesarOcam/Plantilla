@@ -129,7 +129,7 @@ btnSubir.addEventListener('click', async () => {
     const fila = document.querySelector(`tr[data-partida-id="${partidaId}"]`);
     if (fila) {
       const tdArchivo = fila.querySelector('td:last-child');
-      tdArchivo.innerHTML = `<i class="bi bi-check-circle-fill text-success fs-5" style="cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="top" title="Archivo guardado: ${json.archivo}"></i> <span class="small text-truncate" style="max-width: 120px;" title="${json.archivo}">${json.archivo}</span>`;
+      tdArchivo.innerHTML = `<i class="bi bi-check-circle-fill text-success fs-5" style="cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="top" title="Archivo guardado"></i>`;
       new bootstrap.Tooltip(tdArchivo.querySelector('i'));
     }
 
@@ -162,11 +162,20 @@ btnSubir.addEventListener('click', async () => {
 
 // --- Restaurar tab activo al cargar la página ---
 document.addEventListener('DOMContentLoaded', () => {
-  const activeTab = localStorage.getItem('activeTab');
+  const refId = new URLSearchParams(window.location.search).get('id'); // obtiene ?id=123
+  const activeTab = localStorage.getItem('activeTab-' + refId);
+
   if (activeTab) {
     const tabTrigger = document.querySelector(`button[data-bs-target="${activeTab}"]`);
     if (tabTrigger) {
       new bootstrap.Tab(tabTrigger).show();
     }
   }
+
+  // Guardar cada vez que se cambia de tab
+  document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(btn => {
+    btn.addEventListener('shown.bs.tab', e => {
+      localStorage.setItem('activeTab-' + refId, e.target.getAttribute('data-bs-target'));
+    });
+  });
 });

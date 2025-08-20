@@ -1,5 +1,6 @@
 <?php
 include('../conexion.php'); // tu conexión PDO
+header('Content-Type: application/json; charset=utf-8');
 
 $referencia_id = $_POST['ReferenciaId'] ?? null;
 $partida_id = $_POST['PartidaId'] ?? null;
@@ -17,7 +18,7 @@ if (!is_dir($uploadDir)) {
 }
 
 $archivos = $_FILES['archivo'] ?? null;
-$total = (is_array($archivos['name']) && is_array($archivos['name'])) ? count($archivos['name']) : 0;
+$total = (isset($archivos['name']) && is_array($archivos['name'])) ? count($archivos['name']) : 0;
 
 if ($total !== 2) {
     echo json_encode(['ok' => false, 'msg' => 'Debes subir exactamente 2 archivos: PDF y XML']);
