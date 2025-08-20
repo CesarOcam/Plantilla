@@ -1,26 +1,19 @@
 <?php
-include('../conexion.php'); // tu conexión PDO
+include('../conexion.php'); // conexión PDO
 header('Content-Type: application/json; charset=utf-8');
 
 $referencia_id = $_POST['ReferenciaId'] ?? null;
 $partida_id = $_POST['PartidaId'] ?? null;
 $uuid = $_POST['UUID'] ?? null;
+
 if (!$uuid) {
     echo json_encode(['ok' => false, 'msg' => 'No se recibió UUID']);
     exit;
 }
 
-
 if (!$referencia_id || !$partida_id) {
     echo json_encode(['ok' => false, 'msg' => 'Faltan IDs necesarios']);
     exit;
-}
-
-$uploadBaseDir = '../../../docs/';
-$uploadDir = $uploadBaseDir . $referencia_id . '/';
-
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
 }
 
 $archivos = $_FILES['archivo'] ?? null;
@@ -31,9 +24,8 @@ if ($total !== 2) {
     exit;
 }
 
-$pdf = $xml = null;
-
 // Separar PDF y XML
+$pdf = $xml = null;
 for ($i = 0; $i < $total; $i++) {
     $name = $archivos['name'][$i];
     if (preg_match('/\.pdf$/i', $name)) $pdf = $i;
@@ -54,7 +46,50 @@ if ($pdfBase !== $xmlBase) {
     exit;
 }
 
-// Subir ambos archivos e insertar en DB
+// --- VALIDACIONES ANTES DE SUBIR ---
+
+// 1. Revisar si ya existe el par en conta_referencias_archivos
+$stmtCheck = $con->prepare("SELECT COUNT(*) FROM conta_referencias_archivos WHERE Referencia_id = ? AND Nombre LIKE ?");
+$stmtCheck->execute([$referencia_id, $pdfBase . '%']);
+$countFiles = $stmtCheck->fetchColumn();
+if ($countFiles >= 2) {
+    // Obtener el número de referencia para mostrar en el Swal
+    $stmtRef = $con->prepare("SELECT Numero FROM conta_referencias WHERE Id = ?");
+    $stmtRef->execute([$referencia_id]);
+    $numeroReferencia = $stmtRef->fetchColumn();
+
+    echo json_encode([
+        'ok' => false,
+        'msg' => 'Ya existe un par de archivos con ese nombre',
+        'referencia' => $numeroReferencia
+    ]);
+    exit;
+}
+
+// 2. Revisar si el UUID ya existe en conta_facturas_registradas
+$stmtUUID = $con->prepare("
+    SELECT f.UUID, r.Numero 
+    FROM conta_facturas_registradas f
+    INNER JOIN conta_referencias r ON r.Id = f.Referencia_id
+    WHERE f.UUID = ?
+");
+$stmtUUID->execute([$uuid]);
+$uuidExistente = $stmtUUID->fetch(PDO::FETCH_ASSOC);
+if ($uuidExistente) {
+    echo json_encode([
+        'ok' => false,
+        'msg' => 'El UUID ya existe en otra referencia',
+        'uuid' => $uuidExistente['UUID'],
+        'referencia' => $uuidExistente['Numero']
+    ]);
+    exit;
+}
+
+// --- SUBIDA DE ARCHIVOS ---
+$uploadBaseDir = '../../../docs/';
+$uploadDir = $uploadBaseDir . $referencia_id . '/';
+if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
 try {
     $con->beginTransaction();
     for ($i = 0; $i < $total; $i++) {
@@ -64,15 +99,13 @@ try {
             $rutaFinal = $uploadDir . $nombreFinal;
 
             if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
-                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Partida_id, Nombre, Ruta) VALUES (?, ?, ?, ?)";
+                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Partida_id, Nombre, Ruta, UUID) VALUES (?, ?, ?, ?, ?)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
-                $stmtArchivo->execute([$referencia_id, $partida_id, $nombreOriginal, $rutaFinal]);
+                $stmtArchivo->execute([$referencia_id, $partida_id, $nombreOriginal, $rutaFinal, $uuid]);
 
-            // --- Actualizar la partida correspondiente ---
+                // Actualizar observaciones en la partida
                 $nombreSinExtension = pathinfo($nombreOriginal, PATHINFO_FILENAME);
-                $sqlActualizarPartida = "UPDATE conta_partidaspolizas 
-                                         SET Observaciones = ? 
-                                         WHERE Partida = ?";
+                $sqlActualizarPartida = "UPDATE conta_partidaspolizas SET Observaciones = ? WHERE Partida = ?";
                 $stmtActualizar = $con->prepare($sqlActualizarPartida);
                 $stmtActualizar->execute([$nombreSinExtension, $partida_id]);
             }

@@ -140,25 +140,35 @@ btnSubir.addEventListener('click', async () => {
     });
 
     const text = await resp.text();
+    console.log('Respuesta PHP cruda:', text); // <-- útil para depurar
     const json = JSON.parse(text);
 
     if (!json.ok) {
-      // Verificar si es un UUID duplicado
-      if (json.uuid) {
+      if (json.uuid && json.referencia) {
         Swal.fire({
           icon: 'warning',
           title: 'UUID duplicado',
-          html: `El UUID <strong>${json.uuid}</strong> ya existe en la base de datos.`,
+          html: `El UUID <strong>${json.uuid}</strong> ya existe en la referencia <strong>${json.referencia}</strong>.`,
+          confirmButtonText: 'Aceptar'
+        });
+      } else if (json.referencia) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Archivos duplicados',
+          html: `Ya existe un par de archivos con ese nombre en la referencia <strong>${json.referencia}</strong>.`,
           confirmButtonText: 'Aceptar'
         });
       } else {
-        // Otro tipo de error
-        alert('Error al subir archivos: ' + (json.msg || ''));
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al subir archivos',
+          text: json.msg || 'Error desconocido'
+        });
       }
       return;
     }
 
-    // Todo correcto: cerrar modal y actualizar interfaz
+    // Todo correcto
     const modalEl = document.getElementById('modalUploadArchivo');
     bootstrap.Modal.getInstance(modalEl).hide();
 
@@ -185,10 +195,13 @@ btnSubir.addEventListener('click', async () => {
 
   } catch (err) {
     console.error('Error al subir archivos:', err);
-    alert('Error al subir archivos.');
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Error al subir archivos. Revisa la consola.'
+    });
   }
 });
-
 
 document.addEventListener('DOMContentLoaded', () => {
   const refId = new URLSearchParams(window.location.search).get('id');
