@@ -317,7 +317,7 @@ try {
 }
 
 //---------------------Guardar los Archivos-----------------------------
-$basePath = realpath(__DIR__ . '/../../../docs');
+$basePath = realpath(__DIR__ . '/../../../docs'); // ruta absoluta donde se guardan los archivos
 $targetDir = $basePath . '/' . $referencia;
 
 if (!file_exists($targetDir)) {
@@ -338,19 +338,23 @@ if (is_array($archivos['name'])) {
             $tmpName = $archivos['tmp_name'][$i];
             $nombreOriginal = basename($archivos['name'][$i]);
             $nombreFinal = uniqid() . "_" . $nombreOriginal;
-            $rutaFinal = $targetDir . '/' . $nombreFinal;
+            $rutaFisica = $targetDir . '/' . $nombreFinal;
 
-            if (move_uploaded_file($tmpName, $rutaFinal)) {
+            if (move_uploaded_file($tmpName, $rutaFisica)) {
+                // Generar la ruta relativa para la BD
+                $rutaRelativa = '../../../docs/' . $referencia . '/' . $nombreFinal;
+
                 // Registrar en BD
                 $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
-                $stmtArchivo->execute([$referencia, $nombreOriginal, $rutaFinal]);
+                $stmtArchivo->execute([$referencia, $nombreOriginal, $rutaRelativa]);
 
                 $archivosGuardados[] = $nombreFinal;
             }
         }
     }
 }
+
 
 
 //---------------------Responder al Frontend-----------------------------
