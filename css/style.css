@@ -348,6 +348,11 @@ table.tabla-mov1 th:nth-child(6),
 table.tabla-mov1 td:nth-child(6) {
   width: 20% !important;
 }
+table.tabla-mov1 th:nth-child(7),
+table.tabla-mov1 td:nth-child(7) {
+  width: 10% !important;
+}
+
 
 /*--------------TABLA MOVIMIENTOS 2-----------------*/
 /* Encabezado tabla 2 - gris cálido */
@@ -399,6 +404,12 @@ table.tabla-mov2 th:nth-child(6),
 table.tabla-mov2 td:nth-child(6) {
   width: 20% !important;
 }
+
+table.tabla-mov2 th:nth-child(7),
+table.tabla-mov2 td:nth-child(7) {
+  width: 10% !important;
+}
+
 
 /*--------------------------------TABLA CONTENEDORES-----------------------------------*/
 table.tabla-contenedores th:nth-child(1),

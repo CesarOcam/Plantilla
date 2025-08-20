@@ -17,7 +17,7 @@ $subcuenta = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Agregar Beneficiarios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -91,7 +91,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <button type="button" class="btn btn-outline-danger rounded-0"
                                 onclick="window.location.href='../../vistas/catalogos/cat_Beneficiarios.php'">Salir</button>
                         </div>
-                        <div class="col-auto d-flex align-items-center mt-3 mb-5">
+                  w      <div class="col-auto d-flex align-items-center mt-3 mb-5">
                             <button type="submit" class="btn btn-secondary rounded-0" id="btn_guardar">Guardar</button>
                         </div>
                     </div>

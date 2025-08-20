@@ -51,7 +51,7 @@ if (isset($_POST['nombre'], $_POST['tipo'])) {
     if (!$stmt) {
         echo "Error al preparar la consulta: " . implode(", ", $con->errorInfo());
         exit;
-    }
+    }   
 
     $resultado = $stmt->execute($params);
 
@@ -78,4 +78,5 @@ if (isset($_POST['nombre'], $_POST['tipo'])) {
     echo "Faltan datos obligatorios.";
 }
 ?>
+
 
