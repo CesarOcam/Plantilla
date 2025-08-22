@@ -318,13 +318,20 @@ try {
 
 //---------------------Guardar los Archivos-----------------------------
 $basePath = realpath(__DIR__ . '/../../../docs'); // ruta absoluta donde se guardan los archivos
-$targetDir = $basePath . '/' . $referencia;
+if (!$basePath) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Ruta base "docs" no encontrada en el servidor.'
+    ]);
+    exit;
+}
 
+$targetDir = $basePath . '/' . $referencia;
 if (!file_exists($targetDir)) {
     if (!mkdir($targetDir, 0777, true)) {
         echo json_encode([
             'success' => false,
-            'message' => 'No se pudo crear la carpeta de destino.',
+            'message' => 'No se pudo crear la carpeta de destino: ' . $targetDir,
         ]);
         exit;
     }

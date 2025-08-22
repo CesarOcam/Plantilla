@@ -250,14 +250,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <div class="col-2 col-sm-1 d-flex flex-column mt-4">
                                     <label for="referencia" class="form-label text-muted small">REFERENCIA:</label>
                                     <input id="referencia" name="referencia" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
-                                        style="background-color: transparent;"
-                                        value="<?php echo $referencia['Numero']; ?>" readonly>
+                                        class="form-control input-transparent border-0 border-bottom rounded-0 disabled-input"
+                                        value="<?= htmlspecialchars($referencia['Numero']); ?>" readonly>
                                 </div>
                                 <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                                     <label for="aduana" class="form-label text-muted small">ADUANA:</label>
                                     <input id="aduana" name="aduana" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0"
+                                        class="form-control input-transparent border-0 border-bottom rounded-0 disabled-input"
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['nombre_aduana']; ?>" readonly>
                                 </div>
@@ -674,10 +673,10 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             <tbody id="tabla-documentos-body">
                                                 <?php
                                                 $stmt = $con->prepare("
-    SELECT Id, Nombre, Ruta
-    FROM conta_referencias_archivos 
-    WHERE Referencia_id = :id
-");
+                                                    SELECT Id, Nombre, Ruta
+                                                    FROM conta_referencias_archivos 
+                                                    WHERE Referencia_id = :id
+                                                ");
                                                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                                                 $stmt->execute();
                                                 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -935,6 +934,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 });
             }
 
+            // Inicialización de todos los select2
             initSelect2('#aduana-select', 'Aduana');
             initSelect2('#exportador-select', 'Exportador *');
             initSelect2('#logistico-select', 'Logístico *');
@@ -945,37 +945,88 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             initSelect2('#buque-select', 'Buque');
             initSelect2('.tipo-select', 'Tipo Buque');
 
+            // Coloca automáticamente el cursor en la búsqueda al abrir select2
             $(document).on('select2:open', () => {
                 setTimeout(() => {
                     const input = document.querySelector('.select2-container--open .select2-search__field');
                     if (input) input.focus();
                 }, 100);
             });
+
+            // BLOQUEAR y aplicar estilo si Status = 3
+            const status = <?= $referencia['Status']; ?>;
+            if (status == 3) {
+                // Inputs individuales
+                $('#mercancia').prop('readonly', true).addClass('disabled-input');
+                $('#marcas').prop('readonly', true).addClass('disabled-input');
+                $('#pedimento').prop('readonly', true).addClass('disabled-input');
+                $('#peso').prop('readonly', true).addClass('disabled-input');
+                $('#bultos').prop('readonly', true).addClass('disabled-input');
+                $('#booking').prop('readonly', true).addClass('disabled-input');
+                $('#viaje').prop('readonly', true).addClass('disabled-input');
+                $('#SuReferencia').prop('readonly', true).addClass('disabled-input');
+                $('#puerto_desc').prop('readonly', true).addClass('disabled-input');
+                $('#puerto_dest').prop('readonly', true).addClass('disabled-input');
+                $('#usuario_alta').prop('readonly', true).addClass('disabled-input');
+                $('#fecha_alta').prop('readonly', true).addClass('disabled-input');
+                $('#status').prop('readonly', true).addClass('disabled-input');
+
+                // Select2
+                const selects = [
+                    '#aduana-select', '#exportador-select', '#logistico-select',
+                    '#recinto-select', '#clave-select', '#consolidadora-select',
+                    '#naviera-select', '#buque-select', '.tipo-select'
+                ];
+
+                selects.forEach(selector => {
+                    $(selector).prop('disabled', true) // deshabilitar
+                        .addClass('disabled-input'); // agregar clase para estilo
+                    $(selector).next('.select2-container').addClass('select2-disabled'); // estilo gris select2
+                });
+
+                // Opcional: input de referencia también
+                $('#referencia').addClass('disabled-input');
+            }
         });
 
-        // Inicializar Calendarios
-        flatpickr("#cierre_doc", {
-            dateFormat: "Y-m-d"
-        });
-        flatpickr("#cierre_desp", {
-            dateFormat: "Y-m-d"
-        });
-        flatpickr("#fecha_pago", {
-            dateFormat: "Y-m-d"
-        });
-        flatpickr("#hora_desp", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true,
-            allowInput: true
-        });
-        flatpickr("#fecha_doc", {
-            dateFormat: "Y-m-d"
-        });
-        flatpickr("#fecha_eta", {
-            dateFormat: "Y-m-d"
-        });
+$(document).ready(function() {
+    // Status de la referencia
+    const status = <?= $referencia['Status']; ?>;
+
+    // Seleccionar todos los inputs
+    const inputs = ["#cierre_doc", "#cierre_desp", "#fecha_pago", "#hora_desp", "#fecha_doc", "#fecha_eta"];
+
+    inputs.forEach(id => {
+        // Configuración por defecto
+        const options = { dateFormat: "Y-m-d" };
+
+        // Configuración específica para horaDesp
+        if (id === "#hora_desp") {
+            options.enableTime = true;
+            options.noCalendar = true;
+            options.dateFormat = "H:i";
+            options.time_24hr = true;
+            options.allowInput = true;
+        }
+
+        // Si status == 3, desactivar apertura de calendario
+        if (status == 3) {
+            options.clickOpens = false; // Evita que se abra el calendario
+        }
+
+        // Inicializar Flatpickr
+        flatpickr(id, options);
+
+        // Agregar clase disabled-input a todos los inputs si status == 3
+        if (status == 3) {
+            $(id).addClass('disabled-input');
+        }
+    });
+});
+
+
+
+
 
         let contador = 1;
 

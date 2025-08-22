@@ -47,9 +47,9 @@ a.nav-link.dropdown-toggle::after {
 }
 
 .form-check-input:hover {
-        cursor: pointer;
-    }
-    
+  cursor: pointer;
+}
+
 .select2-container--default .select2-selection--multiple {
   background-color: transparent;
   border: none;
@@ -75,29 +75,61 @@ a.nav-link.dropdown-toggle::after {
   color: rgb(52, 62, 83);
   font-size: 0.85rem;
 }
+/* Input readonly o deshabilitado */
+input[readonly].disabled-input,
+input:disabled.disabled-input {
+  background-color: #f5f5f5; /* Gris claro */
+  color: #90969b; /* Texto gris */
+  border-color: #ddd !important; /* Borde inferior gris */
+  cursor: not-allowed;
+}
+
+input[readonly].disabled-input:focus,
+input:disabled.disabled-input:focus {
+  border-color: #ddd !important; /* Mantener gris en foco */
+  box-shadow: none; /* Eliminar sombra */
+}
+
+/* Select2 deshabilitado */
+.select2-container--default.select2-disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  pointer-events: none; /* Evita interacción */
+}
+
+.select2-container--default.select2-disabled .select2-selection {
+  background-color: #f5f5f5;
+  border-bottom-color: #ddd !important;
+  box-shadow: none;
+}
+
+/* Cambiar color del texto en Select2 deshabilitado */
+.select2-container--default.select2-disabled .select2-selection__rendered {
+  color: #90969b; /* Texto gris */
+}
 
 .email-tag {
-    background-color: rgba(25, 48, 196, 0.205);
-    border: 1px solid rgb(52, 62, 83);
-    color: rgb(52, 62, 83);
-    font-size: 0.85rem;
-    padding: 4px 8px;
-    border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
+  background-color: rgba(25, 48, 196, 0.205);
+  border: 1px solid rgb(52, 62, 83);
+  color: rgb(52, 62, 83);
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
 }
 .email-tag .remove {
-    margin-left: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    color: rgb(52, 62, 83);
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  color: rgb(52, 62, 83);
 }
 #emails_input::placeholder {
-    color: rgba(52, 62, 83, 0.4);
+  color: rgba(52, 62, 83, 0.4);
 }
 
 #spinnerOverlay.show {
-    display: flex !important;
+  display: flex !important;
 }
 
 .select2-container--default .select2-selection--single {
@@ -113,8 +145,6 @@ a.nav-link.dropdown-toggle::after {
   border-bottom-color: rgb(52, 62, 83) !important;
   box-shadow: none;
 }
-
-
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -151,18 +181,17 @@ td {
   color: #00000073;
 }
 
-
 /*-----------------------------------------------Animaciones TOAST------------------------------------------*/
 /* Ajustes para toasts */
 .swal2-toast .swal2-title {
-  margin: 4px 0 2px 0;       /* Menor separación arriba y abajo */
-  font-size: 0.95rem;        /* Tamaño de fuente más pequeño */
+  margin: 4px 0 2px 0; /* Menor separación arriba y abajo */
+  font-size: 0.95rem; /* Tamaño de fuente más pequeño */
   line-height: 1.2;
 }
 
 .swal2-toast .swal2-html-container {
   margin: 0;
-  font-size: 0.85rem;        /* Tamaño más compacto */
+  font-size: 0.85rem; /* Tamaño más compacto */
   line-height: 1.2;
 }
 
@@ -353,7 +382,6 @@ table.tabla-mov1 td:nth-child(7) {
   width: 10% !important;
 }
 
-
 /*--------------TABLA MOVIMIENTOS 2-----------------*/
 /* Encabezado tabla 2 - gris cálido */
 table.tabla-mov2 thead {
@@ -410,7 +438,6 @@ table.tabla-mov2 td:nth-child(7) {
   width: 10% !important;
 }
 
-
 /*--------------------------------TABLA CONTENEDORES-----------------------------------*/
 table.tabla-contenedores th:nth-child(1),
 table.tabla-contenedores td:nth-child(1) {
@@ -431,8 +458,6 @@ table.tabla-contenedores th:nth-child(4),
 table.tabla-contenedores td:nth-child(4) {
   width: 20% !important;
 }
-
-
 
 /*--------------------------------Diseño parte superior catalogos -----------------------------------*/
 .input-transparent {
@@ -1180,7 +1205,6 @@ input:checked + .slider:before {
   table-layout: fixed;
 }
 
-
 .tabla-facturas th,
 .tabla-facturas td {
   padding-left: 4px;
@@ -1222,7 +1246,7 @@ input:checked + .slider:before {
   width: 30%;
   min-width: 130px;
   max-width: 110px;
-  text-align:left;
+  text-align: left;
 }
 
 /* Proveedor (Columna 5) */
@@ -1254,7 +1278,7 @@ input:checked + .slider:before {
 
 /* Importe (Columna 8) */
 .tabla-facturas thead th:nth-child(8),
-.tabla-facturas tbody td:nth-child(8) { 
+.tabla-facturas tbody td:nth-child(8) {
   width: 6%;
   min-width: 90px;
   max-width: 45px;
@@ -1263,7 +1287,6 @@ input:checked + .slider:before {
 
 /*---------------------------------------TABLA PP----------------------------------------------------*/
 /* Solo aplicar en cat_Cuentas.php */
-
 
 /* Referencia (Columna 2) */
 .tabla-pp-container thead th:nth-child(2),
@@ -1289,7 +1312,7 @@ input:checked + .slider:before {
   width: 20%;
   min-width: 130px;
   max-width: 110px;
-  text-align:left;
+  text-align: left;
 }
 
 /* Proveedor (Columna 5) */
@@ -1321,7 +1344,7 @@ input:checked + .slider:before {
 
 /* Importe (Columna 8) */
 .tabla-pp-container thead th:nth-child(8),
-.tabla-pp-container tbody td:nth-child(8) { 
+.tabla-pp-container tbody td:nth-child(8) {
   width: 6%;
   min-width: 90px;
   max-width: 45px;
@@ -1330,13 +1353,12 @@ input:checked + .slider:before {
 
 /* Importe (Columna 8) */
 .tabla-pp-container thead th:nth-child(9),
-.tabla-pp-container tbody td:nth-child(9) { 
+.tabla-pp-container tbody td:nth-child(9) {
   width: 10%;
   min-width: 90px;
   max-width: 45px;
   text-align: center;
 }
-
 
 #uploadAlert {
   display: none;
@@ -1349,8 +1371,6 @@ input:checked + .slider:before {
   margin-bottom: 10px;
   font-weight: bold;
 }
-
-
 
 /* REPORTES.............................................................*/
 
@@ -1390,9 +1410,9 @@ input:checked + .slider:before {
 #tablaPolizas th:nth-child(3), /* Beneficiario */
 #tablaPolizas td:nth-child(3) {
   width: 20%;
-  white-space: nowrap;        /* evitar que el texto haga salto de línea */
-  overflow: hidden;           /* esconder el texto que desborda */
-  text-overflow: ellipsis;    /* mostrar ... al final */
+  white-space: nowrap; /* evitar que el texto haga salto de línea */
+  overflow: hidden; /* esconder el texto que desborda */
+  text-overflow: ellipsis; /* mostrar ... al final */
 }
 
 #tablaPolizas th:nth-child(4), /* Subcuenta */
@@ -1404,7 +1424,6 @@ input:checked + .slider:before {
 #tablaPolizas th:nth-child(5), /* Nombre */
 #tablaPolizas td:nth-child(5) {
   width: 3%;
-
 }
 
 #tablaPolizas th:nth-child(6), /* Cargo */
@@ -1424,13 +1443,13 @@ input:checked + .slider:before {
   width: 3%;
 }
 
-  #v-meses-tab .nav-link {
-    font-size: 1rem; /* tamaño normal */
-  }
+#v-meses-tab .nav-link {
+  font-size: 1rem; /* tamaño normal */
+}
 
-  @media (max-width: 575.98px) {
-    #v-meses-tab .nav-link {
-      font-size: 0.65rem; /* tamaño más pequeño en sm y menor */
-      padding: 0.25rem 0.5rem;
-    }
+@media (max-width: 575.98px) {
+  #v-meses-tab .nav-link {
+    font-size: 0.65rem; /* tamaño más pequeño en sm y menor */
+    padding: 0.25rem 0.5rem;
   }
+}

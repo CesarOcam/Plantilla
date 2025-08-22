@@ -7,10 +7,10 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 include_once('../../modulos/conexion.php');
 
-//Obtener ADUANAS
+//Obtener Referencias
 $stmt = $con->prepare("SELECT Id, Numero 
                        FROM conta_referencias 
-                       WHERE Status = 1");
+                       WHERE Status IN (1, 2)");
 $stmt->execute();
 $referencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
