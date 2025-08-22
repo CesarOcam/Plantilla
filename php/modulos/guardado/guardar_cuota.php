@@ -134,8 +134,8 @@ switch ((int) $aduana) {
     case 119:
         $subcuenta = 37;
         break;
-    case 126:
-        $subcuenta = 44;
+    case 124:
+        $subcuenta = 38;
         break;
     case 91:
         $subcuenta = 40;
