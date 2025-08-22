@@ -12,6 +12,8 @@ if (!isset($_SESSION['usuario_id'])) {
 
 
 if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
+    
+date_default_timezone_set('America/Mexico_City');
 
     function obtenerFechaHoraActual()
     {
