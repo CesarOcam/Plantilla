@@ -29,8 +29,13 @@ $sheet->setCellValue('G3', 'Fecha: ' . date('d/m/Y'));
 $sheet->getStyle('G3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
 // Row 4: Hora actual en G
+// Establecer zona horaria
+date_default_timezone_set('America/Mexico_City');
+
+// Row 4: Hora actual en G
 $sheet->setCellValue('G4', 'Hora: ' . date('H:i:s'));
-$sheet->getStyle('G4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+$sheet->getStyle('G4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
 
 // Preparar parámetros
 $where = [];
