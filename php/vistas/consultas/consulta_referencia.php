@@ -5,10 +5,21 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: /portal_web/Contabilidad/login.php');  // Ruta desde la raíz del servidor web
     exit;
 }
+include_once('../../modulos/conexion.php');
+// Obtener aduanas
+$stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
+                       FROM 2201aduanas 
+                       WHERE nombre_corto_aduana IS NOT NULL 
+                         AND TRIM(nombre_corto_aduana) != '' 
+                         AND id2201aduanas IN (25, 74, 81, 91, 119, 124)
+                       ORDER BY nombre_corto_aduana");
+$stmt->execute();
+$aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
-    
+
 <body class="consulta-referencias">
 
     <head>
@@ -18,10 +29,23 @@ if (!isset($_SESSION['usuario_id'])) {
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+        <!-- jQuery primero -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- SweetAlert2 después -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.min.css">
+        <!-- Select2 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <!-- Fechas -->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <!-- Select2 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Bootstrap Icons CDN para los íconos -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
         <link rel="stylesheet" href="../../../css/style.css">
         <link rel="stylesheet" href="../../../css/style2.css">
@@ -51,6 +75,18 @@ if (!isset($_SESSION['usuario_id'])) {
                         </div>
 
                         <div class="col-1 d-flex flex-column">
+                            <label for="aduana-select" class="form-label small mb-0">ADUANA:</label>
+                            <select id="aduana-select" name="aduana">
+                                <option value="" selected disabled>-- Selecciona una aduana --</option>
+                                <?php foreach ($aduanas as $aduana): ?>
+                                    <option value="<?= htmlspecialchars($aduana['id2201aduanas']) ?>">
+                                        <?= htmlspecialchars($aduana['nombre_corto_aduana']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-1 d-flex flex-column">
                             <label for="fechaDesdeInput" class="form-label small mb-0">FECHA DESDE:</label>
                             <input type="date" id="fechaDesdeInput"
                                 class="form-control rounded-0 border-0 border-bottom"
@@ -66,32 +102,33 @@ if (!isset($_SESSION['usuario_id'])) {
 
                         <div class="col-1 d-flex flex-column">
                             <label for="referenciaInput" class="form-label small mb-0">REFERENCIA:</label>
-                            <input type="text" id="referenciaInput" class="form-control rounded-0 border-0 border-bottom"
+                            <input type="text" id="referenciaInput"
+                                class="form-control rounded-0 border-0 border-bottom"
                                 style="background-color: transparent;" aria-label="Filtrar por póliza">
                         </div>
 
                         <div class="col-4 d-flex flex-column">
                             <label for="logisticoInput" class="form-label small mb-0">LOGISTICO:</label>
-                            <input type="text" id="logisticoInput"
-                                class="form-control rounded-0 border-0 border-bottom"
+                            <input type="text" id="logisticoInput" class="form-control rounded-0 border-0 border-bottom"
                                 style="background-color: transparent;" aria-label="Filtrar por beneficiario">
                         </div>
                         <!-- Botones -->
                         <div class="col-3 d-flex align-items-end justify-content-start gap-2">
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                                <button type="button" class="btn btn-secondary rounded-0" id="btn_buscar">Buscar</button>
+                                <button type="button" class="btn btn-secondary rounded-0"
+                                    id="btn_buscar">Buscar</button>
                             </div>
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                                <button type="button" class="btn btn-outline-secondary rounded-0" id="btn_limpiar">Limpiar</button>
+                                <button type="button" class="btn btn-outline-secondary rounded-0"
+                                    id="btn_limpiar">Limpiar</button>
                             </div>
                         </div>
 
                         <!-- Botón "+" a la derecha -->
                         <div class="col d-flex align-items-start justify-content-end mt-3 mb-5">
                             <a href="../formularios/form_referencias.php"
-                            class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
-                            style="width: 36px; height: 36px;"
-                            title="Agregar nuevo">
+                                class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 36px; height: 36px;" title="Agregar nuevo">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </div>
@@ -101,7 +138,7 @@ if (!isset($_SESSION['usuario_id'])) {
                 <hr class="mb-5" style="border-top: 2px solid #000;">
 
                 <div id="tabla-referencias-container">
-                     <!-- Aqui se encuentra la tabla de referencias -->
+                    <!-- Aqui se encuentra la tabla de referencias -->
                 </div>
 
             </div>
@@ -113,8 +150,29 @@ if (!isset($_SESSION['usuario_id'])) {
     </div>
 
     <script>
+        $(document).ready(function () {
+            function initSelect2(id, placeholder) {
+                $(id).select2({
+                    placeholder: placeholder,
+                    allowClear: false,
+                    width: '100%'
+                });
+            }
+
+            initSelect2('#aduana-select', 'Aduana');
+
+            // Coloca automáticamente el cursor en la caja de búsqueda al abrir cualquier select2
+            $(document).on('select2:open', () => {
+                setTimeout(() => {
+                    let input = document.querySelector('.select2-container--open .select2-search__field');
+                    if (input) input.focus();
+                }, 100); // pequeño delay para asegurar que el input exista
+            });
+        });
+
         document.getElementById("btn_buscar").addEventListener("click", function () {
             const status = document.getElementById("statusInput").value;
+            const aduana = document.getElementById("aduana-select").value;
             const fechaDesde = document.getElementById("fechaDesdeInput").value;
             const fechaHasta = document.getElementById("fechaHastaInput").value;
             const referencia = document.getElementById("referenciaInput").value;
@@ -122,6 +180,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
             const params = new URLSearchParams({
                 status,
+                aduana,
                 fecha_desde: fechaDesde,
                 fecha_hasta: fechaHasta,
                 referencia,
@@ -141,6 +200,7 @@ if (!isset($_SESSION['usuario_id'])) {
         // Limpiar filtros
         document.getElementById("btn_limpiar").addEventListener("click", function () {
             document.getElementById("statusInput").value = "";
+            document.getElementById("aduana-select").value = "";
             document.getElementById("fechaDesdeInput").value = "";
             document.getElementById("fechaHastaInput").value = "";
             document.getElementById("referenciaInput").value = "";
@@ -151,10 +211,8 @@ if (!isset($_SESSION['usuario_id'])) {
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-        crossorigin="anonymous">
-    </script>
-
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
+        </script>
 </body>
 
 </html>

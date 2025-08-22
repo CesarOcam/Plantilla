@@ -42,9 +42,6 @@ if (isset($_GET['aduanaNombre'])) {
     exit;
 }
 
-
-
-
 // Obtener aduanas
 $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana 
                        FROM 2201aduanas 
@@ -54,8 +51,6 @@ $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana
                        ORDER BY nombre_corto_aduana");
 $stmt->execute();
 $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 
 // EXPORTADORES Y LOGISTICOS
 $stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador
@@ -72,7 +67,6 @@ $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, nombre_conocido_reci
 $stmt->execute();
 $recinto = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
 // NAVIERAS
 $stmt = $con->prepare("SELECT idtransportista, nombre_transportista
                        FROM transportista 
@@ -88,8 +82,6 @@ $stmt = $con->prepare("SELECT idtransporte, identificacion
                        ORDER BY identificacion");
 $stmt->execute();
 $buque = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 
 // Consolidadoras
 $stmt = $con->prepare("SELECT id_consolidadora, denominacion_consolidadora

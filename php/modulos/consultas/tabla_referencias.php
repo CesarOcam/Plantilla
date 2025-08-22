@@ -19,6 +19,12 @@ if (isset($_GET['status']) && in_array($_GET['status'], ['1', '2', '3', '4'])) {
     $params[':status'] = $_GET['status'];
 }
 
+// ADUANA
+if (!empty($_GET['aduana'])) {
+    $where[] = "r.AduanaId = :aduana";
+    $params[':aduana'] = $_GET['aduana'];
+}
+
 // FECHA DESDE
 if (!empty($_GET['fecha_desde'])) {
     $where[] = "r.FechaAlta >= :fecha_desde";
