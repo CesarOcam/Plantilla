@@ -46,8 +46,8 @@ if (!empty($_GET['referencia'])) {
 
 // LOGISTICO
 if (!empty($_GET['logistico'])) {
-    $where[] = "log.razonSocial_exportador LIKE :logistico";
-    $params[':logistico'] = "%" . $_GET['logistico'] . "%";
+    $where[] = "r.ClienteLogisticoId = :logistico";
+    $params[':logistico'] = $_GET['logistico'];
 }
 
 

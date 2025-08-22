@@ -16,6 +16,13 @@ $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana
 $stmt->execute();
 $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// EXPORTADORES Y LOGISTICOS
+$stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador
+                       FROM 01clientes_exportadores 
+                       ORDER BY razonSocial_exportador");
+$stmt->execute();
+$exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,8 +116,15 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <div class="col-4 d-flex flex-column">
                             <label for="logisticoInput" class="form-label small mb-0">LOGISTICO:</label>
-                            <input type="text" id="logisticoInput" class="form-control rounded-0 border-0 border-bottom"
-                                style="background-color: transparent;" aria-label="Filtrar por beneficiario">
+                                <select id="logistico-select" name="logistico"
+                                    class="form-control rounded-0 border-0 border-bottom text-muted">
+                                    <option value="" selected disabled>Logístico *</option>
+                                    <?php foreach ($exp as $item): ?>
+                                        <option value="<?php echo $item['id01clientes_exportadores']; ?>">
+                                            <?php echo $item['razonSocial_exportador']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                         </div>
                         <!-- Botones -->
                         <div class="col-3 d-flex align-items-end justify-content-start gap-2">
@@ -160,6 +174,7 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
 
             initSelect2('#aduana-select', 'Aduana');
+            initSelect2('#logistico-select', 'Logístico');
 
             // Coloca automáticamente el cursor en la caja de búsqueda al abrir cualquier select2
             $(document).on('select2:open', () => {
@@ -176,7 +191,7 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             const fechaDesde = document.getElementById("fechaDesdeInput").value;
             const fechaHasta = document.getElementById("fechaHastaInput").value;
             const referencia = document.getElementById("referenciaInput").value;
-            const logistico = document.getElementById("logisticoInput").value;
+            const logistico = document.getElementById("logistico-select").value;
 
             const params = new URLSearchParams({
                 status,
@@ -204,7 +219,7 @@ $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             document.getElementById("fechaDesdeInput").value = "";
             document.getElementById("fechaHastaInput").value = "";
             document.getElementById("referenciaInput").value = "";
-            document.getElementById("logisticoInput").value = "";
+            document.getElementById("logistico-select").value = "";
 
             document.getElementById("btn_buscar").click(); // recargar con filtros vacíos
         });
