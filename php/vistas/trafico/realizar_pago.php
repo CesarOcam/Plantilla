@@ -139,7 +139,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             </div>
             <div class="modal-body">
                 <div id="tabla-aduanas-container">
-                    <?php include('../../modulos/consultas_traf/tabla_Solicitudes.php'); ?>
+                    <?php include('../../modulos/consultas_traf/tabla_solicitudes.php'); ?>
                 </div>
             </div>
             <div class="modal-footer">
