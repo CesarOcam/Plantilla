@@ -174,21 +174,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $con->commit();
 
-        /////////////////////////////////////////////////////// ENVÍO DE CORREO ///////////////////////////////////////////////////////////////////////
-
-
-        /////////////////////////////////////////////////// FIN DEL CORREO ////////////////////////////////////////////////////
         // Datos adicionales para JS
-        $response['datos'] = [
-            'ids' => $id_array,
-            'total' => $total,
-            'fecha' => $fecha,
-            'beneficiario' => $beneficiario,
-            'subcuenta' => $subcuenta,
-            'poliza' => $numero_poliza
-        ];
-
-        echo json_encode($response);
+        echo json_encode([
+            'success' => true,
+            'datos' => [
+                'ids' => $id_array,
+                'total' => $total,
+                'fecha' => $fecha,
+                'beneficiario' => $beneficiario,
+                'subcuenta' => $subcuenta,
+                'poliza' => $numero_poliza
+            ]
+        ]);
         exit;
 
     } catch (Exception $e) {

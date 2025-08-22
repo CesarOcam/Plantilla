@@ -1,8 +1,5 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+header('Content-Type: application/json');
 session_start();
 include('../conexion.php');
 if (!isset($_SESSION['usuario_id'])) {
@@ -12,7 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
     ]);
     exit;
 }
-header('Content-Type: application/json');
+
 
 if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
 

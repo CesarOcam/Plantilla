@@ -207,29 +207,6 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <script src="../../../js/facturas_Pp.js"></script>
     <script src="../../../js/pagar_pp/pagar_pp.js"></script>
-    <script>
-        document.getElementById('btn_correo').addEventListener('click', function () {
-            fetch('../../modulos/pagar_pp/correo.php', {
-                method: 'POST',
-                body: JSON.stringify({ accion: 'enviar_correo' }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Correo enviado correctamente.');
-                    } else {
-                        alert('Error del servidor: ' + (data.error || 'No especificado.'));
-                    }
-                })
-                .catch(err => {
-                    console.error('Error de red o servidor:', err);
-                    alert('No se pudo conectar con el servidor.');
-                });
-        });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
