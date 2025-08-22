@@ -81,7 +81,7 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </select>
                         </div>
 
-                        <div class="col-1 d-flex flex-column">
+                        <div class="col-2 d-flex flex-column">
                             <label for="aduana-select" class="form-label small mb-0">ADUANA:</label>
                             <select id="aduana-select" name="aduana">
                                 <option value="" selected disabled>-- Selecciona una aduana --</option>
@@ -116,18 +116,18 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <div class="col-4 d-flex flex-column">
                             <label for="logisticoInput" class="form-label small mb-0">LOGISTICO:</label>
-                                <select id="logistico-select" name="logistico"
-                                    class="form-control rounded-0 border-0 border-bottom text-muted">
-                                    <option value="" selected disabled>Logístico *</option>
-                                    <?php foreach ($exp as $item): ?>
-                                        <option value="<?php echo $item['id01clientes_exportadores']; ?>">
-                                            <?php echo $item['razonSocial_exportador']; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                            <select id="logistico-select" name="logistico"
+                                class="form-control rounded-0 border-0 border-bottom text-muted">
+                                <option value="" selected disabled>Logístico *</option>
+                                <?php foreach ($exp as $item): ?>
+                                    <option value="<?php echo $item['id01clientes_exportadores']; ?>">
+                                        <?php echo $item['razonSocial_exportador']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <!-- Botones -->
-                        <div class="col-3 d-flex align-items-end justify-content-start gap-2">
+                        <div class="col-1 d-flex align-items-end justify-content-start gap-2">
                             <div class="col-auto d-flex align-items-center mt-3 mb-5">
                                 <button type="button" class="btn btn-secondary rounded-0"
                                     id="btn_buscar">Buscar</button>
@@ -148,7 +148,6 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
-
                 <hr class="mb-5" style="border-top: 2px solid #000;">
 
                 <div id="tabla-referencias-container">
@@ -173,8 +172,8 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 });
             }
 
-            initSelect2('#aduana-select', 'Aduana');
-            initSelect2('#logistico-select', 'Logístico');
+            initSelect2('#aduana-select', 'Selecciona...');
+            initSelect2('#logistico-select', 'Selecciona...');
 
             // Coloca automáticamente el cursor en la caja de búsqueda al abrir cualquier select2
             $(document).on('select2:open', () => {
@@ -215,11 +214,12 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // Limpiar filtros
         document.getElementById("btn_limpiar").addEventListener("click", function () {
             document.getElementById("statusInput").value = "";
-            document.getElementById("aduana-select").value = "";
             document.getElementById("fechaDesdeInput").value = "";
             document.getElementById("fechaHastaInput").value = "";
             document.getElementById("referenciaInput").value = "";
-            document.getElementById("logistico-select").value = "";
+
+            $('#aduana-select').val(null).trigger('change');
+            $('#logistico-select').val(null).trigger('change');
 
             document.getElementById("btn_buscar").click(); // recargar con filtros vacíos
         });
