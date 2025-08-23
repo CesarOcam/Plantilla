@@ -970,6 +970,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                 $('#usuario_alta').prop('readonly', true).addClass('disabled-input');
                 $('#fecha_alta').prop('readonly', true).addClass('disabled-input');
                 $('#status').prop('readonly', true).addClass('disabled-input');
+                $('#comentarios').prop('readonly', true).addClass('disabled-input');
 
                 // Select2
                 const selects = [
@@ -989,44 +990,48 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             }
         });
 
-$(document).ready(function() {
-    // Status de la referencia
-    const status = <?= $referencia['Status']; ?>;
+        $(document).ready(function() {
+            // Status de la referencia
+            const status = <?= $referencia['Status']; ?>;
 
-    // Seleccionar todos los inputs
-    const inputs = ["#cierre_doc", "#cierre_desp", "#fecha_pago", "#hora_desp", "#fecha_doc", "#fecha_eta"];
+            // Seleccionar todos los inputs
+            const inputs = ["#cierre_doc", "#cierre_desp", "#fecha_pago", "#hora_desp", "#fecha_doc", "#fecha_eta"];
 
-    inputs.forEach(id => {
-        // Configuración por defecto
-        const options = { dateFormat: "Y-m-d" };
+            inputs.forEach(id => {
+                // Configuración por defecto
+                const options = {
+                    dateFormat: "Y-m-d"
+                };
 
-        // Configuración específica para horaDesp
-        if (id === "#hora_desp") {
-            options.enableTime = true;
-            options.noCalendar = true;
-            options.dateFormat = "H:i";
-            options.time_24hr = true;
-            options.allowInput = true;
-        }
+                // Configuración específica para horaDesp
+                if (id === "#hora_desp") {
+                    options.enableTime = true;
+                    options.noCalendar = true;
+                    options.dateFormat = "H:i";
+                    options.time_24hr = true;
+                    options.allowInput = true;
+                }
 
-        // Si status == 3, desactivar apertura de calendario
-        if (status == 3) {
-            options.clickOpens = false; // Evita que se abra el calendario
-        }
+                // Si status == 3, desactivar apertura de calendario
+                if (status == 3) {
+                    options.clickOpens = false; // Evita que se abra el calendario
+                }
 
-        // Inicializar Flatpickr
-        flatpickr(id, options);
+                // Inicializar Flatpickr
+                flatpickr(id, options);
 
-        // Agregar clase disabled-input a todos los inputs si status == 3
-        if (status == 3) {
-            $(id).addClass('disabled-input');
-        }
-    });
-});
+                // Agregar clase disabled-input a todos los inputs si status == 3
+                if (status == 3) {
+                    $(id).addClass('disabled-input');
+                }
+            });
 
+            $('#comentarios')
+                .prop('disabled', true) // en lugar de readonly
+                .removeClass('input-transparent')
+                .addClass('disabled-input');
 
-
-
+        });
 
         let contador = 1;
 

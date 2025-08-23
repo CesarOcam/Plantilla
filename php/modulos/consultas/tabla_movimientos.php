@@ -27,6 +27,7 @@ try {
         LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
         WHERE pp.ReferenciaId = :id
         AND c.Numero IN (123, 114, 214)
+        AND pp.Activo = 1
         AND pp.EnKardex != 1
         LIMIT :inicio, :limite
     ");
@@ -59,6 +60,7 @@ try {
         WHERE pp.ReferenciaId = :id
         AND c.Numero NOT IN (123, 114, 214)
         AND pp.EnKardex != 1
+        AND pp. Activo = 1
         LIMIT :inicio, :limite
     ");
 
