@@ -1025,12 +1025,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     $(id).addClass('disabled-input');
                 }
             });
-
-            $('#comentarios')
-                .prop('disabled', true) // en lugar de readonly
-                .removeClass('input-transparent')
-                .addClass('disabled-input');
-
+            
         });
 
         let contador = 1;

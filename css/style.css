@@ -90,24 +90,6 @@ input:disabled.disabled-input:focus {
   box-shadow: none; /* Eliminar sombra */
 }
 
-/* Input o Textarea readonly/deshabilitado */
-input[readonly].disabled-input,
-input:disabled.disabled-input,
-textarea[readonly].disabled-input,
-textarea:disabled.disabled-input {
-  background-color: #f5f5f5 !important; /* Gris claro */
-  color: #90969b;           /* Texto gris */
-  border-color: #ddd !important; /* Borde inferior gris */
-  cursor: not-allowed;
-}
-
-input[readonly].disabled-input:focus,
-input:disabled.disabled-input:focus,
-textarea[readonly].disabled-input:focus,
-textarea:disabled.disabled-input:focus {
-  border-color: #ddd !important; /* Mantener gris en foco */
-  box-shadow: none; /* Eliminar sombra */
-}
 
 /* Select2 deshabilitado */
 .select2-container--default.select2-disabled {

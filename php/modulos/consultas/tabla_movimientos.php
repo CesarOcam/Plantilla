@@ -29,6 +29,7 @@ try {
         AND c.Numero IN (123, 114, 214)
         AND pp.Activo = 1
         AND pp.EnKardex != 1
+        AND pp.PagoCuenta !=1
         LIMIT :inicio, :limite
     ");
 
@@ -58,11 +59,15 @@ try {
         LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
         LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
         WHERE pp.ReferenciaId = :id
-        AND c.Numero NOT IN (123, 114, 214)
+        AND (
+            c.Numero NOT IN (114, 214, 123)
+            OR (c.Numero = 123 AND pp.PagoCuenta = 1)
+        )
         AND pp.EnKardex != 1
-        AND pp. Activo = 1
+        AND pp.Activo = 1
         LIMIT :inicio, :limite
     ");
+
 
     $stmt2->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt2->bindValue(':inicio', $inicio, PDO::PARAM_INT);
