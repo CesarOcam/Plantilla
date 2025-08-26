@@ -104,11 +104,11 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                         <input class="form-check-input mt-1" type="checkbox" value=""
                             aria-label="Checkbox for following text input">
                     </th>
-                    <td><?php echo $poliza['Id']; ?></td>
-                    <td><?php echo $poliza['Numero']; ?></td>
-                    <td><?php echo $poliza['Concepto']; ?></td>
-                    <td><?php echo $poliza['BeneficiarioNombre']; ?></td>
-                    <td><?php echo number_format($poliza['Importe'], 2, '.', ','); ?></td>
+                    <td><?php echo $poliza['Id'] ?? ''; ?></td>
+                    <td><?php echo $poliza['Numero'] ?? ''; ?></td>
+                    <td><?php echo $poliza['Concepto'] ?? ''; ?></td>
+                    <td><?php echo $poliza['BeneficiarioNombre'] ?? ''; ?></td>
+                    <td><?php echo !empty($poliza['Importe']) ? number_format($poliza['Importe'], 2, '.', ',') : ''; ?></td>
                     <td>
                         <?php
                         echo ($poliza['EmpresaId'] == 1) ? 'Amexport' :

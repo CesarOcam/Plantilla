@@ -59,7 +59,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
 <table class="table table-hover tabla-solicitudes">
     <thead class="small">
         <tr>
-            <th scope="col-id">Id</th>
+            <th scope="col-id">No.</th>
             <th scope="col-empresa">EmpresaId</th>
             <th scope="col-beneficiario">BeneficiarioId</th>
             <th scope="col-importe">Importe</th>

@@ -20,7 +20,7 @@ if (isset($_GET['status']) && in_array($_GET['status'], ['1', '2', '3', '4'])) {
 }
 
 // ADUANA
-if (!empty($_GET['aduana'])) {
+if (!empty($_GET['aduana']) && $_GET['aduana'] !== 'todas') {
     $where[] = "r.AduanaId = :aduana";
     $params[':aduana'] = $_GET['aduana'];
 }

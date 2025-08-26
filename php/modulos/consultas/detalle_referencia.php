@@ -653,7 +653,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <div class="tab-pane fade" id="opciones" role="tabpanel">
                             <div class="row mt-4">
                                 <div class="col-12 mt-5">
-                                    <button type="button" class="btn btn-outline-secondary btn-md rounded-0"
+                                    <button type="button" id="btn_subirDocs" class="btn btn-outline-secondary btn-md rounded-0"
                                         data-bs-toggle="modal" data-bs-target="#modalDocumentos">
                                         <i class="bi bi-upload me-1"></i> Subir Documentos
                                     </button>
@@ -991,6 +991,18 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
         });
 
         $(document).ready(function() {
+            const status = <?= $referencia['Status']; ?>; // Traer status desde PHP
+
+            if (status == 3) {
+                // Bloquear todos los botones 
+                $('button.btn-danger:contains("Eliminar")').prop('disabled', true).addClass('disabled');
+                $('#btn-nuevo-contenedor').prop('disabled', true).addClass('disabled'); 
+                $('#btn_subirDocs').prop('disabled', true).addClass('disabled');
+            }
+        });
+
+
+        $(document).ready(function() {
             // Status de la referencia
             const status = <?= $referencia['Status']; ?>;
 
@@ -1025,7 +1037,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     $(id).addClass('disabled-input');
                 }
             });
-            
+
         });
 
         let contador = 1;

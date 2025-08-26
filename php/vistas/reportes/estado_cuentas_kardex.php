@@ -72,7 +72,7 @@ LEFT JOIN 01clientes_exportadores ee
 LEFT JOIN 2201aduanas a 
     ON r.AduanaId = a.id2201aduanas
 $whereSql
-ORDER BY c.Fecha DESC
+ORDER BY c.Fecha ASC
 ";
 
 $stmt = $con->prepare($sql);
@@ -106,17 +106,34 @@ foreach ($headers as $header) {
 
 // Rellenar filas debajo de la cabecera (row 8 en adelante)
 $fila = 8;
+$totalSaldo = 0; // acumulador
+
 foreach ($kardex as $dato) {
-    $sheet->setCellValue('A'.$fila, $dato['NumCg']);
-    $sheet->setCellValue('B'.$fila, $dato['ReferenciaNumero']);
-    $sheet->setCellValue('C'.$fila, $dato['ExportadorNombre']);
-    $sheet->setCellValue('D'.$fila, $dato['Fecha']);
-    $sheet->setCellValue('E'.$fila, $dato['Booking']);
-    $sheet->setCellValue('F'.$fila, $dato['BuqueNombre']);
-    $sheet->setCellValue('G'.$fila, $dato['SuReferencia']);
-    $sheet->setCellValue('H'.$fila, $dato['Saldo']);
+    $sheet->setCellValue('A' . $fila, $dato['NumCg']);
+    $sheet->setCellValue('B' . $fila, $dato['ReferenciaNumero']);
+    $sheet->setCellValue('C' . $fila, $dato['ExportadorNombre']);
+    $sheet->setCellValue('D' . $fila, $dato['Fecha']);
+    $sheet->setCellValue('E' . $fila, $dato['Booking']);
+    $sheet->setCellValue('F' . $fila, $dato['BuqueNombre']);
+    $sheet->setCellValue('G' . $fila, $dato['SuReferencia']);
+    $sheet->setCellValue('H' . $fila, $dato['Saldo']);
+
+    // acumular saldo
+    $totalSaldo += (float) $dato['Saldo'];
+
     $fila++;
 }
+
+// Fila de TOTAL
+$sheet->mergeCells('A' . $fila . ':G' . $fila);
+$sheet->setCellValue('A' . $fila, 'TOTAL');
+$sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+$sheet->getStyle('A' . $fila)->getFont()->setBold(true);
+
+// Total en columna H
+$sheet->setCellValue('H' . $fila, $totalSaldo);
+$sheet->getStyle('H' . $fila)->getFont()->setBold(true);
+$sheet->getStyle('H' . $fila)->getNumberFormat()->setFormatCode('#,##0.00'); // formato con comas y 2 decimales
 
 // Descargar Excel
 $nombreArchivo = 'estado_de_cuenta.xlsx';

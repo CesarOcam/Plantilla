@@ -101,7 +101,18 @@ $stmtPais->bindParam(':id', $paisId, PDO::PARAM_INT);
 $stmtPais->execute();
 $pais = $stmtPais->fetch(PDO::FETCH_ASSOC);
 
-$fechaPago = $referencia['FechaPago'];
+$stmtFechaKardex = $con->prepare("SELECT NumCg, Fecha FROM conta_cuentas_kardex WHERE Referencia = :id");
+$stmtFechaKardex->bindParam(':id', $id, PDO::PARAM_INT);
+$stmtFechaKardex->execute();
+$kardex = $stmtFechaKardex->fetch(PDO::FETCH_ASSOC);
+setlocale(LC_TIME, 'es_ES.UTF-8', 'es_MX.UTF-8', 'spanish');
+
+$fechaKardex = !empty($kardex['Fecha']) 
+    ? strtoupper(str_replace('.', '', strftime('%d/%b/%Y', strtotime($kardex['Fecha'])))) 
+    : '';
+$NumCg = $kardex['NumCg']; 
+
+$fecha = $referencia['FechaPago'];
 
 if (!empty($fechaPago)) {
     $fechaPagoFormateada = date('Y-m-d', strtotime($fechaPago));
@@ -163,13 +174,14 @@ $pdf->SetFillColor(255, 255, 255);
 $pdf->SetXY(158, $startY + 6);
 
 // Estilo normal
-$pdf->SetFont('Arial', '', 8);
+$pdf->SetFont('Arial', 'B', 8);
 
-$pdf->Cell(42, 3.2, '', 'LR', 1, 'C');
+$pdf->Cell(42, 3.2, $NumCg, 'LR', 1, 'C');
+$pdf->SetFont('Arial', '', 8);
 $pdf->SetXY(158, $startY + 9.3);
 $pdf->Cell(42, 3.2, 'FECHA', 'LR', 1, 'C');
 $pdf->SetXY(158, $startY + 12.6);
-$pdf->Cell(42, 3.7, '02/JUN/2025 12:58', 'LR', 1, 'C');
+$pdf->Cell(42, 3.7, $fechaKardex, 'LR', 1, 'C');
 $pdf->SetXY(158, $startY + 16.5);
 $pdf->SetFont('Arial', 'B', 8);
 $pdf->Cell(42, 3.3, 'REF:' . $referencia['Numero'], 'LR', 1, 'C');
@@ -595,7 +607,7 @@ $pdf->Cell($colWidth, 5, toISO('FRONTERA E INTERIOR'), 1, 1, 'C', true);
 
 // Contenidos por columna no mover
 $maritimas = "- Veracruz (Matriz)                                    - Altamira\n- Lázaro Cárdenas                                    - Manzanillo\n- Tuxpan";
-$aereas = " - AICM (Aeropuerto)                            - Guadalajara\n - Monterrey  -Toluca";
+$aereas = " - AICM (Aeropuerto)                            - Guadalajara\n - Monterrey                                          -Toluca";
 $frontera = "  - Nuevo Laredo                                - Querétaro";
 
 // Guardamos la posición Y

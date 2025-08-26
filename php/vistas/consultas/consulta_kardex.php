@@ -141,7 +141,7 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="row mt-0 pt-0">
                             <div class="col-1 d-flex flex-column">
-                                <label for="numInput" class="form-label small mb-0">NÚMERO:</label>
+                                <label for="numInput" class="form-label small mb-0">COMPROBACIÓN:</label>
                                 <input type="text" id="numInput" class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" aria-label="Filtrar por póliza">
                             </div>
@@ -152,12 +152,7 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     class="form-control rounded-0 border-0 border-bottom"
                                     style="background-color: transparent;" aria-label="Filtrar por póliza">
                             </div>
-                            <div class="col-1 d-flex flex-column">
-                                <label for="comprobacionInput" class="form-label small mb-0">COMPROBACION:</label>
-                                <input type="text" id="comprobacionInput"
-                                    class="form-control rounded-0 border-0 border-bottom"
-                                    style="background-color: transparent;" aria-label="Filtrar por póliza">
-                            </div>
+
                             <div class="col-3 d-flex flex-column">
                                 <label for="comprobacionInput" class="form-label small mb-0">LOGÍSTICO:</label>
                                 <select id="logistico-select" name="logistico"
@@ -294,7 +289,6 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     "numInput",
                     "aduanaInput",
                     "referenciaInput",
-                    "comprobacionInput",
                     "logisticoInput",
                 ];
 
@@ -340,7 +334,6 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     aduana: document.getElementById("aduanaInput").value || '',
                     referencia: document.getElementById("referenciaInput").value || '',
                     logistico: logistico,
-                    comprobacion: document.getElementById("comprobacionInput").value || '',
                     tipo: tipo,
                 });
 

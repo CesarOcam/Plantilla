@@ -84,7 +84,7 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="col-2 d-flex flex-column">
                             <label for="aduana-select" class="form-label small mb-0">ADUANA:</label>
                             <select id="aduana-select" name="aduana">
-                                <option value="" selected disabled>-- Selecciona una aduana --</option>
+                                <option value="todas">TODAS</option> <!-- opción estática -->
                                 <?php foreach ($aduanas as $aduana): ?>
                                     <option value="<?= htmlspecialchars($aduana['id2201aduanas']) ?>">
                                         <?= htmlspecialchars($aduana['nombre_corto_aduana']) ?>

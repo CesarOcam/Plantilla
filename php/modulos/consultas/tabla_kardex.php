@@ -157,7 +157,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     <td><?php echo $kardex['BuqueNombre']; ?></td>
                     <td><?php echo $kardex['Booking']; ?></td>
                     <td><?php echo $kardex['SuReferencia']; ?></td>
-                    <td><?php echo $kardex['Saldo']; ?></td>
+                    <td><?php echo number_format($kardex['Saldo'], 2, '.', ','); ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
