@@ -220,8 +220,8 @@ try {
 
 
             $sql_guardar = "INSERT INTO conta_cuentas_kardex
-        (NumCg, Referencia, Logistico, Exportador, Barco, Booking, SuReferencia, Importe, Anticipos, Saldo, Fecha, Poliza_id, NumPoliza, Status, Created_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (NumCg, Referencia, Logistico, Exportador, Barco, Booking, SuReferencia, Importe, Anticipos, Saldo, Fecha, Poliza_id, NumPoliza, Status, Created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt_guardar = $con->prepare($sql_guardar);
             $stmt_guardar->execute([
                 $numero,
@@ -243,8 +243,8 @@ try {
 
             // Insertar partidas
             $sql_partida = "INSERT INTO conta_partidaspolizas     
-        (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex, UsuarioSolicitud, created_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (PolizaId, SubcuentaId, ReferenciaId, Cargo, Abono, Observaciones, Activo, EnKardex, UsuarioSolicitud, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt_partida = $con->prepare($sql_partida);
 
             foreach ($partidas_a_insertar as $p) {
@@ -281,7 +281,7 @@ try {
                 case 119:
                     $subcuentaCliente = 55;
                     break;
-                case 126:
+                case 124:
                     $subcuentaCliente = 56;
                     break;
                 case 81:
@@ -305,7 +305,6 @@ try {
                 $abonoF = -$saldo; // si es -1486, se vuelve 1486
                 $cargoF = 0;
             }
-
 
             if ($saldo != 0) {
                 // Insertar partida Cliente

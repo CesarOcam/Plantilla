@@ -112,7 +112,7 @@ $fechaKardex = !empty($kardex['Fecha'])
     : '';
 $NumCg = $kardex['NumCg']; 
 
-$fecha = $referencia['FechaPago'];
+$fechaPago = $referencia['FechaPago'];
 
 if (!empty($fechaPago)) {
     $fechaPagoFormateada = date('Y-m-d', strtotime($fechaPago));
@@ -300,7 +300,7 @@ $pdf->SetXY(12, $startY + 100.7);
 $pdf->SetFillColor(180, 180, 180); // Gris claro
 $pdf->SetFont('Arial', 'B', 8);
 $pdf->Cell(188, 4, '', 'LTR', 0, 'L', true);
-$pdf->SetXY($startX + 40, $startY + 31.1);
+$pdf->SetXY($startX + 5, $startY + 31.1);
 $pdf->Cell(0, 144, toISO('CONCEPTO'));
 $pdf->SetXY($startX + 170, $startY + 31.1);
 $pdf->Cell(0, 144, toISO('IMPORTE'));

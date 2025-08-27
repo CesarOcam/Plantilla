@@ -275,7 +275,7 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                         </div>
                         <div class="col-10 col-sm-3 mt-2">
                             <label for="rfc_factura" class="form-label text-muted small">RFC:</label>
-                            <input id="rfc_factura" name="rfc_factura" type="text" maxlength="13"
+                            <input id="rfc_factura" name="rfc_factura" type="text"
                                 class="form-control rounded-0"
                                 style="background-color: transparent;" value="<?php echo $cliente['rfc_factura']; ?>">
                         </div>

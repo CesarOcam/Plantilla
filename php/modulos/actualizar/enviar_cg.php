@@ -109,6 +109,7 @@ try {
             $mail->Password = 'AMEXPORT.2024';
             $mail->SMTPSecure = 'ssl';
             $mail->Port = 465;
+            
             // Construir asunto dinámico
             $asunto = "$suReferencia / $numCg / $numero / $nombreExportador";
             $mail->setFrom('notificaciones@grupoamexport.com', 'Notificaciones Amexport');

@@ -20,8 +20,8 @@ if (isset($_POST['id_cliente'], $_POST['nombre'], $_POST['rfc'], $_POST['tipo'])
     $colonia = $_POST['colonia'] ?? '';
     $localidad = $_POST['localidad'] ?? '';
     $municipio = trim($_POST['municipio'] ?? '');
-    $pais = $_POST['pais'] ?? '';
-    $estado = $_POST['estado'] ?? '';
+    $pais = $_POST['pais'] ?? null;
+    $estado = $_POST['estado'] ?? null;
     $quien_paga = isset($_POST['pagaCon_cliente']) ? (int) $_POST['pagaCon_cliente'] : null;
     $logistico = $_POST['logistico_asociado'] ?? null;
     $status = isset($_POST['status_exportador']) ? (int) $_POST['status_exportador'] : null;
@@ -60,9 +60,9 @@ if (isset($_POST['id_cliente'], $_POST['nombre'], $_POST['rfc'], $_POST['tipo'])
         $status,
         $fecha_modificacion,
         $usuarioModificacion,
-        $id_cliente,
         $nombre_factura,
-        $rfc_factura
+        $rfc_factura,
+        $id_cliente,
     ];
 
     // Procesar correos recibidos

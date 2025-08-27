@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Certificado="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" Descuento="0.00" Exportacion="01" Fecha="2025-08-25T09:59:35" Folio="695534" FormaPago="99" LugarExpedicion="91700" MetodoPago="PPD" Moneda="MXN" NoCertificado="00001000000710212946" Sello="eEI4sutnmNCVn1aR4viyQGWU/4DFFW4XbEMEZ3+zkiYdHZ1fPuhSBOIS2ATfmhxiw+v1jRWPb5psezVL0ODZhH5hFIYPGlh8HDfGtl8CQw5iHRBXpYzsEhhDxYkuRKoDscY/eU+SfbMH0+IgrJCQtb3zE37XrcDs1PCGWFCcC1fnqJIxMO1tGUMOVddRk7pVH97E61/OSkBVPRnt1XuwT5ISW44cCuttVxdZg/n4pM2px3RnDtaqOCZsd1fLxKYxXwNdWHrlfICNmUewlaY7odyqwQTqtTf9Tk0fL7UukuSQwRsWjZcP0pCOaNNoyynFnNBzmygWnqxG3V3+dIgo0g==" Serie="G" SubTotal="2000.00" TipoCambio="1" TipoDeComprobante="I" Total="2000.00" Version="4.0" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd">
+  <cfdi:Emisor Nombre="ALMACENADORA GOLMEX" RegimenFiscal="601" Rfc="AGO970520EG9"/>
+  <cfdi:Receptor DomicilioFiscalReceptor="91700" Nombre="IFS NEUTRAL MARITIME SERVICES DE MEXICO" RegimenFiscalReceptor="601" Rfc="INM951030880" UsoCFDI="G03"/>
+  <cfdi:Conceptos>
+    <cfdi:Concepto Cantidad="1" ClaveProdServ="78121600" ClaveUnidad="E48" Descripcion="PAQUETE EXPORTACION DE CARGA SUELTA" Descuento="0.00" Importe="2000.00" ObjetoImp="02" Unidad="CONT" ValorUnitario="2000.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2000.00" Importe="0.00" Impuesto="002" TasaOCuota="0.000000" TipoFactor="Tasa"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="0.00">
+    <cfdi:Traslados>
+      <cfdi:Traslado Base="2000.00" Importe="0.00" Impuesto="002" TasaOCuota="0.000000" TipoFactor="Tasa"/>
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" FechaTimbrado="2025-08-25T10:00:17" NoCertificadoSAT="00001000000705928441" RfcProvCertif="PPD101129EA3" SelloCFD="eEI4sutnmNCVn1aR4viyQGWU/4DFFW4XbEMEZ3+zkiYdHZ1fPuhSBOIS2ATfmhxiw+v1jRWPb5psezVL0ODZhH5hFIYPGlh8HDfGtl8CQw5iHRBXpYzsEhhDxYkuRKoDscY/eU+SfbMH0+IgrJCQtb3zE37XrcDs1PCGWFCcC1fnqJIxMO1tGUMOVddRk7pVH97E61/OSkBVPRnt1XuwT5ISW44cCuttVxdZg/n4pM2px3RnDtaqOCZsd1fLxKYxXwNdWHrlfICNmUewlaY7odyqwQTqtTf9Tk0fL7UukuSQwRsWjZcP0pCOaNNoyynFnNBzmygWnqxG3V3+dIgo0g==" SelloSAT="YnY533Yh+XHibRj/4yKyRC8PxlbhApjIGvHW3zotb9S35U9rMW342LLdw3hGHM2zVtjPQrXOBlKHCk6f+4FLzPWWMgju7gZdhXa0lRbDi28CSxeZtiBiU6Ou7S8I3sHzKevcKmXsPZQmfaJaXLBbLwfPNYtd8OXNs2s9spAxo3ruL2PJ1vSefF03D6NRtPDktGq8lKqe+KbTWnUx4mQJus8ewkEezqh1GBwRpKU6ycQyohLs6VsXMY+8+PfvG6dTgWQk69/4ODIG5VyAV8Sa+HZpSU84yFZSx5rYVNjFrlPmlhl3iUzUf9tdLV3FN4plH6jdDJrH5PF0m2mbDgXg6A==" UUID="6C3A4910-FD04-40D1-BE30-CDB85FF5AE41" Version="1.1" xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd"/>
+  </cfdi:Complemento>
+  <cfdi:Addenda>
+    <bfa2:AddendaBuzonFiscal xmlns:bfa2="http://facturaloplus.com/ws/schemas/bf/2" xsi:schemaLocation="http://facturaloplus.com/ws/schemas/bf/2 http://facturaloplus.com/ws/schemas/bf/2/AddendaBF2.xsd" version="2.0">
+      <bfa2:Receptor noCliente="284533" />
+      <bfa2:TipoDocumento descripcion="Factura" nombreCorto="FAC" />
+      <bfa2:CFD cargos="0" refID="G695534" totalConLetra="DOS MIL PESOS 00/100 M.N." tipoCambio="1.00" tipoMoneda="MXN" />
+      <bfa2:Extra valor="FALSE" atributo="asignaFolio" />
+      <bfa2:Extra valor="CONTSHIP ART" atributo="LeyendaEspecial1" />
+      <bfa2:Extra valor="/  /" atributo="LeyendaEspecial2" />
+      <bfa2:Extra valor="61065000920" atributo="LeyendaEspecial3" />
+      <bfa2:Extra valor="AMEXPORT / REP. LEGAL Víctor Jaime Reyes" atributo="LeyendaEspecial4" />
+      <bfa2:Extra valor="21/08/2025" atributo="LeyendaEspecial5" />
+      <bfa2:Extra valor="1301664389" atributo="LeyendaEspecial6" />
+      <bfa2:Extra valor="V50665" atributo="LeyendaEspecial7" />
+      <bfa2:Extra valor="veronicamm" atributo="LeyendaEspecial8" />
+      <bfa2:Extra valor="LIB.  11077660  / TARJA: 23067760 1 PAL CON UN PESO DE 738.00 KGS.  - RECEPCIÓN: 21/08/2025" atributo="LeyendaEspecial9" />
+      <bfa2:Extra valor="RECUPERE Y VALIDE SU CFDI EN golmex.com.mx, OPCION SERVICIOS EN LINEA." atributo="LeyendaEspecial10" />
+      <bfa2:Extra valor="2025-08-25T09:59:35" atributo="fechaRemision" />
+      <bfa2:ExtraConceptos Referencia2="1" />
+    </bfa2:AddendaBuzonFiscal>
+  </cfdi:Addenda>
+</cfdi:Comprobante>

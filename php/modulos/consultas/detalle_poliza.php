@@ -139,12 +139,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             style="background-color: transparent;" value="<?php echo $poliza['BeneficiarioId']; ?>"
                             readonly>
                     </div>
-                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
-                        <label for="Fecha" class="form-label text-muted small">FECHA:</label>
-                        <input id="Fecha" name="Fecha" type="text"
-                            class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['Fecha']; ?>" readonly>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
@@ -172,7 +166,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                         <label for="FechaAlta" class="form-label text-muted small">FECHA ALTA:</label>
                         <input id="FechaAlta" name="FechaAlta" type="text"
                             class="form-control input-transparent border-0 border-bottom rounded-0"
-                            style="background-color: transparent;" value="<?php echo $poliza['FechaAlta']; ?>" readonly>
+                            style="background-color: transparent;" value="<?php echo date("d-m-Y", strtotime($poliza['FechaAlta'])); ?>" readonly>
                     </div>
                     <div class="col-4 col-sm-2 d-flex flex-column mt-4">
                         <label for="Activo" class="form-label text-muted small">STATUS:</label>

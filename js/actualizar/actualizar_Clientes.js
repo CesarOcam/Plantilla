@@ -13,6 +13,8 @@ $(document).ready(function () {
     $('#form_Clientes').on('submit', function (e) {
         e.preventDefault(); // Evita recarga
 
+        console.log("Datos a enviar:", $(this).serialize());
+
         $.ajax({
             url: '../../modulos/actualizar/actualizar_clientes.php', // Ajusta esta ruta
             type: 'POST',

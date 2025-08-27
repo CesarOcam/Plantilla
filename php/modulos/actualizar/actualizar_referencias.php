@@ -161,13 +161,15 @@ if (isset($_POST['id'])) {
         $uploadDir = $uploadBaseDir . $id . '/';
 
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            if (!mkdir($uploadDir, 0777, true)) {
+                throw new Exception("No se pudo crear la carpeta: $uploadDir");
+            }
         }
 
         $archivos = $_FILES['documentos'] ?? null;
         if (is_array($archivos) && isset($archivos['name']) && is_array($archivos['name'])) {
             $total = count($archivos['name']);
-        } else {
+        } else {    
             $total = 0;
         }
 

@@ -101,7 +101,11 @@ btnSubir.addEventListener('click', async () => {
   if (!xmlFile) return alert('No se encontró el archivo XML');
 
   // Leer el XML y extraer UUID
-  const uuid = await new Promise((resolve, reject) => {
+  let uuid = null;
+  let serie = null;
+  let folio = null;
+
+  uuid = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -112,12 +116,20 @@ btnSubir.addEventListener('click', async () => {
         const CFDI_NS = "http://www.sat.gob.mx/cfd/4";
         const TFD_NS = "http://www.sat.gob.mx/TimbreFiscalDigital";
 
+        // Extraer UUID
         const complemento = xmlDoc.getElementsByTagNameNS(CFDI_NS, 'Complemento')[0];
         const timbre = complemento?.getElementsByTagNameNS(TFD_NS, 'TimbreFiscalDigital')[0];
-        const uuid = timbre?.getAttribute('UUID');
+        const uuidValue = timbre?.getAttribute('UUID');
 
-        if (!uuid) reject(new Error('No se pudo extraer el UUID del XML'));
-        else resolve(uuid);
+        // Extraer Serie y Folio
+        const comprobante = xmlDoc.getElementsByTagNameNS(CFDI_NS, 'Comprobante')[0];
+        if (comprobante) {
+          serie = comprobante.getAttribute('Serie') || '';
+          folio = comprobante.getAttribute('Folio') || '';
+        }
+
+        if (!uuidValue) reject(new Error('No se pudo extraer el UUID del XML'));
+        else resolve(uuidValue);
       } catch (err) {
         reject(err);
       }
@@ -132,6 +144,13 @@ btnSubir.addEventListener('click', async () => {
   // Preparar FormData y enviar al backend
   const formData = new FormData(form);
   formData.append('UUID', uuid);
+  formData.append('Serie', serie);
+  formData.append('Folio', folio);
+
+  console.log(uuid);
+  console.log(serie);
+  console.log(folio);
+
 
   try {
     const resp = await fetch('../../modulos/actualizar/subir_fact_movimientos.php', {

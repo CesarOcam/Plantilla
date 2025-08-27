@@ -115,7 +115,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                             (($poliza['EmpresaId'] == 2) ? 'Amexport Logística' : 'Otro');
                         ?>
                     </td>
-                    <td><?php echo $poliza['FechaAlta']; ?></td> 
+                    <td><?php echo date("Y-m-d", strtotime($poliza['FechaAlta'])); ?></td>
                     <td>
                         <?php
                         if ($poliza['Activo'] == 1) {

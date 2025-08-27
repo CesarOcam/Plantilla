@@ -14,20 +14,8 @@ if (isset($_POST['id'])) {
 
     $id = $_POST['id'];
     // Funciones auxiliares
-    function obtenerFechaHoraActual()
-    {
-        return date("Y-m-d H:i:s");
-    }
-
-    function parseFecha($fecha)
-    {
-        return !empty($fecha) ? date("Y-m-d H:i:s", strtotime($fecha)) : null;
-    }
-
-    function parseHora($hora)
-    {
-        return !empty($hora) ? date("H:i:s", strtotime($hora)) : null;
-    }
+    date_default_timezone_set("America/Mexico_City");
+    $fecha = date("Y-m-d H:i:s");
 
 
     $sqlRef = "SELECT * FROM conta_referencias WHERE Id = ?";
@@ -69,7 +57,7 @@ if (isset($_POST['id'])) {
         AduanaId, ClienteExportadorId, ClienteLogisticoId, Mercancia, Marcas,
         Pedimentos, ClavePedimento, PesoBruto, Cantidad,
         Contenedor, ConsolidadoraId, ResultadoModulacion, RecintoId, Numero,
-        NavieraId, CierreDocumentos, FechaPago, BuqueId, Booking, CierreDespacho,
+        NavieraId, CierreDocumentos, BuqueId, Booking, CierreDespacho,
         HoraDespacho, Viaje, SuReferencia, CierreDocumentado, LlegadaEstimada,
         PuertoDescarga, PuertoDestino, Comentarios, FechaAlta, Status, UsuarioAlta
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -91,7 +79,6 @@ if (isset($_POST['id'])) {
             $nuevoNumero,
             $referencia['NavieraId'],
             $referencia['CierreDocumentos'],
-            $referencia['FechaPago'],
             $referencia['BuqueId'],
             $referencia['Booking'],
             $referencia['CierreDespacho'],
@@ -103,7 +90,7 @@ if (isset($_POST['id'])) {
             $referencia['PuertoDescarga'],
             $referencia['PuertoDestino'],
             $referencia['Comentarios'],
-            $referencia['FechaAlta'],
+            $fecha,
             1,
             $referencia['UsuarioAlta']
         ];

@@ -5,6 +5,9 @@ header('Content-Type: application/json; charset=utf-8');
 $referencia_id = $_POST['ReferenciaId'] ?? null;
 $partida_id = $_POST['PartidaId'] ?? null;
 $uuid = $_POST['UUID'] ?? null;
+$serie = $_POST['Serie'] ?? null;
+$folio = $_POST['Folio'] ?? null;
+$nombre_comentario = $serie.$folio;
 
 if (!$uuid) {
     echo json_encode(['ok' => false, 'msg' => 'No se recibió UUID']);
@@ -101,10 +104,10 @@ try {
             if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
                 $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Partida_id, Nombre, Ruta, UUID) VALUES (?, ?, ?, ?, ?)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
-                $stmtArchivo->execute([$referencia_id, $partida_id, $nombreOriginal, $rutaFinal, $uuid]);
+                $stmtArchivo->execute([$referencia_id, $partida_id, $nombre_comentario, $rutaFinal, $uuid]);
 
                 // Actualizar observaciones en la partida
-                $nombreSinExtension = pathinfo($nombreOriginal, PATHINFO_FILENAME);
+                $nombreSinExtension = pathinfo($nombre_comentario, PATHINFO_FILENAME);
                 $sqlActualizarPartida = "UPDATE conta_partidaspolizas SET Observaciones = ? WHERE Partida = ?";
                 $stmtActualizar = $con->prepare($sqlActualizarPartida);
                 $stmtActualizar->execute([$nombreSinExtension, $partida_id]);

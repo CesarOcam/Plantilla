@@ -63,11 +63,6 @@ $('#btn_kardex').on('click', function () {
                         statusInput.value = 'FACTURADA';
                     }
 
-                    // Opcional: agregar evento al nuevo botón
-                    nuevoBoton.addEventListener('click', function () {
-                        // Lógica para afectar el kardex
-                        console.log('Afectando Kardex con ID:', this.dataset.id);
-                    });
                 }
 
             } else {

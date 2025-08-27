@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cfdi:Comprobante Certificado="MIIGFTCCA/2gAwIBAgIUMDAwMDEwMDAwMDA1MTQ0MjI3MzgwDQYJKoZIhvcNAQELBQAwggGEMSAwHgYDVQQDDBdBVVRPUklEQUQgQ0VSVElGSUNBRE9SQTEuMCwGA1UECgwlU0VSVklDSU8gREUgQURNSU5JU1RSQUNJT04gVFJJQlVUQVJJQTEaMBgGA1UECwwRU0FULUlFUyBBdXRob3JpdHkxKjAoBgkqhkiG9w0BCQEWG2NvbnRhY3RvLnRlY25pY29Ac2F0LmdvYi5teDEmMCQGA1UECQwdQVYuIEhJREFMR08gNzcsIENPTC4gR1VFUlJFUk8xDjAMBgNVBBEMBTA2MzAwMQswCQYDVQQGEwJNWDEZMBcGA1UECAwQQ0lVREFEIERFIE1FWElDTzETMBEGA1UEBwwKQ1VBVUhURU1PQzEVMBMGA1UELRMMU0FUOTcwNzAxTk4zMVwwWgYJKoZIhvcNAQkCE01yZXNwb25zYWJsZTogQURNSU5JU1RSQUNJT04gQ0VOVFJBTCBERSBTRVJWSUNJT1MgVFJJQlVUQVJJT1MgQUwgQ09OVFJJQlVZRU5URTAeFw0yMjA4MDkxNzA0MDVaFw0yNjA4MDkxNzA0MDVaMIHjMSUwIwYDVQQDExxDT05URUNPTiBNQU5aQU5JTExPIFNBIERFIENWMSUwIwYDVQQpExxDT05URUNPTiBNQU5aQU5JTExPIFNBIERFIENWMSUwIwYDVQQKExxDT05URUNPTiBNQU5aQU5JTExPIFNBIERFIENWMSUwIwYDVQQtExxDTUExMDAxMDZBSDggLyBDSUNBNzMwODI0OE4xMR4wHAYDVQQFExUgLyBDSUNBNzMwODI0SERGR1JCMDMxJTAjBgNVBAsTHENPTlRFQ09OIE1BTlpBTklMTE8gU0EgREUgQ1YwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCGVT5NqwavVazo5Edrz+3irt53OkW76STlXzEs6Put3aze3YVzMrWdVuo5/Z00L61m/NZ9UQPdfbJ7fpDYltrp6XpQ96yZytZ+Hvwpz6XNtT7XVChq35GuaFaPQPfiGzqu77JKccrj5w1UFEDQZuB9tcYlH+Srmxj9rN72Z/A8/MWwQSJrAGP9ru4iU94ztR49jcGwa6wtaXjW2io0YCiuI21NHxUP6dSKNCeYNLr9m9zRQeVs9D0kUVTPFl4EnacFN0i7afsYERPQRP9YoqgKmvps4I+xrLZaNK5Jd7hN4QGtbnCHx05jA9n7O3uOFKw0Khy9ieTDTXdSamccyaMDAgMBAAGjHTAbMAwGA1UdEwEB/wQCMAAwCwYDVR0PBAQDAgbAMA0GCSqGSIb3DQEBCwUAA4ICAQCclcfOBCN9Wqb1IQkcCqs+As3sI9aQeEjkP+j75Y2339Sxa0wU946WI9zXdCU1php82Ny+dgFKE8Bck+G6zRhJ3/b2TyxFr/uOcjfjR7mK7W/ic0WNoP5gFuVVcbNON7C8FREN/1x7MN8kDNl3s98YHAoz229bmbfXr47A+mRq1UMqENkoFx9HC1eI9kH29LdbSGFPx2eLioInhVjkGkP3aHgVuNMSP6a9bfGK194FKOptZDvFM7rruAQromkNaoB+jPhlPXrL/itj9aa7vuJ3JsRsug/pfKHMOz5m2uTQcnZTLgNZMnkYJG4wVZ6dt+U7h/BXrh+OQY/ACwmPgGcun1h5SCh/PcNxaoc+XdI3t/e07wXt3Ji6Jbtc6D8e0Ohw+Hw1eXi5IegEx8s641BxlY1TWtockwcgDPmAjX0DPXagd6y91uP6uhekDlOhGmo2aO6yKnOSnX/9B9QwZNcwRNrWs8zuK2PlTaUyVmsc8wppfAflY8v8Qaidu9BzlHQ45Xx5HqyM+VbIIUzIsV0Gw9771zVvWVnl3UAPhZYx77755qUifKM0lMGtpRcKOpIr0s37dDZg3IkvIGpi1T1QcNQK2BCr/nkXHUveUKH+wYkXYCzYrswhK2dFvYLGfQTeJTEhrvE3I/K6xolnNUUuoDSrC9y77QIwZlUoCkEjxQ==" NoCertificado="00001000000514422738" FormaPago="03" Sello="VTMEK/Hzg1SEU5bSf1rDLC+jMdule9LX+11KI8tz5CIZddzWRydB51fHwKCGz0zFiZpNhpJOLHpFEtKG6ZLfKesIuAtGyIpeZfo5WDElcEv7J2iKQVSSd7idtJ71RcD8SXxzWuOCmy1J1nAb7wG9hckZOA4dn7LiA7I8Exf0Hp+Wn0shF56Xw9edE55JDTU54TIGqQW/SMxuUVcUaVtBcoANRtH+z735kMk0Wzp2VsE3dgqUAW9JZpBissqYWvXXZwrgYkpd7wo7C3JgjsL3e5yBl7zs7fvmFe8QBZAMTO6epKKoqrDKQ/yXlowlUhB0GuKTPafHPjGn1lUP7W6eSg==" Fecha="2025-08-25T14:08:03" Serie="CM" Version="4.0" LugarExpedicion="28210" MetodoPago="PUE" TipoDeComprobante="I" Total="1399.84" SubTotal="1206.76" Moneda="MXN" TipoCambio="1" Exportacion="01" xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:catCFDI="http://www.sat.gob.mx/sitio_internet/cfd/catalogos" xmlns:tdCFDI="http://www.sat.gob.mx/sitio_internet/cfd/tipoDatos/tdCFDI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd" Folio="4363273">
+                <cfdi:Emisor Nombre="CONTECON MANZANILLO" Rfc="CMA100106AH8" RegimenFiscal="601"/>
+                <cfdi:Receptor Nombre="MODAL EXPORT LINE" Rfc="MEL1603086Y5" UsoCFDI="G03" DomicilioFiscalReceptor="55076" RegimenFiscalReceptor="626"/>
+                <cfdi:Conceptos>
+                    <cfdi:Concepto Importe="163.79" ValorUnitario="163.79" Descripcion="Seguridad Portuaria Contenedor - Exportacion 40 DRY - WHLU5627695" Unidad="SERVICIO(S)" ObjetoImp="02" ClaveUnidad="E48" Cantidad="1.0" ClaveProdServ="78141602">
+                                <cfdi:Impuestos>
+                                <cfdi:Traslados>
+                                <cfdi:Traslado Base="163.79" TipoFactor="Tasa" TasaOCuota="0.160000" Impuesto="002" Importe="26.2064"/>
+                                    
+                        </cfdi:Traslados>
+                        </cfdi:Impuestos>
+                        </cfdi:Concepto>
+                                <cfdi:Concepto Importe="262.96" ValorUnitario="262.96" Descripcion="Muellaje Contenedor 40 - WHLU5627695" Unidad="UNIDAD(ES)" ObjetoImp="02" ClaveUnidad="E48" Cantidad="1.0" ClaveProdServ="78121600">
+                                <cfdi:Impuestos>
+                                <cfdi:Traslados>
+                                <cfdi:Traslado Base="262.96" TipoFactor="Tasa" TasaOCuota="0.160000" Impuesto="002" Importe="42.0736"/>
+                                    
+                        </cfdi:Traslados>
+                        </cfdi:Impuestos>
+                        </cfdi:Concepto>
+                                <cfdi:Concepto Importe="780.01" ValorUnitario="780.01" Descripcion="Control Documental y de Informacion Electronica - WHLU5627695" Unidad="SERVICIO(S)" ObjetoImp="02" ClaveUnidad="E48" Cantidad="1.0" ClaveProdServ="78141800">
+                                <cfdi:Impuestos>
+                                <cfdi:Traslados>
+                                <cfdi:Traslado Base="780.01" TipoFactor="Tasa" TasaOCuota="0.160000" Impuesto="002" Importe="124.8016"/>
+                                    
+                        </cfdi:Traslados>
+                        </cfdi:Impuestos>
+                        </cfdi:Concepto>
+                                
+                </cfdi:Conceptos>
+                    <cfdi:Impuestos TotalImpuestosTrasladados="193.08">
+                    <cfdi:Traslados>
+                <cfdi:Traslado Base="1206.76" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="193.08"/>
+                    
+                </cfdi:Traslados>
+                </cfdi:Impuestos>
+                
+                <cfdi:Complemento>
+        <tfd:TimbreFiscalDigital xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" Version="1.1" UUID="ccb306a1-7e52-4fc5-ac58-76104423730f" RfcProvCertif="SNF171020F3A" FechaTimbrado="2025-08-25T14:08:04" SelloCFD="VTMEK/Hzg1SEU5bSf1rDLC+jMdule9LX+11KI8tz5CIZddzWRydB51fHwKCGz0zFiZpNhpJOLHpFEtKG6ZLfKesIuAtGyIpeZfo5WDElcEv7J2iKQVSSd7idtJ71RcD8SXxzWuOCmy1J1nAb7wG9hckZOA4dn7LiA7I8Exf0Hp+Wn0shF56Xw9edE55JDTU54TIGqQW/SMxuUVcUaVtBcoANRtH+z735kMk0Wzp2VsE3dgqUAW9JZpBissqYWvXXZwrgYkpd7wo7C3JgjsL3e5yBl7zs7fvmFe8QBZAMTO6epKKoqrDKQ/yXlowlUhB0GuKTPafHPjGn1lUP7W6eSg==" NoCertificadoSAT="00001000000518812364" SelloSAT="H1UetJw3L/zc0PpJm3Y6WfFukjXqTBpm40JsdRy21c9S/JiSzqM4XvSn10AKFU/GidDnFvLlfLAru55aciYUqwogO05oi/eWrB0bUwjumo6sQUcd9/3ifilHmo+HXGPQ7T+3jXj68BMKMW7H53ChL4i388YsApnAsFoh4XborJ8G1KXPdL2JwiUXcHDpIwMtjPo8NXw7GjaECeOYnfVGkrWN3FqB/0QlknswE/9kX4kIrPo2FhBNNho30YyYjeaM4augBRSt0Brk2pzbBJZO9gBneGdkgYNGSrA8YmIWTbc+UtUl+wn8SpQh0SvVX7/xtWzO7fx6V42NUl5bt/biqA=="/>
+    </cfdi:Complemento></cfdi:Comprobante>
