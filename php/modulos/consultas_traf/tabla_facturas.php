@@ -4,24 +4,24 @@ include_once(__DIR__ . '/../conexion.php');
 // Paso 1: Obtener referencias con su RFC exportador (de 01clientes_exportadores)
 $stmt = $con->prepare("
     SELECT 
-    r.Id, 
-    r.Numero, 
-    r.ClienteExportadorId, 
-    ce.rfc_exportador,
-    r.ClienteLogisticoId,
-    cl.rfc_exportador AS rfc_logistico
-FROM 
-    conta_referencias r
-INNER JOIN 
-    01clientes_exportadores ce 
-    ON r.ClienteExportadorId = ce.id01clientes_exportadores
-LEFT JOIN 
-    01clientes_exportadores cl 
-    ON r.ClienteLogisticoId = cl.id01clientes_exportadores
-WHERE 
-    r.Numero IS NOT NULL 
-    AND r.Status IN (1, 2)
-
+        r.Id, 
+        r.Numero, 
+        r.ClienteExportadorId, 
+        ce.rfc_exportador,
+        r.ClienteLogisticoId,
+        cl.rfc_exportador AS rfc_logistico,
+        cl.rfc_factura
+    FROM 
+        conta_referencias r
+    INNER JOIN 
+        01clientes_exportadores ce 
+        ON r.ClienteExportadorId = ce.id01clientes_exportadores
+    LEFT JOIN 
+        01clientes_exportadores cl 
+        ON r.ClienteLogisticoId = cl.id01clientes_exportadores
+    WHERE 
+        r.Numero IS NOT NULL 
+        AND r.Status IN (1, 2)
 ");
 $stmt->execute();
 $referenciasConRFC = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -37,19 +37,24 @@ foreach ($facturas as $factura) {
     $rfcProveedor = $factura['rfc_proveedor'] ?? null;
     $rfcCliente = $factura['rfc_cliente'] ?? null;
 
-    // Filtrar las referencias que coinciden con el RFC del proveedor
+    // Filtrar las referencias que coinciden con RFC de cliente/proveedor o RFCs en rfc_factura
     $referenciasFiltradas = array_filter($referenciasConRFC, function ($ref) use ($rfcCliente, $rfcProveedor) {
-        return $ref['rfc_exportador'] === $rfcCliente || $ref['rfc_logistico'] === $rfcCliente
+        $coincideRfc = $ref['rfc_exportador'] === $rfcCliente || $ref['rfc_logistico'] === $rfcCliente
             || $ref['rfc_exportador'] === $rfcProveedor || $ref['rfc_logistico'] === $rfcProveedor;
+
+        // Revisar RFCs separados por comas en rfc_factura
+        $rfcFacturaList = array_map('trim', explode(',', $ref['rfc_factura'] ?? ''));
+        $coincideRfcFactura = in_array($rfcCliente, $rfcFacturaList, true) || in_array($rfcProveedor, $rfcFacturaList, true);
+
+        return $coincideRfc || $coincideRfcFactura;
     });
 
-
-    // Obtener subcuentas y beneficiario de la tabla correcta
+    // Obtener subcuentas y beneficiario
     $subcuentas = [];
     $beneficiarioId = null;
 
     if ($rfcProveedor) {
-        // Aquí usamos beneficiarios en lugar de 01clientes_exportadores para buscar beneficiario
+        // Buscar beneficiario
         $stmt = $con->prepare("SELECT Id FROM beneficiarios WHERE Rfc = ?");
         $stmt->execute([$rfcProveedor]);
         $beneficiario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -77,6 +82,7 @@ foreach ($facturas as $factura) {
 
     $facturasConSubcuentas[] = $factura;
 }
+
 // Ahora sigue con tu HTML para imprimir tabla, selects, etc.
 echo "<script>console.log(" . json_encode($facturasConSubcuentas) . ");</script>";
 ?>
