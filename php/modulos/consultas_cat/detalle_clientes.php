@@ -121,7 +121,7 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                                         class="form-control rounded-0"
                                         style="background-color: transparent;" value="<?php echo $cliente['razonSocial_exportador']; ?>">
                                 </div>
-                            </div>
+                            </div> 
                             <div class="row">
                                 <div class="col-10 col-sm-5 mt-4">
                                     <label for="tipo" class="form-label text-muted small">PERSONA:</label>

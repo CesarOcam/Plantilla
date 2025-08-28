@@ -66,6 +66,8 @@ document.addEventListener('change', function (e) {
         // Puedes obtenerlo desde data-id o value
         const id = e.target.getAttribute('data-id') || e.target.value;
         console.log('Checkbox id:', id, 'Checked:', e.target.checked);
+        const ultimaSubcuenta = e.target.getAttribute('data-ultimasubcuenta');
+        console.log('Checkbox id:', id, 'Checked:', e.target.checked, 'Última Subcuenta:', ultimaSubcuenta);
     }
 
     actualizarEstadoCheckboxesYBoton();
@@ -132,6 +134,7 @@ document.getElementById("btn_pagar").addEventListener("click", function () {
 
     let total = 0;
     let ids = [];
+    let ultimaSubcuenta = '';
 
     checkboxesSeleccionados.forEach(chk => {
         const id = chk.getAttribute('data-id') || chk.value;
@@ -142,6 +145,7 @@ document.getElementById("btn_pagar").addEventListener("click", function () {
         }
 
         ids.push(id);
+        ultimaSubcuenta = chk.getAttribute('data-ultimasubcuenta');
     });
 
     console.log(`Cuentas pagadas: ${ids.join(', ')}`);
@@ -149,10 +153,12 @@ document.getElementById("btn_pagar").addEventListener("click", function () {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     })}`);
+    console.log('Última Subcuenta:', ultimaSubcuenta);
 
     // Rellenar inputs ocultos
     document.getElementById("inputIds").value = ids.join(',');
     document.getElementById("inputTotal").value = total.toFixed(2);
+    document.getElementById("inputUltimasSubcuentas").value = ultimaSubcuenta;
 
     // Abrir el modal
     const modal = new bootstrap.Modal(document.getElementById('modalPago'));

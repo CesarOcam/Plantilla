@@ -81,34 +81,64 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 $inicioBloque = floor(($paginaActual - 1) / 10) * 10 + 1;
 $finBloque = min($inicioBloque + 9, $totalPaginas);
 ?>
-
-<table id="tabla-pp-container" class="table table-hover tabla-pp-container">
-    <thead class="small">
-        <tr>
-            <th scope="col">Num.Subcuenta</th>
-            <th scope="col">Subcuenta</th>
-            <th scope="col">Cargo Total</th>
-        </tr>
-    </thead>
-    <tbody class="small">
-        <?php if ($polizas): ?>
-            <?php foreach ($polizas as $poliza): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($poliza['SubcuentaNumero']); ?></td>
-                    <td><?php echo htmlspecialchars($poliza['SubcuentaNombre']); ?></td>
-                    <td><?php echo '$ ' . number_format($poliza['SaldoPendiente'], 2); ?></td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
+<div id="tabla-pp-wrapper">
+    <table id="tabla-pp-subcuentas" class="table table-hover tabla-pp-container">
+        <thead class="small">
             <tr>
-                <td colspan="3" class="text-center">No se encontraron registros</td>
+                <th scope="col">Num.Subcuenta</th>
+                <th scope="col">Subcuenta</th>
+                <th scope="col">Cargo Total</th>
             </tr>
-        <?php endif; ?>
-    </tbody>
-</table>
+        </thead>
+        <tbody class="small">
+            <?php if ($polizas): ?>
+                <?php
+                $ultimaFila = null;
+                foreach ($polizas as $poliza):
+                    if (($poliza['SaldoPendiente'] ?? 0) != 0) {
+                        if (($poliza['SubcuentaNumero'] ?? '') === '216-003') {
+                            $ultimaFila = $poliza;
+                            continue;
+                        }
+                        ?>
+                        <tr>
+                            <td>
+                                <a href="#" class="link-subcuenta" data-id="<?php echo htmlspecialchars($poliza['Id']); ?>"
+                                    style="color:blue; text-decoration:none;">
+                                    <?php echo htmlspecialchars($poliza['SubcuentaNumero']); ?>
+                                </a>
+                            </td>
+                            <td><?php echo htmlspecialchars($poliza['SubcuentaNombre'] ?? ''); ?></td>
+                            <td><?php echo '$ ' . number_format($poliza['SaldoPendiente'] ?? 0, 2); ?></td>
+                        </tr>
+                        <?php
+                    }
+                endforeach;
 
-<!-- Paginación -->
-<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                if ($ultimaFila): ?>
+                    <tr>
+                        <td>
+                            <a href="#" class="link-subcuenta" data-id="<?php echo htmlspecialchars($ultimaFila['Id']); ?>"
+                                style="color:blue; text-decoration:none;">
+                                <?php echo htmlspecialchars($ultimaFila['SubcuentaNumero']); ?>
+                            </a>
+
+                        </td>
+                        <td><?php echo htmlspecialchars($ultimaFila['SubcuentaNombre'] ?? ''); ?></td>
+                        <td><?php echo '$ ' . number_format($ultimaFila['SaldoPendiente'] ?? 0, 2); ?></td>
+                    </tr>
+                <?php endif; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="3" class="text-center">No se encontraron registros</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+
+    </table>
+
+<!-- Paginación 
+<nav aria-label="Page navigation example" class="d-flex justify-content-center" id="paginacion-subcuentas">
     <ul class="pagination">
         <li class="page-item <?php echo ($paginaActual == 1) ? 'disabled' : ''; ?>">
             <a class="page-link" href="?pagina=<?php echo $paginaActual - 1; ?>" aria-label="Previous">
@@ -126,4 +156,57 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             </a>
         </li>
     </ul>
-</nav>
+</nav>-->
+</div>
+<script>
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("link-subcuenta")) {
+            e.preventDefault();
+
+            const subcuentaId = e.target.getAttribute("data-id");
+            console.log("Click en subcuenta:", subcuentaId);
+
+            if (!subcuentaId) {
+                console.error("No se encontró data-id en el enlace.");
+                return;
+            }
+
+            const params = new URLSearchParams({ subcuenta: subcuentaId });
+            console.log("Parámetros para AJAX:", params.toString());
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "../../modulos/consultas/tabla_facturas_pp.php?" + params.toString(), true);
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log("Respuesta recibida correctamente.");
+
+                    // Reemplazas solo el contenido del wrapper
+                    document.getElementById("tabla-pp-wrapper").innerHTML = xhr.responseText;
+
+                    // Reaplicas funciones que dependen del DOM
+                    setTimeout(() => {
+                        // forzar subcuenta seleccionada para habilitar checkboxes
+                        const subcuentaInput = document.getElementById('subcuentaInput');
+                        if (subcuentaInput) {
+                            subcuentaInput.value = subcuentaId; // el ID que pasaste al AJAX
+                        }
+                        actualizarEstadoCheckboxesYBoton();
+                        actualizarTotalCargo();
+                    }, 50);
+                } else {
+                    console.error("Error en la solicitud AJAX:", xhr.status, xhr.statusText);
+                    console.error("Respuesta del servidor:", xhr.responseText);
+                }
+            };
+
+            try {
+                xhr.send();
+            } catch (err) {
+                console.error("Error enviando la solicitud AJAX:", err);
+            }
+        }
+    });
+
+
+</script>

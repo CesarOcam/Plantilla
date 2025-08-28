@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fecha = $_POST['fecha'] ?? '';
     $beneficiario = $_POST['beneficiario'] ?? '';
     $subcuenta = $_POST['subcuenta'] ?? '';
+    $ultimaSubcuenta = $_POST['ultimaSubcuenta'] ?? '';
 
     $empresa = 2;
     $usuarioAlta = $_SESSION['usuario_id'];
@@ -70,7 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $con->beginTransaction();
         $id_array = array_filter(explode(',', $ids)); // Quitamos vacíos
-        $cargo = 0;
+        //$cargo = 0;
+        $abono = 0;
         $observacion = 'Pago de cuenta';
         $enKardex = 0;
         $Pagada = 1;
@@ -93,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($datos) {
                 $subcuentaId = $datos['SubcuentaId'];
                 $referenciaId = $datos['ReferenciaId'];
-                $cargoAbonado = $datos['Cargo'];
+                $abonoCargado = $datos['Cargo'];
                 $polizaOriginalId = $datos['PolizaId'];
                 $NumFactura = $datos['NumeroFactura'];
                 $solicitadoPor = $datos['UsuarioSolicitud'];
@@ -102,10 +104,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Insertamos la nueva partida relacionada a la nueva póliza
                 $ok = $stmt_insert->execute([
                     $poliza_id,
-                    $subcuentaId,
+                    $ultimaSubcuenta,
                     $referenciaId,
-                    $cargo,
-                    $cargoAbonado,
+                    $abonoCargado,
+                    $abono,
                     $Pagada,
                     $observacion,
                     $activo,
@@ -148,8 +150,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $poliza_id,
             $subcuenta,
             $referenciaBanco,
-            $cargoBanco,
-            $abonoBanco,
+            $abonoBanco, //El abono se carga
+            $cargoBanco, //El cargo se abona
             $Pagada,
             $observacionBanco,
             $activo,

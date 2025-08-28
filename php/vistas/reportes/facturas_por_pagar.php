@@ -177,6 +177,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <!-- INPUTS OCULTOS -->
                         <input type="hidden" id="inputIds" name="ids">
                         <input type="hidden" id="inputTotal" name="total">
+                        <input type="hidden" id="inputUltimasSubcuentas" name="ultimaSubcuenta">
 
                     </form>
                 </div>
@@ -202,7 +203,7 @@ $beneficiario = $stmt->fetchAll(PDO::FETCH_ASSOC);
         color: white;
         font-size: 1.2rem;">
         <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;"></div>
-        <div style="margin-top: 1rem;">Enviando correo, por favor espere...</div>
+        <div style="margin-top: 1rem;">Realizando pago, por favor espere...</div>
     </div>
 
     <script src="../../../js/facturas_Pp.js"></script>
