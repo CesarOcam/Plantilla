@@ -52,14 +52,31 @@ document.getElementById("btn_buscar").addEventListener("click", function () {
 
 // Limpiar filtros
 document.getElementById("btn_limpiar").addEventListener("click", function () {
+    // Limpiar filtros
     document.getElementById("fechaDesdeInput").value = "";
     document.getElementById("fechaHastaInput").value = "";
 
     const subcuentaSelect = document.getElementById("subcuentaInput");
     subcuentaSelect.value = ""; 
     subcuentaSelect.dispatchEvent(new Event('change'));
-    document.getElementById("btn_buscar").click();
+
+    // Cargar la tabla de cuentas (tabla_facturas_cuentas.php)
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "../../modulos/consultas/tabla_facturas_cuentas.php", true);
+    xhr.onload = function () {
+        if (this.status === 200) {
+            document.getElementById("tabla-pp-container").innerHTML = this.responseText;
+
+            // Esperar a que los checkboxes estén disponibles
+            setTimeout(() => {
+                actualizarEstadoCheckboxesYBoton();
+                actualizarTotalCargo();
+            }, 100);
+        }
+    };
+    xhr.send();
 });
+
 
 document.addEventListener('change', function (e) {
     if (e.target && e.target.classList.contains('chk-registro')) {
