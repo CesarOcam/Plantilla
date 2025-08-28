@@ -121,7 +121,7 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                                         class="form-control rounded-0"
                                         style="background-color: transparent;" value="<?php echo $cliente['razonSocial_exportador']; ?>">
                                 </div>
-                            </div> 
+                            </div>
                             <div class="row">
                                 <div class="col-10 col-sm-5 mt-4">
                                     <label for="tipo" class="form-label text-muted small">PERSONA:</label>
@@ -266,23 +266,24 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                         </div>
                     </div>
                     <div class="row">
-                        <label for="logistico-select" class="form-label text-muted small mt-4">CLIENTES REGISTRADOS PARA FACTURA:</label>
-                        <div class="col-10 col-sm-3 mt-2">
+                        <label for="logistico-select" class="form-label text-muted small mt-4 mb-0" style="font-weight: bold;">CLIENTES REGISTRADOS PARA FACTURA:</label>
+                        <div class="col-10 col-sm-3 mt-1">
                             <label for="nombre_factura" class="form-label text-muted small">NOMBRE:</label>
                             <input id="nombre_factura" name="nombre_factura" type="text"
                                 class="form-control rounded-0"
                                 style="background-color: transparent;" value="<?php echo $cliente['nombre_factura']; ?>">
                         </div>
-                        <div class="col-10 col-sm-3 mt-2">
-                            <label for="rfc_factura" class="form-label text-muted small">RFC:</label>
-                            <input id="rfc_factura" name="rfc_factura" type="text"
-                                class="form-control rounded-0"
-                                style="background-color: transparent;" value="<?php echo $cliente['rfc_factura']; ?>">
+                        <div class="col-10 col-sm-9 mt-1">
+                            <label for="rfc_factura_input" class="form-label text-muted small">RFC:</label>
+                            <div id="rfc-container" class="form-control rounded-0 d-flex flex-wrap gap-0" style="min-height: 38px; display: flex; flex-wrap: wrap; align-items: center; background-color: transparent;">
+                                <input id="rfc_factura_input" type="text" style="border: none; outline: none; flex: 1;">
+                            </div>
+                            <input type="hidden" id="rfc_factura_hidden" name="rfc_factura" value="<?= htmlspecialchars($cliente['rfc_factura'] ?? '') ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-10 col-sm-3 mt-4">
-                            <label for="pagaCon_cliente" class="form-label text-muted small">PAGA CON:</label>
+                            <label for="pagaCon_cliente" class="form-label text-muted small" style="font-weight: bold;">PAGA CON:</label>
                             <select id="pagaCon_cliente" name="pagaCon_cliente"
                                 class="form-control rounded-0"
                                 style="background-color: transparent; cursor: pointer;">
@@ -399,6 +400,64 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                 if (input) input.focus();
             }, 100);
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('rfc_factura_input');
+            const container = document.getElementById('rfc-container');
+            const hiddenInput = document.getElementById('rfc_factura_hidden');
+
+            // ← Cargar RFCs existentes al iniciar
+            const inicial = <?= json_encode(array_filter(array_map('trim', explode(',', $cliente['rfc_factura'] ?? '')))) ?>;
+            if (inicial.length > 0) {
+                inicial.forEach(rfc => addTag(rfc));
+                updateHiddenField();
+            }
+
+            // Al presionar Enter o coma
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    const valor = input.value.trim().toUpperCase();
+                    if (valor && validarRFC(valor)) {
+                        addTag(valor);
+                        input.value = '';
+                        updateHiddenField();
+                    } else if (valor) {
+                        alert("RFC no válido: " + valor);
+                    }
+                }
+            });
+
+            // Agregar una etiqueta de RFC
+            function addTag(rfc) {
+                const existentes = Array.from(container.querySelectorAll('.rfc-tag span:first-child')).map(el => el.textContent);
+                if (existentes.includes(rfc)) return;
+
+                const tag = document.createElement('span');
+                tag.className = 'rfc-tag';
+                tag.style.cssText = 'background:#e2e6ea; padding:2px 6px; margin:2px; border-radius:3px; display:flex; align-items:center;';
+                tag.innerHTML = `<span>${rfc}</span><span class="remove" style="cursor:pointer; margin-left:4px;">&times;</span>`;
+                container.insertBefore(tag, input);
+
+                tag.querySelector('.remove').addEventListener('click', () => {
+                    tag.remove();
+                    updateHiddenField();
+                });
+            }
+
+            // Actualizar campo oculto con RFCs actuales
+            function updateHiddenField() {
+                const rfcs = Array.from(container.querySelectorAll('.rfc-tag span:first-child'))
+                    .map(span => span.textContent.trim());
+                hiddenInput.value = rfcs.join(',');
+            }
+
+            // Validación de RFC (genérico, acepta 12 o 13 caracteres alfanuméricos)
+            function validarRFC(rfc) {
+                return /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}?$/i.test(rfc);
+            }
+        });
+
 
         document.addEventListener('DOMContentLoaded', function() {
             const input = document.getElementById('emails_input');
