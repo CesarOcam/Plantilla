@@ -121,8 +121,8 @@ try {
             foreach ($mailsAmex as $correo) {
                 $mail->addCC($correo);
             }
-            $mail->addCC('jesus.reyes@grupoamexport.com');
-            //$mail->addCC('ceesar.pulido@grupoamexport.com');
+            //$mail->addCC('jesus.reyes@grupoamexport.com');
+            $mail->addCC('cesar.pulido@grupoamexport.com');
 
             // Crear archivo ZIP temporal
             $zipFile = tempnam(sys_get_temp_dir(), "$suReferencia . $referenciaId . $nombreExportador") . '.zip';

@@ -141,7 +141,7 @@ try {
 
                                         </button>
                                     </td>
-                                    <!-- ARCHIVO -->
+                                    <!-- ARCHIVO 
                                     <td class="text-center">
                                         <?php
                                         if ($yaTieneArchivo) {
@@ -167,7 +167,7 @@ try {
                                             <?php
                                         }
                                         ?>
-                                    </td>
+                                    </td>-->
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -233,7 +233,7 @@ try {
                                         </button>
                                     </td>
 
-                                    <!-- ARCHIVO -->
+                                    <!-- ARCHIVO 
                                     <td class="text-center">
                                         <?php
                                         if ($yaTieneArchivo) {
@@ -258,7 +258,7 @@ try {
                                             <?php
                                         }
                                         ?>
-                                    </td>
+                                    </td>-->
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
