@@ -25,7 +25,11 @@ if (!$stmt) {
 }
 
 if ($stmt->execute([$id])) {
-    echo json_encode(['success' => true, 'message' => 'El registro fue actualizado a contabilidad']);
+    echo json_encode([
+        'success' => true,
+        'message' => 'El registro fue actualizado a contabilidad',
+        'id'      => $id   // <-- aquí mandas el id actualizado
+    ]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Error al actualizar el registro']);
 }

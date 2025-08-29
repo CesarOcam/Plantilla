@@ -1,8 +1,8 @@
-$('#btn_kardex').on('click', function () {
+// Esto se queda activo siempre, aunque el botón sea reemplazado
+$(document).on('click', '#btn_kardex', function () {
     var id = $(this).data('id');
-    console.log(id);
+    console.log('[DEBUG] Click en btn_kardex con ID:', id);
 
-    // Mostrar spinner (SweetAlert2)
     Swal.fire({
         title: 'Procesando...',
         text: 'Por favor espera',
