@@ -23,7 +23,7 @@ try {
     $mailsLogistico = $input['mails_logistico'] ?? [];
     $mailsAmex = $input['mails_amex'] ?? [];
     $response = ['success' => false, 'message' => '', 'debug' => ''];
-
+    $usuarioAlta = $_SESSION['usuario_id'];
 
     if (!$id) {  // <-- usa $id, no $_POST
         echo json_encode(['success' => false, 'message' => 'ID de la referencia no proporcionado']);
@@ -255,7 +255,7 @@ try {
                         <hr style="border:none; border-top:1px solid #ddd; margin:20px 0;">
 
                         <p style="margin:0 0 5px 0;">Atentamente,</p>
-                        <p style="margin:0;">' . $usuarioAltaRef . '</p>
+                        <p style="margin:0;">' . $usuarioAlta . '</p>
                     </td>
                     </tr>
                 </table>

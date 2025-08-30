@@ -55,7 +55,6 @@ try {
     } else {
         // continuar con el proceso si no hay Status 1
 
-
         $stmtPartidas = $con->prepare("
         SELECT p.*
         FROM conta_partidaspolizas p
@@ -93,10 +92,10 @@ try {
 
             // Verificar si la subcuenta pertenece a una cuenta válida (123, 114, 214)
             $stmtCuenta = $con->prepare("
-        SELECT Numero, Nombre 
-        FROM cuentas 
-        WHERE Id = :id
-    ");
+                SELECT Numero, Nombre 
+                FROM cuentas 
+                WHERE Id = :id
+            ");
             $stmtCuenta->bindParam(':id', $subcuentaId, PDO::PARAM_INT);
             $stmtCuenta->execute();
             $cuenta = $stmtCuenta->fetch(PDO::FETCH_ASSOC);

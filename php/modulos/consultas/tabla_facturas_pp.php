@@ -115,7 +115,9 @@ $sqlCount = "SELECT COUNT(*)
     <table id="tabla-pp-container" class="table table-hover tabla-pp-container">
         <thead class="small">
             <tr>
-                <th scope="col"></th>
+                <th scope="col">
+                    <input type="checkbox" id="select-all" class="form-check-input" aria-label="Seleccionar todas subcuentas">
+                </th>
                 <th scope="col">Poliza</th>
                 <th scope="col">Referencia</th>
                 <th scope="col">Beneficiario</th>
@@ -159,8 +161,8 @@ $sqlCount = "SELECT COUNT(*)
                 </tr>
             <?php endif; ?>
         </tbody>
-
     </table>
+</div>
 <!-- Paginación 
     <nav aria-label="Page navigation example" class="d-flex justify-content-center">
         <ul class="pagination">
@@ -184,4 +186,18 @@ $sqlCount = "SELECT COUNT(*)
     </nav>-->
 </div>
 
+<script>
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.id === 'select-all') {
+        const checkboxes = document.querySelectorAll('.chk-registro');
+        checkboxes.forEach(cb => {
+            if (!cb.disabled) {
+                cb.checked = e.target.checked;
+            }
+        });
+        actualizarTotalCargo();
+        actualizarEstadoCheckboxesYBoton();
+    }
+});
 
+</script>

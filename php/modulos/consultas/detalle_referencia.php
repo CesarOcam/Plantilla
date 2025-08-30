@@ -908,7 +908,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- Aquí se cargan las tablas desde tablas_complementaria.php -->
+                                <!-- Aquí se cargan las tablas desde tablas_correos_cg.php -->
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-danger rounded-0" data-bs-dismiss="modal">Cerrar</button>
