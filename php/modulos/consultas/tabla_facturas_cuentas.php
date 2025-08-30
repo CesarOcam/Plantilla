@@ -26,7 +26,7 @@ $acreedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if ($acreedores) {
     foreach ($acreedores as $acreedor) {
         $sql2 = "
-        SELECT pp.Partida AS Id, pp.Cargo, pp.Observaciones AS FacturaObservaciones, 
+            SELECT pp.Partida AS Id, pp.Cargo, pp.Observaciones AS FacturaObservaciones, 
             pp.NumeroFactura AS Factura, 
             p.Id AS PolizaId, 
             p.Numero AS PolizaNumero, 
@@ -43,9 +43,7 @@ if ($acreedores) {
             INNER JOIN conta_referencias r ON r.Id = pp.ReferenciaId 
             LEFT JOIN 2201aduanas a ON a.id2201aduanas = r.AduanaId 
             WHERE p.Id IN ( 
-                SELECT PolizaId FROM conta_partidaspolizas WHERE (PolizaId, Partida) 
-                IN ( SELECT PolizaId, MAX(Partida) FROM conta_partidaspolizas GROUP BY PolizaId ) 
-                AND SubcuentaId = :subcuentaId ) 
+                SELECT PolizaId FROM conta_partidaspolizas WHERE SubcuentaId = :subcuentaId ) 
                 AND pp.Pagada = 0 
                 ORDER BY p.Fecha DESC, pp.Partida ASC 
         ";
