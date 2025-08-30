@@ -92,7 +92,7 @@ INNER JOIN conta_referencias r ON r.Id = pp.ReferenciaId
 LEFT JOIN 2201aduanas a ON a.id2201aduanas = r.AduanaId
 $whereSqlPrincipal
 ORDER BY p.Fecha DESC, pp.Partida ASC
-LIMIT $inicio, $registrosPorPagina
+
 ";
 
 
@@ -109,17 +109,6 @@ $sqlCount = "SELECT COUNT(*)
              LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
              $whereSqlCount";
 
-$stmtTotal = $con->prepare($sqlCount);
-foreach ($paramsCount as $key => $value) {
-    $paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
-    $stmtTotal->bindValue($key, $value, $paramType);
-}
-$stmtTotal->execute();
-$totalRegistros = $stmtTotal->fetchColumn();
-
-$totalPaginas = ceil($totalRegistros / $registrosPorPagina);
-$inicioBloque = floor(($paginaActual - 1) / 10) * 10 + 1;
-$finBloque = min($inicioBloque + 9, $totalPaginas);
 
 ?>
 <div id="tabla-pp-wrapper">
@@ -194,3 +183,5 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
         </ul>
     </nav>-->
 </div>
+
+

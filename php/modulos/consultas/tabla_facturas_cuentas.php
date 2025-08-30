@@ -9,77 +9,77 @@ $registrosPorPagina = 20;
 $paginaActual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
 $inicio = ($paginaActual - 1) * $registrosPorPagina;
 
-// Consulta principal: partir de cuentas, LEFT JOIN partidaspolizas filtrando partidas no pagadas
 $sql = "
-SELECT
+SELECT 
     cu.Id,
     cu.Numero AS SubcuentaNumero,
-    cu.Nombre AS SubcuentaNombre,
-    
-    -- Total abonado a esta cuenta 216-xxx (aún no pagado)
-    COALESCE((
-        SELECT SUM(pp1.Abono)
-        FROM conta_partidaspolizas pp1
-        WHERE pp1.SubcuentaId = cu.Id AND pp1.Pagada = 1 AND Activo = 1
-    ), 0) AS TotalAbonado,
-
-    -- Total cargado relacionado con las mismas pólizas o referencias que los abonos a esta cuenta
-    COALESCE((
-        SELECT SUM(pp2.Cargo)
-        FROM conta_partidaspolizas pp2
-        WHERE pp2.Pagada = 0
-          AND pp2.SubcuentaId != cu.Id
-          AND (
-              pp2.PolizaId IN (
-                  SELECT PolizaId
-                  FROM conta_partidaspolizas
-                  WHERE SubcuentaId = cu.Id AND Pagada = 0 AND Activo = 1
-              )
-              OR
-              pp2.ReferenciaId IN (
-                  SELECT ReferenciaId
-                  FROM conta_partidaspolizas
-                  WHERE SubcuentaId = cu.Id AND Pagada
-              )
-          )
-    ), 0) AS TotalRelacionado
-
+    cu.Nombre AS SubcuentaNombre
 FROM cuentas cu
 WHERE cu.CuentaPadreId = 21
-  AND cu.Numero LIKE '216-%'
-ORDER BY (TotalRelacionado - TotalAbonado) DESC, cu.Numero ASC
-LIMIT :inicio, :registrosPorPagina
+  AND cu.Numero LIKE '216-%';
 ";
 
 $stmt = $con->prepare($sql);
-$stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
 $stmt->execute();
-$polizas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$acreedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($acreedores) {
+    foreach ($acreedores as $acreedor) {
+        $sql2 = "
+        SELECT pp.Partida AS Id, pp.Cargo, pp.Observaciones AS FacturaObservaciones, 
+            pp.NumeroFactura AS Factura, 
+            p.Id AS PolizaId, 
+            p.Numero AS PolizaNumero, 
+            p.FechaAlta AS FechaHora, 
+            r.Numero AS ReferenciaNumero, 
+            b.Nombre AS BeneficiarioNombre, 
+            cu.Numero AS SubcuentaNumero, 
+            cu.Nombre AS SubcuentaNombre,  
+            ( SELECT SubcuentaId FROM conta_partidaspolizas pp2 WHERE pp2.PolizaId = pp.PolizaId ORDER BY pp2.Partida DESC LIMIT 1 ) AS UltimaSubcuentaId
+            FROM conta_partidaspolizas pp 
+            LEFT JOIN conta_polizas p ON p.Id = pp.PolizaId 
+            LEFT JOIN beneficiarios b ON b.Id = p.BeneficiarioId 
+            LEFT JOIN cuentas cu ON cu.Id = pp.SubcuentaId 
+            INNER JOIN conta_referencias r ON r.Id = pp.ReferenciaId 
+            LEFT JOIN 2201aduanas a ON a.id2201aduanas = r.AduanaId 
+            WHERE p.Id IN ( 
+                SELECT PolizaId FROM conta_partidaspolizas WHERE (PolizaId, Partida) 
+                IN ( SELECT PolizaId, MAX(Partida) FROM conta_partidaspolizas GROUP BY PolizaId ) 
+                AND SubcuentaId = :subcuentaId ) 
+                AND pp.Pagada = 0 
+                ORDER BY p.Fecha DESC, pp.Partida ASC 
+        ";
+       $stmt2 = $con->prepare($sql2);
+        $stmt2->execute([':subcuentaId' => $acreedor['Id']]);
+        $resultados = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+        $totalCargo = 0;
+
+        if ($resultados) {
+            foreach ($resultados as $resultado) {
+                $Cargo = (float) $resultado['Cargo'];
+                $totalCargo += $Cargo;
+            }
+
+            // aquí construyes un registro para tu tabla
+            $polizas[] = [
+                'Id'              => $acreedor['Id'],
+                'SubcuentaNumero' => $acreedor['SubcuentaNumero'],
+                'SubcuentaNombre' => $acreedor['SubcuentaNombre'],
+                'TotalRelacionado'=> $totalCargo,
+                'TotalAbonado'    => 0, // o lo que quieras calcular después
+            ];
+        }
+    }
+}
 
 foreach ($polizas as &$poliza) {
     $totalAbonado = floatval($poliza['TotalAbonado']);
     $totalRelacionado = floatval($poliza['TotalRelacionado']);
     $poliza['SaldoPendiente'] = $totalRelacionado - $totalAbonado;
 }
-unset($poliza); // buena práctica por si acaso
+unset($poliza); 
 
-
-// Consulta para contar total de subcuentas hijas para paginación
-$sqlCount = "
-SELECT COUNT(*)
-FROM cuentas cu
-WHERE cu.CuentaPadreId = 21
-  AND cu.Numero LIKE '216-%' 
-";
-
-$stmtCount = $con->prepare($sqlCount);
-$stmtCount->execute();
-$totalRegistros = $stmtCount->fetchColumn();
-
-$totalPaginas = ceil($totalRegistros / $registrosPorPagina);
-$inicioBloque = floor(($paginaActual - 1) / 10) * 10 + 1;
-$finBloque = min($inicioBloque + 9, $totalPaginas);
 ?>
 <div id="tabla-pp-wrapper">
     <table id="tabla-pp-subcuentas" class="table table-hover tabla-pp-container">
@@ -137,27 +137,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
 
     </table>
 
-<!-- Paginación 
-<nav aria-label="Page navigation example" class="d-flex justify-content-center" id="paginacion-subcuentas">
-    <ul class="pagination">
-        <li class="page-item <?php echo ($paginaActual == 1) ? 'disabled' : ''; ?>">
-            <a class="page-link" href="?pagina=<?php echo $paginaActual - 1; ?>" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        <?php for ($i = $inicioBloque; $i <= $finBloque; $i++): ?>
-            <li class="page-item <?php echo ($i == $paginaActual) ? 'active' : ''; ?>">
-                <a class="page-link" href="?pagina=<?php echo $i; ?>"><?php echo $i; ?></a>
-            </li>
-        <?php endfor; ?>
-        <li class="page-item <?php echo ($paginaActual == $totalPaginas) ? 'disabled' : ''; ?>">
-            <a class="page-link" href="?pagina=<?php echo $paginaActual + 1; ?>" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
-</nav>-->
-</div>
+
 <script>
     document.addEventListener("click", function (e) {
         if (e.target.classList.contains("link-subcuenta")) {
