@@ -60,7 +60,7 @@ if (isset($_POST['id'])) {
         NavieraId, CierreDocumentos, BuqueId, Booking, CierreDespacho,
         HoraDespacho, Viaje, SuReferencia, CierreDocumentado, LlegadaEstimada,
         PuertoDescarga, PuertoDestino, Comentarios, FechaAlta, Status, UsuarioAlta
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = [
             $referencia['AduanaId'],
@@ -92,7 +92,8 @@ if (isset($_POST['id'])) {
             $referencia['Comentarios'],
             $fecha,
             1,
-            $referencia['UsuarioAlta']
+            $_SESSION['usuario_id']
+
         ];
 
         if (count($params) !== substr_count($sql, '?')) {

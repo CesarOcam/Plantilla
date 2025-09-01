@@ -98,7 +98,7 @@ try {
     for ($i = 0; $i < $total; $i++) {
         if ($archivos['error'][$i] === UPLOAD_ERR_OK) {
             $nombreOriginal = basename($archivos['name'][$i]);
-            $nombreFinal = uniqid() . "_" . $nombreOriginal;
+            $nombreFinal = $nombreOriginal;   // usar tal cual
             $rutaFinal = $uploadDir . $nombreFinal;
 
             if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
