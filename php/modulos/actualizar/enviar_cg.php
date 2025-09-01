@@ -23,7 +23,7 @@ try {
     $mailsLogistico = $input['mails_logistico'] ?? [];
     $mailsAmex = $input['mails_amex'] ?? [];
     $response = ['success' => false, 'message' => '', 'debug' => ''];
-    $usuarioAlta = $_SESSION['usuario_id'];
+    $usuarioAlta = $_SESSION['usuario_nombre'];
 
     if (!$id) {  // <-- usa $id, no $_POST
         echo json_encode(['success' => false, 'message' => 'ID de la referencia no proporcionado']);

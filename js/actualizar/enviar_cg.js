@@ -33,6 +33,10 @@ document.getElementById('btn_enviarCG').addEventListener('click', function () {
             try {
                 const data = JSON.parse(text);
                 if (data.success) {
+                    const modalEl = document.getElementById('modalEnvioCG');
+                    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    modal.hide();
+
                     Swal.fire({
                         icon: 'success',
                         title: '!Correó enviado!',

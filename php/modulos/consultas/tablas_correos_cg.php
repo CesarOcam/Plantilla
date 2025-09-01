@@ -74,11 +74,15 @@ $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
             </tbody>
         </table>
     </div>
+
+    <!-- Emails Logísticos -->
     <div class="col-md-4">
         <table class="table table-bordered table-sm tabla-correos">
             <thead>
                 <tr>
-                    <th></th>
+                    <th style="width:30px;">
+                        <input type="checkbox" class="form-check-input big-checkbox check-all" data-target="logistico" style="cursor:pointer;">
+                    </th>
                     <th>Emails Logísticos</th>
                 </tr>
             </thead>
@@ -88,7 +92,7 @@ $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
                         <td>
                             <input type="checkbox" name="mails_logistico[]"
                                 value="<?= htmlspecialchars($logistico['correo']) ?>"
-                                class="form-check-input big-checkbox check-correo" style="cursor:pointer;">
+                                class="form-check-input big-checkbox check-correo logistico" style="cursor:pointer;">
                         </td>
                         <td><?= htmlspecialchars($logistico['correo'] ?? 'Sin email') ?></td>
                     </tr>
@@ -97,11 +101,14 @@ $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
         </table>
     </div>
 
+    <!-- Emails Amexport -->
     <div class="col-md-4">
         <table class="table table-bordered table-sm tabla-correos">
             <thead>
                 <tr>
-                    <th></th>
+                    <th style="width:30px;">
+                        <input type="checkbox" class="form-check-input big-checkbox check-all" data-target="amexport" style="cursor:pointer;">
+                    </th>
                     <th>Emails Amexport</th>
                 </tr>
             </thead>
@@ -109,7 +116,7 @@ $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
                 <tr>
                     <td>
                         <input type="checkbox" name="mail_main" value="jesus.reyes@grupomexport.com"
-                            class="form-check-input big-checkbox check-correo" style="cursor:pointer;" checked disabled>
+                            class="form-check-input big-checkbox check-correo amexport" style="cursor:pointer;" checked disabled>
                     </td>
                     <td>jesus.reyes@grupomexport.com</td>
                 </tr>
@@ -117,14 +124,27 @@ $archivos = $stmtArchivos->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <td>
                             <input type="checkbox" name="mails_amex[]"
-                                value="<?php echo htmlspecialchars($usuario['email']); ?>"
-                                class="form-check-input big-checkbox check-correo" style="cursor:pointer;">
+                                value="<?= htmlspecialchars($usuario['email']) ?>"
+                                class="form-check-input big-checkbox check-correo amexport" style="cursor:pointer;">
                         </td>
-                        <td><?php echo htmlspecialchars($usuario['email']); ?></td>
+                        <td><?= htmlspecialchars($usuario['email']) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-
     </div>
 </div>
+
+<script>
+// Manejar los "select all"
+document.querySelectorAll('.check-all').forEach(master => {
+    master.addEventListener('change', function () {
+        let targetClass = this.dataset.target;
+        document.querySelectorAll('.' + targetClass).forEach(cb => {
+            if (!cb.disabled) { // evita cambiar el que está disabled
+                cb.checked = master.checked;
+            }
+        });
+    });
+});
+</script>
