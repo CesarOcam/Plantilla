@@ -1,13 +1,6 @@
 <?php
 include_once(__DIR__ . '/../conexion.php');
 
-// Número de registros por página
-$registrosPorPagina = 20;
-
-// Determinar el número de la página actual
-$paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para la consulta
-
 $filtro = isset($_GET['filtro']) ? trim($_GET['filtro']) : '';
 $filtroLike = '%' . $filtro . '%';
 
@@ -17,7 +10,7 @@ if ($filtro !== '') {
     $sql .= " AND (Nombre LIKE :filtro OR Numero LIKE :filtro)";
 }
 
-$sql .= " ORDER BY Numero LIMIT :inicio, :registrosPorPagina";
+$sql .= " ORDER BY Numero";
 
 $stmt = $con->prepare($sql);
 
@@ -25,21 +18,8 @@ if ($filtro !== '') {
     $stmt->bindValue(':filtro', $filtroLike, PDO::PARAM_STR);
 }
 
-
-$stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
-
 $stmt->execute();
 $cuentas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-// Consulta para contar el total de registros
-$stmtTotal = $con->prepare("SELECT COUNT(*) FROM cuentas");
-$stmtTotal->execute();
-$totalRegistros = $stmtTotal->fetchColumn();
-
-// Calcular el total de páginas
-$totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 // Organizar cuentas y subcuentas
 $cuentasOrdenadas = [];
@@ -72,11 +52,6 @@ foreach ($cuentasPrincipales as $numero => $cuentaPrincipal) {
         }
     }
 }
-
-// Calcular el bloque de páginas a mostrar (de 10 en 10)
-$inicioBloque = floor(($paginaActual - 1) / 10) * 10 + 1;
-$finBloque = min($inicioBloque + 9, $totalPaginas);
-
 ?>
 
 <table class="table table-hover">
@@ -87,6 +62,7 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
             <th scope="col" class="subcuenta-column">Subcuenta</th>
             <th scope="col">Nombre</th>
             <th scope="col">Saldo</th>
+            <th>Editar</th>
         </tr>
     </thead>
     <tbody class="small">
@@ -96,12 +72,10 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     $esSubcuenta = strpos($cuenta['Numero'], '-') !== false;
                     $cuentaNumero = $esSubcuenta ? '' : $cuenta['Numero'];
                     $subcuentaNumero = $esSubcuenta ? $cuenta['Numero'] : '';
-                    $sangria = $esSubcuenta ? 'ms-3' : ''; // Sangría para subcuentas
+                    $sangria = $esSubcuenta ? 'ms-3' : '';
                 ?>
-                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas_cat/detalle_cuentas.php?id=<?php echo $cuenta['Id']; ?>';}" style="cursor: pointer;">
-                    <th scope="row">
-                        <input class="form-check-input mt-1 chkCuenta" type="checkbox" value="<?php echo $cuenta['Id']; ?>" aria-label="Checkbox for following text input">
-                    </th>
+                <tr>
+                    <th scope="row"></th>
                     <td><?php echo $cuentaNumero; ?></td>
                     <td class="<?php echo $sangria; ?>">
                         <?php if ($esSubcuenta): ?>
@@ -111,6 +85,13 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
                     </td>
                     <td><?php echo $cuenta['Nombre']; ?></td>
                     <td><?php echo '$ '.$cuenta['Saldo']; ?></td>
+                    <td>
+                        <?php if (!$esSubcuenta): ?>
+                            <a href="../../modulos/consultas_cat/detalle_cuentas.php?id=<?php echo $cuenta['Id']; ?>" class="text-decoration-none">
+                                <span class="material-icons" style="font-size: 28px; vertical-align: middle; color: #b0b0b0;">edit</span>
+                            </a>
+                        <?php endif; ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
@@ -118,26 +99,3 @@ $finBloque = min($inicioBloque + 9, $totalPaginas);
         <?php endif; ?>
     </tbody>
 </table>
-
-<!-- Paginación -->
-<nav aria-label="Page navigation example" class="d-flex justify-content-center">
-  <ul class="pagination">
-    <li class="page-item <?php echo ($paginaActual == 1) ? 'disabled' : ''; ?>">
-      <a class="page-link" href="?pagina=<?php echo $paginaActual - 1; ?>" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-
-    <?php for ($i = $inicioBloque; $i <= $finBloque; $i++): ?>
-        <li class="page-item <?php echo ($i == $paginaActual) ? 'active' : ''; ?>">
-            <a class="page-link" href="?pagina=<?php echo $i; ?>"><?php echo $i; ?></a>
-        </li>
-    <?php endfor; ?>
-
-    <li class="page-item <?php echo ($paginaActual == $totalPaginas) ? 'disabled' : ''; ?>">
-      <a class="page-link" href="?pagina=<?php echo $paginaActual + 1; ?>" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-</nav>

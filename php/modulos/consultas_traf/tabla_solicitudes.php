@@ -15,7 +15,7 @@ $stmt = $con->prepare("
         (SUBSTRING_INDEX(Numero, '-', 1) = '216' AND Numero LIKE '216-%') OR
         (SUBSTRING_INDEX(Numero, '-', 1) = '113' AND Numero LIKE '113-%')
     )
-    ORDER BY Nombre
+    ORDER BY Numero
 ");
 
 $stmt->execute();

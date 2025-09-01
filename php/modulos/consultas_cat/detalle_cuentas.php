@@ -59,11 +59,11 @@ $cuenta = $stmt->fetch(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../../../css/style2.css">
 </head>
 
-    <?php
-    include_once __DIR__ . '/../../../config.php';
+<?php
+include_once __DIR__ . '/../../../config.php';
 
-    include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
+?>
 
 <div class="container-fluid">
     <div class="card mt-3 border shadow rounded-0">
@@ -71,7 +71,7 @@ $cuenta = $stmt->fetch(PDO::FETCH_ASSOC);
             <div class="card-header formulario_clientes">
                 <h5>Información de Cuenta</h5>
                 <div class="row">
-                    
+
                     <div class="col-10 col-sm-1 mt-4">
                         <label for="id_cuenta" class="form-label text-muted small">ID :</label>
                         <input id="id_cuenta" name="id_cuenta" type="text"
@@ -129,17 +129,22 @@ $cuenta = $stmt->fetch(PDO::FETCH_ASSOC);
                             style="background-color: transparent;" value="<?php echo $cuenta['FechaAlta']; ?>" readonly>
                     </div>
                 </div>
+               <div class="row">
+                    <div class="col-10 col-sm-12 mt-12">
+                        <div id="tabla-subcuentas-detalle" style="max-height: 400px; overflow-y: auto;">
+                            <?php
+                                include_once("tabla_subcuentas.php");
+                            ?>
+                        </div>
+                    </div>
+                </div>
                 <div class="row justify-content-end mt-5">
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
                         <button type="button" class="btn btn-outline-danger rounded-0"
                             onclick="window.location.href='../../vistas/catalogos/cat_Cuentas.php'">Salir</button>
                     </div>
                     <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                        <button type="button" id="btn_editar" class="btn btn-secondary rounded-0">Modificar</button>
-                    </div>
-                    <div class="col-auto d-flex align-items-center mt-3 mb-5">
-                        <button type="submit" class="btn btn-success rounded-0" id="btn_guardar"
-                            style="display:none;">Guardar</button>
+                        <button type="submit" class="btn btn-success rounded-0" id="btn_guardar">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -151,6 +156,7 @@ $cuenta = $stmt->fetch(PDO::FETCH_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
     crossorigin="anonymous"></script>
+<script src=""></script>
 <script src="../../../js/actualizar/actualizar_Cuentas.js"></script>
 </body>
 

@@ -1,20 +1,39 @@
 $(document).ready(function () {
-    // Inicialmente, desactivamos todos los campos del formulario
-    $('#form_Cuentas input, #form_Cuentas select').prop('disabled', true);
-
-    // Activar los campos al hacer clic en "Modificar"
-    $('#btn_editar').on('click', function () {
-        $('#form_Cuentas input, #form_Cuentas select').prop('disabled', false);
-        $(this).hide(); // Oculta el botón de modificar
-        $('#btn_guardar').show(); // Muestra el botón de guardar
-    });
-
     // Envío del formulario por AJAX
     $('#form_Cuentas').on('submit', function (e) {
         e.preventDefault(); // Evita recarga
+        // Recolectar inputs de subcuentas dinámicas
+        const subcuentas = [];
+        $('#tablaSubcuentas tbody tr').each(function () {
+            const inputs = $(this).find('input');
+            if (inputs.length > 0) {
+                const numero = $(inputs[0]).val().trim();
+                const nombre = $(inputs[1]).val().trim();
+                const saldo = $(inputs[2]).val().trim();
 
+                if (numero && nombre && saldo) {
+                    subcuentas.push({ numero, nombre, saldo });
+                }
+            }
+        });
+
+        // Agregar los datos de subcuentas al formulario como campo oculto
+        // Si ya existe, actualizarlo
+        let $subcuentasInput = $('#form_Cuentas input[name="subcuentas_json"]');
+        if ($subcuentasInput.length === 0) {
+            $subcuentasInput = $('<input>').attr({
+                type: 'hidden',
+                name: 'subcuentas_json',
+                value: JSON.stringify(subcuentas)
+            });
+            $('#form_Cuentas').append($subcuentasInput);
+        } else {
+            $subcuentasInput.val(JSON.stringify(subcuentas));
+        }
+
+        // Enviar el formulario por AJAX como antes
         $.ajax({
-            url: '../../modulos/actualizar/actualizar_cuentas.php', // Ajusta esta ruta
+            url: '../../modulos/actualizar/actualizar_cuentas.php', // Ajusta si es necesario
             type: 'POST',
             data: $(this).serialize(),
             success: function (response) {
