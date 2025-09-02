@@ -17,57 +17,8 @@ if (!isset($_SESSION['usuario_id'])) {
     integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
   <link rel="stylesheet" href="../../css/style.css">
 
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const renderChart = (canvasId, chartType, labels, dataValues, backgroundColor, borderColor, label) => {
-        const canvas = document.getElementById(canvasId);
-        if (canvas) {
-          const ctx = canvas.getContext('2d');
-          new Chart(ctx, {
-            type: chartType,
-            data: {
-              labels: labels,
-              datasets: [{
-                label: label,
-                data: dataValues,
-                backgroundColor: backgroundColor,
-                borderColor: borderColor,
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              animation: {
-                duration: 0,
-                animations: {
-                  numbers: {
-                    type: 'number',
-                    duration: 0
-                  },
-                  colors: {
-                    type: 'color',
-                    duration: 0
-                  }
-                }
-              },
-              scales: {
-                y: { beginAtZero: true }
-              }
-            }
-          });
-        }
-      };
-
-      renderChart('aduanasChart', 'bar',
-        ['Veracruz', 'Altamira', 'AIFA', 'Ciudad de México', 'Manzanillo', 'Lázaro Cardenas'],
-        [34, 28, 15, 22, 48, 36],
-        'rgba(8, 69, 211, 0.64)',
-        'rgb(107, 122, 156)',
-        'Operaciones'
-      );
-    });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ <script src="../../js/charts/chart_1.js"></script>
 </head>
 
 <body>
