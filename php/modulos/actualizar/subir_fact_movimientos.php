@@ -104,7 +104,7 @@ try {
             if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
                 $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Partida_id, Nombre, Ruta, UUID) VALUES (?, ?, ?, ?, ?)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
-                $stmtArchivo->execute([$referencia_id, $partida_id, $nombre_comentario, $rutaFinal, $uuid]);
+                $stmtArchivo->execute([$referencia_id, $partida_id, $nombreFinal, $rutaFinal, $uuid]);
 
                 // Actualizar observaciones en la partida
                 $nombreSinExtension = pathinfo($nombre_comentario, PATHINFO_FILENAME);
