@@ -1,15 +1,6 @@
 <?php
 include_once(__DIR__ . '/../conexion.php');
 
-// Número de registros por página
-$registrosPorPagina = 20;
-
-// Determinar el número de la página actual
-$paginaActual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
-$inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para la consulta
-
-// Consulta para obtener los clientes (solo 20 registros por página)
-
 $where = [];
 $params = [];
 
@@ -40,21 +31,23 @@ if (!empty($_GET['fecha_hasta'])) {
 
 // PÓLIZA
 if (!empty($_GET['referencia'])) {
+    $referenciaInput = trim($_GET['referencia']);           // eliminar espacios al inicio y final
+    $referenciaInput = preg_replace('/\s+/', '%', $referenciaInput); // reemplazar espacios internos por %
     $where[] = "r.Numero LIKE :referencia";
-    $params[':referencia'] = "%" . $_GET['referencia'] . "%";
+    $params[':referencia'] = "%" . $referenciaInput . "%";  // envolver con % para LIKE
 }
 
 // LOGISTICO
 if (!empty($_GET['logistico'])) {
+    $logisticoInput = trim($_GET['logistico']);             // eliminar espacios al inicio y final
+    $logisticoInput = preg_replace('/\s+/', '%', $logisticoInput);   // reemplazar espacios internos por %
     $where[] = "r.ClienteLogisticoId = :logistico";
-    $params[':logistico'] = $_GET['logistico'];
+    $params[':logistico'] = $logisticoInput;
 }
-
 
 // WHERE final
 $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
 
-// CONSULTA FINAL CON JOIN Y PAGINACIÓN
 $sql = "SELECT 
     r.Id, r.Numero, r.ClienteLogisticoId, r.ClienteExportadorId, r.Status, r.FechaAlta, r.FechaContabilidad,r.FechaKardex,
     exp.razonSocial_exportador AS ExportadorNombre,
@@ -63,9 +56,7 @@ $sql = "SELECT
     LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
     LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
     $whereSql
-    ORDER BY r.FechaAlta DESC
-    LIMIT :inicio, :registrosPorPagina";
-
+    ORDER BY r.FechaAlta DESC";
 
 $stmt = $con->prepare($sql);
 
@@ -74,121 +65,58 @@ foreach ($params as $key => $value) {
     $stmt->bindValue($key, $value);
 }
 
-// Parámetros de paginación
-$stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindValue(':registrosPorPagina', $registrosPorPagina, PDO::PARAM_INT);
-
 $stmt->execute();
-$referencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-// Consulta para contar el total de registros
-// Consulta para contar el total de registros con los mismos filtros
-$sqlTotal = "SELECT COUNT(*) 
-    FROM conta_referencias r
-    LEFT JOIN 01clientes_exportadores exp ON r.ClienteExportadorId = exp.id01clientes_exportadores
-    LEFT JOIN 01clientes_exportadores log ON r.ClienteLogisticoId = log.id01clientes_exportadores
-    $whereSql";
-
-$stmtTotal = $con->prepare($sqlTotal);
-
-// Vincular los mismos parámetros
-foreach ($params as $key => $value) {
-    $stmtTotal->bindValue($key, $value);
-}
-
-$stmtTotal->execute();
-$totalRegistros = $stmtTotal->fetchColumn();
-
-
-// Calcular el total de páginas
-$totalPaginas = ceil($totalRegistros / $registrosPorPagina);
-
-// Calcular el bloque de páginas a mostrar (de 10 en 10)
-$inicioBloque = floor(($paginaActual - 1) / 10) * 10 + 1;
-$finBloque = min($inicioBloque + 9, $totalPaginas);
+$referencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<table class="table table-hover">
-    <thead class="small">
-        <tr>
-            <th scope="col"></th>
-            <th scope="col">Id</th>
-            <th scope="col">Referencia</th>
-            <th scope="col">Logístico</th>
-            <th scope="col">Exportador</th>
-            <th scope="col">Status</th>
-            <th scope="col">Apertura</th>
-            <th scope="col">Conta</th>
-            <th scope="col">Kardex</th>
-        </tr>
-    </thead>
-    <tbody class="small">
-        <?php if ($referencia): ?>
-            <?php foreach ($referencia as $referencia): ?>
-                <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_referencia.php?id=<?php echo $referencia['Id']; ?>';}"
-                    style="cursor: pointer;">
-                    <th scope="row">
-                        <input class="form-check-input mt-1" type="checkbox" value=""
-                            aria-label="Checkbox for following text input">
-                    </th>
-                    <td><?php echo $referencia['Id']; ?></td>
-                    <td><?php echo $referencia['Numero']; ?></td>
-                    <td><?php echo $referencia['LogisticoNombre']; ?></td>
-                    <td><?php echo $referencia['ExportadorNombre']; ?></td>
-                    <td>
-                        <?php
+<!-- Contenedor con scroll -->
+<div style="max-height: 500px; overflow-y: auto;">
+    <table class="table table-hover">
+        <thead class="small">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Id</th>
+                <th scope="col">Referencia</th>
+                <th scope="col">Logístico</th>
+                <th scope="col">Exportador</th>
+                <th scope="col">Status</th>
+                <th scope="col">Apertura</th>
+                <th scope="col">Conta</th>
+                <th scope="col">Kardex</th>
+            </tr>
+        </thead>
+        <tbody class="small">
+            <?php if ($referencias): ?>
+                <?php foreach ($referencias as $referencia): ?>
+                    <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_referencia.php?id=<?php echo $referencia['Id']; ?>';}" style="cursor: pointer;">
+                        <th scope="row">
+                            <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        </th>
+                        <td><?php echo $referencia['Id']; ?></td>
+                        <td><?php echo $referencia['Numero']; ?></td>
+                        <td><?php echo $referencia['LogisticoNombre']; ?></td>
+                        <td><?php echo $referencia['ExportadorNombre']; ?></td>
+                        <td>
+                            <?php
                             switch ($referencia['Status']) {
-                                case 1:
-                                    echo '<span>EN TRÁFICO</span>';
-                                    break;
-                                case 2:
-                                    echo '<span>EN CONTABILIDAD</span>';
-                                    break;
-                                case 3:
-                                    echo '<span>FACTURADA</span>';
-                                    break;
-                                case 4:
-                                    echo '<span>CANCELADA</span>';
-                                    break;
-                                default:
-                                    echo '<span>DESCONOCIDO</span>';
-                                    break;
+                                case 1: echo '<span>EN TRÁFICO</span>'; break;
+                                case 2: echo '<span>EN CONTABILIDAD</span>'; break;
+                                case 3: echo '<span>FACTURADA</span>'; break;
+                                case 4: echo '<span>CANCELADA</span>'; break;
+                                default: echo '<span>DESCONOCIDO</span>'; break;
                             }
                             ?>
-                    </td>
-                    <td><?php echo $referencia['FechaAlta']; ?></td>
-                    <td><?php echo $referencia['FechaContabilidad']; ?></td>
-                    <td><?php echo $referencia['FechaKardex']; ?></td>
+                        </td>
+                        <td><?php echo $referencia['FechaAlta']; ?></td>
+                        <td><?php echo $referencia['FechaContabilidad']; ?></td>
+                        <td><?php echo $referencia['FechaKardex']; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td class="text-center" colspan="9">No se encontraron registros</td>
                 </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td class="text-center" colspan="9">No se encontraron registros</td>
-            </tr>
-        <?php endif; ?>
-    </tbody>
-</table>
-
-<!-- Paginación -->
-<nav aria-label="Page navigation example" class="d-flex justify-content-center">
-    <ul class="pagination">
-        <li class="page-item <?php echo ($paginaActual == 1) ? 'disabled' : ''; ?>">
-            <a class="page-link" href="?pagina=<?php echo $paginaActual - 1; ?>" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-
-        <?php for ($i = $inicioBloque; $i <= $finBloque; $i++): ?>
-            <li class="page-item <?php echo ($i == $paginaActual) ? 'active' : ''; ?>">
-                <a class="page-link" href="?pagina=<?php echo $i; ?>"><?php echo $i; ?></a>
-            </li>
-        <?php endfor; ?>
-
-        <li class="page-item <?php echo ($paginaActual == $totalPaginas) ? 'disabled' : ''; ?>">
-            <a class="page-link" href="?pagina=<?php echo $paginaActual + 1; ?>" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
