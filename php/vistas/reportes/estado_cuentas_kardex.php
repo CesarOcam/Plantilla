@@ -71,7 +71,7 @@ LEFT JOIN 01clientes_exportadores ee
     ON c.Exportador = ee.id01clientes_exportadores
 LEFT JOIN 2201aduanas a 
     ON r.AduanaId = a.id2201aduanas
-$whereSql
+$whereSql AND c.Status != 2
 ORDER BY c.Fecha ASC
 ";
 

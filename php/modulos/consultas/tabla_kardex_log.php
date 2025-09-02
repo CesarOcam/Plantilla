@@ -9,8 +9,9 @@ SELECT
 FROM conta_cuentas_kardex c
 LEFT JOIN 01clientes_exportadores le 
     ON c.Logistico = le.id01clientes_exportadores
+WHERE c.Status != 2
 GROUP BY c.Logistico, le.razonSocial_exportador
-ORDER BY SaldoTotal DESC
+ORDER BY SaldoTotal DESC;
 ";
 
 $stmt = $con->prepare($sql);
