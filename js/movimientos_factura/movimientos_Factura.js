@@ -2,16 +2,19 @@ document.addEventListener('click', function (e) {
   const btn = e.target.closest('.upload-file');
   if (!btn) return;
 
+  const tr = btn.closest('tr');
   const polizaId = btn.getAttribute('data-poliza-id');
-  const partidaId = btn.getAttribute('data-partida-id') ||
-    btn.closest('tr').querySelector('.obs-edit').getAttribute('data-partida-id');
+  const partidaId = btn.getAttribute('data-partida-id') || tr.querySelector('.obs-edit').getAttribute('data-partida-id');
+  const origen = tr.getAttribute('data-origen'); 
 
   document.getElementById('uploadPolizaId').value = polizaId;
   document.getElementById('uploadPartidaId').value = partidaId;
+  document.getElementById('uploadOrigen').value = origen; 
 
   document.getElementById('formUploadArchivo').reset();
   updateDropText([]);
 });
+
 
 const dropArea = document.getElementById('dropArea');
 const fileInput = document.getElementById('archivo');

@@ -78,6 +78,12 @@ foreach ($polizas as &$poliza) {
 }
 unset($poliza); 
 
+if (!empty($polizas)) {
+    usort($polizas, function($a, $b) {
+        return ($b['SaldoPendiente'] ?? 0) <=> ($a['SaldoPendiente'] ?? 0);
+    });
+}
+
 ?>
 <div id="tabla-pp-wrapper">
     <table id="tabla-pp-subcuentas" class="table table-hover tabla-pp-container">

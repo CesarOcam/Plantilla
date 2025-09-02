@@ -121,8 +121,8 @@ try {
             foreach ($mailsAmex as $correo) {
                 $mail->addCC($correo);
             }
-            $mail->addCC('jesus.reyes@grupoamexport.com');
-            //$mail->addCC('cesar.pulido@grupoamexport.com');
+            //$mail->addCC('jesus.reyes@grupoamexport.com');
+            $mail->addCC('cesar.pulido@grupoamexport.com');
 
             // Crear archivo ZIP temporal
             $zipFile = tempnam(sys_get_temp_dir(), "$suReferencia . $referenciaId . $nombreExportador") . '.zip';
@@ -133,7 +133,7 @@ try {
                 $zip->addFromString("cuenta_gastos_$referenciaId.pdf", $pdfContent);
 
                 // Agregar los archivos de la tabla
-                $stmt = $con->prepare("SELECT nombre, ruta FROM conta_referencias_archivos WHERE Referencia_id = :id");
+                $stmt = $con->prepare("SELECT nombre, ruta FROM conta_referencias_archivos WHERE Referencia_id = :id AND Origen != 2");
                 $stmt->bindParam(':id', $referenciaId, PDO::PARAM_INT);
                 $stmt->execute();
                 $archivos = $stmt->fetchAll(PDO::FETCH_ASSOC);

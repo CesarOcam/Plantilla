@@ -7,6 +7,7 @@ $partida_id = $_POST['PartidaId'] ?? null;
 $uuid = $_POST['UUID'] ?? null;
 $serie = $_POST['Serie'] ?? null;
 $folio = $_POST['Folio'] ?? null;
+$origen = $_POST['Origen'] ?? null;
 $nombre_comentario = $serie.$folio;
 
 if (!$uuid) {
@@ -102,9 +103,9 @@ try {
             $rutaFinal = $uploadDir . $nombreFinal;
 
             if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
-                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Partida_id, Nombre, Ruta, UUID) VALUES (?, ?, ?, ?, ?)";
+                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Partida_id, Nombre, Ruta, UUID, Origen) VALUES (?, ?, ?, ?, ?, ?)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
-                $stmtArchivo->execute([$referencia_id, $partida_id, $nombreFinal, $rutaFinal, $uuid]);
+                $stmtArchivo->execute([$referencia_id, $partida_id, $nombreFinal, $rutaFinal, $uuid, $origen]);
 
                 // Actualizar observaciones en la partida
                 $nombreSinExtension = pathinfo($nombre_comentario, PATHINFO_FILENAME);

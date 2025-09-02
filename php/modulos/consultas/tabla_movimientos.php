@@ -114,7 +114,7 @@ try {
                                 $resCheck = $con->query($sqlCheck)->fetch(PDO::FETCH_ASSOC);
                                 $yaTieneArchivo = $resCheck['total'] > 0;
                                 ?>
-                                <tr class="small" data-partida-id="<?= $partidaId ?>">
+                                <tr class="small" data-partida-id="<?= $partidaId ?>" data-origen= 1 >
                                     <td>
                                         <a href="detalle_poliza.php?id=<?= $fila['PolizaId'] ?>">
                                             <?= $fila['NumeroPoliza'] ?>
@@ -204,7 +204,7 @@ try {
                                 $resCheck = $con->query($sqlCheck)->fetch(PDO::FETCH_ASSOC);
                                 $yaTieneArchivo = $resCheck['total'] > 0;
                                 ?>
-                                <tr class="small" data-partida-id="<?= $partidaId ?>">
+                                <tr class="small" data-partida-id="<?= $partidaId ?>" data-origen=2>
                                     <td>
                                         <a href="detalle_poliza.php?id=<?= $fila2['PolizaId'] ?>">
                                             <?= $fila2['NumeroPoliza'] ?>
@@ -310,6 +310,7 @@ try {
 
                 <input type="hidden" name="PartidaId" id="uploadPartidaId">
                 <input type="hidden" name="ReferenciaId" id="uploadReferenciaId" value="<?= $id ?>">
+                <input type="hidden" name="Origen" id="uploadOrigen">
 
                 <div class="modal-header">
                     <h5 class="modal-title">Subir Factura</h5>
