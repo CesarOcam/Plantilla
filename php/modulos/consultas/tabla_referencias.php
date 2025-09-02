@@ -70,7 +70,7 @@ $referencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!-- Contenedor con scroll -->
-<div style="max-height: 500px; overflow-y: auto;">
+<div style="max-height: 600px; overflow-y: auto;">
     <table class="table table-hover">
         <thead class="small">
             <tr>
@@ -90,7 +90,6 @@ $referencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($referencias as $referencia): ?>
                     <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_referencia.php?id=<?php echo $referencia['Id']; ?>';}" style="cursor: pointer;">
                         <th scope="row">
-                            <input class="form-check-input mt-1" type="checkbox" value="" aria-label="Checkbox for following text input">
                         </th>
                         <td><?php echo $referencia['Id']; ?></td>
                         <td><?php echo $referencia['Numero']; ?></td>
