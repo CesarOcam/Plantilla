@@ -223,9 +223,9 @@ date_default_timezone_set('America/Mexico_City');
                     $rutaFinal = $uploadDir . $nombreFinal;
 
                     if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
-                        $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
+                        $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta, Origen) VALUES (?, ?, ?, ?)";
                         $stmtArchivo = $con->prepare($sqlArchivo);
-                        $stmtArchivo->execute([$referencia_id, $nombreOriginal, $rutaFinal]);
+                        $stmtArchivo->execute([$referencia_id, $nombreOriginal, $rutaFinal, 1]);
                     }
                 }
             }

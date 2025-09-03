@@ -1,3 +1,4 @@
+
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('.upload-file');
   if (!btn) return;
@@ -5,16 +6,15 @@ document.addEventListener('click', function (e) {
   const tr = btn.closest('tr');
   const polizaId = btn.getAttribute('data-poliza-id');
   const partidaId = btn.getAttribute('data-partida-id') || tr.querySelector('.obs-edit').getAttribute('data-partida-id');
-  const origen = tr.getAttribute('data-origen'); 
+  const origen = tr.getAttribute('data-origen');
 
   document.getElementById('uploadPolizaId').value = polizaId;
   document.getElementById('uploadPartidaId').value = partidaId;
-  document.getElementById('uploadOrigen').value = origen; 
+  document.getElementById('uploadOrigen').value = origen;
 
   document.getElementById('formUploadArchivo').reset();
   updateDropText([]);
 });
-
 
 const dropArea = document.getElementById('dropArea');
 const fileInput = document.getElementById('archivo');
@@ -203,14 +203,13 @@ btnSubir.addEventListener('click', async () => {
     }
 
     Swal.fire({
-      toast: true,
-      position: 'top-end',
       icon: 'success',
       title: 'Archivos subidos correctamente',
       showConfirmButton: false,
-      timer: 500,
-      timerProgressBar: true
-    }).then(() => location.reload());
+      timer: 1000,
+      timerProgressBar: true,
+      didClose: () => recargarTablaArchivos() // recarga la tabla al cerrar el modal
+    });
 
     form.reset();
     updateDropText([]);
@@ -242,3 +241,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+function recargarTablaArchivos() {
+  console.log("Recargando tabla para referenciaId:", referenciaId);
+
+  if (referenciaId) {
+    $("#tabla-archivos tbody").load(
+      "../../modulos/consultas/tabla_archivos_referencia.php?id=" + referenciaId,
+      function (response, status, xhr) {
+        if (status === "success") console.log("Tabla recargada correctamente");
+        if (status === "error") console.error("Error al recargar tabla:", xhr.statusText);
+      }
+    );
+  }
+}
+

@@ -343,7 +343,7 @@ try {
 </div>
 
 <script>
-
+    const referenciaId = <?= $id ?>;
     document.addEventListener("DOMContentLoaded", function () {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.forEach(function (tooltipTriggerEl) {
