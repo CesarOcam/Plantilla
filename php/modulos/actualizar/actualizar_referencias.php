@@ -180,9 +180,9 @@ if (isset($_POST['id'])) {
                 $rutaFinal = $uploadDir . $nombreFinal;
 
                 if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
-                    $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
+                    $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta, Origen) VALUES (?, ?, ?, ?)";
                     $stmtArchivo = $con->prepare($sqlArchivo);
-                    $stmtArchivo->execute([$id, $nombreOriginal, $rutaFinal]);
+                    $stmtArchivo->execute([$id, $nombreOriginal, $rutaFinal, 0]);
                 }
             }
         }

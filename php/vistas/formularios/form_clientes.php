@@ -107,9 +107,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             style="background-color: transparent;" aria-label="Filtrar por fecha"
                             aria-describedby="basic-addon1">
                             <option value="" selected disabled>Tipo*</option>
-                            <option value="1">EXPORTADOR</option>
-                            <option value="2">LOGÍSTICO</option>
-                            <option value="3">EXPORTADOR Y LOGÍSTICO</option>
+                            <option value="0">EXPORTADOR</option>
+                            <option value="1">LOGÍSTICO</option>
+                            <option value="2">EXPORTADOR Y LOGÍSTICO</option>
                         </select>
                     </div>
                 </div>
