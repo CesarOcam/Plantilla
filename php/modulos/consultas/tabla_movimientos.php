@@ -86,7 +86,7 @@ try {
 <link rel="stylesheet" href="../../../css/style.css">
 <link rel="stylesheet" href="../../../css/style2.css">
 
-<div class="card card-tabla mb-4">
+<div class="card card-tabla mb-4" id="tabla-movimientos-contenedor">
     <div class="card-body">
         <div class="row">
             <!-- Tabla estática -->

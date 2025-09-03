@@ -65,7 +65,8 @@ if ($countFiles >= 2) {
     echo json_encode([
         'ok' => false,
         'msg' => 'Ya existe un par de archivos con ese nombre',
-        'referencia' => $numeroReferencia
+        'referencia' => $numeroReferencia,
+        'nombreArchivo' => $nombreSinExtension,
     ]);
     exit;
 }
@@ -116,7 +117,12 @@ try {
         }
     }
     $con->commit();
-    echo json_encode(['ok' => true, 'msg' => 'Archivos subidos correctamente']);
+    echo json_encode([
+    'ok' => true,
+    'msg' => 'Archivos subidos correctamente',
+    'partidaId' => $partida_id,
+    'nombreArchivo' => $pdfBase  // o el nombre que quieras mostrar en observaciones
+]);
 } catch (PDOException $e) {
     $con->rollBack();
     echo json_encode(['ok' => false, 'msg' => 'Error al subir archivos: ' . $e->getMessage()]);

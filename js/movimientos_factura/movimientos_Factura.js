@@ -1,4 +1,3 @@
-
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('.upload-file');
   if (!btn) return;
@@ -15,6 +14,7 @@ document.addEventListener('click', function (e) {
   document.getElementById('formUploadArchivo').reset();
   updateDropText([]);
 });
+
 
 const dropArea = document.getElementById('dropArea');
 const fileInput = document.getElementById('archivo');
@@ -165,41 +165,31 @@ btnSubir.addEventListener('click', async () => {
     console.log('Respuesta PHP cruda:', text); // <-- útil para depurar
     const json = JSON.parse(text);
 
-    if (!json.ok) {
-      if (json.uuid && json.referencia) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'UUID duplicado',
-          html: `El UUID <strong>${json.uuid}</strong> ya existe en la referencia <strong>${json.referencia}</strong>.`,
-          confirmButtonText: 'Aceptar'
-        });
-      } else if (json.referencia) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Archivos duplicados',
-          html: `Ya existe un par de archivos con ese nombre en la referencia <strong>${json.referencia}</strong>.`,
-          confirmButtonText: 'Aceptar'
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al subir archivos',
-          text: json.msg || 'Error desconocido'
-        });
-      }
-      return;
-    }
-
     // Todo correcto
     const modalEl = document.getElementById('modalUploadArchivo');
     bootstrap.Modal.getInstance(modalEl).hide();
 
     const partidaId = document.getElementById('uploadPartidaId').value;
-    const fila = document.querySelector(`tr[data-partida-id="${partidaId}"]`);
+    const fila = document.querySelector(`tr[data-partida-id="${json.partidaId}"]`);
     if (fila) {
+      // Obtener nombre del archivo desde la respuesta JSON si viene
+      const nombreArchivo = json.nombreArchivo || "Archivo"; // Ajusta según lo que devuelva tu PHP
+
+      // Actualizar columna de archivo
       const tdArchivo = fila.querySelector('td:last-child');
-      tdArchivo.innerHTML = `<i class="bi bi-check-circle-fill text-success fs-5" style="cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="top" title="Archivo guardado"></i>`;
+      tdArchivo.innerHTML = `<i class="bi bi-check-circle-fill text-success fs-5" style="cursor:pointer;"
+        data-bs-toggle="tooltip" data-bs-placement="top" title="${nombreArchivo}"></i>`;
       new bootstrap.Tooltip(tdArchivo.querySelector('i'));
+
+      // Actualizar columna de observaciones
+      const btnObservaciones = fila.querySelector('.obs-edit');
+      if (btnObservaciones) {
+        const span = btnObservaciones.querySelector('.observaciones-text');
+        const icono = btnObservaciones.querySelector('i');
+
+        span.textContent = nombreArchivo; // Reemplaza texto del comentario por el nombre del archivo
+        if (icono) icono.remove(); // Si había ícono de lápiz, lo quitamos
+      }
     }
 
     Swal.fire({
@@ -208,8 +198,9 @@ btnSubir.addEventListener('click', async () => {
       showConfirmButton: false,
       timer: 1000,
       timerProgressBar: true,
-      didClose: () => recargarTablaArchivos() // recarga la tabla al cerrar el modal
+      didClose: () => recargarTablaArchivos()
     });
+
 
     form.reset();
     updateDropText([]);
@@ -255,4 +246,5 @@ function recargarTablaArchivos() {
     );
   }
 }
+
 
