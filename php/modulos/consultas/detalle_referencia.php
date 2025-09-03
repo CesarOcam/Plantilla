@@ -1154,7 +1154,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                     <td>${file.type || 'Desconocido'}</td>
                     <td>${(file.size / 1024).toFixed(2)} KB</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-outline-danger" data-eliminar="true">Eliminar</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
