@@ -95,7 +95,7 @@ $stmt->execute();
 $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // EXPORTADORES Y LOGISTICOS
-$stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador
+$stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador, tipo_cliente
                        FROM 01clientes_exportadores 
                        ORDER BY razonSocial_exportador");
 $stmt->execute();
@@ -268,10 +268,12 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                             Exportador *
                                         </option>
                                         <?php foreach ($exp as $item): ?>
-                                            <option value="<?= $item['id01clientes_exportadores'] ?>"
-                                                <?= $item['id01clientes_exportadores'] == $referencia['ClienteExportadorId'] ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($item['razonSocial_exportador']) ?>
-                                            </option>
+                                            <?php if ($item['tipo_cliente'] == 0 || $item['tipo_cliente'] == 2): ?>
+                                                <option value="<?= $item['id01clientes_exportadores'] ?>"
+                                                    <?= $item['id01clientes_exportadores'] == $referencia['ClienteExportadorId'] ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($item['razonSocial_exportador']) ?>
+                                                </option>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -281,13 +283,15 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <select id="logistico-select" name="logistico"
                                         class="form-control rounded-0 border-0 border-bottom text-muted">
                                         <option value="" disabled <?= empty($referencia['ClienteLogisticoId']) ? 'selected' : '' ?>>
-                                            Exportador *
+                                            Logístico *
                                         </option>
                                         <?php foreach ($exp as $item): ?>
-                                            <option value="<?= $item['id01clientes_exportadores'] ?>"
-                                                <?= $item['id01clientes_exportadores'] == $referencia['ClienteLogisticoId'] ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($item['razonSocial_exportador']) ?>
-                                            </option>
+                                            <?php if ($item['tipo_cliente'] == 1 || $item['tipo_cliente'] == 2): ?>
+                                                <option value="<?= $item['id01clientes_exportadores'] ?>"
+                                                    <?= $item['id01clientes_exportadores'] == $referencia['ClienteLogisticoId'] ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($item['razonSocial_exportador']) ?>
+                                                </option>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -661,7 +665,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <div class="table-responsive mt-3">
                                         <?php
                                         include_once("tabla_archivos_referencia.php");
-                                        ?>   
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -870,7 +874,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
             if (status == 3) {
                 // Bloquear todos los botones 
                 $('button.btn-danger:contains("Eliminar")').prop('disabled', true).addClass('disabled');
-                $('#btn-nuevo-contenedor').prop('disabled', true).addClass('disabled'); 
+                $('#btn-nuevo-contenedor').prop('disabled', true).addClass('disabled');
                 $('#btn_subirDocs').prop('disabled', true).addClass('disabled');
             }
         });
