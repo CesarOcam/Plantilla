@@ -11,27 +11,37 @@ $inicio = ($paginaActual - 1) * $registrosPorPagina; // Índice de inicio para l
 
 try {
     $stmt = $con->prepare("
-        SELECT 
-            p.Numero AS NumeroPoliza,
-            b.Nombre AS NombreBeneficiario,
-            CONCAT(c.Numero, ' - ', c.Nombre) AS Cuenta,
-            pp.Partida AS IdPartida,
-            pp.PolizaId,
-            pp.Cargo AS Cargo,
-            pp.Abono AS Abono,
-            pp.Observaciones,
-            pp.NumeroFactura
-        FROM conta_partidaspolizas pp
-        LEFT JOIN conta_polizas p ON pp.PolizaId = p.Id
-        LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
-        LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
-        WHERE pp.ReferenciaId = :id
-        AND c.Numero IN (123, 114, 214)
-        AND pp.Activo = 1
-        AND pp.EnKardex != 1
-        AND pp.PagoCuenta !=1
-        LIMIT :inicio, :limite
-    ");
+    SELECT 
+        p.Numero AS NumeroPoliza,
+        b.Nombre AS NombreBeneficiario,
+        CONCAT(c.Numero, ' - ', c.Nombre) AS Cuenta,
+        pp.Partida AS IdPartida,
+        pp.PolizaId,
+        pp.Cargo AS Cargo,
+        pp.Abono AS Abono,
+        pp.Observaciones,
+        pp.NumeroFactura,
+        c.Numero AS NumeroCuenta
+    FROM conta_partidaspolizas pp
+    LEFT JOIN conta_polizas p ON pp.PolizaId = p.Id
+    LEFT JOIN beneficiarios b ON p.BeneficiarioId = b.Id
+    LEFT JOIN cuentas c ON pp.SubcuentaId = c.Id
+    WHERE pp.ReferenciaId = :id
+      AND c.Numero IN (123, 114, 214)
+      AND pp.Activo = 1
+      AND pp.EnKardex != 1
+      AND pp.PagoCuenta != 1
+    ORDER BY 
+        CASE 
+            WHEN c.Numero = '123-001' THEN 1
+            WHEN c.Numero LIKE '123%' THEN 2
+            WHEN c.Numero LIKE '114%' THEN 3
+            ELSE 4
+        END,
+        c.Numero
+    LIMIT :inicio, :limite
+");
+
 
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->bindValue(':inicio', $inicio, PDO::PARAM_INT);
@@ -114,7 +124,7 @@ try {
                                 $resCheck = $con->query($sqlCheck)->fetch(PDO::FETCH_ASSOC);
                                 $yaTieneArchivo = $resCheck['total'] > 0;
                                 ?>
-                                <tr class="small" data-partida-id="<?= $partidaId ?>" data-origen= 1 >
+                                <tr class="small" data-partida-id="<?= $partidaId ?>" data-origen=1>
                                     <td>
                                         <a href="detalle_poliza.php?id=<?= $fila['PolizaId'] ?>">
                                             <?= $fila['NumeroPoliza'] ?>
