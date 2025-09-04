@@ -352,7 +352,7 @@ $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         if (logistico !== '') {
                             btnExportar.disabled = false;
                             btnExportar.onclick = () => {
-                                 window.location.href = "../../vistas/reportes/estado_cuentas_kardex.php?logistico=" + encodeURIComponent(logistico);
+                                 window.location.href = "../../vistas/reportes/excel_estado_cuentas_kardex.php?logistico=" + encodeURIComponent(logistico);
                             };
                         } else {
                             btnExportar.disabled = true;

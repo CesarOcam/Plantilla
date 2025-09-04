@@ -54,6 +54,7 @@
     </div>
 
     <script>
+        
         // ------------------- MANEJO DE MESES -------------------
         const addMonthBtn = document.getElementById('addMonthBtn');
         const monthNameInput = document.getElementById('monthName');

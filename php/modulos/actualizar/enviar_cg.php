@@ -24,6 +24,7 @@ try {
     $mailsAmex = $input['mails_amex'] ?? [];
     $response = ['success' => false, 'message' => '', 'debug' => ''];
     $usuarioAlta = $_SESSION['usuario_nombre'];
+    $usuarioId = $_SESSION['usuario_id'];
 
     if (!$id) {  // <-- usa $id, no $_POST
         echo json_encode(['success' => false, 'message' => 'ID de la referencia no proporcionado']);
@@ -121,8 +122,12 @@ try {
             foreach ($mailsAmex as $correo) {
                 $mail->addCC($correo);
             }
-            $mail->addCC('jesus.reyes@grupoamexport.com');
-            //$mail->addCC('cesar.pulido@grupoamexport.com');
+
+            if ($usuarioId == 'Master') { 
+                $mail->addCC('cesar.pulido@grupoamexport.com');
+            } else {
+                $mail->addCC('jesus.reyes@grupoamexport.com');
+            }
 
             // Crear archivo ZIP temporal
             $zipFile = tempnam(sys_get_temp_dir(), "$suReferencia . $referenciaId . $nombreExportador") . '.zip';
