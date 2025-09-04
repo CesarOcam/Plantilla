@@ -54,19 +54,20 @@ if (isset($_POST['id'])) {
     if ($referencia) {
 
         $sql = "INSERT INTO conta_referencias (
-        AduanaId, ClienteExportadorId, ClienteLogisticoId, Mercancia, Marcas,
+        AduanaId, ClienteExportadorId, ClienteLogisticoId, Mercancia, FechaPago, Marcas,
         Pedimentos, ClavePedimento, PesoBruto, Cantidad,
         Contenedor, ConsolidadoraId, ResultadoModulacion, RecintoId, Numero,
         NavieraId, CierreDocumentos, BuqueId, Booking, CierreDespacho,
         HoraDespacho, Viaje, SuReferencia, CierreDocumentado, LlegadaEstimada,
         PuertoDescarga, PuertoDestino, Comentarios, FechaAlta, Status, UsuarioAlta
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = [
             $referencia['AduanaId'],
             $referencia['ClienteExportadorId'],
             $referencia['ClienteLogisticoId'],
             $referencia['Mercancia'],
+            $referencia['FechaPago'],
             $referencia['Marcas'],
             $referencia['Pedimentos'],
             $referencia['ClavePedimento'],
