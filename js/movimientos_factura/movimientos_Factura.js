@@ -165,20 +165,34 @@ btnSubir.addEventListener('click', async () => {
     console.log('Respuesta PHP cruda:', text); // <-- útil para depurar
     const json = JSON.parse(text);
 
-    // Todo correcto
+    if (json.ok === false) {
+      let mensaje = json.msg || 'Error desconocido al subir archivos.';
+
+      // Si vienen uuid y referencia en la respuesta, los agregamos al mensaje
+      if (json.uuid && json.referencia) {
+        mensaje += `\nUUID: ${json.uuid}\nReferencia: ${json.referencia}`;
+      }
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        html: mensaje.replace(/\n/g, '<br>') // Para mostrar saltos de línea
+      });
+      return; // salimos, no ejecutamos lo demás
+    }
+
     const modalEl = document.getElementById('modalUploadArchivo');
     bootstrap.Modal.getInstance(modalEl).hide();
 
     const partidaId = document.getElementById('uploadPartidaId').value;
     const fila = document.querySelector(`tr[data-partida-id="${json.partidaId}"]`);
     if (fila) {
-      // Obtener nombre del archivo desde la respuesta JSON si viene
-      const nombreArchivo = json.nombreArchivo || "Archivo"; // Ajusta según lo que devuelva tu PHP
+      const nombreArchivo = json.nombreArchivo || "Archivo";
 
       // Actualizar columna de archivo
       const tdArchivo = fila.querySelector('td:last-child');
       tdArchivo.innerHTML = `<i class="bi bi-check-circle-fill text-success fs-5" style="cursor:pointer;"
-        data-bs-toggle="tooltip" data-bs-placement="top" title="${nombreArchivo}"></i>`;
+      data-bs-toggle="tooltip" data-bs-placement="top" title="${nombreArchivo}"></i>`;
       new bootstrap.Tooltip(tdArchivo.querySelector('i'));
 
       // Actualizar columna de observaciones
@@ -187,8 +201,8 @@ btnSubir.addEventListener('click', async () => {
         const span = btnObservaciones.querySelector('.observaciones-text');
         const icono = btnObservaciones.querySelector('i');
 
-        span.textContent = nombreArchivo; // Reemplaza texto del comentario por el nombre del archivo
-        if (icono) icono.remove(); // Si había ícono de lápiz, lo quitamos
+        span.textContent = nombreArchivo;
+        if (icono) icono.remove();
       }
     }
 
@@ -201,7 +215,6 @@ btnSubir.addEventListener('click', async () => {
       didClose: () => recargarTablaArchivos()
     });
 
-
     form.reset();
     updateDropText([]);
 
@@ -213,6 +226,7 @@ btnSubir.addEventListener('click', async () => {
       text: 'Error al subir archivos. Revisa la consola.'
     });
   }
+
 });
 
 document.addEventListener('DOMContentLoaded', () => {

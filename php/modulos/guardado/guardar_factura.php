@@ -159,7 +159,7 @@ foreach ($data as $index => $factura) {
                 $archivos[] = ['nombre' => $nombrePdf, 'ruta' => $destinoPdf];
 
             foreach ($archivos as $archivo) {
-                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Nombre, Ruta, Solicitud_factura_id) VALUES (?, ?, ?)";
+                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Nombre, Ruta, Solicitud_factura_id, Origen) VALUES (?, ?, ?, 0)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
                 $stmtArchivo->execute([
                     $archivo['nombre'],
