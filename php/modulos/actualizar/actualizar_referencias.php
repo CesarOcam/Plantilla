@@ -169,7 +169,7 @@ if (isset($_POST['id'])) {
         $archivos = $_FILES['documentos'] ?? null;
         if (is_array($archivos) && isset($archivos['name']) && is_array($archivos['name'])) {
             $total = count($archivos['name']);
-        } else {    
+        } else {
             $total = 0;
         }
 
@@ -180,12 +180,25 @@ if (isset($_POST['id'])) {
                 $rutaFinal = $uploadDir . $nombreFinal;
 
                 if (move_uploaded_file($archivos['tmp_name'][$i], $rutaFinal)) {
-                    $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta, Origen) VALUES (?, ?, ?, ?)";
-                    $stmtArchivo = $con->prepare($sqlArchivo);
-                    $stmtArchivo->execute([$id, $nombreOriginal, $rutaFinal, 0]);
+                    // Verificar si ya existe en la BD para esta referencia y nombre
+                    $sqlCheck = "SELECT COUNT(*) FROM conta_referencias_archivos WHERE Referencia_id = ? AND Nombre = ?";
+                    $stmtCheck = $con->prepare($sqlCheck);
+                    $stmtCheck->execute([$id, $nombreOriginal]);
+                    $existe = $stmtCheck->fetchColumn();
+
+                    if (!$existe) {
+                        $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta, Origen) 
+                               VALUES (?, ?, ?, ?)";
+                        $stmtArchivo = $con->prepare($sqlArchivo);
+                        $stmtArchivo->execute([$id, $nombreOriginal, $rutaFinal, 0]);
+                    } else {
+                        // Eliminar el archivo físico recién subido porque ya estaba registrado
+                        unlink($rutaFinal);
+                    }
                 }
             }
         }
+
 
         $contenedores_eliminados = isset($_POST['contenedores_eliminados']) ? (array) $_POST['contenedores_eliminados'] : [];
 

@@ -659,9 +659,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     </button>
 
                                     <div class="table-responsive mt-3">
-                                                                                        <?php
-                                                include_once("tabla_archivos_referencia.php");
-                                                ?>   
+                                        <?php
+                                        include_once("tabla_archivos_referencia.php");
+                                        ?>   
                                     </div>
                                 </div>
                             </div>

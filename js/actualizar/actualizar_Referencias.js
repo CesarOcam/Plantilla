@@ -40,10 +40,10 @@ $("#form_Referencia").on("submit", function (e) {
 
             if (response.trim() === "Referencia guardada correctamente.") {
                 recargarTablaArchivos(); // recarga inmediata
-                    archivosCargados = []; // <-- Limpiar archivos cargados
-                    previewContainer.innerHTML = '';
-                    previewContainer.classList.add('d-none');
-                    dropZoneDefault.classList.remove('d-none');
+                archivosCargados = []; // <-- Limpiar archivos cargados
+                previewContainer.innerHTML = '';
+                previewContainer.classList.add('d-none');
+                dropZoneDefault.classList.remove('d-none');
                 Swal.fire({
                     icon: 'success',
                     title: 'Actualizada',
@@ -81,8 +81,8 @@ function recargarTablaArchivos() {
     const referenciaId = $("#ReferenciaId").val();
     console.log("ReferenciaId:", referenciaId); // <-- verifica que exista y tenga valor
     if (referenciaId) {
-        $("#tabla-archivos tbody").load(
-            "../../modulos/consultas/tabla_archivos_referencia.php?id=" + referenciaId,
+        $("#tabla-documentos-body").load(
+            "../../modulos/consultas/tabla_archivos_referencia.php?id=" + referenciaId + " #tabla-documentos-body > *",
             function (response, status, xhr) {
                 if (status === "success") console.log("Tabla recargada correctamente");
                 if (status === "error") console.error("Error al recargar tabla:", xhr.statusText);
