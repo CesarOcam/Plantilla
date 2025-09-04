@@ -7,14 +7,27 @@ include_once(__DIR__ . '/../conexion.php');
 
 
 if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
+        $id = intval($_GET['id']);
 
-    $sql = "SELECT s.Id, s.ReferenciaFacturaId, e.Nombre AS EmpresaNombre, b.Nombre AS BeneficiarioNombre, s.Importe, s.Fecha, s.FechaAlta, a.nombre_corto_aduana AS AduanaNombre
-            FROM conta_solicitudes s
-            JOIN empresas e ON s.EmpresaId = e.Id
-            JOIN beneficiarios b ON s.BeneficiarioId = b.Id
-            JOIN 2201aduanas a ON s.Aduana = a.id2201aduanas
-            WHERE s.Id = :id LIMIT 1";
+        $sql = "SELECT 
+        s.Id, 
+        s.ReferenciaFacturaId, 
+        s.UsuarioAlta, 
+        u.name AS UsuarioAltaNombre,   --  aquí ya traes el nombre del usuario
+        e.Nombre AS EmpresaNombre, 
+        b.Nombre AS BeneficiarioNombre, 
+        s.Importe, 
+        s.Fecha, 
+        s.FechaAlta, 
+        a.nombre_corto_aduana AS AduanaNombre
+    FROM conta_solicitudes s
+    JOIN empresas e ON s.EmpresaId = e.Id
+    JOIN beneficiarios b ON s.BeneficiarioId = b.Id
+    JOIN 2201aduanas a ON s.Aduana = a.id2201aduanas
+    JOIN sec_users u ON s.UsuarioAlta = u.login   -- 👈 relacionamos con la tabla usuarios
+    WHERE s.Id = :id 
+    LIMIT 1;
+        ";
 
     $stmt = $con->prepare($sql);
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);

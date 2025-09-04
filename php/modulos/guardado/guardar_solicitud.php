@@ -30,7 +30,7 @@ if (isset($_POST['beneficiario'], $_POST['Referencia'], $_POST['aduana'])) {
     foreach ($abonos as $a) {
         $total_abonos += is_numeric($a) ? floatval($a) : 0;
     }
-
+    date_default_timezone_set('America/Mexico_City');
     $importe = $total_cargos;
     $fecha_alta = date("Y-m-d H:i:s");
     $fecha = date("Y-m-d H:i:s");

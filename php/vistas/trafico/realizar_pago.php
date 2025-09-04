@@ -99,6 +99,13 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             style="background-color: transparent;" value="" readonly>
                         <input id="ReferenciaFacturaId" name="ReferenciaFacturaId" type="hidden" value="">
                     </div>
+                    <div class="col-4 col-sm-2 d-flex flex-column mt-4">
+                        <label for="SolicitadoPor" class="form-label text-muted small">SOLICITADO POR:</label>
+                        <input id="SolicitadoPor" name="SolicitadoPor" type="text"
+                            class="form-control input-transparent border-0 border-bottom rounded-0"
+                            style="background-color: transparent;" value="" readonly>
+                        <input id="SolicitadoPor" name="SolicitadoPor" type="hidden" value="">
+                    </div>
                 </div>
                 <div class="row mt-5">
                     <div class="col-12">

@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         document.getElementById('FechaAlta').value = data.FechaAlta || '';
                         document.getElementById('AduanaId').value = data.AduanaNombre || '';
                         document.getElementById('ReferenciaFacturaId').value = data.ReferenciaFacturaId || '';
+                        document.getElementById('SolicitadoPor').value = data.UsuarioAltaNombre || '';
 
                         // Llenar tabla de partidas
                         const cuerpoTabla = document.querySelector('#tabla-partidas tbody');
