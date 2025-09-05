@@ -209,11 +209,9 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     class="form-control rounded-0 border-0 border-bottom text-muted">
                                     <option value="" selected disabled>Logístico *</option>
                                     <?php foreach ($exp as $item): ?>
-                                        <?php if ($item['tipo_cliente'] == 1 || $item['tipo_cliente'] == 2): ?>
-                                            <option value="<?= $item['id01clientes_exportadores'] ?>">
-                                                <?= htmlspecialchars($item['razonSocial_exportador']) ?>
-                                            </option>
-                                        <?php endif; ?>
+                                        <option value="<?php echo $item['id01clientes_exportadores']; ?>">
+                                            <?php echo $item['razonSocial_exportador']; ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
