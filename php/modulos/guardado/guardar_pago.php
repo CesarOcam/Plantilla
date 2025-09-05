@@ -188,30 +188,38 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
     } else {
         echo "Error al guardar la póliza.";
     }
-    // 1. Obtener todos los Ids de facturas_registradas con esa referencia
-    $sql_facturas = "SELECT Id FROM conta_facturas_registradas WHERE referencia_id = :referencia_id";
-    $stmt_facturas = $con->prepare($sql_facturas);
-    $stmt_facturas->execute([':referencia_id' => $referenciaFacturaId]);
 
-    $facturaIds = $stmt_facturas->fetchAll(PDO::FETCH_COLUMN);
+    // 1. Obtener todas las referencias de la solicitud
+    $sql_refs = "SELECT DISTINCT ReferenciaId 
+                FROM conta_partidassolicitudes 
+                WHERE SolicitudId = :solicitudId";
+    $stmt_refs = $con->prepare($sql_refs);
+    $stmt_refs->execute([':solicitudId' => $id_solicitud]);
+    $referencias = $stmt_refs->fetchAll(PDO::FETCH_COLUMN);
 
-    if (!empty($facturaIds)) {
-        // Construir placeholders dinámicamente para el IN (...)
-        $placeholders = implode(',', array_fill(0, count($facturaIds), '?'));
+    foreach ($referencias as $refId) {
+        // 2. Obtener todas las facturas con esa referencia
+        $sql_facturas = "SELECT Id FROM conta_facturas_registradas WHERE referencia_id = :refId";
+        $stmt_facturas = $con->prepare($sql_facturas);
+        $stmt_facturas->execute([':refId' => $refId]);
+        $facturaIds = $stmt_facturas->fetchAll(PDO::FETCH_COLUMN);
 
-        // 2. Actualizar referencias_archivos para todos esos Ids
-        $sql_update_ref_archivos = "
-        UPDATE conta_referencias_archivos
-        SET Referencia_id = ?
-        WHERE Solicitud_factura_id IN ($placeholders)
-    ";
+        if (!empty($facturaIds)) {
+            // Construir placeholders dinámicos
+            $placeholders = implode(',', array_fill(0, count($facturaIds), '?'));
 
-        $params = array_merge([$referenciaFacturaId], $facturaIds);
-        $stmt_update_ref = $con->prepare($sql_update_ref_archivos);
-        $stmt_update_ref->execute($params);
-    }
+            // 3. Actualizar los archivos de esas facturas con la referencia correspondiente
+            $sql_update_ref_archivos = "
+                UPDATE conta_referencias_archivos
+                SET Referencia_id = ?
+                WHERE Solicitud_factura_id IN ($placeholders)
+            ";
 
-
+            $params = array_merge([$refId], $facturaIds);
+            $stmt_update_ref = $con->prepare($sql_update_ref_archivos);
+            $stmt_update_ref->execute($params);
+        }
+}
 
     echo json_encode([
         'success' => true,

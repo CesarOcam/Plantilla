@@ -352,7 +352,7 @@ if (is_array($archivos['name'])) {
                 $rutaRelativa = '../../../docs/' . $referencia . '/' . $nombreFinal;
 
                 // Registrar en BD
-                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta) VALUES (?, ?, ?)";
+                $sqlArchivo = "INSERT INTO conta_referencias_archivos (Referencia_id, Nombre, Ruta, Origen) VALUES (?, ?, ?, 0)";
                 $stmtArchivo = $con->prepare($sqlArchivo);
                 $stmtArchivo->execute([$referencia, $nombreOriginal, $rutaRelativa]);
 
