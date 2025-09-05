@@ -52,12 +52,12 @@ $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana
 $stmt->execute();
 $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// EXPORTADORES Y LOGISTICOS
-$stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador
+$stmt = $con->prepare("SELECT id01clientes_exportadores, razonSocial_exportador, tipo_cliente
                        FROM 01clientes_exportadores 
                        ORDER BY razonSocial_exportador");
 $stmt->execute();
 $exp = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 // RECINTOS
 $stmt = $con->prepare("SELECT id2206_recintos_fiscalizados, nombre_conocido_recinto
@@ -209,9 +209,11 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     class="form-control rounded-0 border-0 border-bottom text-muted">
                                     <option value="" selected disabled>Logístico *</option>
                                     <?php foreach ($exp as $item): ?>
-                                        <option value="<?php echo $item['id01clientes_exportadores']; ?>">
-                                            <?php echo $item['razonSocial_exportador']; ?>
-                                        </option>
+                                        <?php if ($item['tipo_cliente'] == 1 || $item['tipo_cliente'] == 2): ?>
+                                            <option value="<?= $item['id01clientes_exportadores'] ?>">
+                                                <?= htmlspecialchars($item['razonSocial_exportador']) ?>
+                                            </option>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
