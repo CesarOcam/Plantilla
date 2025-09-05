@@ -14,6 +14,7 @@ if (isset($_POST['denominacion_consolidadora'])) {
     $nombre = trim($_POST['denominacion_consolidadora']);
  
     function obtenerFechaHoraActual() {
+        date_default_timezone_set("America/Mexico_City");
         return date("Y-m-d H:i:s"); 
     }
 

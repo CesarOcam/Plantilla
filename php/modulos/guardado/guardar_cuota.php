@@ -61,8 +61,9 @@ if (abs($total_abono - $total_cargos) > 0.01) {
 }
 
 // Datos estáticos
-$fecha = $fecha = (new DateTime())->format('Y-m-d H:i:s');
-$fecha_alta = $fecha = (new DateTime())->format('Y-m-d H:i:s');
+$zonaMexico = new DateTimeZone('America/Mexico_City');
+$fecha = (new DateTime('now', $zonaMexico))->format('Y-m-d H:i:s');
+$fecha_alta = (new DateTime('now', $zonaMexico))->format('Y-m-d H:i:s');
 $activo = 1;
 $exportadoCoi = 1;
 $empresa = 2;

@@ -17,6 +17,7 @@ if (isset($_POST['NoSolicitud'], $_POST['SubcuentaId_pago'])) {
 
     function obtenerFechaHoraActual()
     {
+        date_default_timezone_set("America/Mexico_City");
         return date("Y-m-d H:i:s");
     }
     //Se actualiza a 2 : Solicitud aprobada
