@@ -140,9 +140,9 @@ $logisticoActual = $cliente['razonSocial_logistico'] ?? '';
                                         class="form-control rounded-0"
                                         style="background-color: transparent;">
                                         <option value="" disabled <?php echo (!isset($cliente['tipo']) || $cliente['tipo'] == '') ? 'selected' : ''; ?>>Tipo*</option>
-                                        <option value="0" <?php echo ($cliente['tipoClienteExportador'] == 0) ? 'selected' : ''; ?>>EXPORTADOR</option>
-                                        <option value="1" <?php echo ($cliente['tipoClienteExportador'] == 1) ? 'selected' : ''; ?>>LOGÍSTICO</option>
-                                        <option value="2" <?php echo ($cliente['tipoClienteExportador'] == 2) ? 'selected' : ''; ?>>EXPORTADOR Y LOGÍSTICO</option>
+                                        <option value="0" <?php echo ($cliente['tipo_cliente'] == 0) ? 'selected' : ''; ?>>EXPORTADOR</option>
+                                        <option value="1" <?php echo ($cliente['tipo_cliente'] == 1) ? 'selected' : ''; ?>>LOGÍSTICO</option>
+                                        <option value="2" <?php echo ($cliente['tipo_cliente'] == 2) ? 'selected' : ''; ?>>EXPORTADOR Y LOGÍSTICO</option>
                                     </select>
                                 </div>
                             </div>
