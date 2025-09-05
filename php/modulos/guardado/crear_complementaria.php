@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 include('../conexion.php');
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode([
@@ -8,7 +9,6 @@ if (!isset($_SESSION['usuario_id'])) {
     ]);
     exit;
 }
-include('../conexion.php');
 
 if (isset($_POST['id'])) {
 
@@ -23,11 +23,29 @@ if (isset($_POST['id'])) {
     $stmRef->execute([$id]);
     $referencia = $stmRef->fetch(PDO::FETCH_ASSOC);
 
+    if (!$referencia) {
+        echo json_encode(['success' => false, 'mensaje' => 'Referencia no encontrada']);
+        exit;
+    }
+
     $numero = $referencia['Numero'];
+    // Si la referencia actual es complementaria, usamos la original
+    $referenciaPadreId = $referencia['Id']; // por defecto, apuntamos a la referencia que estamos duplicando
+
+    if (!empty($referencia['ReferenciaPadreId'])) {
+        // Si ya tiene ReferenciaPadreId, es complementaria, entonces usamos la referencia original
+        $referenciaPadreId = $referencia['ReferenciaPadreId'];
+    }
+
     function incrementarNumero($numeroBase, $con)
     {
+        // Extraer la base antes del primer guion
+        $partes = explode('-', $numeroBase);
+        $base = $partes[0];
+
+        // Buscar todos los números que empiecen con la base
         $sql = "SELECT Numero FROM conta_referencias WHERE Numero LIKE ? ORDER BY Id DESC";
-        $like = $numeroBase . '-%';
+        $like = $base . '-%';
         $stmt = $con->prepare($sql);
         $stmt->execute([$like]);
         $numeros = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -35,9 +53,9 @@ if (isset($_POST['id'])) {
         $maxSufijo = 0;
 
         foreach ($numeros as $num) {
-            $partes = explode('-', $num);
-            if (count($partes) === 2 && is_numeric($partes[1])) {
-                $sufijo = intval($partes[1]);
+            $subpartes = explode('-', $num);
+            if (count($subpartes) === 2 && is_numeric($subpartes[1])) {
+                $sufijo = intval($subpartes[1]);
                 if ($sufijo > $maxSufijo) {
                     $maxSufijo = $sufijo;
                 }
@@ -45,24 +63,25 @@ if (isset($_POST['id'])) {
         }
 
         $nuevoSufijo = $maxSufijo + 1;
-        return $numeroBase . '-' . $nuevoSufijo;
+        return $base . '-' . $nuevoSufijo;
     }
-    
     $nuevoNumero = incrementarNumero($numero, $con);
 
 
     if ($referencia) {
 
         $sql = "INSERT INTO conta_referencias (
+        ReferenciaPadreId,
         AduanaId, ClienteExportadorId, ClienteLogisticoId, Mercancia, FechaPago, Marcas,
         Pedimentos, ClavePedimento, PesoBruto, Cantidad,
         Contenedor, ConsolidadoraId, ResultadoModulacion, RecintoId, Numero,
         NavieraId, CierreDocumentos, BuqueId, Booking, CierreDespacho,
         HoraDespacho, Viaje, SuReferencia, CierreDocumentado, LlegadaEstimada,
         PuertoDescarga, PuertoDestino, Comentarios, FechaAlta, Status, UsuarioAlta
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = [
+            $referenciaPadreId,
             $referencia['AduanaId'],
             $referencia['ClienteExportadorId'],
             $referencia['ClienteLogisticoId'],
@@ -92,7 +111,7 @@ if (isset($_POST['id'])) {
             $referencia['PuertoDestino'],
             $referencia['Comentarios'],
             $fecha,
-            1,
+            2,
             $_SESSION['usuario_id']
 
         ];
