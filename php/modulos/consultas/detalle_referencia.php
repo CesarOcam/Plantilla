@@ -552,45 +552,55 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     <label for="comentarios" class="form-label text-muted small">REFERENCIAS ASOCIADAS:</label>
                                     <?php
                                     // Obtener la referencia actual
-                                    $stmtActual = $con->prepare("SELECT Id, Numero, ReferenciaPadreId FROM conta_referencias WHERE Id = ?");
+                                    $stmtActual = $con->prepare("SELECT Id, Numero, ReferenciaPadreId, Status FROM conta_referencias WHERE Id = ?");
                                     $stmtActual->execute([$id]);
                                     $referenciaActual = $stmtActual->fetch(PDO::FETCH_ASSOC);
+
+                                    // Determinar la referencia original
+                                    $referenciaOriginalId = !empty($referenciaActual['ReferenciaPadreId']) ? $referenciaActual['ReferenciaPadreId'] : $referenciaActual['Id'];
 
                                     // Arreglo para acumular referencias a mostrar
                                     $referenciasASociadas = [];
 
-                                    // Agregar referencia padre si existe
-                                    if (!empty($referenciaActual['ReferenciaPadreId'])) {
-                                        $stmtPadre = $con->prepare("SELECT Numero, Id FROM conta_referencias WHERE Id = ?");
-                                        $stmtPadre->execute([$referenciaActual['ReferenciaPadreId']]);
-                                        $refPadre = $stmtPadre->fetch(PDO::FETCH_ASSOC);
-                                        if ($refPadre) {
-                                            $referenciasASociadas[] = $refPadre;
+                                    // Obtener la referencia original (si no es la actual)
+                                    if ($referenciaOriginalId != $referenciaActual['Id']) {
+                                        $stmtPadre = $con->prepare("SELECT Id, Numero, Status FROM conta_referencias WHERE Id = ?");
+                                        $stmtPadre->execute([$referenciaOriginalId]);
+                                        $refOriginal = $stmtPadre->fetch(PDO::FETCH_ASSOC);
+                                        if ($refOriginal) {
+                                            $referenciasASociadas[] = $refOriginal;
                                         }
                                     }
 
-                                    // Obtener las referencias complementarias
-                                    $sql = "SELECT Numero, Id FROM conta_referencias WHERE ReferenciaPadreId = ? ORDER BY Id ASC";
+                                    // Obtener todas las complementarias de la referencia original
+                                    $sql = "SELECT Id, Numero, Status FROM conta_referencias WHERE ReferenciaPadreId = ? ORDER BY Id ASC";
                                     $stmt = $con->prepare($sql);
-                                    $stmt->execute([$id]);
+                                    $stmt->execute([$referenciaOriginalId]);
                                     $complementarias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                                    // Agregar complementarias al arreglo
-                                    $referenciasASociadas = array_merge($referenciasASociadas, $complementarias);
+                                    // Agregar complementarias al arreglo, excepto la referencia actual
+                                    foreach ($complementarias as $comp) {
+                                        if ($comp['Id'] != $referenciaActual['Id']) {
+                                            $referenciasASociadas[] = $comp;
+                                        }
+                                    }
 
-                                    // Mostrar todas las referencias asociadas o mensaje si no hay ninguna
+                                    // Mostrar todas las referencias asociadas con Status
                                     if ($referenciasASociadas) {
                                         echo '<div class="d-flex flex-wrap gap-2 mt-2">';
                                         foreach ($referenciasASociadas as $ref) {
-                                            echo '<a href="detalle_referencia.php?id=' . $ref['Id'] . '" class="btn btn-md btn-outline-secondary rounded-0">'
-                                                . htmlspecialchars($ref['Numero']) .
-                                                '</a>';
+                                            $btnClass = $ref['Status'] == 1 ? 'btn-outline-secondary' : 'btn-outline-secondary';
+                                            echo '<a href="detalle_referencia.php?id=' . $ref['Id'] . '" class="btn btn-md ' . $btnClass . ' rounded-0">'
+                                                . htmlspecialchars($ref['Numero'])
+                                                . ' (Status: ' . $ref['Status'] . ')'
+                                                . '</a>';
                                         }
                                         echo '</div>';
                                     } else {
                                         echo '<small class="text-muted">No hay referencias asociadas.</small>';
                                     }
                                     ?>
+
 
                                 </div>
                             </div>
