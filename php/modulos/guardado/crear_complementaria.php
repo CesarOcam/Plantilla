@@ -37,6 +37,21 @@ if (isset($_POST['id'])) {
         $referenciaPadreId = $referencia['ReferenciaPadreId'];
     }
 
+    // Verificar si hay complementarias abiertas para esta referencia padre
+    $sqlCheck = "SELECT Numero FROM conta_referencias WHERE ReferenciaPadreId = ? AND Status != 3";
+    $stmtCheck = $con->prepare($sqlCheck);
+    $stmtCheck->execute([$referenciaPadreId]);
+    $openComplementarias = $stmtCheck->fetchAll(PDO::FETCH_COLUMN);
+
+    if (!empty($openComplementarias)) {
+        echo json_encode([
+            'success' => false,
+            'mensaje' => 'Hay referencia complementaria abierta: ' . implode(', ', $openComplementarias),
+        ]);
+        exit;
+    }
+
+
     function incrementarNumero($numeroBase, $con)
     {
         // Extraer la base antes del primer guion
