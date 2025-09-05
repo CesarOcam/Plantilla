@@ -589,10 +589,24 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     if ($referenciasASociadas) {
                                         echo '<div class="d-flex flex-wrap gap-2 mt-2">';
                                         foreach ($referenciasASociadas as $ref) {
-                                            $btnClass = $ref['Status'] == 1 ? 'btn-outline-secondary' : 'btn-outline-secondary';
-                                            echo '<a href="detalle_referencia.php?id=' . $ref['Id'] . '" class="btn btn-md ' . $btnClass . ' rounded-0">'
+                                            // Mapear Status a texto
+                                            switch ($ref['Status']) {
+                                                case 1:
+                                                    $statusTexto = 'TRAFICO';
+                                                    break;
+                                                case 2:
+                                                    $statusTexto = 'CONTABILIDAD';
+                                                    break;
+                                                case 3:
+                                                    $statusTexto = 'FACTURADA';
+                                                    break;
+                                                default:
+                                                    $statusTexto = 'DESCONOCIDO';
+                                            }
+
+                                            echo '<a href="detalle_referencia.php?id=' . $ref['Id'] . '" class="btn btn-md btn-outline-secondary rounded-0">'
                                                 . htmlspecialchars($ref['Numero'])
-                                                . ' (Status: ' . $ref['Status'] . ')'
+                                                . ' (' . $statusTexto . ')'
                                                 . '</a>';
                                         }
                                         echo '</div>';
@@ -600,8 +614,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         echo '<small class="text-muted">No hay referencias asociadas.</small>';
                                     }
                                     ?>
-
-
                                 </div>
                             </div>
                         </div>
