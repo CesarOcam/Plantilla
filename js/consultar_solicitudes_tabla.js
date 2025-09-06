@@ -170,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
     // Inicializar todo al cargar la página
     initBotonesAceptar();
     initBotonesEliminar();

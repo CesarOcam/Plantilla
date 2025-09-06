@@ -24,7 +24,7 @@ if (isset($_GET['id'])) {
     JOIN empresas e ON s.EmpresaId = e.Id
     JOIN beneficiarios b ON s.BeneficiarioId = b.Id
     JOIN 2201aduanas a ON s.Aduana = a.id2201aduanas
-    JOIN sec_users u ON s.UsuarioAlta = u.login   -- 👈 relacionamos con la tabla usuarios
+    JOIN sec_users u ON s.UsuarioAlta = u.login  
     WHERE s.Id = :id 
     LIMIT 1;
         ";

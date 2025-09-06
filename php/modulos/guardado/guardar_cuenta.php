@@ -25,7 +25,7 @@ if (isset($_POST['numero'], $_POST['nombre'], $_POST['tipo_saldo'])) {
 
     function obtenerFechaHoraActual()
     {
-        date_default_timezone_set("America/Mexico_City");
+        
         return date("Y-m-d H:i:s");
     }
 
