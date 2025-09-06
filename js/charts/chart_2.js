@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', async function () {
   try {
-    const resp = await fetch('../modulos/charts/chart_1.php');
+    const resp = await fetch('../modulos/charts/chart_2.php');
     const chartData = await resp.json();
 
-    const canvas = document.getElementById('aduanasChart');
+    const canvas = document.getElementById('aduanasChart2');
     if (canvas) {
       const ctx = canvas.getContext('2d');
       new Chart(ctx, {
@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         data: {
           labels: chartData.labels,
           datasets: [{
-            label: 'En Tráfico',
+            label: 'En Contabilidad',
             data: chartData.data,
-            backgroundColor: 'rgba(8, 69, 211, 0.64)',
+            backgroundColor: 'rgba(211, 8, 52, 0.64)',
             borderColor: 'rgb(107, 122, 156)',
             borderWidth: 1
           }]

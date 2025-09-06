@@ -10,6 +10,7 @@ $sql = "
     SELECT COALESCE(a.nombre_corto_aduana, 'SIN ADUANA') AS Aduana, COUNT(r.Id) AS Operaciones
     FROM conta_referencias r
     LEFT JOIN 2201aduanas a ON a.id2201aduanas = r.AduanaId
+    WHERE r.Status = 1
     GROUP BY a.nombre_corto_aduana
     ORDER BY a.nombre_corto_aduana
 ";
@@ -27,12 +28,26 @@ foreach ($result as $row) {
     $data[] = (int)$row['Operaciones'];
 }
 
-if (!$result) {
+// Total de operaciones (todas las aduanas)
+$sqlTotal = "SELECT COUNT(*) AS Total FROM conta_referencias WHERE Status = 1";
+$stmtTotal = $con->prepare($sqlTotal);
+$stmtTotal->execute();
+$total = $stmtTotal->fetchColumn();
+
+// Obtener la referencia más antigua con Status = 1
+$sqlAntigua = "SELECT Numero FROM conta_referencias WHERE Status = 1 ORDER BY FechaAlta ASC LIMIT 1";
+$stmtAntigua = $con->prepare($sqlAntigua);
+$stmtAntigua->execute();
+$refAntigua = $stmtAntigua->fetchColumn();
+
+if ($result === false) {
     echo json_encode(['error' => $stmt->errorInfo()]);
     exit;
 }
 
 echo json_encode([
     'labels' => $labels,
-    'data' => $data
+    'data' => $data,
+    'total' => (int)$total,
+    'refAntigua' => $refAntigua
 ]);
