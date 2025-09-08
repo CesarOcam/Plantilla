@@ -239,6 +239,61 @@ td {
   }
 }
 
+/* Estilos para la tabla de tráfico */
+#tabla-trafico table {
+    font-size: 0.8rem; /* Tipografía más pequeña */
+}
+
+#tabla-trafico td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#tabla-trafico th {
+    font-size: 0.85rem;
+}
+
+/* Estilos para la tabla de contabilidad */
+#tabla-contabilidad table {
+    font-size: 0.8rem;
+}
+
+#tabla-contabilidad td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#tabla-contabilidad th {
+    font-size: 0.85rem;
+}
+
+#miTabla th:nth-child(1),
+#miTabla td:nth-child(1) { width: 10% !important; }  /* Número */
+#miTabla th:nth-child(2),
+#miTabla td:nth-child(2) { width: 15% !important; }  /* Pedimento */
+#miTabla th:nth-child(3),
+#miTabla td:nth-child(3) { width: 20% !important; }  /* Exportador */
+#miTabla th:nth-child(4),
+#miTabla td:nth-child(4) { width: 20% !important; }  /* Logístico */
+#miTabla th:nth-child(5),
+#miTabla td:nth-child(5) { width: 20% !important; }  /* SuReferencia */
+#miTabla th:nth-child(6),
+#miTabla td:nth-child(6) { width: 15% !important; text-align: end;}  /* Días Tráfico */
+
+#miTablaContabilidad th:nth-child(1),
+#miTablaContabilidad td:nth-child(1) { width: 10% !important; }  /* Número */
+#miTablaContabilidad th:nth-child(2),
+#miTablaContabilidad td:nth-child(2) { width: 15% !important; }  /* Pedimento */
+#miTablaContabilidad th:nth-child(3),
+#miTablaContabilidad td:nth-child(3) { width: 20% !important; }  /* Exportador */
+#miTablaContabilidad th:nth-child(4),
+#miTablaContabilidad td:nth-child(4) { width: 20% !important; }  /* Logístico */
+#miTablaContabilidad th:nth-child(5),
+#miTablaContabilidad td:nth-child(5) { width: 20% !important; }  /* SuReferencia */
+#miTablaContabilidad th:nth-child(6),
+#miTablaContabilidad td:nth-child(6) { width: 15% !important; text-align: end;}  /* Días Tráfico */
 /*--------------------------------TABLAS------------------------------------------*/
 
 /* Ajusta el ancho de las dos primeras columnas */
