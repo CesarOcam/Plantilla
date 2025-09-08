@@ -33,11 +33,14 @@ if (!isset($_SESSION['usuario_id'])) {
       <!-- Operaciones por aduana -->
       <div class="col-md-6">
         <div class="card h-100 rounded-0">
-          <div class="card-header bg-light text-dark fw-semibold">
-            Número de Operaciones en Tráfico
-            <span id="numero"></span>
-            <span id="referencia"></span> 
+          <div class="card-header bg-light text-dark fw-semibold d-flex justify-content-between align-items-center">
+            <span>Número de Operaciones en Tráfico</span>
+            <span class="ms-auto">
+              Total: <label id="numero"></label> |
+              Ref. más antigua: <label id="referencia"></label>
+            </span>
           </div>
+
           <div class="card-body">
             <canvas id="aduanasChart" height="100"></canvas>
           </div>
@@ -47,8 +50,12 @@ if (!isset($_SESSION['usuario_id'])) {
       <!-- Carga de trabajo por operativo -->
       <div class="col-md-6">
         <div class="card h-100 rounded-0">
-          <div class="card-header bg-light text-dark fw-semibold">
-            Número de Operaciones en Contabilidad
+          <div class="card-header bg-light text-dark fw-semibold d-flex justify-content-between align-items-center">
+            <span>Número de Operaciones en Contabilidad</span>
+            <span class="ms-auto">
+              Total: <label id="numero2"></label> |
+              Ref. más antigua: <label id="referencia2"></label>
+            </span>
           </div>
           <div class="card-body">
             <canvas id="aduanasChart2" height="100"></canvas>

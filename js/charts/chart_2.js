@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     const resp = await fetch('../modulos/charts/chart_2.php');
     const chartData = await resp.json();
 
+    document.getElementById('numero2').textContent = chartData.total;
+    document.getElementById('referencia2').textContent = chartData.refAntigua;
+    console.log('Respuesta backend:', chartData);
+
     const canvas = document.getElementById('aduanasChart2');
     if (canvas) {
       const ctx = canvas.getContext('2d');

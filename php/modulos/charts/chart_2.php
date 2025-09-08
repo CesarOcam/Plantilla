@@ -29,13 +29,13 @@ foreach ($result as $row) {
 }
 
 // Total de operaciones (todas las aduanas)
-$sqlTotal = "SELECT COUNT(*) AS Total FROM conta_referencias WHERE Status = 1";
+$sqlTotal = "SELECT COUNT(*) AS Total FROM conta_referencias WHERE Status = 2";
 $stmtTotal = $con->prepare($sqlTotal);
 $stmtTotal->execute();
 $total = $stmtTotal->fetchColumn();
 
 // Obtener la referencia más antigua con Status = 1
-$sqlAntigua = "SELECT Numero FROM conta_referencias WHERE Status = 1 ORDER BY FechaAlta ASC LIMIT 1";
+$sqlAntigua = "SELECT Numero FROM conta_referencias WHERE Status = 2 ORDER BY FechaAlta ASC LIMIT 1";
 $stmtAntigua = $con->prepare($sqlAntigua);
 $stmtAntigua->execute();
 $refAntigua = $stmtAntigua->fetchColumn();
