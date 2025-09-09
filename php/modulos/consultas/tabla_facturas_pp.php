@@ -151,7 +151,7 @@ $sqlCount = "SELECT COUNT(*)
                         <td><?php echo $poliza['SubcuentaNumero']; ?></td>
                         <td><?php echo $poliza['SubcuentaNombre']; ?></td>
                         <td><?php echo '$ ' . number_format($poliza['Cargo'], 2); ?></td>
-                        <td><?php echo $poliza['FechaHora']; ?></td>
+                        <td><?php echo date("d/m/Y", strtotime($poliza['FechaHora'])); ?></td>
                         <td><?php echo $poliza['Factura']; ?></td>
                     </tr>
                 <?php endforeach; ?>
