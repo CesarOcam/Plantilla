@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function () {
   try {
-    const resp = await fetch('../modulos/inicio/charts/chart_1.php');
+    const resp = await fetch('../modulos/inicio/charts/chart_2.php');
     const chartData = await resp.json();
 
     document.getElementById('numero2').textContent = chartData.total;

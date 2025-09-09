@@ -49,3 +49,4 @@ echo json_encode([
     'total' => (int)$total,
     'refAntigua' => $refAntigua
 ]);
+exit;

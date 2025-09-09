@@ -35,12 +35,26 @@ $stmt = $con->prepare($sql);
 $stmt->bindParam(':usuario', $usuario, PDO::PARAM_STR);
 
 if (!$stmt->execute()) {
-    // Error en ejecución de la consulta
     echo '<table class="table table-sm"><tr><td colspan="6" class="text-center text-muted" style="font-style: italic;">Error al ejecutar la consulta</td></tr></table>';
     exit;
 }
 
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Calculamos los días en tráfico para cada registro
+foreach ($result as &$row) {
+    $fechaAlta = !empty($row['FechaAlta']) ? new DateTime($row['FechaAlta']) : new DateTime();
+    $fechaFin = !empty($row['FechaContabilidad']) ? new DateTime($row['FechaContabilidad']) : new DateTime();
+    $diasEnTrafico = $fechaAlta->diff($fechaFin)->days;
+    if ($diasEnTrafico < 1) $diasEnTrafico = 1;
+    $row['DiasEnTrafico'] = $diasEnTrafico;
+}
+unset($row); // rompe la referencia
+
+// Ordenamos de mayor a menor según DiasEnTrafico
+usort($result, function($a, $b) {
+    return $b['DiasEnTrafico'] <=> $a['DiasEnTrafico'];
+});
 ?>
 
 <table id="miTablaTrafico" class="table table-striped table-bordered table-hover table-sm">
@@ -57,13 +71,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </thead>
     <tbody>
         <?php if ($result && count($result) > 0): ?>
-            <?php foreach ($result as $row):
-                $fechaAlta = !empty($row['FechaAlta']) ? new DateTime($row['FechaAlta']) : new DateTime();
-                $fechaFin = !empty($row['FechaContabilidad']) ? new DateTime($row['FechaContabilidad']) : new DateTime();
-                $diasEnTrafico = $fechaAlta->diff($fechaFin)->days;
-                if ($diasEnTrafico < 1)
-                    $diasEnTrafico = 1;
-                ?>
+            <?php foreach ($result as $row): ?>
                 <tr>
                     <td>
                         <a href="../modulos/consultas/detalle_referencia.php?id=<?= urlencode($row['Id']) ?>">
@@ -75,10 +83,9 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?= htmlspecialchars($row['Logistico'] ?? '') ?></td>
                     <td><?= htmlspecialchars($row['Recinto'] ?? '') ?></td>
                     <td><?= htmlspecialchars($row['SuReferencia'] ?? '') ?></td>
-                    <td><?= $diasEnTrafico ?></td>
+                    <td><?= $row['DiasEnTrafico'] ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php endif; ?>
     </tbody>
-
 </table>
