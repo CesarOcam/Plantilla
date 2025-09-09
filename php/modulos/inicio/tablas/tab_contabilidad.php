@@ -13,6 +13,7 @@ error_reporting(E_ALL);
 $usuario = $_SESSION['usuario_id'];
 
 $sql = "SELECT 
+            r.Id,
             r.Numero,
             r.Pedimentos,
             r.ClienteExportadorId,
@@ -58,7 +59,11 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $diasContabilidad = 1;
                 ?>
                 <tr>
-                    <td><?= htmlspecialchars($row['Numero'] ?? '') ?></td>
+                    <td>
+                        <a href="../modulos/consultas/detalle_referencia.php?id=<?= urlencode($row['Id']) ?>">
+                            <?= htmlspecialchars($row['Numero'] ?? '') ?>
+                        </a>
+                    </td>
                     <td><?= htmlspecialchars($row['Pedimentos'] ?? '') ?></td>
                     <td><?= htmlspecialchars($row['Exportador'] ?? '') ?></td>
                     <td><?= htmlspecialchars($row['Logistico'] ?? '') ?></td>
