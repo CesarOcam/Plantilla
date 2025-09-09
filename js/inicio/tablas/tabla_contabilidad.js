@@ -31,6 +31,19 @@ $("#tabla-contabilidad").load("../../php/modulos/inicio/tablas/tab_contabilidad.
             $('.dataTables_wrapper .dt-buttons').css({
                 'margin-bottom': '0.1rem'
             });
+
+            // Footer más compacto
+            $('.dataTables_info, .dataTables_paginate, .dataTables_length').css({
+                'font-size': '0.7rem',   // texto más chico
+                'padding': '0.2rem 0.3rem'
+            });
+
+            // Botones de paginación más chicos
+            $('.dataTables_paginate .paginate_button').css({
+                'padding': '0.20rem 0.8rem',
+                'font-size': '0.8rem',
+                'margin': '0 0.1rem'
+            });
         }
     });
 
@@ -38,7 +51,7 @@ $("#tabla-contabilidad").load("../../php/modulos/inicio/tablas/tab_contabilidad.
     $('#miTablaContabilidad').addClass('table-sm');
     $('#miTablaContabilidad').css({
         'font-size': '0.8rem',
-        'table-layout': 'auto' // permite que la tabla ajuste columnas automáticamente
+        'table-layout': 'auto'
     });
     $('#miTablaContabilidad th, #miTablaContabilidad td').css('padding', '0.25rem 0.5rem');
 });
