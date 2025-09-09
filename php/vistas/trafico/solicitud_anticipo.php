@@ -40,7 +40,7 @@ $stmt->execute();
 $aduana = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Obtener todas las referencias
-$stmt = $con->prepare("SELECT Id, Numero FROM conta_referencias WHERE Numero IS NOT NULL");
+$stmt = $con->prepare("SELECT Id, Numero FROM conta_referencias WHERE Numero IS NOT NULL AND Status != 3");
 $stmt->execute();
 $referencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

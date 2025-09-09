@@ -6,7 +6,26 @@ $("#tabla-contabilidad").load("../../php/modulos/inicio/tablas/tab_contabilidad.
         ordering: true,
         pageLength: 15,
         dom: 'Bfrtip',
-        buttons: ['copy', 'excel', 'pdf', 'print'],
+        dom: 'Bfrtip',
+        buttons: [
+            'copy',
+            {
+                extend: 'excel',
+                title: 'Reporte de Contabilidad', 
+                filename: 'reporte_contabilidad'      
+            },
+            {
+                extend: 'pdf',
+                title: 'Reporte de Contabilidad',
+                filename: 'reporte_trafico',
+                customize: function (doc) {
+                    doc.content[0].text = 'Reporte de Contabilidad';
+                    doc.content[0].alignment = 'center';
+                    doc.content[0].fontSize = 14;
+                }
+            },
+            'print'
+        ],
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json",
             emptyTable: "No hay datos para mostrar"

@@ -138,9 +138,8 @@ if (!empty($polizas)) {
                 </tr>
             <?php endif; ?>
         </tbody>
-
     </table>
-
+</div>
 
 <script>
     document.addEventListener("click", function (e) {

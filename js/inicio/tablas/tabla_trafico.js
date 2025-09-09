@@ -7,7 +7,25 @@ $("#tabla-trafico").load("../../php/modulos/inicio/tablas/tab_trafico.php", func
         ordering: true,
         pageLength: 15,
         dom: 'Bfrtip',
-        buttons: ['copy', 'excel', 'pdf', 'print'],
+        buttons: [
+            'copy',
+            {
+                extend: 'excel',
+                title: 'Reporte de Tráfico',       // Encabezado dentro del archivo Excel
+                filename: 'reporte_trafico'       // Nombre del archivo al descargar
+            },
+            {
+                extend: 'pdf',
+                title: 'Reporte de Tráfico',
+                filename: 'reporte_trafico',
+                customize: function (doc) {
+                    doc.content[0].text = 'Reporte de Tráfico';
+                    doc.content[0].alignment = 'center';
+                    doc.content[0].fontSize = 14;
+                }
+            },
+            'print'
+        ],
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json",
             emptyTable: "No hay datos para mostrar"
