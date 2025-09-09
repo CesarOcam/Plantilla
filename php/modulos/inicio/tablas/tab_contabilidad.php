@@ -54,24 +54,19 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $fechaInicio = new DateTime($row['FechaContabilidad']);
                 $fechaFin = !empty($row['FechaKardex']) ? new DateTime($row['FechaKardex']) : new DateTime();
                 $diasContabilidad = $fechaInicio->diff($fechaFin)->days;
-                if ($diasContabilidad < 1) $diasContabilidad = 1;
-            ?>
-            <tr>
-                <td><?= htmlspecialchars($row['Numero'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['Pedimentos'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['Exportador'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['Logistico'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['Recinto'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['SuReferencia'] ?? '') ?></td>
-                <td><?= $diasContabilidad ?></td>
-            </tr>
+                if ($diasContabilidad < 1)
+                    $diasContabilidad = 1;
+                ?>
+                <tr>
+                    <td><?= htmlspecialchars($row['Numero'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['Pedimentos'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['Exportador'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['Logistico'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['Recinto'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['SuReferencia'] ?? '') ?></td>
+                    <td><?= $diasContabilidad ?></td>
+                </tr>
             <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="7" class="text-center text-muted" style="font-style: italic;">
-                    No hay datos para mostrar
-                </td>
-            </tr>
         <?php endif; ?>
     </tbody>
 </table>

@@ -41,7 +41,7 @@ if (!isset($_SESSION['usuario_id'])) {
             </div>
         </div>
 
-        <!-- Sección para cambiar contraseña -->
+        <!-- Sección para cambiar contraseña 
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Cambiar Contraseña</h5>
@@ -63,7 +63,7 @@ if (!isset($_SESSION['usuario_id'])) {
             </div>
         </div>
 
-        <!-- Sección adicional (tema, notificaciones, etc.) -->
+        <!-- Sección adicional (tema, notificaciones, etc.) 
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Preferencias</h5>
@@ -72,7 +72,7 @@ if (!isset($_SESSION['usuario_id'])) {
                     <label class="form-check-label" for="modoOscuro">Modo oscuro</label>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 
     <!-- JS de Bootstrap -->

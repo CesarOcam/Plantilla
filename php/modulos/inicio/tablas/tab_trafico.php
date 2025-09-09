@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ./portal_web/Contabilidad/login.php'); 
+    header('Location: ./portal_web/Contabilidad/login.php');
     exit;
 }
 date_default_timezone_set('America/Mexico_City');
@@ -60,24 +60,20 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $fechaAlta = !empty($row['FechaAlta']) ? new DateTime($row['FechaAlta']) : new DateTime();
                 $fechaFin = !empty($row['FechaContabilidad']) ? new DateTime($row['FechaContabilidad']) : new DateTime();
                 $diasEnTrafico = $fechaAlta->diff($fechaFin)->days;
-                if ($diasEnTrafico < 1) $diasEnTrafico = 1;
-            ?>
-            <tr>
-                <td><?= htmlspecialchars($row['Numero'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['Pedimentos'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['Exportador'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['Logistico'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['Recinto'] ?? '') ?></td>
-                <td><?= htmlspecialchars($row['SuReferencia'] ?? '') ?></td>
-                <td><?= $diasEnTrafico ?></td>
-            </tr>
+                if ($diasEnTrafico < 1)
+                    $diasEnTrafico = 1;
+                ?>
+                <tr>
+                    <td><?= htmlspecialchars($row['Numero'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['Pedimentos'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['Exportador'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['Logistico'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['Recinto'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($row['SuReferencia'] ?? '') ?></td>
+                    <td><?= $diasEnTrafico ?></td>
+                </tr>
             <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="7" class="text-center text-muted" style="font-style: italic;">
-                    No hay datos para mostrar
-                </td>
-            </tr>
         <?php endif; ?>
     </tbody>
+
 </table>

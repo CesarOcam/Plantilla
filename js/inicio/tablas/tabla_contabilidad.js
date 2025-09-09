@@ -8,7 +8,8 @@ $("#tabla-contabilidad").load("../../php/modulos/inicio/tablas/tab_contabilidad.
         dom: 'Bfrtip',
         buttons: ['copy', 'excel', 'pdf', 'print'],
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json"
+            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json",
+            emptyTable: "No hay datos para mostrar"
         },
 
         initComplete: function () {
