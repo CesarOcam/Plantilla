@@ -271,32 +271,36 @@ td {
 
 /* Tabla Tráfico */
 #miTablaTrafico th:nth-child(1),
-#miTablaTrafico td:nth-child(1) { width: 7% !important; }  /* Número */
+#miTablaTrafico td:nth-child(1) { width: 7% !important; } 
 #miTablaTrafico th:nth-child(2),
-#miTablaTrafico td:nth-child(2) { width: 10% !important; }  /* Pedimento */
+#miTablaTrafico td:nth-child(2) { width: 10% !important; }  
 #miTablaTrafico th:nth-child(3),
-#miTablaTrafico td:nth-child(3) { width: 25% !important; }  /* Exportador */
+#miTablaTrafico td:nth-child(3) { width: 25% !important; }  
 #miTablaTrafico th:nth-child(4),
-#miTablaTrafico td:nth-child(4) { width: 25% !important; }  /* Logístico */
+#miTablaTrafico td:nth-child(4) { width: 25% !important; } 
 #miTablaTrafico th:nth-child(5),
-#miTablaTrafico td:nth-child(5) { width: 20% !important; }  /* SuReferencia */
+#miTablaTrafico td:nth-child(5) { width: 20% !important; } 
 #miTablaTrafico th:nth-child(6),
-#miTablaTrafico td:nth-child(6) { width: 13% !important; text-align: right; }  /* Días Tráfico */
+#miTablaTrafico td:nth-child(6) { width: 13% !important;} 
+#miTablaTrafico th:nth-child(7),
+#miTablaTrafico td:nth-child(7) { width: 13% !important; text-align: center; }  
 
 
 /* Tabla Tráfico */
 #miTablaContabilidad th:nth-child(1),
-#miTablaContabilidad td:nth-child(1) { width: 7% !important; }  /* Número */
+#miTablaContabilidad td:nth-child(1) { width: 7% !important; } 
 #miTablaContabilidad th:nth-child(2),
-#miTablaContabilidad td:nth-child(2) { width: 10% !important; }  /* Pedimento */
+#miTablaContabilidad td:nth-child(2) { width: 10% !important; }
 #miTablaContabilidad th:nth-child(3),
-#miTablaContabilidad td:nth-child(3) { width: 25% !important; }  /* Exportador */
+#miTablaContabilidad td:nth-child(3) { width: 25% !important; } 
 #miTablaContabilidad th:nth-child(4),
-#miTablaContabilidad td:nth-child(4) { width: 25% !important; }  /* Logístico */
+#miTablaContabilidad td:nth-child(4) { width: 25% !important; } 
 #miTablaContabilidad th:nth-child(5),
-#miTablaContabilidad td:nth-child(5) { width: 20% !important; }  /* SuReferencia */
+#miTablaContabilidad td:nth-child(5) { width: 20% !important; }
 #miTablaContabilidad th:nth-child(6),
-#miTablaContabilidad td:nth-child(6) { width: 13% !important; text-align: right; }  /* Días Tráfico */
+#miTablaContabilidad td:nth-child(6) { width: 13% !important; } 
+#miTablaContabilidad th:nth-child(7),
+#miTablaContabilidad td:nth-child(7) { width: 13% !important; text-align: center; }
 
 /*--------------------------------TABLAS------------------------------------------*/
 
