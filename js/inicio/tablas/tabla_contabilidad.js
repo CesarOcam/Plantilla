@@ -1,10 +1,5 @@
-fetch('../../php/modulos/inicio/tablas/tab_contabilidad.php')
-    .then(resp => resp.text())
-    .then(html => {
-        document.getElementById('tabla-contabilidad').innerHTML = html;
-    }).catch(err => console.error(err));
 
-    $("#tabla-contabilidad").load("../../php/modulos/inicio/tablas/tab_contabilidad.php", function () {
+$("#tabla-contabilidad").load("../../php/modulos/inicio/tablas/tab_contabilidad.php", function () {
     let table = $('#miTablaContabilidad').DataTable({
         paging: true,
         searching: true,

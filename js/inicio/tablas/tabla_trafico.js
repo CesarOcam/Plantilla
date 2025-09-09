@@ -1,12 +1,7 @@
-fetch('../../php/modulos/inicio/tablas/tab_trafico.php')
-    .then(resp => resp.text())
-    .then(html => {
-        document.getElementById('tabla-trafico').innerHTML = html;
-    }).catch(err => console.error(err));
 
 // Ejemplo si usas .load
 $("#tabla-trafico").load("../../php/modulos/inicio/tablas/tab_trafico.php", function () {
-    let table = $('#miTabla').DataTable({
+    let table = $('#miTablaTrafico').DataTable({
         paging: true,
         searching: true,
         ordering: true,
@@ -40,11 +35,11 @@ $("#tabla-trafico").load("../../php/modulos/inicio/tablas/tab_trafico.php", func
     });
 
     // Tabla compacta
-    $('#miTabla').addClass('table-sm');
-    $('#miTabla').css({
+    $('#miTablaTrafico').addClass('table-sm');
+    $('#miTablaTrafico').css({
         'font-size': '0.8rem',
         'table-layout': 'auto' // permite que la tabla ajuste columnas automáticamente
     });
-    $('#miTabla th, #miTabla td').css('padding', '0.25rem 0.5rem');
+    $('#miTablaTrafico th, #miTablaTrafico td').css('padding', '0.25rem 0.5rem');
 });
 

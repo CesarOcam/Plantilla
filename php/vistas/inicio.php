@@ -89,9 +89,6 @@ if (!isset($_SESSION['usuario_id'])) {
             <div class="card h-100 rounded-0">
               <div class="card-header bg-light text-dark fw-semibold d-flex justify-content-between align-items-center">
                 <span>Operaciones en Contabilidad</span>
-                <span class="ms-auto">
-                  Total: <span id="totalReferenciasSpan"></span>
-                </span>
               </div>
               <div class="card-body">
                 <div class="table-responsive" id="tabla-contabilidad">
