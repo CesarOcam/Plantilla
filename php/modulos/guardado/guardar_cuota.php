@@ -126,23 +126,26 @@ try {
 $poliza_id = $con->lastInsertId();
 $abono = 0;
 switch ((int) $aduana) {
-    case 74:
+    case 74: //VERACRUZ
         $subcuenta = 35;
         break;
-    case 25:
+    case 25: //MANZANILLO
         $subcuenta = 36;
         break;
-    case 119:
+    case 119: //ALTAMIRA
         $subcuenta = 37;
         break;
-    case 124:
+    case 124: //AIFA
         $subcuenta = 38;
         break;
-    case 91:
+    case 91: //LAZARO CARDENAS
         $subcuenta = 40;
         break;
-    case 81:
+    case 81: //CDMX
         $subcuenta = 39;
+        break;
+    case 125: //LOGISTICA
+        $subcuenta = 576;
         break;
     default:
         $subcuenta = 0;
@@ -215,6 +218,9 @@ switch ((int) $aduana) {
         break;
     case 91://LAZARO
         $subcuenta = 242; //LAZARO
+        break;
+    case 125://LOGISTICA
+        $subcuenta = 577; //LOGISTICA
         break;
     default:
         $subcuenta = 0;

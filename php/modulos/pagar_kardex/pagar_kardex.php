@@ -107,23 +107,26 @@ if (
             $cuenta = null;
 
             switch ($aduana_id) {
-                case 25:
+                case 25: //MANZANILLO
                     $cuenta = 54;
                     break;
-                case 74:
+                case 74://VERACRUZ
                     $cuenta = 53;
                     break;
-                case 81:
+                case 81: //CDMX
                     $cuenta = 57;
                     break;
-                case 91:
+                case 91: //LAZARO CARDENAS
                     $cuenta = 58;
                     break;
-                case 119:
+                case 119: //ALTAMIRA
                     $cuenta = 55;
                     break;
-                case 126:
+                case 124: //AIFA
                     $cuenta = 56;
+                    break;
+                case 125://LOGISTICA
+                    $cuenta = 575;
                     break;
                 default:
                     $cuenta = null;
