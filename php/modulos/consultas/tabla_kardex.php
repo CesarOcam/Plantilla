@@ -5,7 +5,7 @@ $where = [];
 $params = [];
 
 // Filtro base
-$where[] = "c.Status != 2"; 
+
 
 // Status
 if (isset($_GET['status']) && $_GET['status'] !== '') {
@@ -53,6 +53,7 @@ $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
 $sql = "
 SELECT 
     c.Id,
+    c.Status,
     c.NumCg,
     r.Numero AS ReferenciaNumero,
     r.AduanaId,
