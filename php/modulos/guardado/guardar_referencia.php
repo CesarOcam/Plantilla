@@ -12,8 +12,8 @@ if (!isset($_SESSION['usuario_id'])) {
 
 
 if (isset($_POST['aduana'], $_POST['exportador'], $_POST['logistico'])) {
-    
-date_default_timezone_set('America/Mexico_City');
+
+    date_default_timezone_set('America/Mexico_City');
 
     function obtenerFechaHoraActual()
     {
@@ -89,7 +89,10 @@ date_default_timezone_set('America/Mexico_City');
         $letra = substr($nombreCortoLimpio, 0, 1);
     }
 
-    $anioDigito = date('Y') % 10;
+    // =========================
+    // Generar Numero (póliza)
+    // =========================
+    $anioDigito = date('Y') % 10;   // último dígito del año
     $prefijo = $letra . $anioDigito;
     $activo = 1;
 
@@ -111,18 +114,52 @@ date_default_timezone_set('America/Mexico_City');
         $numero = $prefijo . "0000";
     }
 
+
+    // =========================
+    // Generar PrefixLogistica
+    // =========================
+    $prefijoLetra = "X";
+    $prefijoBase = $prefijoLetra . $anioDigito; // Ejemplo: "X5"
+
+    $sqlPrefijo = "
+    SELECT PrefixLogistica 
+    FROM conta_referencias
+    WHERE PrefixLogistica LIKE :busquedaPrefijo
+    ORDER BY CAST(SUBSTRING(PrefixLogistica, 2) AS UNSIGNED) DESC
+    LIMIT 1
+";
+    $stmtPrefijo = $con->prepare($sqlPrefijo);
+    $stmtPrefijo->execute(['busquedaPrefijo' => "$prefijoBase%"]);
+    $ultimoPrefijo = $stmtPrefijo->fetchColumn();
+
+    if ($ultimoPrefijo) {
+        // Extrae el número quitando "X5" → deja solo 00000, 00001, etc.
+        $consecutivo = intval(substr($ultimoPrefijo, 2)) + 1;
+        // Mantener siempre 5 dígitos
+        $nuevoPrefijo = $prefijoBase . str_pad($consecutivo, 4, "0", STR_PAD_LEFT);
+    } else {
+        // Primer registro del año → empezar en 00001
+        $nuevoPrefijo = $prefijoBase . "0001";
+    }
+
+
+
+    // =========================
+    // Insertar registro
+    // =========================
     $sql = "INSERT INTO conta_referencias (
-        AduanaId, Numero, ClienteExportadorId, ClienteLogisticoId, Mercancia, Marcas,
+        AduanaId, Numero, PrefixLogistica, ClienteExportadorId, ClienteLogisticoId, Mercancia, Marcas,
         Pedimentos, ClavePedimento, PesoBruto, Cantidad,
         Contenedor, ConsolidadoraId, ResultadoModulacion, RecintoId,
         NavieraId, CierreDocumentos, FechaPago, BuqueId, Booking, CierreDespacho,
         HoraDespacho, Viaje, SuReferencia, CierreDocumentado, LlegadaEstimada,
         PuertoDescarga, PuertoDestino, Comentarios, FechaAlta, Status, UsuarioAlta
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $params = [
         $aduana,
-        $numero,
+        $numero,         // Numero generado arriba
+        $nuevoPrefijo,   // PrefixLogistica generado arriba
         $exportador,
         $logistico,
         $mercancia,
@@ -130,7 +167,7 @@ date_default_timezone_set('America/Mexico_City');
         $pedimento,
         $clave_ped,
         $peso,
-        $bultos, //Cantidad
+        $bultos,
         $contenedor,
         $consolidadora,
         $resultado_mod,
@@ -153,6 +190,7 @@ date_default_timezone_set('America/Mexico_City');
         $activo,
         $usuarioAlta
     ];
+
 
     if (count($params) !== substr_count($sql, '?')) {
         echo json_encode(['success' => false, 'mensaje' => 'Error: número de parámetros incorrecto.']);
