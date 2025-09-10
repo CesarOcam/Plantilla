@@ -47,7 +47,7 @@ $stmt = $con->prepare("SELECT id2201aduanas, nombre_corto_aduana
                        FROM 2201aduanas 
                        WHERE nombre_corto_aduana IS NOT NULL 
                          AND TRIM(nombre_corto_aduana) != '' 
-                         AND id2201aduanas IN (25, 74, 81, 91, 119, 124)
+                         AND id2201aduanas IN (25, 74, 81, 91, 119, 124, 126)
                        ORDER BY nombre_corto_aduana");
 $stmt->execute();
 $aduanas = $stmt->fetchAll(PDO::FETCH_ASSOC);

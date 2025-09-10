@@ -35,6 +35,8 @@ $stmt = $con->prepare($sql);
 $stmt->bindParam(':usuario', $usuario, PDO::PARAM_STR);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 
 <table id="miTablaContabilidad" class="table table-striped table-bordered table-hover table-sm">
@@ -52,11 +54,18 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <tbody>
         <?php if ($result && count($result) > 0): ?>
             <?php foreach ($result as $row):
-                $fechaInicio = new DateTime($row['FechaContabilidad']);
-                $fechaFin = !empty($row['FechaKardex']) ? new DateTime($row['FechaKardex']) : new DateTime();
-                $diasContabilidad = $fechaInicio->diff($fechaFin)->days;
-                if ($diasContabilidad < 1)
-                    $diasContabilidad = 1;
+                // Manejar fechas null
+                $fechaInicio = !empty($row['FechaContabilidad']) 
+                               ? new DateTime($row['FechaContabilidad']) 
+                               : new DateTime(); // o null si quieres diferenciar
+                               
+                $fechaFin = !empty($row['FechaKardex']) 
+                             ? new DateTime($row['FechaKardex']) 
+                             : new DateTime();
+
+                // Calcular días contabilidad
+                $diasContabilidad = $fechaInicio ? $fechaInicio->diff($fechaFin)->days : 0;
+                if ($diasContabilidad < 1) $diasContabilidad = 1;
                 ?>
                 <tr>
                     <td>

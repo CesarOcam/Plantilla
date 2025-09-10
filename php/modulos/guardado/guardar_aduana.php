@@ -64,7 +64,7 @@ if (isset(
     $sub_cargo_log,
     $sub_cargo_exp,
     $fecha_alta,
-    $usuarioAlta,
+    1,
     $activo
     ];
 

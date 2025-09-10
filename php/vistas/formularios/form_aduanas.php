@@ -109,7 +109,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <select id="SubcuentaClientesLogId-select" name="SubcuentaClientesLogId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1" required>
+                                aria-describedby="basic-addon1">
                                 <option value="" disabled selected hidden>Subcuenta Logístico</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -123,7 +123,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <select id="SubcuentaCuotasAbonoLogId-select" name="SubcuentaCuotasAbonoLogId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1" required>
+                                aria-describedby="basic-addon1">
                                 <option value="" disabled selected hidden>Subcuenta Cuotas Abono Logístico</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -137,7 +137,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <select id="SubcuentaCuotasCargoLogId-select" name="SubcuentaCuotasCargoLogId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1" required>
+                                aria-describedby="basic-addon1">
                                 <option value="" disabled selected hidden>Subcuenta Cuotas Cargo Logístico</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -153,7 +153,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <select id="SubcuentaClientesExpId-select" name="SubcuentaClientesExpId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1" required>
+                                aria-describedby="basic-addon1">
                                 <option value="" disabled selected hidden>Subcuenta Exportador</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -168,7 +168,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <select id="SubcuentaCuotasAbonoExpId-select" name="SubcuentaCuotasAbonoExpId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1" required>
+                                aria-describedby="basic-addon1">
                                 <option value="" disabled selected hidden>Subcuenta Cuotas Abono Exportador</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
@@ -183,7 +183,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             <select id="SubcuentaCuotasCargoExpId-select" name="SubcuentaCuotasCargoExpId"
                                 class="form-control rounded-0 border-0 border-bottom text-muted"
                                 style="background-color: transparent; width: 100%;" aria-label="Filtrar por fecha"
-                                aria-describedby="basic-addon1" required>
+                                aria-describedby="basic-addon1">
                                 <option value="" disabled selected hidden>Subcuenta Cuotas Cargo Logístico</option>
                                 <?php foreach ($subcuenta as $cuenta): ?>
                                     <option value="<?php echo $cuenta['Id']; ?>"
