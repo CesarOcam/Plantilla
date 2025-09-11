@@ -8,9 +8,11 @@ $params = [];
 
 
 // Status
+$statusSeleccionado = null;
 if (isset($_GET['status']) && $_GET['status'] !== '') {
     $where[] = "c.Status = :status";
     $params[':status'] = $_GET['status'];
+    $statusSeleccionado = $_GET['status'];
 }
 
 // Fechas
@@ -63,7 +65,8 @@ SELECT
     c.Fecha,
     c.Booking,
     c.SuReferencia,
-    c.Saldo
+    c.Saldo,
+    c.FechaPago 
 FROM conta_cuentas_kardex c
 LEFT JOIN conta_referencias r 
     ON c.Referencia = r.Id
@@ -87,6 +90,7 @@ $stmt->execute();
 $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
+
 <div style="max-height: 500px; overflow-y: auto;">
     <table class="table table-hover">
         <thead class="small">
@@ -98,6 +102,9 @@ $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th scope="col">Logistico</th>
                 <th scope="col">Exportador</th>
                 <th scope="col">Fecha</th>
+                <?php if ($statusSeleccionado == 2): ?>  
+                    <th scope="col">Fecha Pago</th>  
+                <?php endif; ?>
                 <th scope="col">Barco</th>
                 <th scope="col">Booking</th>
                 <th scope="col">SuReferencia</th>
@@ -106,28 +113,31 @@ $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </thead>
         <tbody class="small">
             <?php if ($kardex): ?>
-                <?php foreach ($kardex as $kardex): ?>  
-                    <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_kardex.php?id=<?php echo $kardex['Id']; ?>';}"
+                <?php foreach ($kardex as $k): ?>  
+                    <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_kardex.php?id=<?php echo $k['Id']; ?>';}"
                         style="cursor: pointer;">
                         <th scope="row">
                             <input class="form-check-input mt-1 kardex-checkbox" type="checkbox"
-                                value="<?php echo $kardex['Id']; ?>" aria-label="Checkbox for following text input">
+                                value="<?php echo $k['Id']; ?>" aria-label="Checkbox for following text input">
                         </th>
-                        <td><?php echo $kardex['Id']; ?></td>
-                        <td><?php echo $kardex['NumCg']; ?></td>
-                        <td><?php echo $kardex['ReferenciaNumero']; ?></td>
-                        <td><?php echo $kardex['LogisticoNombre']; ?></td>
-                        <td><?php echo $kardex['ExportadorNombre']; ?></td>
-                        <td><?php echo $kardex['Fecha']; ?></td>
-                        <td><?php echo $kardex['BuqueNombre']; ?></td>
-                        <td><?php echo $kardex['Booking']; ?></td>
-                        <td><?php echo $kardex['SuReferencia']; ?></td>
-                        <td><?php echo number_format($kardex['Saldo'], 2, '.', ','); ?></td>
+                        <td><?php echo $k['Id']; ?></td>
+                        <td><?php echo $k['NumCg']; ?></td>
+                        <td><?php echo $k['ReferenciaNumero']; ?></td>
+                        <td><?php echo $k['LogisticoNombre']; ?></td>
+                        <td><?php echo $k['ExportadorNombre']; ?></td>
+                        <td><?php echo $k['Fecha']; ?></td>
+                        <?php if ($statusSeleccionado == 2): ?>  
+                            <td><?php echo $k['FechaPago']; ?></td>  
+                        <?php endif; ?>
+                        <td><?php echo $k['BuqueNombre']; ?></td>
+                        <td><?php echo $k['Booking']; ?></td>
+                        <td><?php echo $k['SuReferencia']; ?></td>
+                        <td><?php echo number_format($k['Saldo'], 2, '.', ','); ?></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="11" class="text-center">No se encontraron registros</td>
+                    <td colspan="12" class="text-center">No se encontraron registros</td>
                 </tr>
             <?php endif; ?>
         </tbody>
