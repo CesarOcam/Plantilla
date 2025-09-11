@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //---------------------------------------GENERAR POLIZA--------------------------------------------------------
     $sql_insert_poliza = "INSERT INTO conta_polizas 
         (
-            BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, Activo, FechaAlta, UsuarioAlta
+            BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, Pagada, Activo, FechaAlta, UsuarioAlta
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

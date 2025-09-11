@@ -25,6 +25,7 @@ if (
     $fecha = $_POST['fecha'];
     $usuarioAlta = $_SESSION['usuario_id'];
     $activo = 1;
+    $pagada = 1;
 
     //---------------------------------------GENERAR POLIZA--------------------------------------------------------
     $numero_poliza = '';
@@ -59,7 +60,7 @@ if (
         $fecha,
         $activo,
         $fecha,
-        1,
+        $pagada,
         $usuarioAlta
     ];
 
@@ -157,8 +158,8 @@ if (
 
     // Insertar las partidas por cada referencia
     $sql_insert_partidas = "INSERT INTO conta_partidaspolizas 
-    (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Activo, created_by)
-    VALUES (?, ?, ?, ?, ?, ?, ?)";
+    (Polizaid, Subcuentaid, ReferenciaId, Cargo, Abono, Pagada, Activo, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_partidas = $con->prepare($sql_insert_partidas);
 
     foreach ($referencias_con_aduana as $ref) {
@@ -174,6 +175,7 @@ if (
             $ref['referencia'],
             $cargo,
             $abono,
+            $pagada,
             $activo,
             $usuarioAlta
         ]);

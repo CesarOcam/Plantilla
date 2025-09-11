@@ -56,7 +56,7 @@ if (isset($_GET['subcuenta']) && is_numeric($_GET['subcuenta']) && (int) $_GET['
 }
 
 // **Filtro que sólo aplica en la consulta principal porque usa alias `pp`**
-$wherePrincipal[] = "pp.Pagada = 0";
+$wherePrincipal[] = "(pp.Pagada = 0 OR pp.Pagada IS NULL)";
 
 $whereSqlPrincipal = count($wherePrincipal) > 0 ? 'WHERE ' . implode(' AND ', $wherePrincipal) : '';
 $whereSqlCount = count($whereCount) > 0 ? 'WHERE ' . implode(' AND ', $whereCount) : '';
