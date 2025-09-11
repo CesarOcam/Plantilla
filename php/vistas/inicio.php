@@ -75,11 +75,15 @@ if (!isset($_SESSION['usuario_id'])) {
                 <span>Operaciones en Tráfico</span>
                 <span class="ms-auto">
                   <?php if ($_SESSION['usuario_id'] === 'jesus' || $_SESSION['usuario_id'] === 'YAMMONM81' || $_SESSION['usuario_id'] === 'Master'): ?>
-                    <select name="ejecutivo" class="form-control mb-3" id="select-ejecutivo">
+                    <select name="ejecutivo-traf" class="form-control mb-3" id="select-ejecutivo-traf">
                       <option value="jesus">Jesús Reyes</option>
                       <option value="SEBROSARA99">Sebastian Rosario</option>
                       <option value="DHALAG23">Dharma Lagunes</option>
                       <option value="AMAAGUGAL43">Amairani Aguilar</option>
+                      <option value="FRAGONM28">Francis Gonzales</option>
+                      <option value="ALESALM148">Alejandro Saltos</option>
+                      <option value="AMAAGUGAL43">Amairani Aguilar</option>
+                      <option value="YAMMONM81">Yamilet Montiel</option>
                     </select>
                   <?php endif; ?>
                 </span>
@@ -96,6 +100,22 @@ if (!isset($_SESSION['usuario_id'])) {
             <div class="card h-100 rounded-0">
               <div class="card-header bg-light text-dark fw-semibold d-flex justify-content-between align-items-center">
                 <span>Operaciones en Contabilidad</span>
+                <span>
+                  <span class="ms-auto">
+                    <?php if ($_SESSION['usuario_id'] === 'jesus' || $_SESSION['usuario_id'] === 'YAMMONM81' || $_SESSION['usuario_id'] === 'Master'): ?>
+                      <select name="ejecutivo-conta" class="form-control mb-3" id="select-ejecutivo-conta">
+                        <option value="jesus">Jesús Reyes</option>
+                        <option value="SEBROSARA99">Sebastian Rosario</option>
+                        <option value="DHALAG23">Dharma Lagunes</option>
+                        <option value="AMAAGUGAL43">Amairani Aguilar</option>
+                        <option value="FRAGONM28">Francis Gonzales</option>
+                        <option value="ALESALM148">Alejandro Saltos</option>
+                        <option value="AMAAGUGAL43">Amairani Aguilar</option>
+                        <option value="YAMMONM81">Yamilet Montiel</option>
+                      </select>
+                    <?php endif; ?>
+                  </span>
+                </span>
               </div>
               <div class="card-body">
                 <div class="table-responsive" id="tabla-contabilidad">

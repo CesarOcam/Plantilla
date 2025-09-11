@@ -1,4 +1,22 @@
-document.getElementById('select-ejecutivo')?.addEventListener('change', function() {
+document.getElementById('select-ejecutivo-traf')?.addEventListener('change', function() {
+  const usuario = this.value;
+
+  fetch('../../php/modulos/inicio/tablas/tab_trafico.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: 'usuario=' + encodeURIComponent(usuario)
+  })
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById('tabla-trafico').innerHTML = html;
+  })
+  .catch(err => console.error('Error cargando la tabla:', err));
+});
+
+
+document.getElementById('select-ejecutivo-conta')?.addEventListener('change', function() {
   const usuario = this.value;
 
   fetch('../../php/modulos/inicio/tablas/tab_contabilidad.php', {
@@ -10,7 +28,7 @@ document.getElementById('select-ejecutivo')?.addEventListener('change', function
   })
   .then(response => response.text())
   .then(html => {
-    document.getElementById('tabla-trafico').innerHTML = html;
+    document.getElementById('tabla-contabilidad').innerHTML = html;
   })
   .catch(err => console.error('Error cargando la tabla:', err));
 });

@@ -10,7 +10,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$usuario = $_SESSION['usuario_id'];
+$usuario = $_POST['usuario'] ?? $_SESSION['usuario_id']; // Si no se envía, usar sesión
 
 $sql = "SELECT 
             r.Id,
