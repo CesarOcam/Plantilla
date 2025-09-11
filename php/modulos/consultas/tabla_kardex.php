@@ -4,9 +4,6 @@ include_once(__DIR__ . '/../conexion.php');
 $where = [];
 $params = [];
 
-// Filtro base
-
-
 // Status
 $statusSeleccionado = null;
 if (isset($_GET['status']) && $_GET['status'] !== '') {
@@ -89,7 +86,6 @@ foreach ($params as $key => $value) {
 $stmt->execute();
 $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 
 <div style="max-height: 500px; overflow-y: auto;">
     <table class="table table-hover" id="tablaKardex">

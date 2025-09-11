@@ -35,12 +35,9 @@ $stmt = $con->prepare($sql);
 $stmt->bindParam(':usuario', $usuario, PDO::PARAM_STR);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
 
 <table id="miTablaContabilidad" class="table table-striped table-bordered table-hover table-sm">
-    
     <thead>
         <tr>
             <th>Número</th>
