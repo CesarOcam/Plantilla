@@ -182,7 +182,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     style="background-color: transparent;" placeholder="Referencia">
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
-                                <select id="aduana-select" name="aduana" required>
+                                <select id="aduana-select" name="aduana">
                                     <option value="" selected disabled>-- Selecciona una aduana --</option>
                                     <?php foreach ($aduanas as $aduana): ?>
                                         <option value="<?= htmlspecialchars($aduana['id2201aduanas']) ?>">
@@ -193,7 +193,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                                 <select id="exportador-select" name="exportador"
-                                    class="form-control rounded-0 border-0 border-bottom text-muted" required>
+                                    class="form-control rounded-0 border-0 border-bottom text-muted">
                                     <option value="" selected disabled>Exportador *</option>
                                     <?php foreach ($exp as $item): ?>
                                         <?php if ($item['tipo_cliente'] == 0 || $item['tipo_cliente'] == 2): ?>
@@ -206,7 +206,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                             </div>
                             <div class="col-10 col-sm-2 d-flex align-items-center mt-4">
                                 <select id="logistico-select" name="logistico"
-                                    class="form-control rounded-0 border-0 border-bottom text-muted" required>
+                                    class="form-control rounded-0 border-0 border-bottom text-muted">
                                     <option value="" selected disabled>Logístico *</option>
                                     <?php foreach ($exp as $item): ?>
                                         <?php if ($item['tipo_cliente'] == 1 || $item['tipo_cliente'] == 2): ?>
