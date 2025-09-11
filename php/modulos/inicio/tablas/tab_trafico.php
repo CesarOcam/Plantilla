@@ -46,13 +46,14 @@ foreach ($result as &$row) {
     $fechaAlta = !empty($row['FechaAlta']) ? new DateTime($row['FechaAlta']) : new DateTime();
     $fechaFin = !empty($row['FechaContabilidad']) ? new DateTime($row['FechaContabilidad']) : new DateTime();
     $diasEnTrafico = $fechaAlta->diff($fechaFin)->days;
-    if ($diasEnTrafico < 1) $diasEnTrafico = 1;
+    if ($diasEnTrafico < 1)
+        $diasEnTrafico = 1;
     $row['DiasEnTrafico'] = $diasEnTrafico;
 }
 unset($row); // rompe la referencia
 
 // Ordenamos de mayor a menor según DiasEnTrafico
-usort($result, function($a, $b) {
+usort($result, function ($a, $b) {
     return $b['DiasEnTrafico'] <=> $a['DiasEnTrafico'];
 });
 ?>

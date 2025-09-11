@@ -79,7 +79,7 @@ LEFT JOIN 01clientes_exportadores ee
 LEFT JOIN 2201aduanas a 
     ON r.AduanaId = a.id2201aduanas
 $whereSql
-ORDER BY c.Fecha DESC
+ORDER BY c.Fecha ASC
 ";
 
 $stmt = $con->prepare($sql);
