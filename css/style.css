@@ -1538,3 +1538,14 @@ input:checked + .slider:before {
     padding: 0.25rem 0.5rem;
   }
 }
+
+
+#tablaKardex th:nth-child(7), /* Observaciones */
+#tablaKardex td:nth-child(7) {
+  width: 5%;
+}
+
+#tablaKardex th:nth-child(13), /* Observaciones */
+#tablaKardex td:nth-child(13) {
+  width: 6%;
+}

@@ -34,7 +34,7 @@ if (!empty($_GET['num'])) {
 // Aduana
 if (!empty($_GET['aduana'])) {
     $where[] = "r.AduanaId = :aduana";
-    $params[':aduana'] = (int)$_GET['aduana'];  // cast a int
+    $params[':aduana'] = (int) $_GET['aduana'];  // cast a int
 }
 
 // Referencia
@@ -66,7 +66,7 @@ SELECT
     c.Booking,
     c.SuReferencia,
     c.Saldo,
-    c.FechaPago 
+    c.FechaPago   
 FROM conta_cuentas_kardex c
 LEFT JOIN conta_referencias r 
     ON c.Referencia = r.Id
@@ -92,7 +92,7 @@ $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 <div style="max-height: 500px; overflow-y: auto;">
-    <table class="table table-hover">
+    <table class="table table-hover" id="tablaKardex">
         <thead class="small">
             <tr>
                 <th scope="col"></th>
@@ -101,24 +101,27 @@ $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th scope="col">Referencia</th>
                 <th scope="col">Logistico</th>
                 <th scope="col">Exportador</th>
-                <th scope="col">Fecha</th>
-                <?php if ($statusSeleccionado == 2): ?>  
-                    <th scope="col">Fecha Pago</th>  
-                <?php endif; ?>
+                <th scope="col class="fecha-pago">Fecha</th>
                 <th scope="col">Barco</th>
                 <th scope="col">Booking</th>
                 <th scope="col">SuReferencia</th>
                 <th scope="col">Saldo</th>
+                <?php if ($statusSeleccionado == 2): ?>
+                    <th scope="col">Status</th>
+                <?php endif; ?>
+                <?php if ($statusSeleccionado == 2): ?>
+                    <th scope="col">Fecha Pago</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody class="small">
             <?php if ($kardex): ?>
-                <?php foreach ($kardex as $k): ?>  
+                <?php foreach ($kardex as $k): ?>
                     <tr onclick="if(event.target.type !== 'checkbox') {window.location.href = '../../modulos/consultas/detalle_kardex.php?id=<?php echo $k['Id']; ?>';}"
                         style="cursor: pointer;">
                         <th scope="row">
-                            <input class="form-check-input mt-1 kardex-checkbox" type="checkbox"
-                                value="<?php echo $k['Id']; ?>" aria-label="Checkbox for following text input">
+                            <input class="form-check-input mt-1 kardex-checkbox" type="checkbox" value="<?php echo $k['Id']; ?>"
+                                aria-label="Checkbox for following text input">
                         </th>
                         <td><?php echo $k['Id']; ?></td>
                         <td><?php echo $k['NumCg']; ?></td>
@@ -126,13 +129,16 @@ $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo $k['LogisticoNombre']; ?></td>
                         <td><?php echo $k['ExportadorNombre']; ?></td>
                         <td><?php echo $k['Fecha']; ?></td>
-                        <?php if ($statusSeleccionado == 2): ?>  
-                            <td><?php echo $k['FechaPago']; ?></td>  
-                        <?php endif; ?>
                         <td><?php echo $k['BuqueNombre']; ?></td>
                         <td><?php echo $k['Booking']; ?></td>
                         <td><?php echo $k['SuReferencia']; ?></td>
                         <td><?php echo number_format($k['Saldo'], 2, '.', ','); ?></td>
+                        <?php if ($statusSeleccionado == 2): ?>
+                            <td>Pagada</td>
+                        <?php endif; ?>
+                        <?php if ($statusSeleccionado == 2): ?>
+                            <td><?php echo $k['FechaPago']; ?></td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -143,4 +149,3 @@ $kardex = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </tbody>
     </table>
 </div>
-

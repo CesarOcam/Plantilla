@@ -202,12 +202,19 @@ if (
         ]);
     }
 
-    $sql_update = "UPDATE conta_cuentas_kardex SET Status = 2 WHERE Id = ?";
+    date_default_timezone_set('America/Mexico_City');
+    $fecha_pago = date('Y-m-d H:i:s');
+
+    $sql_update = "UPDATE conta_cuentas_kardex 
+               SET Status = 2, FechaPago = ? 
+               WHERE Id = ?";
+
     $stmt_update = $con->prepare($sql_update);
 
     foreach ($ids as $id) {
-        $stmt_update->execute([$id]);
+        $stmt_update->execute([$fecha_pago, $id]);
     }
+
 
 
     echo json_encode([
