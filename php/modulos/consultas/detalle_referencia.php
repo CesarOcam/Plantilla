@@ -254,12 +254,6 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         class="form-control input-transparent border-0 border-bottom rounded-0 disabled-input"
                                         value="<?= htmlspecialchars($referencia['Numero']); ?>" readonly>
                                 </div>
-                                <div class="col-2 col-sm-1 d-flex flex-column mt-4">
-                                    <label for="prefixLog" class="form-label text-muted small">PREFIJO LOGÍSTICA:</label>
-                                    <input id="prefixLog" name="prefixLog" type="text"
-                                        class="form-control input-transparent border-0 border-bottom rounded-0 disabled-input"
-                                        value="<?= htmlspecialchars($referencia['PrefixLogistica']); ?>" readonly>
-                                </div>
                                 <div class="col-2 col-sm-2 d-flex flex-column mt-4">
                                     <label for="aduana" class="form-label text-muted small">ADUANA:</label>
                                     <input id="aduana" name="aduana" type="text"
@@ -267,7 +261,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                         style="background-color: transparent;"
                                         value="<?php echo $referencia['nombre_aduana']; ?>" readonly>
                                 </div>
-                                <div class="col-2 col-sm-4 d-flex flex-column mt-4">
+                                <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="exportador" class="form-label text-muted small">EXPORTADOR:</label>
                                     <select id="exportador-select" name="exportador"
                                         class="form-control rounded-0 border-0 border-bottom text-muted">
@@ -285,7 +279,7 @@ include($_SERVER['DOCUMENT_ROOT'] . $base_url . '/php/vistas/navbar.php');
                                     </select>
                                 </div>
 
-                                <div class="col-2 col-sm-4 d-flex flex-column mt-4">
+                                <div class="col-2 col-sm-3 d-flex flex-column mt-4">
                                     <label for="logistico" class="form-label text-muted small">LOGÍSTICO:</label>
                                     <select id="logistico-select" name="logistico"
                                         class="form-control rounded-0 border-0 border-bottom text-muted">
