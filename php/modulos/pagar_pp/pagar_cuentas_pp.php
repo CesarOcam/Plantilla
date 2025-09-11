@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         (
             BeneficiarioId, EmpresaId, Numero, Importe, Concepto, Fecha, Pagada, Activo, FechaAlta, UsuarioAlta
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $params = [
         $beneficiario,

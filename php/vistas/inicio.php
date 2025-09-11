@@ -74,6 +74,14 @@ if (!isset($_SESSION['usuario_id'])) {
               <div class="card-header bg-light text-dark fw-semibold d-flex justify-content-between align-items-center">
                 <span>Operaciones en Tráfico</span>
                 <span class="ms-auto">
+                  <?php if ($_SESSION['usuario_id'] === 'jesus' || $_SESSION['usuario_id'] === 'YAMMONM81' || $_SESSION['usuario_id'] === 'Master'): ?>
+                    <select name="ejecutivo" class="form-control mb-3" id="select-ejecutivo">
+                      <option value="jesus">Jesús Reyes</option>
+                      <option value="SEBROSARA99">Sebastian Rosario</option>
+                      <option value="DHALAG23">Dharma Lagunes</option>
+                      <option value="AMAAGUGAL43">Amairani Aguilar</option>
+                    </select>
+                  <?php endif; ?>
                 </span>
               </div>
               <div class="card-body">
@@ -83,7 +91,6 @@ if (!isset($_SESSION['usuario_id'])) {
               </div>
             </div>
           </div>
-
           <!-- Carga de trabajo por operativo -->
           <div class="col-md-6">
             <div class="card h-100 rounded-0">
@@ -145,6 +152,7 @@ if (!isset($_SESSION['usuario_id'])) {
     </script>
   <script src="../../js/inicio/tablas/tabla_trafico.js"></script>
   <script src="../../js/inicio/tablas/tabla_contabilidad.js"></script>
+  <script src="../../js/inicio/tablas/actualizar.js"></script>
 </body>
 
 </html>
